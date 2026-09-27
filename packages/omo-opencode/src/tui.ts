@@ -1,3 +1,4 @@
+import { Plugin as TuiPlugin } from "@opencode/plugin/tui"
 import type { TuiPluginModule } from "@opencode-ai/plugin/tui"
 
 import { registerBtwSideTui } from "./features/btw-side"
@@ -10,7 +11,6 @@ import { readMirror } from "./features/tui-sidebar/mirror-io"
 import { buildViewNodes } from "./features/tui-sidebar/render-view"
 import type { RosterRow } from "./features/tui-sidebar/state-types"
 import type { SidebarView } from "./features/tui-sidebar/state-types"
-import { opencodeV2Tui } from "./opencode-v2/tui-entry"
 import { log } from "./shared/logger"
 import { trackLoadedPluginSandbox } from "./hooks/auto-update-checker/checker/sandbox-refresh"
 
@@ -197,4 +197,14 @@ const module: TuiPluginModule = {
   },
 }
 
-export default { ...module, setup: opencodeV2Tui.setup }
+export const legacyTuiModule = module
+
+export default {
+  ...TuiPlugin.define({
+    id: "oh-my-openagent",
+    setup() {
+      log("[oh-my-openagent] OpenCode V2 TUI plugin loaded")
+    },
+  }),
+  tui: module.tui,
+}
