@@ -64,6 +64,16 @@ export function runOpenCodeStartupMigration(
   options: OpenCodeStartupMigrationOptions,
 ): OpenCodeStartupMigrationResult {
   const homeDir = homeDirectory(options)
+  if ((options.environment ?? process.env)["OMO_CONFIG_DIR"]?.trim()) {
+    return {
+      journalResumed: false,
+      migratedFrom: [],
+      reloadRequired: false,
+      results: [],
+      skippedConflictCount: 0,
+      targetBackupPaths: [],
+    }
+  }
   if (homeDir.length === 0) {
     return {
       error: "Cannot migrate configuration because no home directory is available",
