@@ -19,7 +19,7 @@ import {
   readOpencodeConfigSkills,
   getSkillSourceProvenance,
 } from "../features/opencode-skill-loader"
-import { resolveActiveBuiltinSkills } from "@oh-my-opencode/skills-loader-core/builtin-skills"
+import { omitsOwnBrowserSkill, resolveActiveBuiltinSkills } from "@oh-my-opencode/skills-loader-core/builtin-skills"
 import { getSystemMcpServerNames } from "../features/claude-code-mcp-loader"
 import { adaptHostSkillConfig } from "../shared/host-skill-config"
 import { detectWorktreePath } from "@oh-my-opencode/skills-loader-core/shared/project-discovery-dirs"
@@ -160,7 +160,10 @@ export async function createSkillContext(args: {
     const activeAgentsProjectSkills = filterDisabledSkills(filteredAgentsProjectSkills, disabledSkills)
     const activeAgentsGlobalSkills = filterDisabledSkills(filteredAgentsGlobalSkills, disabledSkills)
     const filteredSharedSkills = filterDisabledSkills(
-      filterProviderGatedSkills(sharedSkills, browserProvider),
+      filterProviderGatedSkills(
+        sharedSkills.filter((skill) => !omitsOwnBrowserSkill(browserProvider, skill)),
+        browserProvider,
+      ),
       disabledSkills,
     )
     const mergedSkills = mergeSkills(
