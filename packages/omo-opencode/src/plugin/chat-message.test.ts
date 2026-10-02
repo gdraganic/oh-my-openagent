@@ -481,6 +481,25 @@ describe("createChatMessageHandler - goal command handling and stop continuation
     expect(stopContinuationGuard.clearCalls).toEqual(["test-session"])
   })
 
+  test("a quoted /goal from the CLI still sets the goal", async () => {
+    const goalMock = createGoalHookMock()
+    const args = createMockHandlerArgs()
+    args.hooks.goal = goalMock.hook
+    const handler = createChatMessageHandler(args)
+    await handler(createMockInput("sisyphus"), { message: {}, parts: [{ type: "text", text: '"/goal Ship it"' }] })
+    expect(goalMock.setGoalCalls).toEqual([{ sessionID: "test-session", objective: "Ship it" }])
+  })
+
+  test("an ordinary message leaves the goal alone", async () => {
+    const goalMock = createGoalHookMock()
+    const args = createMockHandlerArgs()
+    args.hooks.goal = goalMock.hook
+    const handler = createChatMessageHandler(args)
+    await handler(createMockInput("sisyphus"), { message: {}, parts: [{ type: "text", text: "reply OK" }] })
+    expect(goalMock.setGoalCalls).toEqual([])
+    expect(goalMock.clearGoalCalls).toEqual([])
+  })
+
   test("does not clear stop state for /goal <objective>", async () => {
     // given
     const stopContinuationGuard = createStopContinuationGuardMock(true)

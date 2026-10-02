@@ -26,7 +26,8 @@ export function handleGoalMessage(args: {
     return
   }
   // The parser accepts bare arguments for native commands, not ordinary chat.
-  const goalCommand = promptText.trim().match(/^\/goal(?:\s+([\s\S]*))?$/i)
+  // `opencode run "/goal x"` can deliver the surrounding quotes too.
+  const goalCommand = promptText.trim().match(/^["']?\/goal(?:\s+([\s\S]*?))?["']?$/i)
   if (!goalCommand) {
     const objective = promptText.trim()
     if (
