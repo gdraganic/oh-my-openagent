@@ -98372,7 +98372,7 @@ function getCachedVersion(options = {}) {
 // package.json
 var package_default = {
   name: "oh-my-opencode",
-  version: "5.0.1-fork.1",
+  version: "5.0.1-fork.2",
   description: "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
   main: "./dist/index.js",
   types: "dist/index.d.ts",
@@ -107850,8 +107850,53 @@ function buildContinuationPrompt2(goal2) {
   ].join(`
 `);
 }
+function buildResumePrompt(goal2) {
+  return [
+    "A paused goal is being resumed.",
+    "",
+    "<untrusted_objective>",
+    escapeXmlText(goal2.objective),
+    "</untrusted_objective>",
+    "",
+    "Continue working toward this objective. Do not repeat work already done."
+  ].join(`
+`);
+}
 function escapeXmlText(value) {
   return value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+}
+
+// packages/omo-opencode/src/hooks/goal/sync-bridge.ts
+var bridges = new Map;
+var bridge = (projectDir) => {
+  let entry = bridges.get(projectDir);
+  if (!entry) {
+    entry = {};
+    bridges.set(projectDir, entry);
+  }
+  return entry;
+};
+function registerGoalSync(projectDir, sync) {
+  const entry = bridge(projectDir);
+  entry.sync = sync;
+  return () => {
+    if (entry.sync === sync)
+      delete entry.sync;
+  };
+}
+function registerGoalWake(projectDir, wake) {
+  const entry = bridge(projectDir);
+  entry.wake = wake;
+  return () => {
+    if (entry.wake === wake)
+      delete entry.wake;
+  };
+}
+async function syncGoalFromClient(projectDir, sessionID) {
+  await bridges.get(projectDir)?.sync?.(sessionID);
+}
+function wakeGoal(projectDir, sessionID) {
+  bridges.get(projectDir)?.wake?.(sessionID);
 }
 
 // packages/omo-opencode/src/hooks/goal/usage.ts
@@ -107915,17 +107960,23 @@ function createGoalHook(ctx, options) {
   }
   const retryTimers = new Map;
   const retryDelayMs = options.retryDelayMs ?? 3000;
-  function scheduleRetry(sessionID) {
+  function scheduleRetry(sessionID, resumed = false) {
     if (retryTimers.has(sessionID))
       return;
     const timer = setTimeout(() => {
       retryTimers.delete(sessionID);
-      handleSessionIdle2(sessionID);
+      handleSessionIdle2(sessionID, resumed);
     }, retryDelayMs);
     timer.unref?.();
     retryTimers.set(sessionID, timer);
   }
-  async function handleSessionIdle2(sessionID) {
+  async function handleSessionIdle2(sessionID, resumed = false) {
+    if (controller.getGoal(sessionID)?.status !== "active") {
+      return;
+    }
+    try {
+      await syncGoalFromClient(options.projectDir, sessionID);
+    } catch {}
     const initial = controller.getGoal(sessionID);
     if (initial === null || initial.status !== "active") {
       return;
@@ -107952,7 +108003,7 @@ function createGoalHook(ctx, options) {
         controller.settle(sessionID, "blocked");
         return;
       }
-      const promptText = buildContinuationPrompt2(goal2);
+      const promptText = resumed ? buildResumePrompt(goal2) : buildContinuationPrompt2(goal2);
       const promptResult = await dispatchInternalPrompt({
         mode: "async",
         client: ctx.client,
@@ -107960,7 +108011,7 @@ function createGoalHook(ctx, options) {
         source: `${HOOK_NAME5}:idle-continuation`,
         settleMs: 150,
         queueBehavior: "defer",
-        dedupeKey: `goal:${goal2.id}:${goal2.turnsUsed}`,
+        dedupeKey: resumed ? `goal:${goal2.id}:resume:${goal2.updatedAt}` : `goal:${goal2.id}:${goal2.turnsUsed}`,
         input: {
           path: { id: sessionID },
           body: {
@@ -107971,7 +108022,7 @@ function createGoalHook(ctx, options) {
       if (promptResult.status === "dispatched" || promptResult.status === "failed" && isInternalPromptDispatchAccepted(promptResult)) {
         controller.noteContinuation(sessionID);
       } else if (promptResult.status === "reserved") {
-        scheduleRetry(sessionID);
+        scheduleRetry(sessionID, resumed);
       }
       if (promptResult.status === "failed" && !isInternalPromptDispatchAccepted(promptResult)) {
         console.warn(`[${HOOK_NAME5}] Idle continuation dispatch failed`, promptResult.error);
@@ -107980,6 +108031,9 @@ function createGoalHook(ctx, options) {
       inFlightContinuations.delete(sessionID);
     }
   }
+  registerGoalWake(options.projectDir, (sessionID) => {
+    handleSessionIdle2(sessionID, true);
+  });
   async function handleSessionDeleted(sessionID) {
     controller.clearGoal(sessionID);
   }
@@ -188959,6 +189013,8 @@ function goalMirror(goal2) {
 }
 var MIRROR_KEYS = ["id", "objective", "status", "tokenBudget", "tokensUsed", "turnsUsed", "statusReason", "driver"];
 var sameMirror = (left, right) => isRecord27(left) && MIRROR_KEYS.every((key) => (left[key] ?? null) === (right[key] ?? null));
+var USER_KEYS = ["status", "objective", "tokenBudget"];
+var userChanged = (mirror, written) => USER_KEYS.some((key) => (mirror[key] ?? null) !== (written[key] ?? null));
 function readGoals(projectDir) {
   const goals = new Map;
   const goalDir = join149(projectDir, ".omo", "goal");
@@ -188988,14 +189044,17 @@ function createGoalSync(input) {
   const controller = createGoalController({ projectDir: input.projectDir });
   const mirrored = new Map;
   const failing = new Set;
+  const written = new Map;
+  const running = new Map;
   const write = async (sessionID, metadata, goal2) => {
     await input.session.update({ sessionID, metadata: withGoal(metadata, goal2) });
   };
   const applyUserChanges = (sessionID, goal2, mirror) => {
     if (mirror.status !== goal2.status) {
-      if (mirror.status === "active")
+      if (mirror.status === "active") {
         controller.resumeGoal(sessionID);
-      else if (mirror.status === "paused")
+        wakeGoal(input.projectDir, sessionID);
+      } else if (mirror.status === "paused")
         controller.pauseGoal(sessionID);
       else if (mirror.status === "complete")
         controller.markComplete(sessionID);
@@ -189020,22 +189079,49 @@ function createGoalSync(input) {
     if (mirrored.get(sessionID) === goal2.id && (!mirror || mirror.id !== goal2.id)) {
       controller.clearGoal(sessionID);
       mirrored.delete(sessionID);
+      written.delete(sessionID);
       return;
     }
     if (mirror && mirror.id !== goal2.id && mirror.driver !== OMO_GOAL_DRIVER) {
       log2("[oh-my-openagent] goal replaces the OpenChamber goal of the session", { sessionID });
     }
-    if (mirror?.driver === OMO_GOAL_DRIVER && mirror.id === goal2.id && typeof mirror.updatedAt === "number" && mirror.updatedAt > goal2.updatedAt * 1000) {
-      goal2 = applyUserChanges(sessionID, goal2, mirror);
-      if (!goal2)
-        return;
+    if (mirror?.driver === OMO_GOAL_DRIVER && mirror.id === goal2.id) {
+      const last = written.get(sessionID);
+      const changed = last?.id === goal2.id ? userChanged(mirror, last) : typeof mirror.updatedAt === "number" && mirror.updatedAt > goal2.updatedAt * 1000;
+      if (changed) {
+        goal2 = applyUserChanges(sessionID, goal2, mirror);
+        if (!goal2)
+          return;
+      }
     }
     const desired = goalMirror(goal2);
     if (mirror?.driver === OMO_GOAL_DRIVER && mirror.id === goal2.id)
       mirrored.set(sessionID, goal2.id);
-    if (sameMirror(mirror, desired))
+    if (sameMirror(mirror, desired)) {
+      written.set(sessionID, desired);
       return;
+    }
     await write(sessionID, metadata, desired);
+    written.set(sessionID, desired);
+  };
+  const syncOne = (sessionID) => {
+    const previous = running.get(sessionID) ?? Promise.resolve();
+    const next = previous.then(() => {
+      const current = controller.getGoal(sessionID);
+      return current ? syncSession(sessionID, current) : undefined;
+    }, () => {
+      return;
+    }).then(() => {
+      return;
+    });
+    running.set(sessionID, next);
+    next.finally(() => {
+      if (running.get(sessionID) === next)
+        running.delete(sessionID);
+    }).catch(() => {
+      return;
+    });
+    return next;
   };
   const unmirror = async (sessionID, goalID) => {
     const metadata = metadataOf(await input.session.get({ sessionID }));
@@ -189043,11 +189129,12 @@ function createGoalSync(input) {
     if (mirror?.driver === OMO_GOAL_DRIVER && mirror.id === goalID)
       await write(sessionID, metadata, null);
     mirrored.delete(sessionID);
+    written.delete(sessionID);
   };
-  return async () => {
+  const syncAll = async () => {
     const goals = readGoals(input.projectDir);
-    for (const [sessionID, goal2] of goals) {
-      await syncSession(sessionID, goal2).then(() => {
+    for (const sessionID of goals.keys()) {
+      await syncOne(sessionID).then(() => {
         failing.delete(sessionID);
       }, (error) => {
         if (failing.has(sessionID))
@@ -189064,6 +189151,9 @@ function createGoalSync(input) {
       });
     }
   };
+  return Object.assign(syncAll, {
+    session: (sessionID) => syncOne(sessionID)
+  });
 }
 
 // packages/omo-opencode/src/v2/project-config.ts
@@ -189615,7 +189705,12 @@ async function setupOpenCodeV2(ctx, deps) {
     control: () => getBackgroundTaskControl(v1Input.directory),
     ...notifier ? { notify: notifier } : {}
   });
-  const stopGoalSync = syncGoals ? startSerialLoop("goal sync", syncGoals, 2000, 1e4) : () => {};
+  const stopGoalLoop = syncGoals ? startSerialLoop("goal sync", syncGoals, 2000, 1e4) : () => {};
+  const stopGoalBridge = syncGoals ? registerGoalSync(v1Input.directory, syncGoals.session) : () => {};
+  const stopGoalSync = () => {
+    stopGoalLoop();
+    stopGoalBridge();
+  };
   const dispose = hooks2.dispose;
   return async () => {
     stopEvents();
