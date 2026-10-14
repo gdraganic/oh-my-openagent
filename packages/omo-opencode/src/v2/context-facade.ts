@@ -3,7 +3,7 @@ import type { Plugin } from "@opencode/plugin"
 import { log } from "../shared/logger"
 import { createAdapterState, type AdapterState } from "./adapter-state"
 import { activeSessionStatusMap, agentsFrom, configData, modelsFrom, providersFrom, serveOrigin, sessionCatalog, sessionStatusMap, skillsFrom } from "./catalog"
-import { listenPortOf } from "./serve-http"
+import { listenPortOf, listModels } from "./serve-http"
 import {
   childSessions,
   createSession,
@@ -39,6 +39,20 @@ export type FacadeDeps = {
  * V1 hook code calls `ctx.client` with the OpenAPI `{ path, body }` shape
  * and reads `{ data }`. This facade speaks that shape on top of OpenCode 2.
  */
+function rowsOf(value: unknown): unknown[] {
+  if (Array.isArray(value)) return value
+  if (value && typeof value === "object" && Array.isArray((value as { data?: unknown }).data)) return (value as { data: unknown[] }).data
+  return []
+}
+
+function modelKey(model: unknown): string {
+  if (!model || typeof model !== "object") return ""
+  const record = model as Record<string, unknown>
+  const provider = record.providerID ?? record.provider
+  const id = record.modelID ?? record.id
+  return `${String(provider)}/${String(id)}`
+}
+
 export function createV1PluginInput(ctx: V2Context, deps: FacadeDeps = {}): {
   directory: string
   worktree: string
@@ -70,6 +84,19 @@ export function createV1PluginInput(ctx: V2Context, deps: FacadeDeps = {}): {
   }
 
   const origin = () => serveOrigin(argv, listenPort)
+
+  const modelsWithServiceTiers = async (): Promise<unknown[]> => {
+    const registry = rowsOf(await ctx.model.list())
+    try {
+      const resolvedOrigin = await origin()
+      if (!resolvedOrigin) return registry
+      const seen = new Set(registry.map(modelKey))
+      const extra = (await listModels(resolvedOrigin, directory, fetchImpl)).filter((model) => !seen.has(modelKey(model)))
+      return [...registry, ...extra]
+    } catch {
+      return registry
+    }
+  }
 
   const session: Record<string, unknown> = {
     async get(input: unknown) {
@@ -189,7 +216,7 @@ export function createV1PluginInput(ctx: V2Context, deps: FacadeDeps = {}): {
       },
       provider: {
         async list() {
-          return providersFrom(await ctx.provider.list(), await ctx.model.list())
+          return providersFrom(await ctx.provider.list(), await modelsWithServiceTiers())
         },
       },
       model: {
