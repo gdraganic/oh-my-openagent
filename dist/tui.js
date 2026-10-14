@@ -2448,6 +2448,56 @@ var init_internal_initiator_marker = __esm(() => {
   INTERNAL_NOREPLY_MARKER_DETECT_PATTERN = /<!--\s*OMO_INTERNAL_NOREPLY\s*-->/;
 });
 
+// packages/utils/src/migration/agent-names.ts
+var AGENT_NAME_MAP, BUILTIN_AGENT_NAMES;
+var init_agent_names = __esm(() => {
+  AGENT_NAME_MAP = {
+    omo: "sisyphus",
+    OmO: "sisyphus",
+    Sisyphus: "sisyphus",
+    "Sisyphus (Ultraworker)": "sisyphus",
+    sisyphus: "sisyphus",
+    "Hephaestus (Deep Agent)": "hephaestus",
+    "OmO-Plan": "prometheus",
+    "omo-plan": "prometheus",
+    "Planner-Sisyphus": "prometheus",
+    "planner-sisyphus": "prometheus",
+    "Prometheus - Plan Builder": "prometheus",
+    "Prometheus (Plan Builder)": "prometheus",
+    prometheus: "prometheus",
+    "orchestrator-sisyphus": "atlas",
+    Atlas: "atlas",
+    "Atlas (Plan Executor)": "atlas",
+    atlas: "atlas",
+    "plan-consultant": "metis",
+    "Metis - Plan Consultant": "metis",
+    "Metis (Plan Consultant)": "metis",
+    metis: "metis",
+    "Momus - Plan Critic": "momus",
+    "Momus (Plan Critic)": "momus",
+    momus: "momus",
+    "Sisyphus-Junior": "sisyphus-junior",
+    "sisyphus-junior": "sisyphus-junior",
+    build: "build",
+    oracle: "oracle",
+    librarian: "librarian",
+    explore: "explore",
+    "multimodal-looker": "multimodal-looker"
+  };
+  BUILTIN_AGENT_NAMES = new Set([
+    "sisyphus",
+    "oracle",
+    "librarian",
+    "explore",
+    "multimodal-looker",
+    "metis",
+    "momus",
+    "prometheus",
+    "atlas",
+    "build"
+  ]);
+});
+
 // packages/utils/src/migration/agent-category.ts
 function configureMigrationCategoryDefaults(defaults) {
   categoryDefaults = defaults ?? {};
@@ -2899,6 +2949,9 @@ function getActiveReservation(sessionID) {
   pruneExpiredReservations();
   return promptAsyncReservations.get(sessionID);
 }
+function reservedDispatchResult(reservation) {
+  return reservation.expiresAt === undefined ? { status: "reserved", reservedBy: reservation.source } : { status: "reserved", reservedBy: reservation.source, expiresAt: reservation.expiresAt };
+}
 function setPromptReservation(sessionID, reservation) {
   promptAsyncReservations.set(sessionID, reservation);
 }
@@ -2948,7 +3001,7 @@ async function dispatchAfterSessionIdle(args) {
       reservedBy: existing.source,
       reservedAgeMs: Date.now() - existing.reservedAt
     });
-    return { status: "reserved", reservedBy: existing.source };
+    return reservedDispatchResult(existing);
   }
   const reservation = {
     source,
@@ -3340,20 +3393,20 @@ var init_agent_model_requirements = __esm(() => {
       fallbackChain: [
         { providers: ["kimi-for-coding"], model: "kimi-for-coding-highspeed", variant: "off" },
         { providers: ["openai", "chatgpt-subscription"], model: "gpt-6-luna-fast", variant: "low" },
+        { providers: ["anthropic", "github-copilot"], model: "claude-haiku-5-5", variant: "medium" },
         { providers: ["deepseek"], model: "deepseek-flash", variant: "max" },
         { providers: ["opencode-go", "bailian-coding-plan"], model: "qwen3.7-plus" },
-        { providers: ["opencode-go"], model: "minimax-m2.7" },
-        { providers: ["anthropic", "github-copilot"], model: "claude-haiku-4-5" }
+        { providers: ["opencode-go"], model: "minimax-m2.7" }
       ]
     },
     explore: {
       fallbackChain: [
         { providers: ["kimi-for-coding"], model: "kimi-for-coding-highspeed", variant: "off" },
         { providers: ["openai", "chatgpt-subscription"], model: "gpt-6-luna-fast", variant: "low" },
+        { providers: ["anthropic", "github-copilot"], model: "claude-haiku-5-5", variant: "medium" },
         { providers: ["deepseek"], model: "deepseek-flash", variant: "max" },
         { providers: ["opencode-go", "bailian-coding-plan"], model: "qwen3.7-plus" },
-        { providers: ["opencode-go"], model: "minimax-m2.7" },
-        { providers: ["anthropic", "github-copilot"], model: "claude-haiku-4-5" }
+        { providers: ["opencode-go"], model: "minimax-m2.7" }
       ]
     },
     "multimodal-looker": {
@@ -3487,12 +3540,14 @@ var init_category_model_requirements = __esm(() => {
     },
     "deep-low": {
       fallbackChain: [
-        { providers: ["openai", "chatgpt-subscription"], model: "gpt-5.6-sol-fast", variant: "medium" },
+        { providers: ["openai", "chatgpt-subscription"], model: "gpt-6.1-sol", variant: "medium" },
+        { providers: ["openai", "chatgpt-subscription"], model: "gpt-6.1-sol-fast", variant: "medium" },
         {
           providers: ["openai", "chatgpt-subscription", "github-copilot", "opencode"],
           model: "gpt-5.6-sol",
           variant: "medium"
-        }
+        },
+        { providers: ["openai", "chatgpt-subscription"], model: "gpt-5.6-sol-fast", variant: "medium" }
       ]
     },
     "deep-high": {
@@ -3500,7 +3555,7 @@ var init_category_model_requirements = __esm(() => {
         {
           providers: ["openai", "chatgpt-subscription", "github-copilot", "opencode"],
           model: "gpt-6-astra",
-          variant: "xhigh"
+          variant: "high"
         }
       ]
     },
@@ -3526,6 +3581,11 @@ var init_category_model_requirements = __esm(() => {
     quick: {
       fallbackChain: [
         { providers: ["openai", "chatgpt-subscription"], model: "gpt-6-luna-fast", variant: "low" },
+        {
+          providers: ["anthropic", "anthropic-api", "github-copilot"],
+          model: "claude-haiku-5-5",
+          variant: "medium"
+        },
         { providers: ["deepseek"], model: "deepseek-flash", variant: "off" },
         {
           providers: ["qwen-token-plan", "alibaba-token-plan", "bailian-coding-plan"],
@@ -3535,21 +3595,24 @@ var init_category_model_requirements = __esm(() => {
         { providers: ["opencode-go"], model: "minimax-m3", variant: "max" },
         { providers: ["opencode-go"], model: "minimax-m2.7", variant: "max" },
         { providers: ["xai"], model: "grok-4.20-0309-non-reasoning" },
-        {
-          providers: ["anthropic", "anthropic-api", "github-copilot"],
-          model: "claude-haiku-4-5",
-          variant: "off"
-        }
+        { providers: ["zai-coding-plan"], model: "glm-5.3-flash", variant: "low" },
+        { providers: ["xiaomi"], model: "mimo-v2.6-flash", variant: "low" }
       ]
     },
     "unspecified-low": {
       fallbackChain: [
+        {
+          providers: ["anthropic", "anthropic-api", "github-copilot", "opencode"],
+          model: "claude-sonnet-5-5",
+          variant: "medium"
+        },
         { providers: ["xiaomi", "opencode-go"], model: "mimo-v2.6-pro", variant: "max" },
         { providers: ["xai", "github-copilot", "opencode-go"], model: "grok-4.7", variant: "xhigh" },
+        { providers: ["openai", "chatgpt-subscription"], model: "gpt-6.1-sol", variant: "medium" },
         {
           providers: ["openai", "chatgpt-subscription", "github-copilot", "opencode"],
-          model: "gpt-5.6-terra",
-          variant: "high"
+          model: "gpt-5.6-sol",
+          variant: "medium"
         },
         {
           providers: ["anthropic", "anthropic-api", "github-copilot", "opencode"],
@@ -3602,6 +3665,67 @@ var init_category_model_requirements = __esm(() => {
 var init_model_requirements = __esm(() => {
   init_agent_model_requirements();
   init_category_model_requirements();
+});
+
+// packages/model-core/src/reasoning-level.ts
+function isReasoningLevelOrAuto(value) {
+  return REASONING_LEVEL_OR_AUTO_SET.has(value);
+}
+function splitReasoningSuffix(model, options) {
+  if (typeof model !== "string")
+    return { base: "" };
+  const trimmed = model.trim();
+  if (!trimmed)
+    return { base: "" };
+  const separatorIndex = trimmed.lastIndexOf(":");
+  if (separatorIndex === -1)
+    return { base: trimmed };
+  const base = trimmed.slice(0, separatorIndex).trim();
+  const token = trimmed.slice(separatorIndex + 1).trim().toLowerCase();
+  if (!base || !isReasoningLevelOrAuto(token))
+    return { base: trimmed };
+  if (token === "max" && !(options?.allowMaxSuffix ?? base.includes("/")))
+    return { base: trimmed };
+  return { base, level: token };
+}
+var REASONING_LEVELS, REASONING_AUTO = "auto", REASONING_LEVEL_SET, REASONING_LEVEL_OR_AUTO_SET;
+var init_reasoning_level = __esm(() => {
+  REASONING_LEVELS = ["off", "minimal", "low", "medium", "high", "xhigh", "max"];
+  REASONING_LEVEL_SET = new Set(REASONING_LEVELS);
+  REASONING_LEVEL_OR_AUTO_SET = new Set([...REASONING_LEVELS, REASONING_AUTO]);
+});
+
+// packages/model-core/src/model-string-parser.ts
+function parseVariantFromModelID(rawModelID, options) {
+  if (typeof rawModelID !== "string") {
+    return { modelID: "" };
+  }
+  const trimmedModelID = rawModelID.trim();
+  if (!trimmedModelID) {
+    return { modelID: "" };
+  }
+  const parenthesizedVariant = trimmedModelID.match(/^(.*)\(([^()]+)\)\s*$/);
+  if (parenthesizedVariant) {
+    const modelID = parenthesizedVariant[1]?.trim() ?? "";
+    const variant = parenthesizedVariant[2]?.trim();
+    return variant ? { modelID, variant } : { modelID };
+  }
+  const suffixedModel = splitReasoningSuffix(trimmedModelID, options);
+  if (suffixedModel.level) {
+    return { modelID: suffixedModel.base, variant: suffixedModel.level };
+  }
+  const spaceVariant = trimmedModelID.match(/^(.*\S)\s+([a-z][a-z0-9_-]*)$/i);
+  if (spaceVariant) {
+    const modelID = spaceVariant[1]?.trim() ?? "";
+    const variant = spaceVariant[2]?.trim().toLowerCase();
+    if (variant) {
+      return { modelID, variant };
+    }
+  }
+  return { modelID: trimmedModelID };
+}
+var init_model_string_parser = __esm(() => {
+  init_reasoning_level();
 });
 
 // packages/model-core/src/model-family-detectors.ts
@@ -3680,7 +3804,7 @@ var init_model_capability_aliases = __esm(() => {
       description: "Normalizes OpenCode's OpenAI GPT fast service-tier IDs to canonical snapshot IDs.",
       providerIDs: ["openai"],
       allowedSubproviderHosts: ["vercel"],
-      match: (normalizedModelID) => /^(?:gpt-5\.6-(?:sol|terra|luna)|gpt-6-(?:astra|sol|luna))-fast$/.test(normalizedModelID),
+      match: (normalizedModelID) => /^(?:gpt-5\.6-(?:sol|terra|luna)|gpt-6-(?:astra|sol|luna)|gpt-6\.1-sol)-fast$/.test(normalizedModelID),
       canonicalize: (normalizedModelID) => normalizedModelID.slice(0, -"-fast".length)
     },
     {
@@ -3702,67 +3826,6 @@ var init_model_capability_aliases = __esm(() => {
 function normalizeModelID(modelID) {
   return modelID.replace(/\.(\d+)/g, "-$1");
 }
-
-// packages/model-core/src/reasoning-level.ts
-function isReasoningLevelOrAuto(value) {
-  return REASONING_LEVEL_OR_AUTO_SET.has(value);
-}
-function splitReasoningSuffix(model, options) {
-  if (typeof model !== "string")
-    return { base: "" };
-  const trimmed = model.trim();
-  if (!trimmed)
-    return { base: "" };
-  const separatorIndex = trimmed.lastIndexOf(":");
-  if (separatorIndex === -1)
-    return { base: trimmed };
-  const base = trimmed.slice(0, separatorIndex).trim();
-  const token = trimmed.slice(separatorIndex + 1).trim().toLowerCase();
-  if (!base || !isReasoningLevelOrAuto(token))
-    return { base: trimmed };
-  if (token === "max" && !(options?.allowMaxSuffix ?? base.includes("/")))
-    return { base: trimmed };
-  return { base, level: token };
-}
-var REASONING_LEVELS, REASONING_AUTO = "auto", REASONING_LEVEL_SET, REASONING_LEVEL_OR_AUTO_SET;
-var init_reasoning_level = __esm(() => {
-  REASONING_LEVELS = ["off", "minimal", "low", "medium", "high", "xhigh", "max"];
-  REASONING_LEVEL_SET = new Set(REASONING_LEVELS);
-  REASONING_LEVEL_OR_AUTO_SET = new Set([...REASONING_LEVELS, REASONING_AUTO]);
-});
-
-// packages/model-core/src/model-string-parser.ts
-function parseVariantFromModelID(rawModelID, options) {
-  if (typeof rawModelID !== "string") {
-    return { modelID: "" };
-  }
-  const trimmedModelID = rawModelID.trim();
-  if (!trimmedModelID) {
-    return { modelID: "" };
-  }
-  const parenthesizedVariant = trimmedModelID.match(/^(.*)\(([^()]+)\)\s*$/);
-  if (parenthesizedVariant) {
-    const modelID = parenthesizedVariant[1]?.trim() ?? "";
-    const variant = parenthesizedVariant[2]?.trim();
-    return variant ? { modelID, variant } : { modelID };
-  }
-  const suffixedModel = splitReasoningSuffix(trimmedModelID, options);
-  if (suffixedModel.level) {
-    return { modelID: suffixedModel.base, variant: suffixedModel.level };
-  }
-  const spaceVariant = trimmedModelID.match(/^(.*\S)\s+([a-z][a-z0-9_-]*)$/i);
-  if (spaceVariant) {
-    const modelID = spaceVariant[1]?.trim() ?? "";
-    const variant = spaceVariant[2]?.trim().toLowerCase();
-    if (variant) {
-      return { modelID, variant };
-    }
-  }
-  return { modelID: trimmedModelID };
-}
-var init_model_string_parser = __esm(() => {
-  init_reasoning_level();
-});
 
 // packages/model-core/src/model-capability-heuristics.ts
 function detectHeuristicModelFamily(modelID) {
@@ -3811,6 +3874,14 @@ var init_model_capability_heuristics = __esm(() => {
     {
       family: "gpt-6-astra",
       pattern: /gpt-6-astra/,
+      variants: ["low", "medium", "high", "xhigh", "max"],
+      reasoningEfforts: ["low", "medium", "high", "xhigh", "max"],
+      reasoningEffortAliases: { none: "low", minimal: "low" },
+      supportsTemperature: false
+    },
+    {
+      family: "gpt-6.1-sol",
+      pattern: /gpt-6-1-sol/,
       variants: ["low", "medium", "high", "xhigh", "max"],
       reasoningEfforts: ["low", "medium", "high", "xhigh", "max"],
       reasoningEffortAliases: { none: "low", minimal: "low" },
@@ -3923,8 +3994,17 @@ var init_model_resolver = () => {};
 // packages/model-core/src/fallback-chain-from-models.ts
 var init_fallback_chain_from_models = () => {};
 
+// packages/model-core/src/runtime-fallback-auto-retry-signal.ts
+var init_runtime_fallback_auto_retry_signal = () => {};
+
+// packages/model-core/src/runtime-fallback-error-shape.ts
+var init_runtime_fallback_error_shape = () => {};
+
+// packages/model-core/src/runtime-fallback-error-classifier.ts
+var init_runtime_fallback_error_classifier = () => {};
+
 // packages/model-core/src/model-error-classifier.ts
-var RETRYABLE_ERROR_NAMES, STOP_ERROR_NAMES, NON_RETRYABLE_ERROR_NAMES;
+var RETRYABLE_ERROR_NAMES, NON_RETRYABLE_ERROR_NAMES;
 var init_model_error_classifier = __esm(() => {
   RETRYABLE_ERROR_NAMES = new Set([
     "providermodelnotfounderror",
@@ -3932,11 +4012,6 @@ var init_model_error_classifier = __esm(() => {
     "modelunavailableerror",
     "providerconnectionerror",
     "authenticationerror"
-  ]);
-  STOP_ERROR_NAMES = new Set([
-    "quotaexceedederror",
-    "insufficientcreditserror",
-    "freeusagelimiterror"
   ]);
   NON_RETRYABLE_ERROR_NAMES = new Set([
     "messageabortederror",
@@ -3948,15 +4023,6 @@ var init_model_error_classifier = __esm(() => {
     "usererror"
   ]);
 });
-
-// packages/model-core/src/runtime-fallback-auto-retry-signal.ts
-var init_runtime_fallback_auto_retry_signal = () => {};
-
-// packages/model-core/src/runtime-fallback-error-shape.ts
-var init_runtime_fallback_error_shape = () => {};
-
-// packages/model-core/src/runtime-fallback-error-classifier.ts
-var init_runtime_fallback_error_classifier = () => {};
 
 // packages/model-core/src/provider-exhaustion-fallback-policy.ts
 var init_provider_exhaustion_fallback_policy = () => {};
@@ -4058,6 +4124,36 @@ var init_supplemental_entries = __esm(() => {
       limit: {
         context: 1050000,
         input: 922000,
+        output: 128000
+      }
+    },
+    "gpt-6.1-sol": {
+      id: "gpt-6.1-sol",
+      family: "gpt",
+      reasoning: true,
+      temperature: false,
+      toolCall: true,
+      modalities: {
+        input: ["text", "image"],
+        output: ["text"]
+      },
+      limit: {
+        context: 400000,
+        output: 128000
+      }
+    },
+    "gpt-6.1-sol-fast": {
+      id: "gpt-6.1-sol-fast",
+      family: "gpt",
+      reasoning: true,
+      temperature: false,
+      toolCall: true,
+      modalities: {
+        input: ["text", "image"],
+        output: ["text"]
+      },
+      limit: {
+        context: 400000,
         output: 128000
       }
     },
@@ -4261,6 +4357,36 @@ var init_supplemental_entries = __esm(() => {
       limit: {
         context: 500000,
         output: 32768
+      }
+    },
+    "claude-sonnet-5-5": {
+      id: "claude-sonnet-5-5",
+      family: "claude-sonnet",
+      reasoning: true,
+      temperature: false,
+      toolCall: true,
+      modalities: {
+        input: ["text", "image", "pdf"],
+        output: ["text"]
+      },
+      limit: {
+        context: 1e6,
+        output: 128000
+      }
+    },
+    "anthropic/claude-sonnet-5-5": {
+      id: "anthropic/claude-sonnet-5-5",
+      family: "claude-sonnet",
+      reasoning: true,
+      temperature: false,
+      toolCall: true,
+      modalities: {
+        input: ["text", "image", "pdf"],
+        output: ["text"]
+      },
+      limit: {
+        context: 1e6,
+        output: 128000
       }
     },
     "grok-4.7": {
@@ -5209,10 +5335,10 @@ You are working on tasks that don't fit specific categories but require moderate
 </Category_Context>`, UNSPECIFIED_LOW_CATEGORY_CALLER_GUIDANCE = `<Selection_Gate>Use only when no specialist category fits, effort is moderate, and scope stays within a few files/modules. Prefer any matching specialist category.</Selection_Gate>
 <Caller_Warning>Provide explicit must-do steps, forbidden scope, and concrete success criteria.</Caller_Warning>`, UNSPECIFIED_HIGH_CATEGORY_PROMPT_APPEND = `<Category_Context>
 You are working on tasks that don't fit specific categories but require substantial effort.
-</Category_Context>`, UNSPECIFIED_HIGH_CATEGORY_CALLER_GUIDANCE = `<Selection_Gate>Use only when no specialist category fits and substantial effort spans systems/modules with broad impact. Use unspecified-low for contained moderate work.</Selection_Gate>`, DEEP_LOW_CATEGORY_CALLER_GUIDANCE = `<Selection_Gate>Route here when one subsystem plus its callers holds the mechanism and the evidence, once read, leaves one right answer. Wide but mechanical work belongs here or in a quick batch. When unsure, choose deep-low: a misrouted child returns \`ESCALATE: deep-high\` after one cheap attempt; re-spawn the same brief as deep-high with its findings.</Selection_Gate>`, DEEP_HIGH_CATEGORY_CALLER_GUIDANCE = `<Selection_Gate>Route here only when you can name the decision evidence cannot settle: a trade-off with no single right answer, a contract change crossing a package or process boundary, a mechanism with no in-repo pattern to copy, or correctness argued from invariants rather than observed in a test. Wide scope with easy decisions is deep-low or unspecified-high; reasoning as the deliverable is ultrabrain.</Selection_Gate>`, DEEP_LOW_GATE_MODELS, DEEP_HIGH_GATE_MODEL = "gpt-6-astra", OPENAI_CATEGORIES;
+</Category_Context>`, UNSPECIFIED_HIGH_CATEGORY_CALLER_GUIDANCE = `<Selection_Gate>Use only when no specialist category fits and substantial effort spans systems/modules with broad impact. Use unspecified-low for contained moderate work.</Selection_Gate>`, DEEP_LOW_CATEGORY_CALLER_GUIDANCE = `<Selection_Gate>Of the two deep lanes this is the default: the child settles its decisions from what it reads. When unsure, choose deep-low; a misrouted child returns \`ESCALATE: deep-high\` after one cheap attempt, and you re-spawn the same brief as deep-high with its findings.</Selection_Gate>`, DEEP_HIGH_CATEGORY_CALLER_GUIDANCE = `<Selection_Gate>Route here only when you can name the decision evidence cannot settle: a trade-off with no single right answer, a contract change crossing a package or process boundary, a mechanism with no in-repo pattern to copy, or correctness argued from invariants rather than observed in a test. Wide scope with easy decisions is deep-low or unspecified-high; reasoning as the deliverable is ultrabrain.</Selection_Gate>`, DEEP_LOW_GATE_MODELS, DEEP_HIGH_GATE_MODEL = "gpt-6-astra", OPENAI_CATEGORIES;
 var init_openai_categories = __esm(() => {
   init_types();
-  DEEP_LOW_GATE_MODELS = ["gpt-5.6-sol-fast", "gpt-5.6-sol"];
+  DEEP_LOW_GATE_MODELS = ["gpt-6.1-sol", "gpt-6.1-sol-fast", "gpt-5.6-sol-fast", "gpt-5.6-sol"];
   OPENAI_CATEGORIES = [
     {
       name: "ultrabrain",
@@ -5223,8 +5349,8 @@ var init_openai_categories = __esm(() => {
     },
     {
       name: "deep-low",
-      config: { model: "openai/gpt-5.6-sol-fast", variant: "medium" },
-      description: "Default deep lane: one goal, one deliverable, decisions the child can settle from what it reads. **3D graphics, computer/browser use, CAPTCHA, multimodal, backend, logic, and algorithm work is routed here.** Multiple goals fan out as parallel calls.",
+      config: { model: "openai/gpt-6.1-sol", variant: "medium" },
+      description: "Default deep lane: one goal, one deliverable, decisions the child can settle from what it reads; preferred over deep-high for 3D graphics, computer/browser use, CAPTCHA, multimodal, backend, logic, and algorithm work. Multiple goals fan out as parallel calls.",
       callerGuidance: DEEP_LOW_CATEGORY_CALLER_GUIDANCE,
       promptAppend: DEEP_LOW_CATEGORY_PROMPT_APPEND,
       resolvePromptAppend: resolveDeepLowCategoryPromptAppend,
@@ -5232,7 +5358,7 @@ var init_openai_categories = __esm(() => {
     },
     {
       name: "deep-high",
-      config: { model: "openai/gpt-6-astra", variant: "xhigh" },
+      config: { model: "openai/gpt-6-astra", variant: "high" },
       description: "Escalation deep lane: a goal whose central decision cannot be settled from evidence alone. Same one-goal, one-deliverable contract as deep-low.",
       callerGuidance: DEEP_HIGH_CATEGORY_CALLER_GUIDANCE,
       promptAppend: DEEP_HIGH_CATEGORY_PROMPT_APPEND,
@@ -5248,7 +5374,7 @@ var init_openai_categories = __esm(() => {
     },
     {
       name: "unspecified-low",
-      config: { model: "xiaomi/mimo-v2.6-pro", variant: "max" },
+      config: { model: "anthropic/claude-sonnet-5-5", variant: "medium" },
       description: "Tasks that don't fit other categories, low effort required",
       callerGuidance: UNSPECIFIED_LOW_CATEGORY_CALLER_GUIDANCE,
       promptAppend: UNSPECIFIED_LOW_CATEGORY_PROMPT_APPEND
@@ -5299,6 +5425,7 @@ var init_constants = __esm(() => {
 var init_migration2 = __esm(() => {
   init_agent_category();
   init_constants();
+  init_agent_names();
   configureMigrationCategoryDefaults(DEFAULT_CATEGORIES);
 });
 
@@ -60283,6 +60410,325 @@ var init_model_capabilities_generated = __esm(() => {
           context: 1e6,
           output: 128000
         }
+      },
+      "glm-5.3-flash": {
+        id: "glm-5.3-flash",
+        family: "glm-flash",
+        reasoning: true,
+        temperature: true,
+        toolCall: true,
+        modalities: {
+          input: [
+            "text",
+            "image",
+            "video"
+          ],
+          output: [
+            "text"
+          ]
+        },
+        limit: {
+          context: 1048576,
+          output: 1048576
+        }
+      },
+      "zai/glm-5.3-flash": {
+        id: "zai/glm-5.3-flash",
+        family: "glm-flash",
+        reasoning: true,
+        temperature: true,
+        toolCall: true,
+        modalities: {
+          input: [
+            "text",
+            "image",
+            "video",
+            "pdf"
+          ],
+          output: [
+            "text"
+          ]
+        },
+        limit: {
+          context: 1e6,
+          output: 131072
+        }
+      },
+      "mimo-v2.6-flash": {
+        id: "mimo-v2.6-flash",
+        family: "mimo",
+        reasoning: true,
+        temperature: true,
+        toolCall: true,
+        modalities: {
+          input: [
+            "text",
+            "image",
+            "audio",
+            "video"
+          ],
+          output: [
+            "text"
+          ]
+        },
+        limit: {
+          context: 1048576,
+          output: 131072
+        }
+      },
+      "xiaomi/mimo-v2.6-flash": {
+        id: "xiaomi/mimo-v2.6-flash",
+        family: "mimo",
+        reasoning: true,
+        temperature: true,
+        toolCall: true,
+        modalities: {
+          input: [
+            "text",
+            "image",
+            "audio",
+            "video"
+          ],
+          output: [
+            "text"
+          ]
+        },
+        limit: {
+          context: 1048576,
+          input: 1048576,
+          output: 131072
+        }
+      },
+      "claude-haiku-5-5": {
+        id: "claude-haiku-5-5",
+        family: "claude-haiku",
+        reasoning: true,
+        temperature: false,
+        toolCall: true,
+        modalities: {
+          input: [
+            "text",
+            "image",
+            "pdf"
+          ],
+          output: [
+            "text"
+          ]
+        },
+        limit: {
+          context: 1e6,
+          output: 128000
+        }
+      },
+      "claude-haiku-5-5@default": {
+        id: "claude-haiku-5-5@default",
+        family: "claude-haiku",
+        reasoning: true,
+        temperature: false,
+        toolCall: true,
+        modalities: {
+          input: [
+            "text",
+            "image",
+            "pdf"
+          ],
+          output: [
+            "text"
+          ]
+        },
+        limit: {
+          context: 1e6,
+          output: 128000
+        }
+      },
+      "au.anthropic.claude-haiku-5-5": {
+        id: "au.anthropic.claude-haiku-5-5",
+        family: "claude-haiku",
+        reasoning: true,
+        temperature: false,
+        toolCall: true,
+        modalities: {
+          input: [
+            "text",
+            "image",
+            "pdf"
+          ],
+          output: [
+            "text"
+          ]
+        },
+        limit: {
+          context: 1e6,
+          output: 128000
+        }
+      },
+      "anthropic.claude-haiku-5-5": {
+        id: "anthropic.claude-haiku-5-5",
+        family: "claude-haiku",
+        reasoning: true,
+        temperature: false,
+        toolCall: true,
+        modalities: {
+          input: [
+            "text",
+            "image",
+            "pdf"
+          ],
+          output: [
+            "text"
+          ]
+        },
+        limit: {
+          context: 1e6,
+          output: 128000
+        }
+      },
+      "eu.anthropic.claude-haiku-5-5": {
+        id: "eu.anthropic.claude-haiku-5-5",
+        family: "claude-haiku",
+        reasoning: true,
+        temperature: false,
+        toolCall: true,
+        modalities: {
+          input: [
+            "text",
+            "image",
+            "pdf"
+          ],
+          output: [
+            "text"
+          ]
+        },
+        limit: {
+          context: 1e6,
+          output: 128000
+        }
+      },
+      "global.anthropic.claude-haiku-5-5": {
+        id: "global.anthropic.claude-haiku-5-5",
+        family: "claude-haiku",
+        reasoning: true,
+        temperature: false,
+        toolCall: true,
+        modalities: {
+          input: [
+            "text",
+            "image",
+            "pdf"
+          ],
+          output: [
+            "text"
+          ]
+        },
+        limit: {
+          context: 1e6,
+          output: 128000
+        }
+      },
+      "jp.anthropic.claude-haiku-5-5": {
+        id: "jp.anthropic.claude-haiku-5-5",
+        family: "claude-haiku",
+        reasoning: true,
+        temperature: false,
+        toolCall: true,
+        modalities: {
+          input: [
+            "text",
+            "image",
+            "pdf"
+          ],
+          output: [
+            "text"
+          ]
+        },
+        limit: {
+          context: 1e6,
+          output: 128000
+        }
+      },
+      "us.anthropic.claude-haiku-5-5": {
+        id: "us.anthropic.claude-haiku-5-5",
+        family: "claude-haiku",
+        reasoning: true,
+        temperature: false,
+        toolCall: true,
+        modalities: {
+          input: [
+            "text",
+            "image",
+            "pdf"
+          ],
+          output: [
+            "text"
+          ]
+        },
+        limit: {
+          context: 1e6,
+          output: 128000
+        }
+      },
+      "anthropic/claude-haiku-5-5": {
+        id: "anthropic/claude-haiku-5-5",
+        family: "claude-haiku",
+        reasoning: true,
+        temperature: false,
+        toolCall: true,
+        modalities: {
+          input: [
+            "text",
+            "image"
+          ],
+          output: [
+            "text"
+          ]
+        },
+        limit: {
+          context: 1e6,
+          output: 128000
+        }
+      },
+      "claude-haiku-5.5": {
+        id: "claude-haiku-5.5",
+        family: "claude-haiku",
+        reasoning: true,
+        temperature: false,
+        toolCall: true,
+        modalities: {
+          input: [
+            "text",
+            "image",
+            "pdf"
+          ],
+          output: [
+            "text"
+          ]
+        },
+        limit: {
+          context: 1e6,
+          output: 128000
+        }
+      },
+      "anthropic/claude-haiku-5.5": {
+        id: "anthropic/claude-haiku-5.5",
+        family: "claude-haiku",
+        reasoning: true,
+        temperature: false,
+        toolCall: true,
+        modalities: {
+          input: [
+            "text",
+            "image",
+            "pdf"
+          ],
+          output: [
+            "text"
+          ]
+        },
+        limit: {
+          context: 1e6,
+          input: 1e6,
+          output: 128000
+        }
       }
     }
   };
@@ -63208,8 +63654,8 @@ var init_claude_model_mapper = __esm(() => {
   init_model_normalization2();
   CLAUDE_CODE_ALIAS_MAP = new Map([
     ["sonnet", `${ANTHROPIC_PREFIX}claude-sonnet-4-6`],
-    ["opus", `${ANTHROPIC_PREFIX}claude-opus-4-8`],
-    ["haiku", `${ANTHROPIC_PREFIX}claude-haiku-4-5`]
+    ["opus", `${ANTHROPIC_PREFIX}claude-opus-5-5`],
+    ["haiku", `${ANTHROPIC_PREFIX}claude-haiku-5-5`]
   ]);
 });
 
@@ -63330,115 +63776,6 @@ var init_log_legacy_plugin_startup_warning = __esm(() => {
   init_plugin_identity();
 });
 
-// packages/omo-opencode/src/shared/legacy-workspace-migration.ts
-var init_legacy_workspace_migration = __esm(() => {
-  init_logger2();
-});
-// packages/omo-opencode/src/shared/model-string-parser.ts
-var init_model_string_parser2 = () => {};
-
-// packages/omo-opencode/src/shared/excluded-dirs.ts
-var EXCLUDED_DIR_NAMES, EXCLUDED_DIRS;
-var init_excluded_dirs = __esm(() => {
-  EXCLUDED_DIR_NAMES = [
-    "node_modules",
-    ".git",
-    "dist",
-    "build",
-    ".next",
-    ".omo",
-    ".sisyphus",
-    ".turbo",
-    "coverage",
-    "out",
-    ".cache",
-    ".vscode-test",
-    "target",
-    ".local-ignore"
-  ];
-  EXCLUDED_DIRS = Object.freeze(new Set(EXCLUDED_DIR_NAMES));
-});
-
-// packages/omo-opencode/src/shared/replace-tool-args.ts
-var init_replace_tool_args = () => {};
-
-// packages/omo-opencode/src/shared/index.ts
-var init_shared = __esm(() => {
-  init_model_normalization();
-  init_model_resolver2();
-  init_model_resolution_pipeline();
-  init_session_category_registry();
-  init_model_string_parser2();
-  init_excluded_dirs();
-  init_frontmatter2();
-  init_command_executor2();
-  init_contains_path2();
-  init_file_reference_resolver();
-  init_model_sanitizer();
-  init_logger2();
-  init_snake_case2();
-  init_tool_name2();
-  init_pattern_matcher();
-  init_deep_merge2();
-  init_file_utils2();
-  init_dynamic_truncator();
-  init_data_path();
-  init_config_errors();
-  init_claude_config_dir();
-  init_jsonc_parser2();
-  init_migration2();
-  init_opencode_config_dir();
-  init_opencode_plugin_sandbox();
-  init_resolve_agent_definition_paths();
-  init_opencode_version();
-  init_opencode_storage_detection();
-  init_external_plugin_detector();
-  init_zip_extractor();
-  init_binary_downloader();
-  init_write_file_atomically();
-  init_agent_variant();
-  init_session_cursor();
-  init_shell_env();
-  init_system_directive();
-  init_agent_tool_restrictions();
-  init_model_requirements2();
-  init_model_resolver2();
-  init_model_availability();
-  init_model_capabilities2();
-  init_model_capabilities_cache();
-  init_model_settings_compatibility2();
-  init_fallback_model_availability();
-  init_connected_providers_cache();
-  init_context_limit_resolver2();
-  init_session_utils();
-  init_event_session_id();
-  init_tmux();
-  init_model_suggestion_retry();
-  init_opencode_server_auth();
-  init_opencode_provider_auth();
-  init_opencode_http_api();
-  init_port_utils2();
-  init_git_worktree2();
-  init_safe_create_hook();
-  init_opencode_storage_paths();
-  init_opencode_message_dir();
-  init_opencode_command_dirs();
-  init_project_discovery_dirs();
-  init_record_type_guard();
-  init_session_directory_resolver();
-  init_session_route();
-  init_prompt_tools();
-  init_prompt_failure_classifier();
-  init_compaction_marker();
-  init_internal_initiator_marker2();
-  init_runtime_fallback_retry_marker();
-  init_plugin_command_discovery();
-  init_plugin_identity();
-  init_log_legacy_plugin_startup_warning();
-  init_legacy_workspace_migration();
-  init_replace_tool_args();
-});
-
 // node_modules/.bun/zod@4.6.5/node_modules/zod/v4/core/util.js
 var exports_util = {};
 __export(exports_util, {
@@ -63507,7 +63844,7 @@ __export(exports_util, {
   attachSchema: () => attachSchema,
   assignProp: () => assignProp,
   assertNotEqual: () => assertNotEqual,
-  assertNever: () => assertNever2,
+  assertNever: () => assertNever,
   assertIs: () => assertIs,
   assertEqual: () => assertEqual,
   assert: () => assert,
@@ -63528,7 +63865,7 @@ function toZod() {
   return (schema) => schema;
 }
 function assertIs(_arg) {}
-function assertNever2(_x) {
+function assertNever(_x) {
   throw new Error("Unexpected value in exhaustive check");
 }
 function assert(_) {}
@@ -63672,10 +64009,10 @@ function mergeDefs(...defs) {
 function cloneDef(schema) {
   return mergeDefs(schema._zod.def);
 }
-function getElementAtPath(obj, path5) {
-  if (!path5)
+function getElementAtPath(obj, path4) {
+  if (!path4)
     return obj;
-  return path5.reduce((acc, key) => acc?.[key], obj);
+  return path4.reduce((acc, key) => acc?.[key], obj);
 }
 function promiseAllObject(promisesObj) {
   const keys = Object.keys(promisesObj);
@@ -63931,11 +64268,11 @@ function explicitlyAborted(x, startIndex = 0) {
   }
   return false;
 }
-function prefixIssues(path5, issues) {
+function prefixIssues(path4, issues) {
   return issues.map((iss) => {
     var _a;
     (_a = iss).path ?? (_a.path = []);
-    iss.path.unshift(path5);
+    iss.path.unshift(path4);
     return iss;
   });
 }
@@ -64433,16 +64770,16 @@ function flattenError(error, mapper = (issue2) => issue2.message) {
 }
 function formatError(error, mapper = (issue2) => issue2.message) {
   const fieldErrors = { _errors: [] };
-  const processError = (error2, path5 = []) => {
+  const processError = (error2, path4 = []) => {
     for (const issue2 of error2.issues) {
       if (issue2.code === "invalid_union" && issue2.errors.length) {
-        issue2.errors.map((issues) => processError({ issues }, [...path5, ...issue2.path]));
+        issue2.errors.map((issues) => processError({ issues }, [...path4, ...issue2.path]));
       } else if (issue2.code === "invalid_key") {
-        processError({ issues: issue2.issues }, [...path5, ...issue2.path]);
+        processError({ issues: issue2.issues }, [...path4, ...issue2.path]);
       } else if (issue2.code === "invalid_element") {
-        processError({ issues: issue2.issues }, [...path5, ...issue2.path]);
+        processError({ issues: issue2.issues }, [...path4, ...issue2.path]);
       } else {
-        const fullpath = [...path5, ...issue2.path];
+        const fullpath = [...path4, ...issue2.path];
         if (fullpath.length === 0) {
           fieldErrors._errors.push(mapper(issue2));
         } else {
@@ -64481,17 +64818,17 @@ function formatError(error, mapper = (issue2) => issue2.message) {
 }
 function treeifyError(error, mapper = (issue2) => issue2.message) {
   const result = { errors: [] };
-  const processError = (error2, path5 = []) => {
+  const processError = (error2, path4 = []) => {
     var _a2;
     for (const issue2 of error2.issues) {
       if (issue2.code === "invalid_union" && issue2.errors.length) {
-        issue2.errors.map((issues) => processError({ issues }, [...path5, ...issue2.path]));
+        issue2.errors.map((issues) => processError({ issues }, [...path4, ...issue2.path]));
       } else if (issue2.code === "invalid_key") {
-        processError({ issues: issue2.issues }, [...path5, ...issue2.path]);
+        processError({ issues: issue2.issues }, [...path4, ...issue2.path]);
       } else if (issue2.code === "invalid_element") {
-        processError({ issues: issue2.issues }, [...path5, ...issue2.path]);
+        processError({ issues: issue2.issues }, [...path4, ...issue2.path]);
       } else {
-        const fullpath = [...path5, ...issue2.path];
+        const fullpath = [...path4, ...issue2.path];
         if (fullpath.length === 0) {
           result.errors.push(mapper(issue2));
           continue;
@@ -64530,8 +64867,8 @@ function treeifyError(error, mapper = (issue2) => issue2.message) {
 }
 function toDotPath(_path) {
   const segs = [];
-  const path5 = _path.map((seg) => typeof seg === "object" ? seg.key : seg);
-  for (const seg of path5) {
+  const path4 = _path.map((seg) => typeof seg === "object" ? seg.key : seg);
+  for (const seg of path4) {
     if (typeof seg === "number")
       segs.push(`[${seg}]`);
     else if (typeof seg === "symbol")
@@ -67866,7 +68203,7 @@ function isRef(value) {
 function cloneIssues(issues) {
   return issues.map((iss) => iss.path ? { ...iss, path: iss.path.slice() } : { ...iss });
 }
-function isRecursive(inst, stack, resolve4) {
+function isRecursive(inst, stack, resolve3) {
   const cached2 = recursive.get(inst);
   if (cached2 !== undefined)
     return cached2 ? PROVEN : NONE;
@@ -67876,7 +68213,7 @@ function isRecursive(inst, stack, resolve4) {
   let result = NONE;
   const check = (child) => {
     if (result !== PROVEN && child?._zod) {
-      const answer = isRecursive(child, stack, resolve4);
+      const answer = isRecursive(child, stack, resolve3);
       if (answer > result)
         result = answer;
     }
@@ -67887,7 +68224,7 @@ function isRecursive(inst, stack, resolve4) {
       const desc = Object.getOwnPropertyDescriptor(sh, key);
       if (spread && !desc.enumerable)
         continue;
-      const child = desc.get ? ASSUMED : desc.value?._zod ? isRecursive(desc.value, stack, resolve4) : NONE;
+      const child = desc.get ? ASSUMED : desc.value?._zod ? isRecursive(desc.value, stack, resolve3) : NONE;
       if (child > answer)
         answer = child;
     }
@@ -67950,7 +68287,7 @@ function isRecursive(inst, stack, resolve4) {
       check(def.output);
       break;
     case "lazy": {
-      const inner = def._cachedInner ?? (resolve4 ? inst._zod.innerType : undefined);
+      const inner = def._cachedInner ?? (resolve3 ? inst._zod.innerType : undefined);
       merge2(inner ? isRecursive(inner, stack, false) : ASSUMED);
       break;
     }
@@ -82003,13 +82340,13 @@ function resolveRef(ref, ctx) {
   if (!ref.startsWith("#")) {
     throw new Error("External $ref is not supported, only local refs (#/...) are allowed");
   }
-  const path5 = ref.slice(1).split("/").filter(Boolean);
-  if (path5.length === 0) {
+  const path4 = ref.slice(1).split("/").filter(Boolean);
+  if (path4.length === 0) {
     return ctx.rootSchema;
   }
   const defsKey = ctx.version === "draft-2020-12" ? "$defs" : "definitions";
-  if (path5[0] === defsKey) {
-    const key = path5[1] === undefined ? undefined : decodeJSONPointerSegment(path5[1]);
+  if (path4[0] === defsKey) {
+    const key = path4[1] === undefined ? undefined : decodeJSONPointerSegment(path4[1]);
     if (!key || !ctx.defs[key]) {
       throw new Error(`Reference not found: ${ref}`);
     }
@@ -83227,97 +83564,6 @@ var init_zod = __esm(() => {
   init_external();
 });
 
-// packages/omo-opencode/src/shared/disabled-providers.ts
-function getModelProvider(model) {
-  const slash = model.indexOf("/");
-  if (slash <= 0)
-    return;
-  const provider = model.slice(0, slash).trim();
-  return provider || undefined;
-}
-function isProviderDisabled(model, disabled) {
-  if (!model || disabled.length === 0)
-    return false;
-  const provider = getModelProvider(model);
-  if (provider === undefined)
-    return false;
-  const providerLower = provider.toLowerCase();
-  return disabled.some((entry) => entry.trim().toLowerCase() === providerLower);
-}
-function filterDisabledProviderModels(models, disabled) {
-  if (disabled.length === 0)
-    return [...models];
-  return models.filter((entry) => {
-    const model = typeof entry === "string" ? entry : entry.model;
-    return !isProviderDisabled(model, disabled);
-  });
-}
-function findFirstAllowedReplacement(chain, disabled) {
-  if (!chain)
-    return;
-  for (const entry of chain) {
-    const model = typeof entry === "string" ? entry : entry.model;
-    if (!isProviderDisabled(model, disabled))
-      return model;
-  }
-  return;
-}
-function applyToHolder(label, holder, disabled) {
-  const normalizedChain = normalizeFallbackModels(holder.fallback_models);
-  if (normalizedChain) {
-    const filteredChain = filterDisabledProviderModels(normalizedChain, disabled);
-    if (filteredChain.length !== normalizedChain.length) {
-      log2(`[${HOOK_NAME}] Filtered disabled-provider entries from fallback chain`, {
-        label,
-        removed: normalizedChain.length - filteredChain.length,
-        remaining: filteredChain.length
-      });
-    }
-    holder.fallback_models = filteredChain.length === 0 ? undefined : filteredChain;
-  }
-  if (typeof holder.model === "string" && isProviderDisabled(holder.model, disabled)) {
-    const replacement = findFirstAllowedReplacement(normalizeFallbackModels(holder.fallback_models), disabled);
-    if (replacement) {
-      log2(`[${HOOK_NAME}] Substituted primary model from fallback chain`, {
-        label,
-        from: holder.model,
-        to: replacement
-      });
-      holder.model = replacement;
-    } else {
-      const message = `${label} primary model "${holder.model}" uses a disabled provider and no allowed entry is available in fallback_models. ` + `Either remove the provider from disabled_providers or add an allowed entry to fallback_models.`;
-      addConfigLoadError({ path: `disabled_providers:${label}`, error: message });
-      log2(`[${HOOK_NAME}] ${message}`, { label, primary: holder.model });
-    }
-  }
-}
-function applyDisabledProviders(config2) {
-  const disabled = config2.disabled_providers ?? [];
-  if (disabled.length === 0)
-    return config2;
-  if (config2.agents) {
-    for (const [name, agentConfig] of Object.entries(config2.agents)) {
-      if (agentConfig && typeof agentConfig === "object") {
-        applyToHolder(`agents.${name}`, agentConfig, disabled);
-      }
-    }
-  }
-  if (config2.categories) {
-    for (const [name, categoryConfig] of Object.entries(config2.categories)) {
-      if (categoryConfig && typeof categoryConfig === "object") {
-        applyToHolder(`categories.${name}`, categoryConfig, disabled);
-      }
-    }
-  }
-  return config2;
-}
-var HOOK_NAME = "disabled-providers";
-var init_disabled_providers = __esm(() => {
-  init_config_errors();
-  init_logger2();
-  init_model_resolver2();
-});
-
 // packages/omo-config-core/src/schema/reasoning-vocabulary.ts
 function isReasoningLevel(value) {
   return REASONING_LEVEL_SET2.has(value);
@@ -83409,7 +83655,6 @@ function normalizeLegacyModelFields(entry) {
   delete normalized["reasoningEffort"];
   delete normalized["thinking"];
   delete normalized["textVerbosity"];
-  delete normalized["maxTokens"];
   delete normalized["providerOptions"];
   if (typeof entry["model"] === "string")
     normalized["model"] = canonicalModelString(entry["model"]);
@@ -83427,10 +83672,15 @@ function normalizeLegacyModelFields(entry) {
     providerOptions["textVerbosity"] = entry["textVerbosity"];
   if (Object.keys(providerOptions).length > 0)
     normalized["provider_options"] = providerOptions;
-  if (entry["max_tokens"] !== undefined)
+  if (entry["max_tokens"] !== undefined) {
     normalized["max_tokens"] = entry["max_tokens"];
-  else if (entry["maxTokens"] !== undefined)
+    if (entry["maxTokens"] === undefined || typeof entry["maxTokens"] === "number") {
+      delete normalized["maxTokens"];
+    }
+  } else if (typeof entry["maxTokens"] === "number") {
     normalized["max_tokens"] = entry["maxTokens"];
+    delete normalized["maxTokens"];
+  }
   return normalized;
 }
 var OmoThinkingConfigSchema, OmoReasoningEffortSchema, OmoLegacyFallbackModelObjectInputSchema, OmoFallbackModelObjectSchema, OmoFallbackModelsSchema;
@@ -83470,12 +83720,25 @@ var init_fallback_models = __esm(() => {
 function isRecord5(value) {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
-var OmoAgentModelEntrySchema, OmoAgentDefInputSchema, OmoAgentDefSchema, OmoAgentsConfigSchema;
+var OmoAgentModelEntrySchema, PermissionValueSchema, BashPermissionSchema, OmoAgentPermissionSchema, OmoAgentDefInputSchema, OmoAgentDefSchema, OmoAgentsConfigSchema;
 var init_agent = __esm(() => {
   init_zod();
   init_fallback_models();
   init_model_ref();
   OmoAgentModelEntrySchema = union([string2(), OmoFallbackModelObjectSchema]);
+  PermissionValueSchema = _enum2(["ask", "allow", "deny"]);
+  BashPermissionSchema = union([
+    PermissionValueSchema,
+    record(string2(), PermissionValueSchema)
+  ]);
+  OmoAgentPermissionSchema = object({
+    edit: PermissionValueSchema.optional(),
+    bash: BashPermissionSchema.optional(),
+    webfetch: PermissionValueSchema.optional(),
+    task: PermissionValueSchema.optional(),
+    doom_loop: PermissionValueSchema.optional(),
+    external_directory: PermissionValueSchema.optional()
+  }).catchall(PermissionValueSchema.optional());
   OmoAgentDefInputSchema = object({
     description: string2().optional(),
     prompt: string2().optional(),
@@ -83492,7 +83755,9 @@ var init_agent = __esm(() => {
     disallowed_tools: array(string2()).optional(),
     max_turns: number2().int().nonnegative().optional(),
     temperature: number2().min(0).max(2).optional(),
-    disable: boolean2().optional()
+    disable: boolean2().optional(),
+    permission: OmoAgentPermissionSchema.optional(),
+    prompt_append: string2().optional()
   }).strict();
   OmoAgentDefSchema = preprocess((value) => isRecord5(value) ? normalizeLegacyModelFields(value) : value, OmoAgentDefInputSchema);
   OmoAgentsConfigSchema = record(string2(), OmoAgentDefSchema);
@@ -83540,8 +83805,9 @@ var init_computer = __esm(() => {
   positiveInteger = number2().int().positive();
   nonNegativeInteger = number2().int().nonnegative();
   OmoComputerSettingsLayerSchema = object({
-    enabled: boolean2(),
+    enabled: boolean2().describe("Experimental: register the computer tool in OmO Native sessions (default: on where the host is supported; false leaves it unregistered)"),
     display: string2().min(1),
+    showCursor: boolean2().describe("Show the display-only macOS cursor overlay (default: true; false hides it)"),
     max_width: positiveInteger,
     max_height: positiveInteger,
     screenshot_max_bytes: positiveInteger,
@@ -83552,7 +83818,7 @@ var init_computer = __esm(() => {
     screenshot_gc: object({ enabled: boolean2(), stale_ms: nonNegativeInteger, scan_interval_ms: nonNegativeInteger }).partial().strict(),
     engine_path: string2().min(1),
     cua_adapter: boolean2()
-  }).partial().strict();
+  }).partial().strict().describe("Experimental computer use in OmO Native: screenshots, windows, accessibility trees and native mouse and keyboard input. Every key is optional; defaults depend on the host.");
   OmoComputerSettingsSchema = OmoComputerSettingsLayerSchema;
 });
 
@@ -83583,7 +83849,7 @@ var init_harness = __esm(() => {
 });
 
 // packages/omo-config-core/src/schema/memory.ts
-var OmoMemoryReflectionTriggerSchema, OmoMemoryReflectionSchema, OmoMemorySyncSchema, OmoMemorySearchSchema, OmoMemoryRecallEventCapsSchema, OmoMemoryRecallSchema, OmoMemoryNudgeSchema, OmoMemoryFactsSchema, OmoMemoryDreamSchema, OmoMemoryPeopleSchema, OmoMemorySoulSchema, OmoMemoryWriteNoticeSchema, OmoMemoryReflectionTriggerLayerSchema, OmoMemoryReflectionLayerSchema, OmoMemorySyncLayerSchema, OmoMemorySearchLayerSchema, OmoMemoryRecallEventCapsLayerSchema, OmoMemoryRecallLayerSchema, OmoMemoryNudgeLayerSchema, OmoMemoryFactsLayerSchema, OmoMemoryDreamLayerSchema, OmoMemoryPeopleLayerSchema, OmoMemorySoulLayerSchema, OmoMemoryWriteNoticeLayerSchema, OmoMemoryAgentOverridesSchema, OmoMemorySettingsSchema, OmoMemorySettingsLayerSchema;
+var OmoMemoryReflectionTriggerSchema, OmoMemoryReflectionSchema, OmoMemorySyncSchema, OmoMemorySearchSchema, OmoMemoryRecallEventCapsSchema, OmoMemoryRecallSchema, OmoMemoryNudgeSchema, OmoMemoryFactsSchema, OmoMemoryDreamSchema, OmoMemoryPeopleSchema, OmoMemorySoulSchema, OmoMemoryWriteNoticeSchema, OmoMemoryReflectionTriggerLayerSchema, OmoMemoryReflectionLayerSchema, OmoMemorySyncLayerSchema, OmoMemorySearchLayerSchema, OmoMemoryRecallEventCapsLayerSchema, OmoMemoryRecallLayerSchema, OmoMemoryNudgeLayerSchema, OmoMemoryFactsLayerSchema, OmoMemoryDreamLayerSchema, OmoMemoryPeopleLayerSchema, OmoMemorySoulLayerSchema, OmoMemoryWriteNoticeLayerSchema, OmoMemoryProjectionSchema, OmoMemoryProjectionLayerSchema, OmoMemoryAgentOverridesSchema, OmoMemorySettingsSchema, OmoMemorySettingsLayerSchema;
 var init_memory = __esm(() => {
   init_zod();
   OmoMemoryReflectionTriggerSchema = object({
@@ -83618,7 +83884,8 @@ var init_memory = __esm(() => {
     event_caps: OmoMemoryRecallEventCapsSchema.default({ tool_args: 400, result_head: 600, assistant: 1500, prompt: 4000 }),
     sidecar_max_tokens: number2().int().positive().default(48000),
     max_concurrent_wakes: number2().int().positive().default(2),
-    tool_budget: number2().int().positive().default(8)
+    tool_budget: number2().int().positive().default(8),
+    query_expansion: boolean2().default(false)
   }).strict();
   OmoMemoryNudgeSchema = object({
     enabled: boolean2().default(true),
@@ -83626,7 +83893,8 @@ var init_memory = __esm(() => {
   }).strict();
   OmoMemoryFactsSchema = object({
     enabled: boolean2().default(true),
-    debounce_settles: number2().int().min(1).default(4)
+    debounce_settles: number2().int().min(1).default(4),
+    model: string2().min(1).optional()
   }).strict();
   OmoMemoryDreamSchema = object({
     enabled: boolean2().default(true),
@@ -83679,7 +83947,8 @@ var init_memory = __esm(() => {
     event_caps: OmoMemoryRecallEventCapsLayerSchema.optional(),
     sidecar_max_tokens: number2().int().positive().optional(),
     max_concurrent_wakes: number2().int().positive().optional(),
-    tool_budget: number2().int().positive().optional()
+    tool_budget: number2().int().positive().optional(),
+    query_expansion: boolean2().optional()
   }).strict();
   OmoMemoryNudgeLayerSchema = object({
     enabled: boolean2().optional(),
@@ -83687,7 +83956,8 @@ var init_memory = __esm(() => {
   }).strict();
   OmoMemoryFactsLayerSchema = object({
     enabled: boolean2().optional(),
-    debounce_settles: number2().int().min(1).optional()
+    debounce_settles: number2().int().min(1).optional(),
+    model: string2().min(1).optional()
   }).strict();
   OmoMemoryDreamLayerSchema = object({
     enabled: boolean2().optional(),
@@ -83708,6 +83978,14 @@ var init_memory = __esm(() => {
   OmoMemoryWriteNoticeLayerSchema = object({
     enabled: boolean2().optional()
   }).strict();
+  OmoMemoryProjectionSchema = object({
+    max_entries_per_directory: number2().int().min(0).default(40),
+    max_bytes: number2().int().min(0).default(24576)
+  }).strict();
+  OmoMemoryProjectionLayerSchema = object({
+    max_entries_per_directory: number2().int().min(0).optional(),
+    max_bytes: number2().int().min(0).optional()
+  }).strict();
   OmoMemoryAgentOverridesSchema = object({
     enabled: boolean2().optional(),
     agent: string2().min(1).optional(),
@@ -83721,6 +83999,7 @@ var init_memory = __esm(() => {
     sync: OmoMemorySyncLayerSchema.optional(),
     search: OmoMemorySearchLayerSchema.optional(),
     recall: OmoMemoryRecallLayerSchema.optional(),
+    projection: OmoMemoryProjectionLayerSchema.optional(),
     compile_warn_tokens: number2().int().positive().optional()
   }).strict();
   OmoMemorySettingsSchema = object({
@@ -83756,8 +84035,10 @@ var init_memory = __esm(() => {
       event_caps: { tool_args: 400, result_head: 600, assistant: 1500, prompt: 4000 },
       sidecar_max_tokens: 48000,
       max_concurrent_wakes: 2,
-      tool_budget: 8
+      tool_budget: 8,
+      query_expansion: false
     }),
+    projection: OmoMemoryProjectionSchema.default({ max_entries_per_directory: 40, max_bytes: 24576 }),
     compile_warn_tokens: number2().int().positive().default(30000),
     agents: record(string2(), OmoMemoryAgentOverridesSchema).default({})
   }).strict();
@@ -83774,6 +84055,7 @@ var init_memory = __esm(() => {
     sync: OmoMemorySyncLayerSchema.optional(),
     search: OmoMemorySearchLayerSchema.optional(),
     recall: OmoMemoryRecallLayerSchema.optional(),
+    projection: OmoMemoryProjectionLayerSchema.optional(),
     compile_warn_tokens: number2().int().positive().optional(),
     agents: record(string2(), OmoMemoryAgentOverridesSchema).optional()
   }).strict();
@@ -83820,6 +84102,60 @@ var init_model_profile = __esm(() => {
   OmoModelProfileLayerInputSchema = OmoModelProfileInputSchema.partial();
   OmoModelProfileLayerSchema = preprocess((value) => isRecord8(value) ? normalizeLegacyModelFields(value) : value, OmoModelProfileLayerInputSchema);
   OmoModelProfilesLayerSchema = record(string2(), OmoModelProfileLayerSchema);
+});
+
+// packages/omo-config-core/src/schema/side-panel.ts
+var OmoSidePanelWidthSchema, OmoSidePanelSectionsShape, OmoSidePanelSectionsLayerSchema, OmoSidePanelSectionsSchema, OmoSidePanelSettingsShape, OmoSidePanelSettingsLayerSchema, OmoSidePanelSettingsSchema;
+var init_side_panel = __esm(() => {
+  init_zod();
+  OmoSidePanelWidthSchema = union([number2().int().min(24).max(160), string2().regex(/^(?:1\d|[2-4]\d|50)%$/)]);
+  OmoSidePanelSectionsShape = {
+    session: boolean2(),
+    goal: boolean2(),
+    context: boolean2(),
+    usage: boolean2(),
+    agents: boolean2(),
+    tools: boolean2(),
+    files: boolean2(),
+    memory: boolean2()
+  };
+  OmoSidePanelSectionsLayerSchema = object(OmoSidePanelSectionsShape).partial().strict();
+  OmoSidePanelSectionsSchema = OmoSidePanelSectionsLayerSchema.extend({
+    session: boolean2().default(true),
+    goal: boolean2().default(true),
+    context: boolean2().default(true),
+    usage: boolean2().default(false),
+    agents: boolean2().default(true),
+    tools: boolean2().default(true),
+    files: boolean2().default(true),
+    memory: boolean2().default(true)
+  }).strict();
+  OmoSidePanelSettingsShape = {
+    enabled: boolean2(),
+    width: OmoSidePanelWidthSchema,
+    min_columns: number2().int().min(60).max(400),
+    clickable: boolean2(),
+    usage_poll_seconds: number2().int().min(60).max(3600),
+    sections: OmoSidePanelSectionsLayerSchema
+  };
+  OmoSidePanelSettingsLayerSchema = object(OmoSidePanelSettingsShape).partial().strict();
+  OmoSidePanelSettingsSchema = OmoSidePanelSettingsLayerSchema.extend({
+    enabled: boolean2().default(false),
+    width: OmoSidePanelWidthSchema.default("26%"),
+    min_columns: number2().int().min(60).max(400).default(120),
+    clickable: boolean2().default(true),
+    usage_poll_seconds: number2().int().min(60).max(3600).default(150),
+    sections: OmoSidePanelSectionsSchema.default({
+      session: true,
+      goal: true,
+      context: true,
+      usage: false,
+      agents: true,
+      tools: true,
+      files: true,
+      memory: true
+    })
+  }).strict();
 });
 
 // packages/omo-config-core/src/schema/task.ts
@@ -83890,6 +84226,7 @@ var init_task = __esm(() => {
     process_runner: _enum2(["host", "child-process"]).default("host"),
     host_engine_policy: _enum2(["upgrade", "fallback"]).default("upgrade"),
     host_idle_exit_ms: number2().int().positive().optional(),
+    host_shard_prewarm: _enum2(["off", "first-turn", "session-start"]).default("first-turn"),
     default_concurrency: number2().int().nonnegative().default(5),
     global_concurrency: number2().int().nonnegative().default(8),
     provider_concurrency: record(string2(), number2().int().nonnegative()).optional(),
@@ -83939,6 +84276,7 @@ var init_task = __esm(() => {
     process_runner: _enum2(["host", "child-process"]).optional(),
     host_engine_policy: _enum2(["upgrade", "fallback"]).optional(),
     host_idle_exit_ms: number2().int().positive().optional(),
+    host_shard_prewarm: _enum2(["off", "first-turn", "session-start"]).optional(),
     default_concurrency: number2().int().nonnegative().optional(),
     global_concurrency: number2().int().nonnegative().optional(),
     provider_concurrency: record(string2(), number2().int().nonnegative()).optional(),
@@ -84040,6 +84378,13 @@ var init_format_on_mutation = __esm(() => {
   }).strict();
 });
 
+// packages/omo-config-core/src/schema/gateway.ts
+var OmoGatewaySectionSchema;
+var init_gateway = __esm(() => {
+  init_zod();
+  OmoGatewaySectionSchema = record(string2(), unknown()).describe("Chat-surface gateway settings, owned and validated by a separately installed gateway package. omo accepts the key and never reads it.");
+});
+
 // packages/omo-config-core/src/schema/config.ts
 var OmoOpenCodeHarnessConfigSchema, OmoDisabledSkillsSchema, OmoTypedHarnessConfigSchema, OmoConfigProfileSchema, OmoConfigSchema, OmoConfigLayerSchema;
 var init_config = __esm(() => {
@@ -84051,14 +84396,17 @@ var init_config = __esm(() => {
   init_memory();
   init_model_catalog();
   init_model_profile();
+  init_side_panel();
   init_task();
   init_team();
   init_telemetry();
   init_format_on_mutation();
+  init_gateway();
   OmoOpenCodeHarnessConfigSchema = record(string2(), unknown());
   OmoDisabledSkillsSchema = array(string2());
   OmoTypedHarnessConfigSchema = object({
     formatOnMutation: OmoFormatOnMutationLayerSchema.optional(),
+    gateway: OmoGatewaySectionSchema.optional(),
     categories: OmoCategoriesConfigSchema.optional(),
     agents: OmoAgentsConfigSchema.optional(),
     git_master: OmoGitMasterSettingsLayerSchema.optional(),
@@ -84069,6 +84417,7 @@ var init_config = __esm(() => {
     model_profile: string2().optional(),
     memory: OmoMemorySettingsLayerSchema.optional(),
     telemetry: OmoTelemetrySettingsLayerSchema.optional(),
+    side_panel: OmoSidePanelSettingsLayerSchema.optional(),
     computer: OmoComputerSettingsLayerSchema.optional(),
     disabled_skills: OmoDisabledSkillsSchema.optional()
   }).strict();
@@ -84084,6 +84433,7 @@ var init_config = __esm(() => {
     model_profile: string2().optional(),
     memory: OmoMemorySettingsLayerSchema.optional(),
     telemetry: OmoTelemetrySettingsLayerSchema.optional(),
+    side_panel: OmoSidePanelSettingsLayerSchema.optional(),
     computer: OmoComputerSettingsLayerSchema.optional(),
     disabled_skills: OmoDisabledSkillsSchema.optional(),
     "[opencode]": OmoOpenCodeHarnessConfigSchema.optional(),
@@ -84093,6 +84443,7 @@ var init_config = __esm(() => {
   }).strict();
   OmoConfigSchema = object({
     formatOnMutation: OmoFormatOnMutationSchema.optional(),
+    gateway: OmoGatewaySectionSchema.optional(),
     $schema: string2().optional(),
     categories: OmoCategoriesConfigSchema.optional(),
     agents: OmoAgentsConfigSchema.optional(),
@@ -84104,6 +84455,7 @@ var init_config = __esm(() => {
     model_profile: string2().optional(),
     memory: OmoMemorySettingsSchema.optional(),
     telemetry: OmoTelemetrySettingsSchema.optional(),
+    side_panel: OmoSidePanelSettingsSchema.optional(),
     computer: OmoComputerSettingsSchema.optional(),
     disabled_skills: OmoDisabledSkillsSchema.optional(),
     "[opencode]": OmoOpenCodeHarnessConfigSchema.optional(),
@@ -84116,6 +84468,7 @@ var init_config = __esm(() => {
   }).strict();
   OmoConfigLayerSchema = object({
     formatOnMutation: OmoFormatOnMutationLayerSchema.optional(),
+    gateway: OmoGatewaySectionSchema.optional(),
     $schema: string2().optional(),
     categories: OmoCategoriesConfigSchema.optional(),
     agents: OmoAgentsConfigSchema.optional(),
@@ -84127,6 +84480,7 @@ var init_config = __esm(() => {
     model_profile: string2().optional(),
     memory: OmoMemorySettingsLayerSchema.optional(),
     telemetry: OmoTelemetrySettingsLayerSchema.optional(),
+    side_panel: OmoSidePanelSettingsLayerSchema.optional(),
     computer: OmoComputerSettingsLayerSchema.optional(),
     disabled_skills: OmoDisabledSkillsSchema.optional(),
     "[opencode]": OmoOpenCodeHarnessConfigSchema.optional(),
@@ -84146,10 +84500,10 @@ function canonicalCategoryName(name) {
 function isRecord9(value) {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
-function joinPath(path6, segment) {
-  return [...path6, segment].join(".");
+function joinPath(path4, segment) {
+  return [...path4, segment].join(".");
 }
-function canonicalizeCategoriesRecord(categories, path6, renames) {
+function canonicalizeCategoriesRecord(categories, path4, renames) {
   const result = {};
   for (const [name, definition] of Object.entries(categories)) {
     const canonical = canonicalCategoryName(name);
@@ -84158,33 +84512,33 @@ function canonicalizeCategoriesRecord(categories, path6, renames) {
       continue;
     }
     const dropped = Object.hasOwn(categories, canonical);
-    renames.push({ canonical, dropped, legacy: name, path: joinPath(path6, name) });
+    renames.push({ canonical, dropped, legacy: name, path: joinPath(path4, name) });
     if (!dropped)
       result[canonical] = definition;
   }
   return result;
 }
-function canonicalizeValue(value, path6, renames) {
+function canonicalizeValue(value, path4, renames) {
   if (Array.isArray(value)) {
-    return value.map((entry, index) => canonicalizeValue(entry, [...path6, String(index)], renames));
+    return value.map((entry, index) => canonicalizeValue(entry, [...path4, String(index)], renames));
   }
   if (!isRecord9(value))
     return value;
   const result = {};
   for (const [key, entry] of Object.entries(value)) {
     if (key === "categories" && isRecord9(entry)) {
-      result[key] = canonicalizeCategoriesRecord(entry, [...path6, key], renames);
+      result[key] = canonicalizeCategoriesRecord(entry, [...path4, key], renames);
       continue;
     }
     if (key === "category" && typeof entry === "string") {
       const canonical = canonicalCategoryName(entry);
       if (canonical !== entry) {
-        renames.push({ canonical, dropped: false, legacy: entry, path: joinPath(path6, key) });
+        renames.push({ canonical, dropped: false, legacy: entry, path: joinPath(path4, key) });
       }
       result[key] = canonical;
       continue;
     }
-    result[key] = canonicalizeValue(entry, [...path6, key], renames);
+    result[key] = canonicalizeValue(entry, [...path4, key], renames);
   }
   return result;
 }
@@ -84214,7 +84568,7 @@ function legacyHarnessOfBlockKey(key) {
 function isRecord10(value) {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
-function canonicalizeBlocksIn(container, path6, renames) {
+function canonicalizeBlocksIn(container, path4, renames) {
   const result = {};
   for (const [key, value] of Object.entries(container)) {
     const legacyHarness = legacyHarnessOfBlockKey(key);
@@ -84224,7 +84578,7 @@ function canonicalizeBlocksIn(container, path6, renames) {
     }
     const canonical = harnessBlockKey(canonicalHarnessName(legacyHarness));
     const dropped = Object.hasOwn(container, canonical);
-    renames.push({ canonical, dropped, legacy: key, path: [...path6, key].join(".") });
+    renames.push({ canonical, dropped, legacy: key, path: [...path4, key].join(".") });
     if (!dropped)
       result[canonical] = value;
   }
@@ -84256,6 +84610,7 @@ var init_schema = __esm(() => {
   init_config();
   init_fallback_models();
   init_format_on_mutation();
+  init_gateway();
   init_git_master();
   init_harness();
   init_legacy_category_names();
@@ -84264,10 +84619,69 @@ var init_schema = __esm(() => {
   init_model_catalog();
   init_model_profile();
   init_model_ref();
+  init_side_panel();
   init_task();
   init_team();
   init_telemetry();
   init_computer();
+});
+
+// packages/omo-config-core/src/loader/types.ts
+import { existsSync as existsSync5, lstatSync, readFileSync as readFileSync3, realpathSync as realpathSync3 } from "fs";
+var MERGED_OMO_CONFIG_PATH = "(merged omo config)", DEFAULT_READ_FILE_SYSTEM;
+var init_types3 = __esm(() => {
+  DEFAULT_READ_FILE_SYSTEM = {
+    existsSync: existsSync5,
+    lstatSync,
+    readFileSync: readFileSync3,
+    realpathSync: realpathSync3
+  };
+});
+
+// packages/omo-config-core/src/loader/diagnostic-lines.ts
+function displayOmoConfigPath(path4, homeDir) {
+  if (path4 === MERGED_OMO_CONFIG_PATH)
+    return "merged config";
+  if (homeDir === undefined || homeDir.length === 0)
+    return path4;
+  const slashed = (value) => value.replaceAll("\\", "/");
+  const home = slashed(homeDir).replace(/\/+$/, "");
+  const file3 = slashed(path4);
+  const fold = (value) => /^[A-Za-z]:\//.test(home) ? value.toLowerCase() : value;
+  if (fold(file3) === fold(home))
+    return "~";
+  return fold(file3).startsWith(`${fold(home)}/`) ? `~${file3.slice(home.length)}` : path4;
+}
+function notLoadedReason(diagnostic) {
+  switch (diagnostic.kind) {
+    case "parse":
+      return "JSONC parse error";
+    case "read":
+      return "unreadable";
+    default:
+      return diagnostic.issuePaths === undefined || diagnostic.issuePaths.length === 0 ? "invalid config" : `invalid: ${diagnostic.issuePaths.join(", ")}`;
+  }
+}
+function omoConfigDiagnosticLines(diagnostics, options = {}) {
+  return diagnostics.flatMap((diagnostic) => {
+    const file3 = displayOmoConfigPath(diagnostic.path, options.homeDir);
+    switch (diagnostic.kind) {
+      case "invalid-value":
+        return (diagnostic.issuePaths ?? []).map((key) => `config: ${file3}: ${key} ignored (invalid value)`);
+      case "unknown-keys":
+        return (diagnostic.issuePaths ?? []).map((key) => `config: ${file3}: ${key} ignored (unknown key)`);
+      case "parse":
+      case "read":
+      case "validation":
+        return diagnostic.path === MERGED_OMO_CONFIG_PATH ? [`config: ${file3}: reset to defaults (${notLoadedReason(diagnostic)})`] : [`config: ${file3}: not loaded (${notLoadedReason(diagnostic)})`];
+      case "deprecated-keys":
+      case "profile":
+        return [];
+    }
+  });
+}
+var init_diagnostic_lines = __esm(() => {
+  init_types3();
 });
 
 // packages/omo-config-core/src/loader/disabled-skills.ts
@@ -84309,82 +84723,323 @@ var init_merge = __esm(() => {
   DANGEROUS_KEYS2 = new Set(["__proto__", "constructor", "prototype"]);
 });
 
+// packages/omo-config-core/src/loader/prune-invalid-leaves.ts
+function isContainer(value) {
+  return typeof value === "object" && value !== null;
+}
+function childOf(container, segment) {
+  return Array.isArray(container) ? container[Number(segment)] : container[String(segment)];
+}
+function hasChild(container, segment) {
+  if (Array.isArray(container)) {
+    const index = Number(segment);
+    return Number.isInteger(index) && index >= 0 && index < container.length;
+  }
+  return Object.hasOwn(container, String(segment));
+}
+function segmentsOf(path4) {
+  return path4.map((segment) => typeof segment === "number" ? segment : String(segment));
+}
+function targetPaths(root, issue2) {
+  const base = segmentsOf(issue2.path);
+  if (issue2.code === "unrecognized_keys")
+    return issue2.keys.map((key) => [...base, key]);
+  let node2 = root;
+  let depth = 0;
+  for (const segment of base) {
+    if (!isContainer(node2) || !hasChild(node2, segment))
+      break;
+    node2 = childOf(node2, segment);
+    depth += 1;
+  }
+  return [base.slice(0, depth)];
+}
+function isAncestor(ancestor, path4) {
+  return ancestor.length < path4.length && ancestor.every((segment, index) => segment === path4[index]);
+}
+function compareDescending(left, right) {
+  const length = Math.min(left.length, right.length);
+  for (let index = 0;index < length; index += 1) {
+    const a = left[index];
+    const b = right[index];
+    if (a === b)
+      continue;
+    if (typeof a === "number" && typeof b === "number")
+      return b - a;
+    return String(b).localeCompare(String(a));
+  }
+  return right.length - left.length;
+}
+function removeChild(container, segment) {
+  if (Array.isArray(container))
+    container.splice(Number(segment), 1);
+  else
+    delete container[String(segment)];
+}
+function isEmpty(container) {
+  return Array.isArray(container) ? container.length === 0 : Object.keys(container).length === 0;
+}
+function removePathAndEmptiedAncestors(root, path4) {
+  const chain = [root];
+  for (const segment of path4.slice(0, -1)) {
+    const current = chain[chain.length - 1];
+    if (current === undefined)
+      return;
+    const next = childOf(current, segment);
+    if (!isContainer(next))
+      return;
+    chain.push(next);
+  }
+  for (let depth = path4.length - 1;depth >= 0; depth -= 1) {
+    const container = chain[depth];
+    const segment = path4[depth];
+    if (container === undefined || segment === undefined)
+      return;
+    removeChild(container, segment);
+    if (depth === 0 || !isEmpty(container))
+      return;
+  }
+}
+function prunePass(root, issues) {
+  const byKey = new Map;
+  for (const issue2 of issues) {
+    for (const path4 of targetPaths(root, issue2)) {
+      if (path4.length === 0)
+        return null;
+      const key = path4.map((segment) => String(segment)).join(".");
+      if (!byKey.has(key))
+        byKey.set(key, { key, message: issue2.message, path: path4 });
+    }
+  }
+  const targets = [...byKey.values()];
+  const outermost = targets.filter((target) => !targets.some((other) => isAncestor(other.path, target.path))).sort((left, right) => compareDescending(left.path, right.path));
+  const next = structuredClone(root);
+  for (const target of outermost)
+    removePathAndEmptiedAncestors(next, target.path);
+  return { dropped: outermost, next };
+}
+function pruneInvalidConfigPaths(config3, issues, validate2, maxPasses = MAX_PRUNE_PASSES) {
+  const dropped = [];
+  let current = config3;
+  let pending = issues;
+  for (let pass = 0;pass < maxPasses; pass += 1) {
+    const step = prunePass(current, pending);
+    if (step === null || step.dropped.length === 0)
+      return { ok: false, dropped };
+    dropped.push(...step.dropped);
+    current = step.next;
+    if (Object.keys(current).length === 0)
+      return { ok: false, dropped };
+    const validation = validate2(current);
+    if (validation.success)
+      return { ok: true, config: current, dropped };
+    pending = validation.issues;
+  }
+  return { ok: false, dropped };
+}
+var MAX_PRUNE_PASSES = 32;
+
+// packages/omo-config-core/src/loader/layer-validation.ts
+function validationDiagnostic(path4, issues) {
+  const issuePaths = issues.map((issue2) => issue2.path.map((segment) => String(segment)).join("."));
+  return {
+    kind: "validation",
+    message: `Invalid omo config at ${path4}: ${issuePaths.join(", ")}`,
+    path: path4,
+    issuePaths
+  };
+}
+function invalidValueDiagnostics(path4, dropped) {
+  return dropped.map((entry) => ({
+    kind: "invalid-value",
+    message: `Ignored invalid value in ${path4}: ${entry.key}: ${entry.message}`,
+    path: path4,
+    issuePaths: [entry.key]
+  }));
+}
+function unrecognizedKeyIssues(issues) {
+  return issues.flatMap((issue2) => issue2.code === "unrecognized_keys" ? [{ keys: issue2.keys, path: issue2.path.map((segment) => String(segment)) }] : []);
+}
+function isRecord11(value) {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+function sanitizeUnsafeKeys(value, path4 = []) {
+  if (Array.isArray(value)) {
+    const issues2 = [];
+    const sanitized2 = value.map((entry, index) => {
+      const nested = sanitizeUnsafeKeys(entry, [...path4, String(index)]);
+      issues2.push(...nested.issues);
+      return nested.value;
+    });
+    return { issues: issues2, value: sanitized2 };
+  }
+  if (!isRecord11(value))
+    return { issues: [], value };
+  const issues = [];
+  if (Object.getPrototypeOf(value) !== Object.prototype && Object.getPrototypeOf(value) !== null) {
+    issues.push({ keys: ["__proto__"], path: path4 });
+  }
+  const sanitized = {};
+  for (const [key, entry] of Object.entries(value)) {
+    if (isUnsafeObjectKey2(key)) {
+      issues.push({ keys: [key], path: path4 });
+      continue;
+    }
+    const nested = sanitizeUnsafeKeys(entry, [...path4, key]);
+    issues.push(...nested.issues);
+    sanitized[key] = nested.value;
+  }
+  return { issues, value: sanitized };
+}
+function containerAt(record2, path4) {
+  let node2 = record2;
+  for (const segment of path4) {
+    if (Array.isArray(node2)) {
+      const index = Number(segment);
+      if (!Number.isInteger(index) || index < 0 || index >= node2.length)
+        return null;
+      node2 = node2[index];
+    } else if (isRecord11(node2) && Object.hasOwn(node2, segment)) {
+      node2 = node2[segment];
+    } else {
+      return null;
+    }
+  }
+  return isRecord11(node2) ? node2 : null;
+}
+function stripUnrecognizedKeys(record2, issues) {
+  const stripped = structuredClone(record2);
+  const issuePaths = [];
+  for (const issue2 of issues) {
+    const container = containerAt(stripped, issue2.path);
+    if (container === null)
+      continue;
+    for (const key of issue2.keys) {
+      delete container[key];
+      issuePaths.push([...issue2.path, key].join("."));
+    }
+  }
+  return { issuePaths, stripped };
+}
+function toRecord(value) {
+  if (value === null || typeof value !== "object" || Array.isArray(value))
+    return null;
+  const record2 = {};
+  for (const [key, entry] of Object.entries(value)) {
+    record2[key] = entry;
+  }
+  return record2;
+}
+function validateConfigLayer(path4, data) {
+  const sanitized = sanitizeUnsafeKeys(data);
+  const record2 = toRecord(sanitized.value);
+  const unsafeIssuePaths = sanitized.issues.flatMap((issue2) => issue2.keys.map((key) => [...issue2.path, key].join(".")));
+  const unsafeDiagnostics = unsafeIssuePaths.length === 0 ? [] : [{ kind: "unknown-keys", message: `Ignored unknown keys in ${path4}: ${unsafeIssuePaths.join(", ")}`, path: path4, issuePaths: unsafeIssuePaths }];
+  const validation = OmoConfigLayerSchema.safeParse(sanitized.value);
+  if (validation.success) {
+    if (record2 !== null)
+      return { loaded: true, diagnostics: unsafeDiagnostics, value: record2 };
+    return {
+      loaded: false,
+      diagnostics: [{ kind: "validation", message: `Invalid omo config at ${path4}: root must be an object`, path: path4 }]
+    };
+  }
+  const rejected = { loaded: false, diagnostics: [validationDiagnostic(path4, validation.error.issues)] };
+  const unknownIssues = unrecognizedKeyIssues(validation.error.issues);
+  if (record2 === null)
+    return rejected;
+  let candidate = record2;
+  let issues = validation.error.issues;
+  const diagnostics = [...unsafeDiagnostics];
+  if (unknownIssues.length > 0) {
+    const { issuePaths, stripped } = stripUnrecognizedKeys(record2, unknownIssues);
+    if (issuePaths.length > 0) {
+      diagnostics.push({ kind: "unknown-keys", message: `Ignored unknown keys in ${path4}: ${issuePaths.join(", ")}`, path: path4, issuePaths });
+    }
+    const strippedValidation = validateLayerRecord(stripped);
+    if (strippedValidation.success)
+      return { loaded: true, diagnostics, value: stripped };
+    candidate = stripped;
+    issues = strippedValidation.issues;
+  }
+  const pruned = pruneInvalidConfigPaths(candidate, issues, validateLayerRecord);
+  if (!pruned.ok)
+    return rejected;
+  return { loaded: true, diagnostics: [...diagnostics, ...invalidValueDiagnostics(path4, pruned.dropped)], value: pruned.config };
+}
+var validateLayerRecord = (record2) => {
+  const parsed = OmoConfigLayerSchema.safeParse(record2);
+  return parsed.success ? { success: true } : { success: false, issues: parsed.error.issues };
+};
+var init_layer_validation = __esm(() => {
+  init_schema();
+  init_merge();
+});
+
 // packages/omo-config-core/src/internal/posix-path.ts
-function toPosixPath(path6) {
-  return path6.split("\\").join("/");
+function toPosixPath(path4) {
+  return path4.split("\\").join("/");
 }
 var init_posix_path = () => {};
 
-// packages/omo-config-core/src/loader/types.ts
-import { existsSync as existsSync6, lstatSync, readFileSync as readFileSync6, realpathSync as realpathSync4 } from "fs";
-var DEFAULT_READ_FILE_SYSTEM;
-var init_types3 = __esm(() => {
-  DEFAULT_READ_FILE_SYSTEM = {
-    existsSync: existsSync6,
-    lstatSync,
-    readFileSync: readFileSync6,
-    realpathSync: realpathSync4
-  };
-});
-
 // packages/omo-config-core/src/loader/paths.ts
 import { userInfo } from "os";
-import { dirname as dirname4, join as join12, posix as posix2, resolve as resolve4 } from "path";
+import { dirname as dirname2, join as join7, posix as posix2, resolve as resolve3 } from "path";
 function resolveHomeDir(env = process.env) {
   const homeDir = env.HOME ?? env.USERPROFILE ?? process.cwd();
-  return homeDir.startsWith("/") ? posix2.resolve(homeDir) : toPosixPath(resolve4(homeDir));
+  return homeDir.startsWith("/") ? posix2.resolve(homeDir) : toPosixPath(resolve3(homeDir));
 }
 function resolveUserOmoConfigDirectory(env = process.env) {
   const override = env.OMO_CONFIG_DIR?.trim();
   if (override)
-    return override.startsWith("/") ? posix2.resolve(override) : toPosixPath(resolve4(override));
-  return join12(resolveHomeDir(env), ".omo");
+    return override.startsWith("/") ? posix2.resolve(override) : toPosixPath(resolve3(override));
+  return join7(resolveHomeDir(env), ".omo");
 }
 function detectUserOmoJsonPath(env, fileSystem) {
   const configDir = resolveUserOmoConfigDirectory(env);
-  const jsoncPath = join12(configDir, "omo.jsonc");
+  const jsoncPath = join7(configDir, "omo.jsonc");
   if (fileSystem.existsSync(jsoncPath))
     return jsoncPath;
-  const jsonPath = join12(configDir, "omo.json");
+  const jsonPath = join7(configDir, "omo.json");
   return fileSystem.existsSync(jsonPath) ? jsonPath : jsoncPath;
 }
-function isSymlinkedProjectPath(path6, fileSystem) {
-  if (fileSystem.lstatSync === undefined || !fileSystem.existsSync(path6))
+function isSymlinkedProjectPath(path4, fileSystem) {
+  if (fileSystem.lstatSync === undefined || !fileSystem.existsSync(path4))
     return false;
   try {
-    return fileSystem.lstatSync(path6).isSymbolicLink();
+    return fileSystem.lstatSync(path4).isSymbolicLink();
   } catch (error62) {
     if (error62 instanceof Error)
       return true;
     throw error62;
   }
 }
-function isLoadableProjectConfigFile(path6, fileSystem) {
-  return fileSystem.existsSync(path6) && !isSymlinkedProjectPath(path6, fileSystem);
+function isLoadableProjectConfigFile(path4, fileSystem) {
+  return fileSystem.existsSync(path4) && !isSymlinkedProjectPath(path4, fileSystem);
 }
 function detectOmoJsonPath(dir, fileSystem) {
-  const omoDir = join12(dir, ".omo");
+  const omoDir = join7(dir, ".omo");
   if (isSymlinkedProjectPath(omoDir, fileSystem))
     return null;
-  const jsoncPath = join12(omoDir, "omo.jsonc");
+  const jsoncPath = join7(omoDir, "omo.jsonc");
   if (isLoadableProjectConfigFile(jsoncPath, fileSystem))
     return jsoncPath;
-  const jsonPath = join12(omoDir, "omo.json");
+  const jsonPath = join7(omoDir, "omo.json");
   return isLoadableProjectConfigFile(jsonPath, fileSystem) ? jsonPath : null;
 }
-function realpathOrSelf(path6, fileSystem) {
+function realpathOrSelf(path4, fileSystem) {
   if (fileSystem.realpathSync === undefined)
-    return path6;
+    return path4;
   try {
-    return fileSystem.realpathSync(path6);
+    return fileSystem.realpathSync(path4);
   } catch {
-    return path6;
+    return path4;
   }
 }
 function findProjectConfigPathsFarthestFirst(cwd, homeDir, fileSystem, accountHomeDir = homeDir) {
-  const startDir = resolve4(cwd);
-  const boundaryDirs = [...new Set([resolve4(homeDir), resolve4(accountHomeDir)])];
-  const realBoundaryDirs = new Set(boundaryDirs.map((path6) => realpathOrSelf(path6, fileSystem)));
+  const startDir = resolve3(cwd);
+  const boundaryDirs = [...new Set([resolve3(homeDir), resolve3(accountHomeDir)])];
+  const realBoundaryDirs = new Set(boundaryDirs.map((path4) => realpathOrSelf(path4, fileSystem)));
   const nearestFirst = [];
   let currentDir = startDir;
   for (let depth = 0;depth < MAX_PROJECT_CONFIG_DIRECTORY_DEPTH; depth += 1) {
@@ -84394,7 +85049,7 @@ function findProjectConfigPathsFarthestFirst(cwd, homeDir, fileSystem, accountHo
       nearestFirst.push(configPath);
     if (isHomeDir)
       break;
-    const parentDir = dirname4(currentDir);
+    const parentDir = dirname2(currentDir);
     if (parentDir === currentDir)
       break;
     currentDir = parentDir;
@@ -84408,7 +85063,7 @@ function resolveOmoConfigPaths(options) {
   const projectPaths = findProjectConfigPathsFarthestFirst(options.cwd, resolveHomeDir(env), fileSystem, ACCOUNT_HOME_DIR);
   return [
     { path: userPath, scope: "user" },
-    ...projectPaths.map((path6) => ({ path: path6, scope: "project" }))
+    ...projectPaths.map((path4) => ({ path: path4, scope: "project" }))
   ];
 }
 var MAX_PROJECT_CONFIG_DIRECTORY_DEPTH = 256, ACCOUNT_HOME_DIR;
@@ -84422,15 +85077,15 @@ var init_paths = __esm(() => {
 function profileName(value) {
   return value === "" ? undefined : value;
 }
-function profileNameFromOpenCodeConfigDir(path6) {
-  const match = path6?.match(/(?:^|[\\/])profiles[\\/]([^\\/]+)[\\/]*$/);
+function profileNameFromOpenCodeConfigDir(path4) {
+  const match = path4?.match(/(?:^|[\\/])profiles[\\/]([^\\/]+)[\\/]*$/);
   return profileName(match?.[1]);
 }
 function resolveOmoProfileName(options = {}) {
   const env = options.env ?? process.env;
   return profileName(options.profile) ?? profileName(env["OMO_PROFILE"]) ?? profileName(env["OCX_PROFILE"]) ?? profileNameFromOpenCodeConfigDir(env["OPENCODE_CONFIG_DIR"]);
 }
-function toRecord(value) {
+function toRecord2(value) {
   if (value === null || typeof value !== "object" || Array.isArray(value))
     return;
   return Object.fromEntries(Object.entries(value));
@@ -84451,13 +85106,13 @@ function harnessLayer(config3, harness2) {
   const legacyKeys = Object.entries(OMO_CONFIG_LEGACY_HARNESS_ALIASES).filter(([, target]) => target === canonical).map(([legacy]) => harnessBlockKey(legacy));
   let layer = {};
   for (const key of [...legacyKeys, harnessBlockKey(canonical)]) {
-    layer = mergeOmoConfigRecords(layer, toRecord(config3[key]) ?? {});
+    layer = mergeOmoConfigRecords(layer, toRecord2(config3[key]) ?? {});
   }
   return layer;
 }
 function resolveOmoConfigView(options) {
-  const profiles = toRecord(options.config["profiles"]);
-  const profile = options.profile === undefined ? undefined : toRecord(profiles?.[options.profile]);
+  const profiles = toRecord2(options.config["profiles"]);
+  const profile = options.profile === undefined ? undefined : toRecord2(profiles?.[options.profile]);
   const diagnostics = profile === undefined && options.profile !== undefined ? [{
     kind: "profile",
     message: `Activated omo profile "${options.profile}" does not exist; using the base configuration`,
@@ -84512,155 +85167,49 @@ function stripResolutionControlKeys(config3) {
   } = config3;
   return resolved;
 }
-function validationDiagnostic(path6, issues) {
-  const issuePaths = issues.map((issue2) => issue2.path.map((segment) => String(segment)).join("."));
-  return {
-    kind: "validation",
-    message: `Invalid omo config at ${path6}: ${issuePaths.join(", ")}`,
-    path: path6,
-    issuePaths
-  };
-}
-function unrecognizedKeyIssues(issues) {
-  return issues.flatMap((issue2) => issue2.code === "unrecognized_keys" ? [{ keys: issue2.keys, path: issue2.path.map((segment) => String(segment)) }] : []);
-}
-function hasUnsafeUnrecognizedKey(issues) {
-  return issues.some((issue2) => issue2.keys.some((key) => isUnsafeObjectKey2(key)));
-}
-function hasTamperedPrototype(value) {
-  if (Array.isArray(value))
-    return value.some((entry) => hasTamperedPrototype(entry));
-  if (!isRecord11(value))
-    return false;
-  const prototype = Object.getPrototypeOf(value);
-  if (prototype !== Object.prototype && prototype !== null)
-    return true;
-  return Object.values(value).some((entry) => hasTamperedPrototype(entry));
-}
-function isRecord11(value) {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
-}
-function containerAt(record2, path6) {
-  let container = record2;
-  for (const segment of path6) {
-    const next = container[segment];
-    if (!isRecord11(next))
-      return null;
-    container = next;
-  }
-  return container;
-}
-function stripUnrecognizedKeys(record2, issues) {
-  const stripped = structuredClone(record2);
-  const issuePaths = [];
-  for (const issue2 of issues) {
-    const container = containerAt(stripped, issue2.path);
-    if (container === null)
-      continue;
-    for (const key of issue2.keys) {
-      delete container[key];
-      issuePaths.push([...issue2.path, key].join("."));
-    }
-  }
-  return { issuePaths, stripped };
-}
-function toRecord2(value) {
-  if (value === null || typeof value !== "object" || Array.isArray(value))
-    return null;
-  const record2 = {};
-  for (const [key, entry] of Object.entries(value)) {
-    record2[key] = entry;
-  }
-  return record2;
-}
-function readConfigSource(path6, scope, fileSystem) {
-  if (!fileSystem.existsSync(path6)) {
-    return { source: { exists: false, loaded: false, path: path6, scope } };
+function readConfigSource(path4, scope, fileSystem) {
+  if (!fileSystem.existsSync(path4)) {
+    return { diagnostics: [], source: { exists: false, loaded: false, path: path4, scope } };
   }
   let content;
   try {
-    content = fileSystem.readFileSync(path6, "utf-8");
+    content = fileSystem.readFileSync(path4, "utf-8");
   } catch (error62) {
     const message = error62 instanceof Error ? error62.message : String(error62);
     return {
-      diagnostic: { kind: "read", message: `Failed to read ${path6}: ${message}`, path: path6 },
-      source: { exists: true, loaded: false, path: path6, scope }
+      diagnostics: [{ kind: "read", message: `Failed to read ${path4}: ${message}`, path: path4 }],
+      source: { exists: true, loaded: false, path: path4, scope }
     };
   }
   const parsed = parseJsoncSafe2(content);
   if (parsed.errors.length > 0) {
     return {
-      diagnostic: {
+      diagnostics: [{
         kind: "parse",
-        message: `JSONC parse error in ${path6}: ${parsed.errors.map((error62) => error62.message).join(", ")}`,
-        path: path6
-      },
-      source: { exists: true, loaded: false, path: path6, scope }
+        message: `JSONC parse error in ${path4}: ${parsed.errors.map((error62) => error62.message).join(", ")}`,
+        path: path4
+      }],
+      source: { exists: true, loaded: false, path: path4, scope }
     };
   }
-  if (hasTamperedPrototype(parsed.data)) {
-    return {
-      diagnostic: { kind: "validation", message: `Invalid omo config at ${path6}: "__proto__" member is not allowed`, path: path6 },
-      source: { exists: true, loaded: false, path: path6, scope }
-    };
-  }
-  const parsedRecord = toRecord2(parsed.data);
-  const validation = OmoConfigLayerSchema.safeParse(parsed.data);
-  if (!validation.success) {
-    const unrecognized = unrecognizedKeyIssues(validation.error.issues);
-    if (hasUnsafeUnrecognizedKey(unrecognized)) {
-      return {
-        diagnostic: validationDiagnostic(path6, validation.error.issues),
-        source: { exists: true, loaded: false, path: path6, scope }
-      };
-    }
-    const rejected = {
-      diagnostic: validationDiagnostic(path6, validation.error.issues),
-      source: { exists: true, loaded: false, path: path6, scope }
-    };
-    const unknownIssues = unrecognizedKeyIssues(validation.error.issues);
-    if (parsedRecord === null || unknownIssues.length === 0)
-      return rejected;
-    const { issuePaths, stripped } = stripUnrecognizedKeys(parsedRecord, unknownIssues);
-    if (!OmoConfigLayerSchema.safeParse(stripped).success)
-      return rejected;
-    return {
-      diagnostic: {
-        kind: "unknown-keys",
-        message: `Ignored unknown keys in ${path6}: ${issuePaths.join(", ")}`,
-        path: path6,
-        issuePaths
-      },
-      source: { exists: true, loaded: true, path: path6, scope },
-      value: stripped
-    };
-  }
-  if (parsedRecord === null) {
-    return {
-      diagnostic: { kind: "validation", message: `Invalid omo config at ${path6}: root must be an object`, path: path6 },
-      source: { exists: true, loaded: false, path: path6, scope }
-    };
-  }
-  return {
-    source: { exists: true, loaded: true, path: path6, scope },
-    value: parsedRecord
-  };
+  const layer = validateConfigLayer(path4, parsed.data);
+  return layer.loaded ? { diagnostics: layer.diagnostics, source: { exists: true, loaded: true, path: path4, scope }, value: layer.value } : { diagnostics: layer.diagnostics, source: { exists: true, loaded: false, path: path4, scope } };
 }
-function legacyCategoryDiagnostic(path6, renames) {
+function legacyCategoryDiagnostic(path4, renames) {
   const detail = renames.map((rename) => rename.dropped ? `${rename.path} ignored because ${rename.canonical} is also configured` : `${rename.path} renamed to ${rename.canonical}`).join(", ");
   return {
     kind: "deprecated-keys",
-    message: `Deprecated category name in ${path6}: ${detail}. Rename it; the alias is removed in a future release.`,
-    path: path6,
+    message: `Deprecated category name in ${path4}: ${detail}. Rename it; the alias is removed in a future release.`,
+    path: path4,
     issuePaths: renames.map((rename) => rename.path)
   };
 }
-function legacyHarnessDiagnostic(path6, renames) {
+function legacyHarnessDiagnostic(path4, renames) {
   const detail = renames.map((rename) => rename.dropped ? `${rename.path} ignored because ${rename.canonical} is also configured` : `${rename.path} renamed to ${rename.canonical}`).join(", ");
   return {
     kind: "deprecated-keys",
-    message: `Deprecated harness block in ${path6}: ${detail}. Rename it; the alias is removed in a future release.`,
-    path: path6,
+    message: `Deprecated harness block in ${path4}: ${detail}. Rename it; the alias is removed in a future release.`,
+    path: path4,
     issuePaths: renames.map((rename) => rename.path)
   };
 }
@@ -84679,8 +85228,7 @@ function loadOmoConfig(options = {}) {
   })) {
     const loaded = readConfigSource(candidate.path, candidate.scope, fileSystem);
     sources.push(loaded.source);
-    if (loaded.diagnostic !== undefined)
-      diagnostics.push(loaded.diagnostic);
+    diagnostics.push(...loaded.diagnostics);
     if (loaded.value !== undefined) {
       const canonicalized = canonicalizeLegacyCategoryNames(loaded.value);
       if (canonicalized.renames.length > 0) {
@@ -84703,7 +85251,8 @@ function loadOmoConfig(options = {}) {
     ...options.harness === undefined ? {} : { harness: options.harness },
     ...requestedProfile === undefined ? {} : { profile: requestedProfile }
   });
-  const finalConfig = OmoConfigSchema.safeParse(mergeOmoConfigRecords(DEFAULT_RAW_CONFIG, resolved.config));
+  const finalInput = mergeOmoConfigRecords(DEFAULT_RAW_CONFIG, resolved.config);
+  const finalConfig = OmoConfigSchema.safeParse(finalInput);
   if (finalConfig.success) {
     return {
       config: stripResolutionControlKeys(finalConfig.data),
@@ -84713,9 +85262,22 @@ function loadOmoConfig(options = {}) {
       sources
     };
   }
+  const pruned = pruneInvalidConfigPaths(finalInput, finalConfig.error.issues, (record2) => {
+    const parsed = OmoConfigSchema.safeParse(record2);
+    return parsed.success ? { success: true } : { success: false, issues: parsed.error.issues };
+  });
+  if (pruned.ok) {
+    return {
+      config: stripResolutionControlKeys(OmoConfigSchema.parse(pruned.config)),
+      diagnostics: [...diagnostics, ...resolved.diagnostics, ...invalidValueDiagnostics(MERGED_OMO_CONFIG_PATH, pruned.dropped)],
+      layers,
+      ...resolved.profile === undefined ? {} : { profile: resolved.profile },
+      sources
+    };
+  }
   return {
     config: stripResolutionControlKeys(OmoConfigSchema.parse(DEFAULT_RAW_CONFIG)),
-    diagnostics: [...diagnostics, ...resolved.diagnostics, validationDiagnostic("(merged omo config)", finalConfig.error.issues)],
+    diagnostics: [...diagnostics, ...resolved.diagnostics, validationDiagnostic(MERGED_OMO_CONFIG_PATH, finalConfig.error.issues)],
     layers,
     ...resolved.profile === undefined ? {} : { profile: resolved.profile },
     sources
@@ -84725,6 +85287,7 @@ var DEFAULT_RAW_CONFIG;
 var init_loader2 = __esm(() => {
   init_main();
   init_schema();
+  init_layer_validation();
   init_merge();
   init_paths();
   init_resolution();
@@ -84739,6 +85302,7 @@ var init_loader2 = __esm(() => {
 
 // packages/omo-config-core/src/loader/index.ts
 var init_loader3 = __esm(() => {
+  init_diagnostic_lines();
   init_disabled_skills();
   init_loader2();
   init_merge();
@@ -84750,25 +85314,25 @@ var init_loader3 = __esm(() => {
 // packages/omo-config-core/src/models/model-catalog-cycles.ts
 function findModelCatalogCycles(catalog) {
   const cycleNames = new Set;
-  const path6 = [];
+  const path4 = [];
   const visited = new Set;
   const visiting = new Set;
   function visit3(name) {
     if (visited.has(name))
       return;
     visiting.add(name);
-    path6.push(name);
+    path4.push(name);
     const next = catalog[name]?.model;
     if (next !== undefined && Object.hasOwn(catalog, next)) {
       if (visiting.has(next)) {
-        const cycleStart = path6.indexOf(next);
-        for (const cycleName of path6.slice(cycleStart))
+        const cycleStart = path4.indexOf(next);
+        for (const cycleName of path4.slice(cycleStart))
           cycleNames.add(cycleName);
       } else {
         visit3(next);
       }
     }
-    path6.pop();
+    path4.pop();
     visiting.delete(name);
     visited.add(name);
   }
@@ -84848,13 +85412,13 @@ function profileShadowDiagnostics(view) {
     path: `model_profiles.${name}`
   }]);
 }
-function profileSpliceDiagnostics(section2, definitions, profileNames) {
+function profileSpliceDiagnostics(section, definitions, profileNames) {
   if (definitions === undefined || profileNames.size === 0)
     return [];
   return Object.entries(definitions).flatMap(([name, definition]) => (definition.models ?? []).flatMap((entry, index) => typeof entry !== "string" || !profileNames.has(entry) ? [] : [{
     kind: "validation",
     message: `"${entry}" is a model profile; splicing a profile into a category chain is not supported yet`,
-    path: `${section2}.${name}.models.${index}`
+    path: `${section}.${name}.models.${index}`
   }]));
 }
 function modelProfileDiagnostics(view) {
@@ -84915,37 +85479,35 @@ var init_models = __esm(() => {
 // packages/omo-config-core/src/writer/types.ts
 import {
   copyFileSync,
-  existsSync as existsSync7,
+  existsSync as existsSync6,
   lstatSync as lstatSync2,
-  mkdirSync as mkdirSync7,
-  readFileSync as readFileSync7,
+  mkdirSync as mkdirSync5,
+  readFileSync as readFileSync4,
   readdirSync as readdirSync2,
   renameSync as renameSync3,
-  unlinkSync as unlinkSync3,
-  writeFileSync as writeFileSync4
+  unlinkSync as unlinkSync2,
+  writeFileSync as writeFileSync3
 } from "fs";
 var DEFAULT_WRITE_FILE_SYSTEM;
 var init_types4 = __esm(() => {
   DEFAULT_WRITE_FILE_SYSTEM = {
     copyFileSync,
-    existsSync: existsSync7,
+    existsSync: existsSync6,
     lstatSync: lstatSync2,
-    mkdirSync: mkdirSync7,
-    readFileSync: readFileSync7,
+    mkdirSync: mkdirSync5,
+    readFileSync: readFileSync4,
     readdirSync: readdirSync2,
     renameSync: renameSync3,
-    unlinkSync: unlinkSync3,
-    writeFileExclusiveSync: (path6, content) => {
-      writeFileSync4(path6, content, { encoding: "utf-8", flag: "wx" });
+    unlinkSync: unlinkSync2,
+    writeFileExclusiveSync: (path4, content) => {
+      writeFileSync3(path4, content, { encoding: "utf-8", flag: "wx" });
     },
-    writeFileSync: writeFileSync4
+    writeFileSync: writeFileSync3
   };
 });
 
 // packages/omo-config-core/src/writer/writer.ts
-var init_writer = __esm(() => {
-  init_main();
-});
+var init_writer = () => {};
 
 // packages/omo-config-core/src/writer/index.ts
 var init_writer2 = __esm(() => {
@@ -84975,20 +85537,20 @@ var init_types5 = __esm(() => {
   };
   DEFAULT_MIGRATION_FILE_SYSTEM = {
     ...DEFAULT_WRITE_FILE_SYSTEM,
-    removeIfContentsMatchSync: (path6, expected) => {
-      if (!DEFAULT_WRITE_FILE_SYSTEM.existsSync(path6))
+    removeIfContentsMatchSync: (path4, expected) => {
+      if (!DEFAULT_WRITE_FILE_SYSTEM.existsSync(path4))
         return false;
-      if (DEFAULT_WRITE_FILE_SYSTEM.readFileSync(path6, "utf-8") !== expected)
+      if (DEFAULT_WRITE_FILE_SYSTEM.readFileSync(path4, "utf-8") !== expected)
         return false;
-      DEFAULT_WRITE_FILE_SYSTEM.unlinkSync(path6);
+      DEFAULT_WRITE_FILE_SYSTEM.unlinkSync(path4);
       return true;
     },
-    replaceIfContentsMatchSync: (path6, expected, content) => {
-      if (!DEFAULT_WRITE_FILE_SYSTEM.existsSync(path6))
+    replaceIfContentsMatchSync: (path4, expected, content) => {
+      if (!DEFAULT_WRITE_FILE_SYSTEM.existsSync(path4))
         return false;
-      if (DEFAULT_WRITE_FILE_SYSTEM.readFileSync(path6, "utf-8") !== expected)
+      if (DEFAULT_WRITE_FILE_SYSTEM.readFileSync(path4, "utf-8") !== expected)
         return false;
-      DEFAULT_WRITE_FILE_SYSTEM.writeFileSync(path6, content, "utf-8");
+      DEFAULT_WRITE_FILE_SYSTEM.writeFileSync(path4, content, "utf-8");
       return true;
     }
   };
@@ -85032,6 +85594,183 @@ var init_src4 = __esm(() => {
   init_migration3();
 });
 
+// packages/omo-opencode/src/shared/legacy-workspace-migration.ts
+var init_legacy_workspace_migration = __esm(() => {
+  init_logger2();
+});
+// packages/omo-opencode/src/shared/model-string-parser.ts
+var init_model_string_parser2 = () => {};
+
+// packages/omo-opencode/src/shared/replace-tool-args.ts
+var init_replace_tool_args = () => {};
+
+// packages/omo-opencode/src/shared/index.ts
+var init_shared = __esm(() => {
+  init_model_normalization();
+  init_model_resolver2();
+  init_model_resolution_pipeline();
+  init_session_category_registry();
+  init_model_string_parser2();
+  init_frontmatter2();
+  init_command_executor2();
+  init_contains_path2();
+  init_file_reference_resolver();
+  init_model_sanitizer();
+  init_logger2();
+  init_snake_case2();
+  init_tool_name2();
+  init_pattern_matcher();
+  init_deep_merge2();
+  init_file_utils2();
+  init_dynamic_truncator();
+  init_data_path();
+  init_config_errors();
+  init_claude_config_dir();
+  init_jsonc_parser2();
+  init_migration2();
+  init_opencode_config_dir();
+  init_opencode_plugin_sandbox();
+  init_resolve_agent_definition_paths();
+  init_opencode_version();
+  init_opencode_storage_detection();
+  init_external_plugin_detector();
+  init_zip_extractor();
+  init_binary_downloader();
+  init_write_file_atomically();
+  init_agent_variant();
+  init_session_cursor();
+  init_shell_env();
+  init_system_directive();
+  init_agent_tool_restrictions();
+  init_model_requirements2();
+  init_model_resolver2();
+  init_model_availability();
+  init_model_capabilities2();
+  init_model_capabilities_cache();
+  init_model_settings_compatibility2();
+  init_fallback_model_availability();
+  init_connected_providers_cache();
+  init_context_limit_resolver2();
+  init_session_utils();
+  init_event_session_id();
+  init_tmux();
+  init_model_suggestion_retry();
+  init_opencode_server_auth();
+  init_opencode_provider_auth();
+  init_opencode_http_api();
+  init_port_utils2();
+  init_git_worktree2();
+  init_safe_create_hook();
+  init_opencode_storage_paths();
+  init_opencode_message_dir();
+  init_opencode_command_dirs();
+  init_project_discovery_dirs();
+  init_record_type_guard();
+  init_session_directory_resolver();
+  init_session_route();
+  init_prompt_tools();
+  init_prompt_failure_classifier();
+  init_compaction_marker();
+  init_internal_initiator_marker2();
+  init_runtime_fallback_retry_marker();
+  init_plugin_command_discovery();
+  init_plugin_identity();
+  init_log_legacy_plugin_startup_warning();
+  init_legacy_workspace_migration();
+  init_replace_tool_args();
+});
+
+// packages/omo-opencode/src/shared/disabled-providers.ts
+function getModelProvider(model) {
+  const slash = model.indexOf("/");
+  if (slash <= 0)
+    return;
+  const provider = model.slice(0, slash).trim();
+  return provider || undefined;
+}
+function isProviderDisabled(model, disabled) {
+  if (!model || disabled.length === 0)
+    return false;
+  const provider = getModelProvider(model);
+  if (provider === undefined)
+    return false;
+  const providerLower = provider.toLowerCase();
+  return disabled.some((entry) => entry.trim().toLowerCase() === providerLower);
+}
+function filterDisabledProviderModels(models2, disabled) {
+  if (disabled.length === 0)
+    return [...models2];
+  return models2.filter((entry) => {
+    const model = typeof entry === "string" ? entry : entry.model;
+    return !isProviderDisabled(model, disabled);
+  });
+}
+function findFirstAllowedReplacement(chain, disabled) {
+  if (!chain)
+    return;
+  for (const entry of chain) {
+    const model = typeof entry === "string" ? entry : entry.model;
+    if (!isProviderDisabled(model, disabled))
+      return model;
+  }
+  return;
+}
+function applyToHolder(label, holder, disabled) {
+  const normalizedChain = normalizeFallbackModels(holder.fallback_models);
+  if (normalizedChain) {
+    const filteredChain = filterDisabledProviderModels(normalizedChain, disabled);
+    if (filteredChain.length !== normalizedChain.length) {
+      log2(`[${HOOK_NAME}] Filtered disabled-provider entries from fallback chain`, {
+        label,
+        removed: normalizedChain.length - filteredChain.length,
+        remaining: filteredChain.length
+      });
+    }
+    holder.fallback_models = filteredChain.length === 0 ? undefined : filteredChain;
+  }
+  if (typeof holder.model === "string" && isProviderDisabled(holder.model, disabled)) {
+    const replacement = findFirstAllowedReplacement(normalizeFallbackModels(holder.fallback_models), disabled);
+    if (replacement) {
+      log2(`[${HOOK_NAME}] Substituted primary model from fallback chain`, {
+        label,
+        from: holder.model,
+        to: replacement
+      });
+      holder.model = replacement;
+    } else {
+      const message = `${label} primary model "${holder.model}" uses a disabled provider and no allowed entry is available in fallback_models. ` + `Either remove the provider from disabled_providers or add an allowed entry to fallback_models.`;
+      addConfigLoadError({ path: `disabled_providers:${label}`, error: message });
+      log2(`[${HOOK_NAME}] ${message}`, { label, primary: holder.model });
+    }
+  }
+}
+function applyDisabledProviders(config3) {
+  const disabled = config3.disabled_providers ?? [];
+  if (disabled.length === 0)
+    return config3;
+  if (config3.agents) {
+    for (const [name, agentConfig] of Object.entries(config3.agents)) {
+      if (agentConfig && typeof agentConfig === "object") {
+        applyToHolder(`agents.${name}`, agentConfig, disabled);
+      }
+    }
+  }
+  if (config3.categories) {
+    for (const [name, categoryConfig] of Object.entries(config3.categories)) {
+      if (categoryConfig && typeof categoryConfig === "object") {
+        applyToHolder(`categories.${name}`, categoryConfig, disabled);
+      }
+    }
+  }
+  return config3;
+}
+var HOOK_NAME = "disabled-providers";
+var init_disabled_providers = __esm(() => {
+  init_config_errors();
+  init_logger2();
+  init_model_resolver2();
+});
+
 // packages/omo-opencode/src/plugin-config/omo-config-chain.ts
 function block(config3) {
   const value = config3["[opencode]"];
@@ -85055,11 +85794,11 @@ function baseView(config3) {
   }
   return result;
 }
-function appendViews(views, layers, select) {
+function appendViews(views, layers, select, keyPrefix) {
   for (const layer of layers) {
     const config3 = select(layer.config);
     if (Object.keys(config3).length > 0)
-      views.push({ config: config3, path: layer.source.path });
+      views.push({ config: config3, keyPrefix, path: layer.source.path });
   }
 }
 function recordFields(value, fields) {
@@ -85088,10 +85827,21 @@ function modelInput(view) {
   };
 }
 function modelView(view) {
-  const parsed = OmoConfigSchema.safeParse(modelInput(view));
-  if (!parsed.success)
+  const input2 = modelInput(view);
+  const parsed = OmoConfigSchema.safeParse(input2);
+  const modelConfig = parsed.success ? parsed.data : (() => {
+    const pruned = pruneInvalidConfigPaths(input2, parsed.error.issues, (record2) => {
+      const validation2 = OmoConfigSchema.safeParse(record2);
+      return validation2.success ? { success: true } : { success: false, issues: validation2.error.issues };
+    });
+    if (!pruned.ok)
+      return;
+    const validation = OmoConfigSchema.safeParse(pruned.config);
+    return validation.success ? validation.data : undefined;
+  })();
+  if (modelConfig === undefined)
     return { config: {}, diagnostics: [] };
-  const resolved = resolveModelReferences(parsed.data);
+  const resolved = resolveModelReferences(modelConfig);
   return {
     config: {
       ...resolved.view.agents === undefined ? {} : { agents: resolved.view.agents },
@@ -85110,14 +85860,15 @@ function loadOmoOpenCodeConfigChain(directory, environment2 = process.env) {
   });
   const views = [];
   const selectedProfile = loaded.profile;
-  appendViews(views, loaded.layers, baseView);
-  appendViews(views, loaded.layers, block);
-  appendViews(views, loaded.layers, (config3) => baseView(profile(config3, selectedProfile)));
-  appendViews(views, loaded.layers, (config3) => block(profile(config3, selectedProfile)));
+  const profilePrefix = selectedProfile === undefined ? "" : `profiles.${selectedProfile}.`;
+  appendViews(views, loaded.layers, baseView, "");
+  appendViews(views, loaded.layers, block, "[opencode].");
+  appendViews(views, loaded.layers, (config3) => baseView(profile(config3, selectedProfile)), profilePrefix);
+  appendViews(views, loaded.layers, (config3) => block(profile(config3, selectedProfile)), `${profilePrefix}[opencode].`);
   const resolvedModels = modelView(resolved.config);
   if (Object.keys(resolvedModels.config).length > 0) {
     const source = loaded.layers[0]?.source.path ?? directory;
-    views.push({ config: resolvedModels.config, path: source });
+    views.push({ config: resolvedModels.config, keyPrefix: "", path: source });
   }
   let protectedUserView = {};
   for (const layer of loaded.layers) {
@@ -85212,7 +85963,7 @@ function unknownPaths(schema2, value, path6) {
   if (def.type === "object" && isPlainRecord2(value) && def.shape !== undefined) {
     const catchall = def.catchall !== undefined && definition(def.catchall).type !== "never" ? def.catchall : undefined;
     return Object.entries(value).flatMap(([key, entry]) => {
-      const propertySchema = def.shape?.[key];
+      const propertySchema = def.shape !== undefined && Object.hasOwn(def.shape, key) ? def.shape[key] : undefined;
       if (propertySchema !== undefined)
         return unknownPaths(propertySchema, entry, [...path6, key]);
       if (catchall !== undefined)
@@ -85252,7 +86003,7 @@ function findUnknownKeyPaths(schema2, value) {
 
 // packages/omo-opencode/src/config/schema/agent-names.ts
 var BuiltinAgentNameSchema, BuiltinSkillNameSchema, OverridableAgentNameSchema;
-var init_agent_names = __esm(() => {
+var init_agent_names2 = __esm(() => {
   init_zod();
   BuiltinAgentNameSchema = exports_external.enum([
     "sisyphus",
@@ -85329,22 +86080,22 @@ var init_fallback_models2 = __esm(() => {
 });
 
 // packages/omo-opencode/src/config/schema/internal/permission.ts
-var PermissionValueSchema, BashPermissionSchema, AgentPermissionSchema;
+var PermissionValueSchema2, BashPermissionSchema2, AgentPermissionSchema;
 var init_permission = __esm(() => {
   init_zod();
-  PermissionValueSchema = exports_external.enum(["ask", "allow", "deny"]);
-  BashPermissionSchema = exports_external.union([
-    PermissionValueSchema,
-    exports_external.record(exports_external.string(), PermissionValueSchema)
+  PermissionValueSchema2 = exports_external.enum(["ask", "allow", "deny"]);
+  BashPermissionSchema2 = exports_external.union([
+    PermissionValueSchema2,
+    exports_external.record(exports_external.string(), PermissionValueSchema2)
   ]);
   AgentPermissionSchema = exports_external.object({
-    edit: PermissionValueSchema.optional(),
-    bash: BashPermissionSchema.optional(),
-    webfetch: PermissionValueSchema.optional(),
-    task: PermissionValueSchema.optional(),
-    doom_loop: PermissionValueSchema.optional(),
-    external_directory: PermissionValueSchema.optional()
-  }).catchall(PermissionValueSchema.optional());
+    edit: PermissionValueSchema2.optional(),
+    bash: BashPermissionSchema2.optional(),
+    webfetch: PermissionValueSchema2.optional(),
+    task: PermissionValueSchema2.optional(),
+    doom_loop: PermissionValueSchema2.optional(),
+    external_directory: PermissionValueSchema2.optional()
+  }).catchall(PermissionValueSchema2.optional());
 });
 
 // packages/omo-opencode/src/config/schema/agent-overrides.ts
@@ -86077,7 +86828,7 @@ var init_oh_my_opencode_config = __esm(() => {
 // packages/omo-opencode/src/config/schema.ts
 var init_schema2 = __esm(() => {
   init_types6();
-  init_agent_names();
+  init_agent_names2();
   init_agent_overrides();
   init_babysitting();
   init_background_task();
@@ -86109,6 +86860,30 @@ var init_schema2 = __esm(() => {
   init_websearch();
 });
 
+// packages/omo-opencode/src/config/prune-plugin-view.ts
+function prunePluginView(input2) {
+  const validation = OhMyOpenCodeConfigSchema.safeParse(input2.config);
+  if (validation.success)
+    return { config: input2.config, issues: [], warnings: [] };
+  const pruned = pruneInvalidConfigPaths(input2.config, validation.error.issues, validatePluginRecord);
+  if (!pruned.ok)
+    return { config: input2.config, issues: validation.error.issues, warnings: [] };
+  const file3 = displayOmoConfigPath(input2.path, input2.homeDir);
+  return {
+    config: pruned.config,
+    issues: [],
+    warnings: pruned.dropped.map((entry) => `config: ${file3}: ${input2.keyPrefix}${entry.key} ignored (invalid value)`)
+  };
+}
+var validatePluginRecord = (record2) => {
+  const parsed = OhMyOpenCodeConfigSchema.safeParse(record2);
+  return parsed.success ? { success: true } : { success: false, issues: parsed.error.issues };
+};
+var init_prune_plugin_view = __esm(() => {
+  init_src4();
+  init_schema2();
+});
+
 // packages/omo-opencode/src/config/validate.ts
 var exports_validate = {};
 __export(exports_validate, {
@@ -86125,9 +86900,8 @@ function formatIssuePath(path6) {
   const formatted = path6.map((segment) => String(segment)).join(".");
   return formatted.length > 0 ? formatted : "<root>";
 }
-function schemaMessages(configPath, rawConfig) {
-  const result = OhMyOpenCodeConfigSchema.safeParse(rawConfig);
-  const validationMessages = result.success ? [] : result.error.issues.map((issue2) => `${shortPath(configPath)}: ${formatIssuePath(issue2.path)}: ${issue2.message}`);
+function schemaMessages(configPath, rawConfig, issues) {
+  const validationMessages = issues.map((issue2) => `${shortPath(configPath)}: ${formatIssuePath(issue2.path)}: ${issue2.message}`);
   const unknownKeyMessages = findUnknownKeyPaths(OhMyOpenCodeConfigSchema, rawConfig).map((path6) => `${shortPath(configPath)}: Unknown config key: ${formatIssuePath(path6)}`);
   return [...validationMessages, ...unknownKeyMessages];
 }
@@ -86143,11 +86917,13 @@ function parseConfig(rawConfig) {
   }
   return config4;
 }
-function parseConfigView(path6, rawConfig) {
+function parseConfigView(view, homeDir) {
+  const pruned = prunePluginView({ config: view.config, homeDir, keyPrefix: view.keyPrefix, path: view.path });
   return {
-    config: parseConfig(rawConfig),
-    messages: schemaMessages(path6, rawConfig),
-    path: path6
+    config: parseConfig(pruned.config),
+    messages: schemaMessages(view.path, view.config, pruned.issues),
+    path: view.path,
+    warnings: pruned.warnings
   };
 }
 function mergeViews(views) {
@@ -86243,27 +87019,36 @@ function migrateRalphLoopConfig(config4) {
 }
 function validatePluginConfig(directory, environment2 = process.env) {
   const chain = loadOmoOpenCodeConfigChain(directory, environment2);
-  const views = chain.views.map((view) => parseConfigView(view.path, view.config));
-  const chainMessages = chain.diagnostics.filter((diagnostic) => diagnostic.kind !== "deprecated-keys").map((diagnostic) => `${shortPath(diagnostic.path)}: ${diagnostic.message}`);
+  const homeDir = environment2.HOME ?? environment2.USERPROFILE;
+  const views = chain.views.map((view) => parseConfigView(view, homeDir));
+  const failing = chain.diagnostics.filter((diagnostic) => diagnostic.kind !== "deprecated-keys" && diagnostic.kind !== "invalid-value");
+  const chainMessages = failing.map((diagnostic) => `${shortPath(diagnostic.path)}: ${diagnostic.message}`);
   const messages = [...chainMessages, ...views.flatMap((view) => view.messages)];
+  const warnings = [
+    ...omoConfigDiagnosticLines(chain.diagnostics.flatMap((diagnostic) => diagnostic.kind === "invalid-value" ? [diagnostic] : []), { homeDir }),
+    ...views.flatMap((view) => view.warnings)
+  ];
   const firstFailingView = views.find((view) => view.messages.length > 0);
   const firstView = views[0];
-  const userConfig = parseConfig(chain.protectedUserView);
+  const userConfig = parseConfig(prunePluginView({ config: chain.protectedUserView, homeDir, keyPrefix: "", path: "" }).config);
   const config4 = applyDisabledProviders(materializeAgentModelChains(protectUserFields(mergeViews(views), userConfig)));
   warnLegacyUlwExecuteKey(chain.views);
   return {
     valid: messages.length === 0,
     messages,
-    path: chainMessages.length > 0 ? chain.diagnostics[0]?.path ?? null : firstFailingView?.path ?? firstView?.path ?? null,
+    warnings,
+    path: failing[0]?.path ?? firstFailingView?.path ?? firstView?.path ?? null,
     config: migrateRalphLoopConfig(migrateLegacyUlwExecuteKey(config4))
   };
 }
 var START_WORK_DEPRECATION_MESSAGE = 'config key "start_work" is deprecated, rename to "ulw_execute" - will be removed next release', deprecationWarningSink;
 var init_validate = __esm(() => {
+  init_src4();
   init_disabled_providers();
   init_logger2();
   init_omo_config_chain();
   init_config_merger();
+  init_prune_plugin_view();
   init_schema2();
   deprecationWarningSink = log2;
 });
@@ -86483,6 +87268,14 @@ var init_model_resolution = __esm(() => {
   init_model_resolution_details();
 });
 
+// packages/omo-opencode/src/shared/disabled-agents.ts
+function migrateDisabledAgents(disabledAgents) {
+  return (disabledAgents ?? []).map((agent2) => AGENT_NAME_MAP[agent2.toLowerCase()] ?? AGENT_NAME_MAP[agent2] ?? agent2);
+}
+var init_disabled_agents = __esm(() => {
+  init_migration2();
+});
+
 // packages/omo-opencode/src/features/tui-sidebar/roster-resolver.ts
 var exports_roster_resolver = {};
 __export(exports_roster_resolver, {
@@ -86535,8 +87328,12 @@ function toModelResolutionConfig(config4) {
 function resolveRoster(directory) {
   try {
     const config4 = validatePluginConfig(directory).config;
+    const disabledAgents = new Set(migrateDisabledAgents(config4.disabled_agents).map((agent2) => agent2.toLowerCase()));
     const resolution2 = getModelResolutionInfoWithOverrides(toModelResolutionConfig(config4));
-    return [...resolution2.agents, ...resolution2.categories].map(toRosterRow).sort((left, right) => left.label.localeCompare(right.label));
+    return [
+      ...resolution2.agents.filter((entry) => !disabledAgents.has(entry.name.toLowerCase())),
+      ...resolution2.categories
+    ].map(toRosterRow).sort((left, right) => left.label.localeCompare(right.label));
   } catch (error62) {
     if (error62 instanceof Error) {
       return [];
@@ -86547,6 +87344,7 @@ function resolveRoster(directory) {
 var init_roster_resolver = __esm(() => {
   init_model_resolution();
   init_validate();
+  init_disabled_agents();
 });
 
 // packages/omo-opencode/src/tui.ts
@@ -86655,17 +87453,17 @@ function createBtwPromptQueue() {
 
 // packages/omo-opencode/src/features/btw-side/btw-command-draft.ts
 var BTW_COMMAND_PATTERN = /^\/(?:btw|side)(?:\s+([\s\S]*))?$/;
-function isBtwCommandDraft(input) {
-  return /^\/(?:btw|side)(?:\s|$)/.test(input.trimStart());
+function isBtwCommandDraft(input2) {
+  return /^\/(?:btw|side)(?:\s|$)/.test(input2.trimStart());
 }
-function parseBtwQuestion(input) {
-  if (input.length === 0) {
+function parseBtwQuestion(input2) {
+  if (input2.length === 0) {
     return {
       consumeDraft: false,
       question: ""
     };
   }
-  const match = BTW_COMMAND_PATTERN.exec(input.trim());
+  const match = BTW_COMMAND_PATTERN.exec(input2.trim());
   if (!match) {
     return {
       consumeDraft: false,
@@ -86759,8 +87557,8 @@ function createBtwSideController(dependencies) {
     currentState = nextState;
     stateGeneration += 1;
     if (nextState.phase === "closed") {
-      for (const resolve3 of closedWaiters)
-        resolve3();
+      for (const resolve4 of closedWaiters)
+        resolve4();
       closedWaiters.clear();
     }
     if (!disposed)
@@ -86769,8 +87567,8 @@ function createBtwSideController(dependencies) {
   function waitUntilClosed() {
     if (currentState.phase === "closed")
       return Promise.resolve();
-    return new Promise((resolve3) => {
-      closedWaiters.add(resolve3);
+    return new Promise((resolve4) => {
+      closedWaiters.add(resolve4);
     });
   }
   function isClosingGeneration(generation) {
@@ -86831,8 +87629,8 @@ function createBtwSideController(dependencies) {
     });
     const creatingGeneration = stateGeneration;
     let resolveCreationFinished;
-    const creationFinished = new Promise((resolve3) => {
-      resolveCreationFinished = resolve3;
+    const creationFinished = new Promise((resolve4) => {
+      resolveCreationFinished = resolve4;
     });
     const creationOperation = {
       generation: creatingGeneration,
@@ -87223,9 +88021,9 @@ function registerBtwSideKeymap(args) {
     });
     escapeReturn.reset();
     args.api.keymap.clearPendingSequence?.();
-    args.openPicker().catch((error) => {
+    args.openPicker().catch((error62) => {
       log2("[btw-side] Failed to open picker from keyboard shortcut", {
-        error
+        error: error62
       });
       args.api.ui.toast({
         variant: "error",
@@ -87476,12 +88274,12 @@ function classifyBtwSessionCatalog(sessions, currentSessionID) {
     sides
   };
 }
-async function loadBtwSessionCatalog(input) {
-  const maximumLimit = input.maximumLimit ?? DEFAULT_MAXIMUM_LIMIT;
-  let limit = Math.min(input.initialLimit ?? DEFAULT_INITIAL_LIMIT, maximumLimit);
+async function loadBtwSessionCatalog(input2) {
+  const maximumLimit = input2.maximumLimit ?? DEFAULT_MAXIMUM_LIMIT;
+  let limit = Math.min(input2.initialLimit ?? DEFAULT_INITIAL_LIMIT, maximumLimit);
   while (true) {
-    const response = await input.listSessions({
-      directory: input.directory,
+    const response = await input2.listSessions({
+      directory: input2.directory,
       roots: false,
       limit
     });
@@ -87493,7 +88291,7 @@ async function loadBtwSessionCatalog(input) {
     const atMaximum = limit >= maximumLimit;
     if (!fullResponse || atMaximum) {
       return {
-        catalog: classifyBtwSessionCatalog(sessions, input.currentSessionID),
+        catalog: classifyBtwSessionCatalog(sessions, input2.currentSessionID),
         truncated: fullResponse && atMaximum
       };
     }
@@ -87510,15 +88308,15 @@ function unwrapTuiData(response, message) {
   }
   return response.data;
 }
-function currentTuiSessionID(api) {
-  const route = api.route.current;
+function currentTuiSessionID(api2) {
+  const route = api2.route.current;
   if (route.name !== "session" || !route.params)
     return;
   const sessionID = route.params["sessionID"];
   return typeof sessionID === "string" ? sessionID : undefined;
 }
-function isCurrentTuiSession(api, sessionID) {
-  return currentTuiSessionID(api) === sessionID;
+function isCurrentTuiSession(api2, sessionID) {
+  return currentTuiSessionID(api2) === sessionID;
 }
 function adaptTuiPromptRef(promptRef) {
   return {
@@ -87528,10 +88326,10 @@ function adaptTuiPromptRef(promptRef) {
     get input() {
       return promptRef.current.input;
     },
-    set(input) {
+    set(input2) {
       promptRef.set({
         ...promptRef.current,
-        input
+        input: input2
       });
     },
     submit() {
@@ -87539,20 +88337,20 @@ function adaptTuiPromptRef(promptRef) {
     }
   };
 }
-function parentTuiStatusLabel(api, parentSessionID) {
-  if (api.state.session.permission(parentSessionID).length > 0) {
+function parentTuiStatusLabel(api2, parentSessionID) {
+  if (api2.state.session.permission(parentSessionID).length > 0) {
     return "main needs permission";
   }
-  if (api.state.session.question(parentSessionID).length > 0) {
+  if (api2.state.session.question(parentSessionID).length > 0) {
     return "main needs input";
   }
-  return api.state.session.status(parentSessionID)?.type === "busy" ? "main working" : "main ready";
+  return api2.state.session.status(parentSessionID)?.type === "busy" ? "main working" : "main ready";
 }
-function createBtwControllerDependencies(api) {
+function createBtwControllerDependencies(api2) {
   return {
-    getCurrentSessionID: () => currentTuiSessionID(api),
+    getCurrentSessionID: () => currentTuiSessionID(api2),
     getSession: (sessionID) => {
-      const session = api.state.session.get(sessionID);
+      const session = api2.state.session.get(sessionID);
       if (!session)
         return;
       return {
@@ -87567,7 +88365,7 @@ function createBtwControllerDependencies(api) {
         } : {}
       };
     },
-    getMessages: (sessionID) => api.state.session.messages(sessionID).map((message) => ({
+    getMessages: (sessionID) => api2.state.session.messages(sessionID).map((message) => ({
       info: {
         id: message.id,
         role: message.role,
@@ -87578,10 +88376,10 @@ function createBtwControllerDependencies(api) {
         } : {}
       }
     })),
-    createSession: async (input) => {
-      const session = unwrapTuiData(await api.client.session.create({
-        ...input,
-        directory: api.state.path.directory
+    createSession: async (input2) => {
+      const session = unwrapTuiData(await api2.client.session.create({
+        ...input2,
+        directory: api2.state.path.directory
       }), "Unable to create BTW session");
       return {
         id: session.id,
@@ -87589,27 +88387,27 @@ function createBtwControllerDependencies(api) {
       };
     },
     navigateSession: (sessionID) => {
-      api.route.navigate("session", { sessionID });
+      api2.route.navigate("session", { sessionID });
     },
     abortSession: async (sessionID) => {
-      unwrapTuiData(await api.client.session.abort({
+      unwrapTuiData(await api2.client.session.abort({
         sessionID,
-        directory: api.state.path.directory
+        directory: api2.state.path.directory
       }), "Unable to abort BTW session");
     },
     deleteSession: async (sessionID) => {
-      unwrapTuiData(await api.client.session.delete({
+      unwrapTuiData(await api2.client.session.delete({
         sessionID,
-        directory: api.state.path.directory
+        directory: api2.state.path.directory
       }), "Unable to delete BTW session");
     },
     showToast: (message) => {
-      api.ui.toast({
+      api2.ui.toast({
         variant: "warning",
         message
       });
     },
-    requestRender: () => api.renderer.requestRender()
+    requestRender: () => api2.renderer.requestRender()
   };
 }
 
@@ -87628,12 +88426,12 @@ async function openBtwPicker(args) {
     loaded = await loadBtwSessionCatalog({
       currentSessionID,
       directory: args.api.state.path.directory,
-      listSessions: (input) => args.api.client.session.list(input)
+      listSessions: (input2) => args.api.client.session.list(input2)
     });
-  } catch (error) {
+  } catch (error62) {
     log2("[btw-side] Failed to list BTW sessions", {
       currentSessionID,
-      error
+      error: error62
     });
     args.api.ui.toast({
       variant: "error",
@@ -87700,10 +88498,10 @@ async function openBtwPicker(args) {
         await refreshStaleSelection(selection.sessionID);
         return;
       }
-    } catch (error) {
+    } catch (error62) {
       log2("[btw-side] Failed to validate picker selection", {
         sessionID: selection.sessionID,
-        error
+        error: error62
       });
       await refreshStaleSelection(selection.sessionID);
       return;
@@ -87724,29 +88522,29 @@ async function openBtwPicker(args) {
 }
 
 // packages/omo-opencode/src/features/btw-side/tui-wiring.ts
-async function registerBtwSideTui(api, solid) {
+async function registerBtwSideTui(api2, solid) {
   log2("[btw-side] TUI registration started");
   const promptRefs = new Map;
   const adoptionCache = createBtwAdoptionCache();
   const adoptionRequests = new Map;
   const reattachingSessions = new Set;
   const adoptionFailures = new Set;
-  const controller = createBtwSideController(createBtwControllerDependencies(api));
-  const adoptionGuard = createBtwAdoptionGuard(() => currentTuiSessionID(api));
+  const controller = createBtwSideController(createBtwControllerDependencies(api2));
+  const adoptionGuard = createBtwAdoptionGuard(() => currentTuiSessionID(api2));
   const parentValidator = createBtwParentValidator({
     fetchStatus: async (sessionID) => {
       try {
-        const response = await api.client.session.get({
+        const response = await api2.client.session.get({
           sessionID,
-          directory: api.state.path.directory
+          directory: api2.state.path.directory
         });
         if (response.error !== undefined)
           return "retry";
         return response.data !== undefined ? "exists" : "missing";
-      } catch (error) {
+      } catch (error62) {
         log2("[btw-side] Failed to validate parent session", {
           sessionID,
-          error
+          error: error62
         });
         return "retry";
       }
@@ -87760,7 +88558,7 @@ async function registerBtwSideTui(api, solid) {
     if (!adoptionGuard.canApply(sessionID, parentSessionID))
       return;
     controller.adopt(parentSessionID, sessionID);
-    api.renderer.requestRender();
+    api2.renderer.requestRender();
     log2("[btw-side] TUI adopted side session", {
       sessionID,
       parentSessionID
@@ -87770,11 +88568,11 @@ async function registerBtwSideTui(api, solid) {
     const pending = adoptionRequests.get(sessionID);
     if (pending)
       return pending;
-    const cached = adoptionCache.read(sessionID);
-    if (cached.hydrated) {
-      if (!cached.metadata)
+    const cached2 = adoptionCache.read(sessionID);
+    if (cached2.hydrated) {
+      if (!cached2.metadata)
         return;
-      const request2 = adoptValidatedMetadata(sessionID, cached.metadata.parent_session_id).finally(() => {
+      const request2 = adoptValidatedMetadata(sessionID, cached2.metadata.parent_session_id).finally(() => {
         adoptionRequests.delete(sessionID);
       });
       adoptionRequests.set(sessionID, request2);
@@ -87782,13 +88580,13 @@ async function registerBtwSideTui(api, solid) {
     }
     reattachingSessions.add(sessionID);
     adoptionFailures.delete(sessionID);
-    api.renderer.requestRender();
+    api2.renderer.requestRender();
     const request = (async () => {
       try {
-        const localSession = api.state.session.get(sessionID);
-        const session = getBtwSideMetadata(localSession) ? localSession : unwrapTuiData(await api.client.session.get({
+        const localSession = api2.state.session.get(sessionID);
+        const session = getBtwSideMetadata(localSession) ? localSession : unwrapTuiData(await api2.client.session.get({
           sessionID,
-          directory: api.state.path.directory
+          directory: api2.state.path.directory
         }), "Unable to read BTW session metadata");
         const metadata = getBtwSideMetadata(session);
         if (!adoptionGuard.canApply(sessionID))
@@ -87797,36 +88595,36 @@ async function registerBtwSideTui(api, solid) {
         if (!metadata)
           return;
         await adoptValidatedMetadata(sessionID, metadata.parent_session_id);
-      } catch (error) {
+      } catch (error62) {
         if (adoptionGuard.canApply(sessionID)) {
           adoptionFailures.add(sessionID);
         }
         log2("[btw-side] Failed to adopt side session", {
           sessionID,
-          error
+          error: error62
         });
       } finally {
         reattachingSessions.delete(sessionID);
         adoptionRequests.delete(sessionID);
-        api.renderer.requestRender();
+        api2.renderer.requestRender();
       }
     })();
     adoptionRequests.set(sessionID, request);
     return request;
   }
   function activePromptRef() {
-    const sessionID = currentTuiSessionID(api);
+    const sessionID = currentTuiSessionID(api2);
     return sessionID ? promptRefs.get(sessionID) : undefined;
   }
   async function openBtw() {
     log2("[btw-side] TUI open command invoked");
-    const sessionID = currentTuiSessionID(api);
+    const sessionID = currentTuiSessionID(api2);
     if (sessionID)
       await adoptSideSession(sessionID);
-    if (!isCurrentTuiSession(api, sessionID))
+    if (!isCurrentTuiSession(api2, sessionID))
       return;
     if (sessionID && adoptionFailures.has(sessionID)) {
-      api.ui.toast({
+      api2.ui.toast({
         variant: "warning",
         message: "Unable to verify whether this is a BTW conversation."
       });
@@ -87834,7 +88632,7 @@ async function registerBtwSideTui(api, solid) {
     }
     const promptRef = activePromptRef();
     if (!promptRef) {
-      api.ui.toast({
+      api2.ui.toast({
         variant: "warning",
         message: "BTW is unavailable before the session starts."
       });
@@ -87847,7 +88645,7 @@ async function registerBtwSideTui(api, solid) {
       return;
     }
     const opened = await openBtwPicker({
-      api,
+      api: api2,
       controller,
       activePromptRef
     });
@@ -87860,12 +88658,12 @@ async function registerBtwSideTui(api, solid) {
   }
   const showBtwPicker = async () => {
     await openBtwPicker({
-      api,
+      api: api2,
       controller,
       activePromptRef
     });
   };
-  const unregisterSlashCommand = api.command?.register(() => [
+  const unregisterSlashCommand = api2.command?.register(() => [
     {
       title: "BTW side conversation",
       value: "omo.btw.slash",
@@ -87882,21 +88680,21 @@ async function registerBtwSideTui(api, solid) {
     return;
   });
   const keymapRegistration = registerBtwSideKeymap({
-    api,
+    api: api2,
     controller,
     activePromptRef,
     openBtw,
     openPicker: showBtwPicker,
     isCurrentSideIdle: () => {
-      const sessionID = currentTuiSessionID(api);
-      return sessionID !== undefined && controller.side(sessionID) !== undefined && api.state.session.status(sessionID)?.type !== "busy" && api.state.session.permission(sessionID).length === 0 && api.state.session.question(sessionID).length === 0;
+      const sessionID = currentTuiSessionID(api2);
+      return sessionID !== undefined && controller.side(sessionID) !== undefined && api2.state.session.status(sessionID)?.type !== "busy" && api2.state.session.permission(sessionID).length === 0 && api2.state.session.question(sessionID).length === 0;
     },
     returnToParent: controller.returnToParent
   });
-  api.slots.register({
+  api2.slots.register({
     order: 950,
     slots: {
-      session_prompt: (_context, value) => api.ui.Prompt({
+      session_prompt: (_context, value) => api2.ui.Prompt({
         sessionID: value.session_id,
         visible: value.visible,
         disabled: value.disabled,
@@ -87919,7 +88717,7 @@ async function registerBtwSideTui(api, solid) {
               if (state.phase === "closing") {
                 await controller.waitUntilClosed();
               }
-              if (currentTuiSessionID(api) === value.session_id) {
+              if (currentTuiSessionID(api2) === value.session_id) {
                 await adoptSideSession(value.session_id);
               }
             })();
@@ -87928,9 +88726,9 @@ async function registerBtwSideTui(api, solid) {
           keymapRegistration.resetEscapeSequence();
           promptRefs.delete(value.session_id);
           controller.attachPromptRef(value.session_id, undefined);
-          controller.handleNavigation(currentTuiSessionID(api) ?? "");
+          controller.handleNavigation(currentTuiSessionID(api2) ?? "");
         },
-        right: api.ui.Slot({
+        right: api2.ui.Slot({
           name: "session_prompt_right",
           session_id: value.session_id
         })
@@ -87945,7 +88743,7 @@ async function registerBtwSideTui(api, solid) {
         } else if (state.phase === "open" && value.session_id === state.sideSessionID) {
           const sideNumber = controller.sideNumber(state.sideSessionID);
           const sideLabel = sideNumber === undefined ? "BTW side" : `BTW #${sideNumber}`;
-          label = `${sideLabel} \xB7 ${parentTuiStatusLabel(api, state.parentSessionID)} \xB7 esc esc return \xB7 ctrl+/ picker \xB7 ctrl+c delete`;
+          label = `${sideLabel} \xB7 ${parentTuiStatusLabel(api2, state.parentSessionID)} \xB7 esc esc return \xB7 ctrl+/ picker \xB7 ctrl+c delete`;
         } else if (state.phase === "closing" && value.session_id === state.sideSessionID) {
           label = "BTW closing...";
         } else if (state.phase === "closed" && reattachingSessions.has(value.session_id)) {
@@ -87954,19 +88752,19 @@ async function registerBtwSideTui(api, solid) {
         if (!label)
           return null;
         const text = solid.createElement("text");
-        solid.setProp(text, "fg", api.theme.current.textMuted);
+        solid.setProp(text, "fg", api2.theme.current.textMuted);
         solid.insert(text, label);
         return text;
       }
     }
   });
-  const unsubscribeDeleted = api.event.on("session.deleted", (event) => {
+  const unsubscribeDeleted = api2.event.on("session.deleted", (event) => {
     adoptionGuard.markDeleted(event.properties.info.id);
     adoptionCache.removeForDeletion(event.properties.info.id);
     parentValidator.markDeleted(event.properties.info.id);
     controller.handleSessionDeleted(event.properties.info.id);
   });
-  api.lifecycle.onDispose(async () => {
+  api2.lifecycle.onDispose(async () => {
     adoptionGuard.dispose();
     unregisterSlashCommand();
     for (const unregister of keymapRegistration.unregister)
@@ -87981,7 +88779,7 @@ init_shared();
 // package.json
 var package_default = {
   name: "oh-my-opencode",
-  version: "5.0.1-fork.7",
+  version: "5.1.33-fork.1",
   description: "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
   main: "./dist/index.js",
   types: "dist/index.d.ts",
@@ -88154,26 +88952,15 @@ var package_default = {
   },
   homepage: "https://github.com/code-yeongyu/oh-my-openagent#readme",
   dependencies: {
-    "@clack/prompts": "^1.8.1",
-    "@modelcontextprotocol/sdk": "^1.30.0",
-    "@opencode-ai/plugin": "1.18.31",
-    "@opencode-ai/sdk": "1.18.31",
     "@opencode/plugin": "2.0.16",
-    "@opentui/core": "^0.5.11",
-    "@opentui/keymap": "^0.5.11",
     "@opentui/solid": "^0.5.11",
-    commander: "^15.0.0",
     "detect-libc": "^2.1.2",
-    diff: "^9.0.0",
-    "js-yaml": "^5.4.2",
-    "jsonc-parser": "^3.3.1",
-    picocolors: "^1.1.1",
-    picomatch: "^4.0.7",
-    "posthog-node": "^5.52.4",
     zod: "^4.6.5"
   },
   devDependencies: {
-    "@code-yeongyu/senpi": "2026.9.27-3",
+    "@clack/prompts": "^1.8.1",
+    "@code-yeongyu/senpi": "2026.10.13",
+    "@modelcontextprotocol/sdk": "^1.30.0",
     "@oh-my-opencode/agents-md-core": "workspace:*",
     "@oh-my-opencode/ast-grep-mcp": "workspace:*",
     "@oh-my-opencode/boulder-state": "workspace:*",
@@ -88207,36 +88994,44 @@ var package_default = {
     "@oh-my-opencode/telemetry-core": "workspace:*",
     "@oh-my-opencode/tmux-core": "workspace:*",
     "@oh-my-opencode/utils": "workspace:*",
+    "@opencode-ai/plugin": "1.18.31",
+    "@opencode-ai/sdk": "1.18.31",
+    "@opentui/core": "^0.5.11",
+    "@opentui/keymap": "^0.5.11",
     "@types/js-yaml": "^4.0.9",
     "@types/picomatch": "^4.0.3",
     "@typescript/native-preview": "7.0.0-dev.20260707.2",
+    "@typescript/typescript6": "6.0.2",
     "@xterm/addon-unicode11": "^0.9.0",
     "@xterm/xterm": "^6.0.0",
     "bun-types": "1.4.2",
+    commander: "^15.0.0",
+    diff: "^9.0.0",
+    "js-yaml": "^5.4.2",
+    "jsonc-parser": "^3.3.1",
     "node-pty": "^1.1.0",
     omowright: "github:code-yeongyu/omowright#293ca5002cbd4c8b0c104c5934683385ef7e0d3a",
+    picocolors: "^1.1.1",
+    picomatch: "^4.0.7",
+    "posthog-node": "^5.52.4",
     "puppeteer-core": "^25.11.0",
     typescript: "^7.0.2"
   },
   optionalDependencies: {
-    "oh-my-opencode-darwin-arm64": "5.0.1",
-    "oh-my-opencode-darwin-x64": "5.0.1",
-    "oh-my-opencode-darwin-x64-baseline": "5.0.1",
-    "oh-my-opencode-linux-arm64": "5.0.1",
-    "oh-my-opencode-linux-arm64-musl": "5.0.1",
-    "oh-my-opencode-linux-x64": "5.0.1",
-    "oh-my-opencode-linux-x64-baseline": "5.0.1",
-    "oh-my-opencode-linux-x64-musl": "5.0.1",
-    "oh-my-opencode-linux-x64-musl-baseline": "5.0.1",
-    "oh-my-opencode-windows-arm64": "5.0.1",
-    "oh-my-opencode-windows-x64": "5.0.1",
-    "oh-my-opencode-windows-x64-baseline": "5.0.1"
+    "oh-my-opencode-darwin-arm64": "5.1.33",
+    "oh-my-opencode-darwin-x64": "5.1.33",
+    "oh-my-opencode-darwin-x64-baseline": "5.1.33",
+    "oh-my-opencode-linux-arm64": "5.1.33",
+    "oh-my-opencode-linux-arm64-musl": "5.1.33",
+    "oh-my-opencode-linux-x64": "5.1.33",
+    "oh-my-opencode-linux-x64-baseline": "5.1.33",
+    "oh-my-opencode-linux-x64-musl": "5.1.33",
+    "oh-my-opencode-linux-x64-musl-baseline": "5.1.33",
+    "oh-my-opencode-windows-arm64": "5.1.33",
+    "oh-my-opencode-windows-x64": "5.1.33",
+    "oh-my-opencode-windows-x64-baseline": "5.1.33"
   },
   overrides: {
-    "@earendil-works/pi-agent-core": "0.84.2",
-    "@earendil-works/pi-ai": "0.84.2",
-    "@earendil-works/pi-coding-agent": "0.84.2",
-    "@earendil-works/pi-tui": "0.84.2",
     hono: "^4.13.8",
     "@hono/node-server": "2.1.1",
     "express-rate-limit": "^8.7.0",
@@ -88255,8 +89050,8 @@ function getBundledVersion() {
 }
 
 // packages/omo-opencode/src/hooks/auto-update-checker/version-channel.ts
-function isPrereleaseVersion(version) {
-  return version.includes("-");
+function isPrereleaseVersion(version2) {
+  return version2.includes("-");
 }
 
 // packages/omo-opencode/src/cli/install-native/plan.ts
@@ -88292,7 +89087,7 @@ var NUDGE_INTERVALS_MS = [3, 7, 14].map((days) => days * 24 * 60 * 60 * 1000);
 var NUDGE_SNOOZE_MS = 7 * 24 * 60 * 60 * 1000;
 var NUDGE_CORRUPT_RECOVERY_MS = 3 * 24 * 60 * 60 * 1000;
 // packages/omo-opencode/src/hooks/native-edition-nudge/hook.ts
-import { join as join9 } from "path";
+import { join as join10 } from "path";
 init_logger2();
 
 // packages/omo-opencode/src/hooks/auto-update-checker/constants.ts
@@ -88313,8 +89108,8 @@ var INSTALLED_PACKAGE_JSON = path4.join(CACHE_DIR, "node_modules", PACKAGE_NAME,
 var INSTALLED_PACKAGE_JSON_CANDIDATES = ACCEPTED_PACKAGE_NAMES2.map((name) => path4.join(CACHE_DIR, "node_modules", name, "package.json"));
 
 // packages/omo-opencode/src/hooks/native-edition-nudge/state.ts
-import { mkdirSync as mkdirSync5, readFileSync as readFileSync3, unlinkSync as unlinkSync2, writeFileSync as writeFileSync3 } from "fs";
-import { join as join8 } from "path";
+import { mkdirSync as mkdirSync6, readFileSync as readFileSync5, unlinkSync as unlinkSync3, writeFileSync as writeFileSync4 } from "fs";
+import { join as join9 } from "path";
 var NUDGE_STATE_FILE = "native-nudge.json";
 function isDecision(value) {
   return value === "none" || value === "snoozed" || value === "never" || value === "migrated";
@@ -88331,29 +89126,29 @@ function parseNudgeState(raw) {
   }
   if (parsed === null || typeof parsed !== "object" || Array.isArray(parsed))
     return "corrupt";
-  const record = parsed;
-  if (!isDecision(record["decision"]))
+  const record2 = parsed;
+  if (!isDecision(record2["decision"]))
     return "corrupt";
-  if (!isEpoch(record["nextEligibleAt"]))
+  if (!isEpoch(record2["nextEligibleAt"]))
     return "corrupt";
-  const autoShows = record["autoShows"];
+  const autoShows = record2["autoShows"];
   return {
-    schemaVersion: typeof record["schemaVersion"] === "number" ? record["schemaVersion"] : NUDGE_STATE_VERSION,
+    schemaVersion: typeof record2["schemaVersion"] === "number" ? record2["schemaVersion"] : NUDGE_STATE_VERSION,
     autoShows: typeof autoShows === "number" && Number.isSafeInteger(autoShows) && autoShows >= 0 ? autoShows : 0,
-    lastShownAt: isEpoch(record["lastShownAt"]) ? record["lastShownAt"] : null,
-    nextEligibleAt: record["nextEligibleAt"],
-    decision: record["decision"],
-    decidedAt: isEpoch(record["decidedAt"]) ? record["decidedAt"] : null,
-    writtenBy: typeof record["writtenBy"] === "string" ? record["writtenBy"] : "unknown"
+    lastShownAt: isEpoch(record2["lastShownAt"]) ? record2["lastShownAt"] : null,
+    nextEligibleAt: record2["nextEligibleAt"],
+    decision: record2["decision"],
+    decidedAt: isEpoch(record2["decidedAt"]) ? record2["decidedAt"] : null,
+    writtenBy: typeof record2["writtenBy"] === "string" ? record2["writtenBy"] : "unknown"
   };
 }
 function createNudgeStateStore(stateDir) {
-  const path5 = join8(stateDir, NUDGE_STATE_FILE);
+  const path5 = join9(stateDir, NUDGE_STATE_FILE);
   return {
     read: () => {
       let raw;
       try {
-        raw = readFileSync3(path5, "utf8");
+        raw = readFileSync5(path5, "utf8");
       } catch {
         return "missing";
       }
@@ -88361,8 +89156,8 @@ function createNudgeStateStore(stateDir) {
     },
     write: (state) => {
       try {
-        mkdirSync5(stateDir, { recursive: true });
-        writeFileSync3(path5, `${JSON.stringify(state, null, 2)}
+        mkdirSync6(stateDir, { recursive: true });
+        writeFileSync4(path5, `${JSON.stringify(state, null, 2)}
 `, { mode: 384 });
         return true;
       } catch {
@@ -88370,15 +89165,15 @@ function createNudgeStateStore(stateDir) {
       }
     },
     probeWritable: () => {
-      const probe2 = join8(stateDir, `.${NUDGE_STATE_FILE}.probe`);
+      const probe2 = join9(stateDir, `.${NUDGE_STATE_FILE}.probe`);
       try {
-        mkdirSync5(stateDir, { recursive: true });
-        writeFileSync3(probe2, "", { mode: 384 });
+        mkdirSync6(stateDir, { recursive: true });
+        writeFileSync4(probe2, "", { mode: 384 });
       } catch {
         return false;
       }
       try {
-        unlinkSync2(probe2);
+        unlinkSync3(probe2);
       } catch {}
       return true;
     }
@@ -88389,7 +89184,7 @@ function createNudgeStateStore(stateDir) {
 var NATIVE_NUDGE_TOAST_MESSAGE = `Same agent, one binary, nothing else to keep updated.
 Install: ${NATIVE_EDITION_INSTALL_COMMAND}`;
 function nativeEditionStateDir() {
-  return join9(getUserConfigDir(), "oh-my-openagent");
+  return join10(getUserConfigDir(), "oh-my-openagent");
 }
 // packages/omo-opencode/src/features/native-edition-nudge/tui.ts
 var NATIVE_NUDGE_DIALOG_TITLE = "OmO Native";
@@ -88438,10 +89233,10 @@ Then: ${NATIVE_SETUP_COMMAND}` };
   options.store.write({ ...state, decision: "never", decidedAt: options.now, writtenBy: "tui" });
   return { toast: "I won't bring up OmO Native again. The command palette entry stays available." };
 }
-function registerNativeEditionNudgeTui(api, deps = {}) {
+function registerNativeEditionNudgeTui(api2, deps = {}) {
   const store2 = deps.store ?? createNudgeStateStore(nativeEditionStateDir());
-  const open = () => {
-    api.ui.dialog.replace(() => api.ui.DialogSelect({
+  const open2 = () => {
+    api2.ui.dialog.replace(() => api2.ui.DialogSelect({
       title: NATIVE_NUDGE_DIALOG_TITLE,
       placeholder: "The same omo as one command, with no host app",
       options: NATIVE_NUDGE_OPTIONS.map((option) => ({ title: option.title, value: option.value })),
@@ -88451,12 +89246,12 @@ function registerNativeEditionNudgeTui(api, deps = {}) {
           now: Date.now(),
           bunAvailable: true
         });
-        api.ui.dialog.clear();
-        api.ui.toast?.({ message: result.toast });
+        api2.ui.dialog.clear();
+        api2.ui.toast?.({ message: result.toast });
       }
     }));
   };
-  return api.command?.register(() => [
+  return api2.command?.register(() => [
     {
       title: "OmO Native",
       value: "omo.native.nudge",
@@ -88464,14 +89259,14 @@ function registerNativeEditionNudgeTui(api, deps = {}) {
       category: "Session",
       enabled: true,
       slash: { name: "native", aliases: ["omo-native"] },
-      onSelect: open
+      onSelect: open2
     }
   ]) ?? (() => {
     return;
   });
 }
 // packages/omo-opencode/src/features/tui-sidebar/state-types.ts
-function assertNever(value) {
+function assertNever2(value) {
   throw new Error(`Unexpected variant: ${JSON.stringify(value)}`);
 }
 
@@ -88506,7 +89301,7 @@ function viewKey(view) {
     case "idle":
       return stableKey(["idle", rosterKeyParts(view.roster)]);
     default:
-      return assertNever(view);
+      return assertNever2(view);
   }
 }
 function isActive(sections) {
@@ -88522,7 +89317,7 @@ function rosterKeyParts(roster) {
     case "rows":
       return ["roster", "rows", roster.rows.map((row) => [row.label, row.model])];
     default:
-      return assertNever(roster);
+      return assertNever2(roster);
   }
 }
 function agentsKeyParts(agents) {
@@ -88530,9 +89325,9 @@ function agentsKeyParts(agents) {
     case "none":
       return ["agents", "none"];
     case "list":
-      return ["agents", "list", agents.agents.map((agent) => [agent.name, agent.status])];
+      return ["agents", "list", agents.agents.map((agent2) => [agent2.name, agent2.status])];
     default:
-      return assertNever(agents);
+      return assertNever2(agents);
   }
 }
 function jobsKeyParts(jobs) {
@@ -88546,7 +89341,7 @@ function jobsKeyParts(jobs) {
         jobs.jobs.map((job) => [job.title, job.status, job.toolCalls, job.lastTool])
       ];
     default:
-      return assertNever(jobs);
+      return assertNever2(jobs);
   }
 }
 function loopKeyParts(loop) {
@@ -88556,7 +89351,7 @@ function loopKeyParts(loop) {
     case "live":
       return ["loop", "live", liveLoopKeyParts(loop)];
     default:
-      return assertNever(loop);
+      return assertNever2(loop);
   }
 }
 function liveLoopKeyParts(loop) {
@@ -88637,30 +89432,30 @@ function compareJobs(left, right) {
 }
 
 // packages/omo-opencode/src/features/tui-sidebar/mirror-io.ts
-import { mkdirSync as mkdirSync6, readFileSync as readFileSync4 } from "fs";
+import { mkdirSync as mkdirSync7, readFileSync as readFileSync6 } from "fs";
 init_write_file_atomically();
 
 // packages/omo-opencode/src/features/tui-sidebar/mirror-path.ts
 import { createHash } from "crypto";
-import { realpathSync as realpathSync3 } from "fs";
+import { realpathSync as realpathSync4 } from "fs";
 import { homedir as homedir3 } from "os";
-import { join as join10, resolve as resolve3 } from "path";
+import { join as join11, resolve as resolve4 } from "path";
 function mirrorStorageDir() {
-  return join10(process.env.XDG_DATA_HOME ?? join10(homedir3(), ".local", "share"), "opencode", "storage", "oh-my-openagent", MIRROR_DIR_NAME);
+  return join11(process.env.XDG_DATA_HOME ?? join11(homedir3(), ".local", "share"), "opencode", "storage", "oh-my-openagent", MIRROR_DIR_NAME);
 }
 function canonicalProjectDir(projectDir) {
   try {
-    return realpathSync3.native(projectDir);
-  } catch (error) {
-    if (error instanceof Error) {
-      return resolve3(projectDir);
+    return realpathSync4.native(projectDir);
+  } catch (error62) {
+    if (error62 instanceof Error) {
+      return resolve4(projectDir);
     }
-    throw error;
+    throw error62;
   }
 }
 function mirrorFilePath(projectDir) {
   const projectHash = createHash("sha1").update(canonicalProjectDir(projectDir)).digest("hex").slice(0, 16);
-  return join10(mirrorStorageDir(), `${projectHash}.json`);
+  return join11(mirrorStorageDir(), `${projectHash}.json`);
 }
 
 // packages/omo-opencode/src/features/tui-sidebar/snapshot-schema.ts
@@ -88720,7 +89515,7 @@ function parseSnapshot(raw) {
 function readMirror(projectDir) {
   let raw;
   try {
-    raw = JSON.parse(readFileSync4(mirrorFilePath(projectDir), "utf-8"));
+    raw = JSON.parse(readFileSync6(mirrorFilePath(projectDir), "utf-8"));
   } catch (error62) {
     if (error62 instanceof Error) {
       return null;
@@ -88765,7 +89560,7 @@ function buildViewNodes(view, theme) {
     case "idle":
       return idleNodes(view.roster, theme);
     default:
-      return assertNever(view);
+      return assertNever2(view);
   }
 }
 function configBannerNodes(banner, theme) {
@@ -88775,7 +89570,7 @@ function configBannerNodes(banner, theme) {
     case "invalid":
       return [text({ fg: theme.warning }, "config invalid - run doctor")];
     default:
-      return assertNever(banner);
+      return assertNever2(banner);
   }
 }
 function loopNodes(loop, theme) {
@@ -88793,7 +89588,7 @@ function loopNodes(loop, theme) {
         ])
       ];
     default:
-      return assertNever(loop);
+      return assertNever2(loop);
   }
 }
 function agentNodes(agents, theme) {
@@ -88802,10 +89597,10 @@ function agentNodes(agents, theme) {
       return [];
     case "list":
       return [
-        section("Agents", theme, agents.agents.map((agent) => text({ fg: theme.text }, `${truncate(agent.name)} ${agent.status}`)))
+        section("Agents", theme, agents.agents.map((agent2) => text({ fg: theme.text }, `${truncate(agent2.name)} ${agent2.status}`)))
       ];
     default:
-      return assertNever(agents);
+      return assertNever2(agents);
   }
 }
 function jobNodes(jobs, theme) {
@@ -88817,7 +89612,7 @@ function jobNodes(jobs, theme) {
         section("Jobs", theme, jobs.jobs.map((job) => text({ fg: theme.text }, `${truncate(job.title)} ${job.status} ${job.toolCalls ?? 0} ${job.lastTool ?? "none"}`)))
       ];
     default:
-      return assertNever(jobs);
+      return assertNever2(jobs);
   }
 }
 function brokenNodes(messages, theme) {
@@ -88838,7 +89633,7 @@ function rosterLines(roster) {
     case "rows":
       return roster.rows.map((row) => `${row.label} ${row.model}`);
     default:
-      return assertNever(roster);
+      return assertNever2(roster);
   }
 }
 function section(title, theme, children) {
@@ -88861,7 +89656,7 @@ init_logger2();
 init_logger2();
 init_data_path();
 init_opencode_plugin_sandbox();
-import { basename as basename2, dirname as dirname3 } from "path";
+import { basename as basename2, dirname as dirname4 } from "path";
 import { fileURLToPath } from "url";
 
 // packages/omo-opencode/src/hooks/auto-update-checker/checker/package-json-locator.ts
@@ -88902,13 +89697,13 @@ function findPackageJsonUp(startPath) {
 // packages/omo-opencode/src/hooks/auto-update-checker/checker/sandbox-refresh.ts
 var trackedSandboxDirs = new Set;
 function getLoadedPluginSandboxDir(moduleUrl, cacheDir = getOpenCodeCacheDir()) {
-  const packageJsonPath = findPackageJsonUp(dirname3(fileURLToPath(moduleUrl)));
+  const packageJsonPath = findPackageJsonUp(dirname4(fileURLToPath(moduleUrl)));
   if (!packageJsonPath)
     return null;
-  const nodeModulesDir = dirname3(dirname3(packageJsonPath));
+  const nodeModulesDir = dirname4(dirname4(packageJsonPath));
   if (basename2(nodeModulesDir) !== "node_modules")
     return null;
-  const workspace = dirname3(nodeModulesDir);
+  const workspace = dirname4(nodeModulesDir);
   return isPluginSandboxDir(workspace, cacheDir) ? workspace : null;
 }
 function refreshMarkedSandbox(sandboxDir, cacheDir, pid) {

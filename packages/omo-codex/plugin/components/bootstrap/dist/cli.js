@@ -452,9 +452,9 @@ async function readOptionalFile(path) {
 }
 
 // components/bootstrap/src/worker.ts
-import { appendFile as appendFile2, mkdir as mkdir8, readFile as readFile15 } from "node:fs/promises";
+import { appendFile as appendFile2, mkdir as mkdir8, readFile as readFile17 } from "node:fs/promises";
 import { homedir as homedir5 } from "node:os";
-import { dirname as dirname10, join as join24, resolve as resolve8 } from "node:path";
+import { dirname as dirname10, join as join25, resolve as resolve8 } from "node:path";
 import { fileURLToPath as fileURLToPath2 } from "node:url";
 
 // components/bootstrap/src/provision.ts
@@ -860,7 +860,8 @@ function defaultVersionProbe(binaryPath) {
   return String(execFileSync(binaryPath, ["--version"], {
     encoding: "utf8",
     stdio: ["ignore", "pipe", "ignore"],
-    timeout: SG_VERSION_PROBE_TIMEOUT_MS
+    timeout: SG_VERSION_PROBE_TIMEOUT_MS,
+    windowsHide: true
   }));
 }
 function probePasses(binaryPath, deps) {
@@ -1014,8 +1015,8 @@ async function defaultVersionProbe2(binaryPath) {
 }
 
 // components/bootstrap/src/setup.ts
-import { copyFile as copyFile2, mkdir as mkdir7, readFile as readFile14, readdir as readdir5, rm as rm11, stat as stat5 } from "node:fs/promises";
-import { join as join23 } from "node:path";
+import { copyFile as copyFile2, mkdir as mkdir7, readFile as readFile16, readdir as readdir5, rm as rm12, stat as stat5 } from "node:fs/promises";
+import { join as join24 } from "node:path";
 
 // ../../../node_modules/.bun/zod@4.6.5/node_modules/zod/v4/core/util.js
 var exports_util = {};
@@ -7265,7 +7266,6 @@ function normalizeLegacyModelFields(entry) {
   delete normalized["reasoningEffort"];
   delete normalized["thinking"];
   delete normalized["textVerbosity"];
-  delete normalized["maxTokens"];
   delete normalized["providerOptions"];
   if (typeof entry["model"] === "string")
     normalized["model"] = canonicalModelString(entry["model"]);
@@ -7283,10 +7283,15 @@ function normalizeLegacyModelFields(entry) {
     providerOptions["textVerbosity"] = entry["textVerbosity"];
   if (Object.keys(providerOptions).length > 0)
     normalized["provider_options"] = providerOptions;
-  if (entry["max_tokens"] !== undefined)
+  if (entry["max_tokens"] !== undefined) {
     normalized["max_tokens"] = entry["max_tokens"];
-  else if (entry["maxTokens"] !== undefined)
+    if (entry["maxTokens"] === undefined || typeof entry["maxTokens"] === "number") {
+      delete normalized["maxTokens"];
+    }
+  } else if (typeof entry["maxTokens"] === "number") {
     normalized["max_tokens"] = entry["maxTokens"];
+    delete normalized["maxTokens"];
+  }
   return normalized;
 }
 var OmoLegacyFallbackModelObjectInputSchema = object({
@@ -7316,6 +7321,19 @@ function isRecord3(value) {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 var OmoAgentModelEntrySchema = union([string2(), OmoFallbackModelObjectSchema]);
+var PermissionValueSchema = _enum(["ask", "allow", "deny"]);
+var BashPermissionSchema = union([
+  PermissionValueSchema,
+  record(string2(), PermissionValueSchema)
+]);
+var OmoAgentPermissionSchema = object({
+  edit: PermissionValueSchema.optional(),
+  bash: BashPermissionSchema.optional(),
+  webfetch: PermissionValueSchema.optional(),
+  task: PermissionValueSchema.optional(),
+  doom_loop: PermissionValueSchema.optional(),
+  external_directory: PermissionValueSchema.optional()
+}).catchall(PermissionValueSchema.optional());
 var OmoAgentDefInputSchema = object({
   description: string2().optional(),
   prompt: string2().optional(),
@@ -7332,7 +7350,9 @@ var OmoAgentDefInputSchema = object({
   disallowed_tools: array(string2()).optional(),
   max_turns: number2().int().nonnegative().optional(),
   temperature: number2().min(0).max(2).optional(),
-  disable: boolean2().optional()
+  disable: boolean2().optional(),
+  permission: OmoAgentPermissionSchema.optional(),
+  prompt_append: string2().optional()
 }).strict();
 var OmoAgentDefSchema = preprocess((value) => isRecord3(value) ? normalizeLegacyModelFields(value) : value, OmoAgentDefInputSchema);
 var OmoAgentsConfigSchema = record(string2(), OmoAgentDefSchema);
@@ -7370,8 +7390,9 @@ var OmoCategoriesConfigSchema = record(string2(), OmoCategoryConfigSchema);
 var positiveInteger = number2().int().positive();
 var nonNegativeInteger = number2().int().nonnegative();
 var OmoComputerSettingsLayerSchema = object({
-  enabled: boolean2(),
+  enabled: boolean2().describe("Experimental: register the computer tool in OmO Native sessions (default: on where the host is supported; false leaves it unregistered)"),
   display: string2().min(1),
+  showCursor: boolean2().describe("Show the display-only macOS cursor overlay (default: true; false hides it)"),
   max_width: positiveInteger,
   max_height: positiveInteger,
   screenshot_max_bytes: positiveInteger,
@@ -7382,7 +7403,7 @@ var OmoComputerSettingsLayerSchema = object({
   screenshot_gc: object({ enabled: boolean2(), stale_ms: nonNegativeInteger, scan_interval_ms: nonNegativeInteger }).partial().strict(),
   engine_path: string2().min(1),
   cua_adapter: boolean2()
-}).partial().strict();
+}).partial().strict().describe("Experimental computer use in OmO Native: screenshots, windows, accessibility trees and native mouse and keyboard input. Every key is optional; defaults depend on the host.");
 var OmoComputerSettingsSchema = OmoComputerSettingsLayerSchema;
 
 // ../../omo-config-core/src/schema/git-master.ts
@@ -7436,7 +7457,8 @@ var OmoMemoryRecallSchema = object({
   event_caps: OmoMemoryRecallEventCapsSchema.default({ tool_args: 400, result_head: 600, assistant: 1500, prompt: 4000 }),
   sidecar_max_tokens: number2().int().positive().default(48000),
   max_concurrent_wakes: number2().int().positive().default(2),
-  tool_budget: number2().int().positive().default(8)
+  tool_budget: number2().int().positive().default(8),
+  query_expansion: boolean2().default(false)
 }).strict();
 var OmoMemoryNudgeSchema = object({
   enabled: boolean2().default(true),
@@ -7444,7 +7466,8 @@ var OmoMemoryNudgeSchema = object({
 }).strict();
 var OmoMemoryFactsSchema = object({
   enabled: boolean2().default(true),
-  debounce_settles: number2().int().min(1).default(4)
+  debounce_settles: number2().int().min(1).default(4),
+  model: string2().min(1).optional()
 }).strict();
 var OmoMemoryDreamSchema = object({
   enabled: boolean2().default(true),
@@ -7497,7 +7520,8 @@ var OmoMemoryRecallLayerSchema = object({
   event_caps: OmoMemoryRecallEventCapsLayerSchema.optional(),
   sidecar_max_tokens: number2().int().positive().optional(),
   max_concurrent_wakes: number2().int().positive().optional(),
-  tool_budget: number2().int().positive().optional()
+  tool_budget: number2().int().positive().optional(),
+  query_expansion: boolean2().optional()
 }).strict();
 var OmoMemoryNudgeLayerSchema = object({
   enabled: boolean2().optional(),
@@ -7505,7 +7529,8 @@ var OmoMemoryNudgeLayerSchema = object({
 }).strict();
 var OmoMemoryFactsLayerSchema = object({
   enabled: boolean2().optional(),
-  debounce_settles: number2().int().min(1).optional()
+  debounce_settles: number2().int().min(1).optional(),
+  model: string2().min(1).optional()
 }).strict();
 var OmoMemoryDreamLayerSchema = object({
   enabled: boolean2().optional(),
@@ -7526,6 +7551,14 @@ var OmoMemorySoulLayerSchema = object({
 var OmoMemoryWriteNoticeLayerSchema = object({
   enabled: boolean2().optional()
 }).strict();
+var OmoMemoryProjectionSchema = object({
+  max_entries_per_directory: number2().int().min(0).default(40),
+  max_bytes: number2().int().min(0).default(24576)
+}).strict();
+var OmoMemoryProjectionLayerSchema = object({
+  max_entries_per_directory: number2().int().min(0).optional(),
+  max_bytes: number2().int().min(0).optional()
+}).strict();
 var OmoMemoryAgentOverridesSchema = object({
   enabled: boolean2().optional(),
   agent: string2().min(1).optional(),
@@ -7539,6 +7572,7 @@ var OmoMemoryAgentOverridesSchema = object({
   sync: OmoMemorySyncLayerSchema.optional(),
   search: OmoMemorySearchLayerSchema.optional(),
   recall: OmoMemoryRecallLayerSchema.optional(),
+  projection: OmoMemoryProjectionLayerSchema.optional(),
   compile_warn_tokens: number2().int().positive().optional()
 }).strict();
 var OmoMemorySettingsSchema = object({
@@ -7574,8 +7608,10 @@ var OmoMemorySettingsSchema = object({
     event_caps: { tool_args: 400, result_head: 600, assistant: 1500, prompt: 4000 },
     sidecar_max_tokens: 48000,
     max_concurrent_wakes: 2,
-    tool_budget: 8
+    tool_budget: 8,
+    query_expansion: false
   }),
+  projection: OmoMemoryProjectionSchema.default({ max_entries_per_directory: 40, max_bytes: 24576 }),
   compile_warn_tokens: number2().int().positive().default(30000),
   agents: record(string2(), OmoMemoryAgentOverridesSchema).default({})
 }).strict();
@@ -7592,6 +7628,7 @@ var OmoMemorySettingsLayerSchema = object({
   sync: OmoMemorySyncLayerSchema.optional(),
   search: OmoMemorySearchLayerSchema.optional(),
   recall: OmoMemoryRecallLayerSchema.optional(),
+  projection: OmoMemoryProjectionLayerSchema.optional(),
   compile_warn_tokens: number2().int().positive().optional(),
   agents: record(string2(), OmoMemoryAgentOverridesSchema).optional()
 }).strict();
@@ -7627,6 +7664,56 @@ var OmoModelProfilesSchema = record(string2(), OmoModelProfileSchema);
 var OmoModelProfileLayerInputSchema = OmoModelProfileInputSchema.partial();
 var OmoModelProfileLayerSchema = preprocess((value) => isRecord6(value) ? normalizeLegacyModelFields(value) : value, OmoModelProfileLayerInputSchema);
 var OmoModelProfilesLayerSchema = record(string2(), OmoModelProfileLayerSchema);
+
+// ../../omo-config-core/src/schema/side-panel.ts
+var OmoSidePanelWidthSchema = union([number2().int().min(24).max(160), string2().regex(/^(?:1\d|[2-4]\d|50)%$/)]);
+var OmoSidePanelSectionsShape = {
+  session: boolean2(),
+  goal: boolean2(),
+  context: boolean2(),
+  usage: boolean2(),
+  agents: boolean2(),
+  tools: boolean2(),
+  files: boolean2(),
+  memory: boolean2()
+};
+var OmoSidePanelSectionsLayerSchema = object(OmoSidePanelSectionsShape).partial().strict();
+var OmoSidePanelSectionsSchema = OmoSidePanelSectionsLayerSchema.extend({
+  session: boolean2().default(true),
+  goal: boolean2().default(true),
+  context: boolean2().default(true),
+  usage: boolean2().default(false),
+  agents: boolean2().default(true),
+  tools: boolean2().default(true),
+  files: boolean2().default(true),
+  memory: boolean2().default(true)
+}).strict();
+var OmoSidePanelSettingsShape = {
+  enabled: boolean2(),
+  width: OmoSidePanelWidthSchema,
+  min_columns: number2().int().min(60).max(400),
+  clickable: boolean2(),
+  usage_poll_seconds: number2().int().min(60).max(3600),
+  sections: OmoSidePanelSectionsLayerSchema
+};
+var OmoSidePanelSettingsLayerSchema = object(OmoSidePanelSettingsShape).partial().strict();
+var OmoSidePanelSettingsSchema = OmoSidePanelSettingsLayerSchema.extend({
+  enabled: boolean2().default(false),
+  width: OmoSidePanelWidthSchema.default("26%"),
+  min_columns: number2().int().min(60).max(400).default(120),
+  clickable: boolean2().default(true),
+  usage_poll_seconds: number2().int().min(60).max(3600).default(150),
+  sections: OmoSidePanelSectionsSchema.default({
+    session: true,
+    goal: true,
+    context: true,
+    usage: false,
+    agents: true,
+    tools: true,
+    files: true,
+    memory: true
+  })
+}).strict();
 
 // ../../omo-config-core/src/schema/task.ts
 import { availableParallelism } from "node:os";
@@ -7686,6 +7773,7 @@ var OmoTaskSettingsSchema = object({
   process_runner: _enum(["host", "child-process"]).default("host"),
   host_engine_policy: _enum(["upgrade", "fallback"]).default("upgrade"),
   host_idle_exit_ms: number2().int().positive().optional(),
+  host_shard_prewarm: _enum(["off", "first-turn", "session-start"]).default("first-turn"),
   default_concurrency: number2().int().nonnegative().default(5),
   global_concurrency: number2().int().nonnegative().default(8),
   provider_concurrency: record(string2(), number2().int().nonnegative()).optional(),
@@ -7735,6 +7823,7 @@ var OmoTaskSettingsLayerSchema = object({
   process_runner: _enum(["host", "child-process"]).optional(),
   host_engine_policy: _enum(["upgrade", "fallback"]).optional(),
   host_idle_exit_ms: number2().int().positive().optional(),
+  host_shard_prewarm: _enum(["off", "first-turn", "session-start"]).optional(),
   default_concurrency: number2().int().nonnegative().optional(),
   global_concurrency: number2().int().nonnegative().optional(),
   provider_concurrency: record(string2(), number2().int().nonnegative()).optional(),
@@ -7831,11 +7920,15 @@ var OmoFormatOnMutationSchema = OmoFormatOnMutationLayerSchema.extend({
   timeoutMs: number2().int().positive().default(3000)
 }).strict();
 
+// ../../omo-config-core/src/schema/gateway.ts
+var OmoGatewaySectionSchema = record(string2(), unknown()).describe("Chat-surface gateway settings, owned and validated by a separately installed gateway package. omo accepts the key and never reads it.");
+
 // ../../omo-config-core/src/schema/config.ts
 var OmoOpenCodeHarnessConfigSchema = record(string2(), unknown());
 var OmoDisabledSkillsSchema = array(string2());
 var OmoTypedHarnessConfigSchema = object({
   formatOnMutation: OmoFormatOnMutationLayerSchema.optional(),
+  gateway: OmoGatewaySectionSchema.optional(),
   categories: OmoCategoriesConfigSchema.optional(),
   agents: OmoAgentsConfigSchema.optional(),
   git_master: OmoGitMasterSettingsLayerSchema.optional(),
@@ -7846,6 +7939,7 @@ var OmoTypedHarnessConfigSchema = object({
   model_profile: string2().optional(),
   memory: OmoMemorySettingsLayerSchema.optional(),
   telemetry: OmoTelemetrySettingsLayerSchema.optional(),
+  side_panel: OmoSidePanelSettingsLayerSchema.optional(),
   computer: OmoComputerSettingsLayerSchema.optional(),
   disabled_skills: OmoDisabledSkillsSchema.optional()
 }).strict();
@@ -7861,6 +7955,7 @@ var OmoConfigProfileSchema = object({
   model_profile: string2().optional(),
   memory: OmoMemorySettingsLayerSchema.optional(),
   telemetry: OmoTelemetrySettingsLayerSchema.optional(),
+  side_panel: OmoSidePanelSettingsLayerSchema.optional(),
   computer: OmoComputerSettingsLayerSchema.optional(),
   disabled_skills: OmoDisabledSkillsSchema.optional(),
   "[opencode]": OmoOpenCodeHarnessConfigSchema.optional(),
@@ -7870,6 +7965,7 @@ var OmoConfigProfileSchema = object({
 }).strict();
 var OmoConfigSchema = object({
   formatOnMutation: OmoFormatOnMutationSchema.optional(),
+  gateway: OmoGatewaySectionSchema.optional(),
   $schema: string2().optional(),
   categories: OmoCategoriesConfigSchema.optional(),
   agents: OmoAgentsConfigSchema.optional(),
@@ -7881,6 +7977,7 @@ var OmoConfigSchema = object({
   model_profile: string2().optional(),
   memory: OmoMemorySettingsSchema.optional(),
   telemetry: OmoTelemetrySettingsSchema.optional(),
+  side_panel: OmoSidePanelSettingsSchema.optional(),
   computer: OmoComputerSettingsSchema.optional(),
   disabled_skills: OmoDisabledSkillsSchema.optional(),
   "[opencode]": OmoOpenCodeHarnessConfigSchema.optional(),
@@ -7893,6 +7990,7 @@ var OmoConfigSchema = object({
 }).strict();
 var OmoConfigLayerSchema = object({
   formatOnMutation: OmoFormatOnMutationLayerSchema.optional(),
+  gateway: OmoGatewaySectionSchema.optional(),
   $schema: string2().optional(),
   categories: OmoCategoriesConfigSchema.optional(),
   agents: OmoAgentsConfigSchema.optional(),
@@ -7904,6 +8002,7 @@ var OmoConfigLayerSchema = object({
   model_profile: string2().optional(),
   memory: OmoMemorySettingsLayerSchema.optional(),
   telemetry: OmoTelemetrySettingsLayerSchema.optional(),
+  side_panel: OmoSidePanelSettingsLayerSchema.optional(),
   computer: OmoComputerSettingsLayerSchema.optional(),
   disabled_skills: OmoDisabledSkillsSchema.optional(),
   "[opencode]": OmoOpenCodeHarnessConfigSchema.optional(),
@@ -8018,6 +8117,16 @@ function canonicalizeLegacyHarnessBlocks(document) {
   }
   return { document: canonicalized, renames };
 }
+
+// ../../omo-config-core/src/loader/types.ts
+import { existsSync as existsSync2, lstatSync, readFileSync, realpathSync } from "node:fs";
+var MERGED_OMO_CONFIG_PATH = "(merged omo config)";
+var DEFAULT_READ_FILE_SYSTEM = {
+  existsSync: existsSync2,
+  lstatSync,
+  readFileSync,
+  realpathSync
+};
 
 // ../../../node_modules/.bun/jsonc-parser@3.3.1/node_modules/jsonc-parser/lib/esm/impl/scanner.js
 function createScanner(text, ignoreTrivia = false) {
@@ -8893,6 +9002,255 @@ function mergeOmoConfigRecords(base, override) {
   return result;
 }
 
+// ../../omo-config-core/src/loader/prune-invalid-leaves.ts
+var MAX_PRUNE_PASSES = 32;
+function isContainer(value) {
+  return typeof value === "object" && value !== null;
+}
+function childOf(container, segment) {
+  return Array.isArray(container) ? container[Number(segment)] : container[String(segment)];
+}
+function hasChild(container, segment) {
+  if (Array.isArray(container)) {
+    const index = Number(segment);
+    return Number.isInteger(index) && index >= 0 && index < container.length;
+  }
+  return Object.hasOwn(container, String(segment));
+}
+function segmentsOf(path) {
+  return path.map((segment) => typeof segment === "number" ? segment : String(segment));
+}
+function targetPaths(root, issue2) {
+  const base = segmentsOf(issue2.path);
+  if (issue2.code === "unrecognized_keys")
+    return issue2.keys.map((key) => [...base, key]);
+  let node2 = root;
+  let depth = 0;
+  for (const segment of base) {
+    if (!isContainer(node2) || !hasChild(node2, segment))
+      break;
+    node2 = childOf(node2, segment);
+    depth += 1;
+  }
+  return [base.slice(0, depth)];
+}
+function isAncestor(ancestor, path) {
+  return ancestor.length < path.length && ancestor.every((segment, index) => segment === path[index]);
+}
+function compareDescending(left, right) {
+  const length = Math.min(left.length, right.length);
+  for (let index = 0;index < length; index += 1) {
+    const a = left[index];
+    const b = right[index];
+    if (a === b)
+      continue;
+    if (typeof a === "number" && typeof b === "number")
+      return b - a;
+    return String(b).localeCompare(String(a));
+  }
+  return right.length - left.length;
+}
+function removeChild(container, segment) {
+  if (Array.isArray(container))
+    container.splice(Number(segment), 1);
+  else
+    delete container[String(segment)];
+}
+function isEmpty(container) {
+  return Array.isArray(container) ? container.length === 0 : Object.keys(container).length === 0;
+}
+function removePathAndEmptiedAncestors(root, path) {
+  const chain = [root];
+  for (const segment of path.slice(0, -1)) {
+    const current = chain[chain.length - 1];
+    if (current === undefined)
+      return;
+    const next = childOf(current, segment);
+    if (!isContainer(next))
+      return;
+    chain.push(next);
+  }
+  for (let depth = path.length - 1;depth >= 0; depth -= 1) {
+    const container = chain[depth];
+    const segment = path[depth];
+    if (container === undefined || segment === undefined)
+      return;
+    removeChild(container, segment);
+    if (depth === 0 || !isEmpty(container))
+      return;
+  }
+}
+function prunePass(root, issues) {
+  const byKey = new Map;
+  for (const issue2 of issues) {
+    for (const path of targetPaths(root, issue2)) {
+      if (path.length === 0)
+        return null;
+      const key = path.map((segment) => String(segment)).join(".");
+      if (!byKey.has(key))
+        byKey.set(key, { key, message: issue2.message, path });
+    }
+  }
+  const targets = [...byKey.values()];
+  const outermost = targets.filter((target) => !targets.some((other) => isAncestor(other.path, target.path))).sort((left, right) => compareDescending(left.path, right.path));
+  const next = structuredClone(root);
+  for (const target of outermost)
+    removePathAndEmptiedAncestors(next, target.path);
+  return { dropped: outermost, next };
+}
+function pruneInvalidConfigPaths(config2, issues, validate2, maxPasses = MAX_PRUNE_PASSES) {
+  const dropped = [];
+  let current = config2;
+  let pending = issues;
+  for (let pass = 0;pass < maxPasses; pass += 1) {
+    const step = prunePass(current, pending);
+    if (step === null || step.dropped.length === 0)
+      return { ok: false, dropped };
+    dropped.push(...step.dropped);
+    current = step.next;
+    if (Object.keys(current).length === 0)
+      return { ok: false, dropped };
+    const validation = validate2(current);
+    if (validation.success)
+      return { ok: true, config: current, dropped };
+    pending = validation.issues;
+  }
+  return { ok: false, dropped };
+}
+
+// ../../omo-config-core/src/loader/layer-validation.ts
+function validationDiagnostic(path, issues) {
+  const issuePaths = issues.map((issue2) => issue2.path.map((segment) => String(segment)).join("."));
+  return {
+    kind: "validation",
+    message: `Invalid omo config at ${path}: ${issuePaths.join(", ")}`,
+    path,
+    issuePaths
+  };
+}
+function invalidValueDiagnostics(path, dropped) {
+  return dropped.map((entry) => ({
+    kind: "invalid-value",
+    message: `Ignored invalid value in ${path}: ${entry.key}: ${entry.message}`,
+    path,
+    issuePaths: [entry.key]
+  }));
+}
+function unrecognizedKeyIssues(issues) {
+  return issues.flatMap((issue2) => issue2.code === "unrecognized_keys" ? [{ keys: issue2.keys, path: issue2.path.map((segment) => String(segment)) }] : []);
+}
+function isRecord9(value) {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+function sanitizeUnsafeKeys(value, path = []) {
+  if (Array.isArray(value)) {
+    const issues2 = [];
+    const sanitized2 = value.map((entry, index) => {
+      const nested = sanitizeUnsafeKeys(entry, [...path, String(index)]);
+      issues2.push(...nested.issues);
+      return nested.value;
+    });
+    return { issues: issues2, value: sanitized2 };
+  }
+  if (!isRecord9(value))
+    return { issues: [], value };
+  const issues = [];
+  if (Object.getPrototypeOf(value) !== Object.prototype && Object.getPrototypeOf(value) !== null) {
+    issues.push({ keys: ["__proto__"], path });
+  }
+  const sanitized = {};
+  for (const [key, entry] of Object.entries(value)) {
+    if (isUnsafeObjectKey(key)) {
+      issues.push({ keys: [key], path });
+      continue;
+    }
+    const nested = sanitizeUnsafeKeys(entry, [...path, key]);
+    issues.push(...nested.issues);
+    sanitized[key] = nested.value;
+  }
+  return { issues, value: sanitized };
+}
+function containerAt(record2, path) {
+  let node2 = record2;
+  for (const segment of path) {
+    if (Array.isArray(node2)) {
+      const index = Number(segment);
+      if (!Number.isInteger(index) || index < 0 || index >= node2.length)
+        return null;
+      node2 = node2[index];
+    } else if (isRecord9(node2) && Object.hasOwn(node2, segment)) {
+      node2 = node2[segment];
+    } else {
+      return null;
+    }
+  }
+  return isRecord9(node2) ? node2 : null;
+}
+function stripUnrecognizedKeys(record2, issues) {
+  const stripped = structuredClone(record2);
+  const issuePaths = [];
+  for (const issue2 of issues) {
+    const container = containerAt(stripped, issue2.path);
+    if (container === null)
+      continue;
+    for (const key of issue2.keys) {
+      delete container[key];
+      issuePaths.push([...issue2.path, key].join("."));
+    }
+  }
+  return { issuePaths, stripped };
+}
+function toRecord(value) {
+  if (value === null || typeof value !== "object" || Array.isArray(value))
+    return null;
+  const record2 = {};
+  for (const [key, entry] of Object.entries(value)) {
+    record2[key] = entry;
+  }
+  return record2;
+}
+var validateLayerRecord = (record2) => {
+  const parsed = OmoConfigLayerSchema.safeParse(record2);
+  return parsed.success ? { success: true } : { success: false, issues: parsed.error.issues };
+};
+function validateConfigLayer(path, data) {
+  const sanitized = sanitizeUnsafeKeys(data);
+  const record2 = toRecord(sanitized.value);
+  const unsafeIssuePaths = sanitized.issues.flatMap((issue2) => issue2.keys.map((key) => [...issue2.path, key].join(".")));
+  const unsafeDiagnostics = unsafeIssuePaths.length === 0 ? [] : [{ kind: "unknown-keys", message: `Ignored unknown keys in ${path}: ${unsafeIssuePaths.join(", ")}`, path, issuePaths: unsafeIssuePaths }];
+  const validation = OmoConfigLayerSchema.safeParse(sanitized.value);
+  if (validation.success) {
+    if (record2 !== null)
+      return { loaded: true, diagnostics: unsafeDiagnostics, value: record2 };
+    return {
+      loaded: false,
+      diagnostics: [{ kind: "validation", message: `Invalid omo config at ${path}: root must be an object`, path }]
+    };
+  }
+  const rejected = { loaded: false, diagnostics: [validationDiagnostic(path, validation.error.issues)] };
+  const unknownIssues = unrecognizedKeyIssues(validation.error.issues);
+  if (record2 === null)
+    return rejected;
+  let candidate2 = record2;
+  let issues = validation.error.issues;
+  const diagnostics = [...unsafeDiagnostics];
+  if (unknownIssues.length > 0) {
+    const { issuePaths, stripped } = stripUnrecognizedKeys(record2, unknownIssues);
+    if (issuePaths.length > 0) {
+      diagnostics.push({ kind: "unknown-keys", message: `Ignored unknown keys in ${path}: ${issuePaths.join(", ")}`, path, issuePaths });
+    }
+    const strippedValidation = validateLayerRecord(stripped);
+    if (strippedValidation.success)
+      return { loaded: true, diagnostics, value: stripped };
+    candidate2 = stripped;
+    issues = strippedValidation.issues;
+  }
+  const pruned = pruneInvalidConfigPaths(candidate2, issues, validateLayerRecord);
+  if (!pruned.ok)
+    return rejected;
+  return { loaded: true, diagnostics: [...diagnostics, ...invalidValueDiagnostics(path, pruned.dropped)], value: pruned.config };
+}
+
 // ../../omo-config-core/src/loader/paths.ts
 import { userInfo } from "node:os";
 import { dirname as dirname5, join as join8, posix, resolve as resolve3 } from "node:path";
@@ -8901,15 +9259,6 @@ import { dirname as dirname5, join as join8, posix, resolve as resolve3 } from "
 function toPosixPath(path) {
   return path.split("\\").join("/");
 }
-
-// ../../omo-config-core/src/loader/types.ts
-import { existsSync as existsSync2, lstatSync, readFileSync, realpathSync } from "node:fs";
-var DEFAULT_READ_FILE_SYSTEM = {
-  existsSync: existsSync2,
-  lstatSync,
-  readFileSync,
-  realpathSync
-};
 
 // ../../omo-config-core/src/loader/paths.ts
 var MAX_PROJECT_CONFIG_DIRECTORY_DEPTH = 256;
@@ -9009,7 +9358,7 @@ function resolveOmoProfileName(options = {}) {
   const env = options.env ?? process.env;
   return profileName(options.profile) ?? profileName(env["OMO_PROFILE"]) ?? profileName(env["OCX_PROFILE"]) ?? profileNameFromOpenCodeConfigDir(env["OPENCODE_CONFIG_DIR"]);
 }
-function toRecord(value) {
+function toRecord2(value) {
   if (value === null || typeof value !== "object" || Array.isArray(value))
     return;
   return Object.fromEntries(Object.entries(value));
@@ -9030,13 +9379,13 @@ function harnessLayer(config2, harness) {
   const legacyKeys = Object.entries(OMO_CONFIG_LEGACY_HARNESS_ALIASES).filter(([, target]) => target === canonical).map(([legacy]) => harnessBlockKey(legacy));
   let layer = {};
   for (const key of [...legacyKeys, harnessBlockKey(canonical)]) {
-    layer = mergeOmoConfigRecords(layer, toRecord(config2[key]) ?? {});
+    layer = mergeOmoConfigRecords(layer, toRecord2(config2[key]) ?? {});
   }
   return layer;
 }
 function resolveOmoConfigView(options) {
-  const profiles = toRecord(options.config["profiles"]);
-  const profile = options.profile === undefined ? undefined : toRecord(profiles?.[options.profile]);
+  const profiles = toRecord2(options.config["profiles"]);
+  const profile = options.profile === undefined ? undefined : toRecord2(profiles?.[options.profile]);
   const diagnostics = profile === undefined && options.profile !== undefined ? [{
     kind: "profile",
     message: `Activated omo profile "${options.profile}" does not exist; using the base configuration`,
@@ -9091,70 +9440,9 @@ function stripResolutionControlKeys(config2) {
   } = config2;
   return resolved;
 }
-function validationDiagnostic(path, issues) {
-  const issuePaths = issues.map((issue2) => issue2.path.map((segment) => String(segment)).join("."));
-  return {
-    kind: "validation",
-    message: `Invalid omo config at ${path}: ${issuePaths.join(", ")}`,
-    path,
-    issuePaths
-  };
-}
-function unrecognizedKeyIssues(issues) {
-  return issues.flatMap((issue2) => issue2.code === "unrecognized_keys" ? [{ keys: issue2.keys, path: issue2.path.map((segment) => String(segment)) }] : []);
-}
-function hasUnsafeUnrecognizedKey(issues) {
-  return issues.some((issue2) => issue2.keys.some((key) => isUnsafeObjectKey(key)));
-}
-function hasTamperedPrototype(value) {
-  if (Array.isArray(value))
-    return value.some((entry) => hasTamperedPrototype(entry));
-  if (!isRecord9(value))
-    return false;
-  const prototype = Object.getPrototypeOf(value);
-  if (prototype !== Object.prototype && prototype !== null)
-    return true;
-  return Object.values(value).some((entry) => hasTamperedPrototype(entry));
-}
-function isRecord9(value) {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
-}
-function containerAt(record2, path) {
-  let container = record2;
-  for (const segment of path) {
-    const next = container[segment];
-    if (!isRecord9(next))
-      return null;
-    container = next;
-  }
-  return container;
-}
-function stripUnrecognizedKeys(record2, issues) {
-  const stripped = structuredClone(record2);
-  const issuePaths = [];
-  for (const issue2 of issues) {
-    const container = containerAt(stripped, issue2.path);
-    if (container === null)
-      continue;
-    for (const key of issue2.keys) {
-      delete container[key];
-      issuePaths.push([...issue2.path, key].join("."));
-    }
-  }
-  return { issuePaths, stripped };
-}
-function toRecord2(value) {
-  if (value === null || typeof value !== "object" || Array.isArray(value))
-    return null;
-  const record2 = {};
-  for (const [key, entry] of Object.entries(value)) {
-    record2[key] = entry;
-  }
-  return record2;
-}
 function readConfigSource(path, scope, fileSystem) {
   if (!fileSystem.existsSync(path)) {
-    return { source: { exists: false, loaded: false, path, scope } };
+    return { diagnostics: [], source: { exists: false, loaded: false, path, scope } };
   }
   let content;
   try {
@@ -9162,68 +9450,23 @@ function readConfigSource(path, scope, fileSystem) {
   } catch (error2) {
     const message = error2 instanceof Error ? error2.message : String(error2);
     return {
-      diagnostic: { kind: "read", message: `Failed to read ${path}: ${message}`, path },
+      diagnostics: [{ kind: "read", message: `Failed to read ${path}: ${message}`, path }],
       source: { exists: true, loaded: false, path, scope }
     };
   }
   const parsed = parseJsoncSafe(content);
   if (parsed.errors.length > 0) {
     return {
-      diagnostic: {
+      diagnostics: [{
         kind: "parse",
         message: `JSONC parse error in ${path}: ${parsed.errors.map((error2) => error2.message).join(", ")}`,
         path
-      },
+      }],
       source: { exists: true, loaded: false, path, scope }
     };
   }
-  if (hasTamperedPrototype(parsed.data)) {
-    return {
-      diagnostic: { kind: "validation", message: `Invalid omo config at ${path}: "__proto__" member is not allowed`, path },
-      source: { exists: true, loaded: false, path, scope }
-    };
-  }
-  const parsedRecord = toRecord2(parsed.data);
-  const validation = OmoConfigLayerSchema.safeParse(parsed.data);
-  if (!validation.success) {
-    const unrecognized = unrecognizedKeyIssues(validation.error.issues);
-    if (hasUnsafeUnrecognizedKey(unrecognized)) {
-      return {
-        diagnostic: validationDiagnostic(path, validation.error.issues),
-        source: { exists: true, loaded: false, path, scope }
-      };
-    }
-    const rejected = {
-      diagnostic: validationDiagnostic(path, validation.error.issues),
-      source: { exists: true, loaded: false, path, scope }
-    };
-    const unknownIssues = unrecognizedKeyIssues(validation.error.issues);
-    if (parsedRecord === null || unknownIssues.length === 0)
-      return rejected;
-    const { issuePaths, stripped } = stripUnrecognizedKeys(parsedRecord, unknownIssues);
-    if (!OmoConfigLayerSchema.safeParse(stripped).success)
-      return rejected;
-    return {
-      diagnostic: {
-        kind: "unknown-keys",
-        message: `Ignored unknown keys in ${path}: ${issuePaths.join(", ")}`,
-        path,
-        issuePaths
-      },
-      source: { exists: true, loaded: true, path, scope },
-      value: stripped
-    };
-  }
-  if (parsedRecord === null) {
-    return {
-      diagnostic: { kind: "validation", message: `Invalid omo config at ${path}: root must be an object`, path },
-      source: { exists: true, loaded: false, path, scope }
-    };
-  }
-  return {
-    source: { exists: true, loaded: true, path, scope },
-    value: parsedRecord
-  };
+  const layer = validateConfigLayer(path, parsed.data);
+  return layer.loaded ? { diagnostics: layer.diagnostics, source: { exists: true, loaded: true, path, scope }, value: layer.value } : { diagnostics: layer.diagnostics, source: { exists: true, loaded: false, path, scope } };
 }
 function legacyCategoryDiagnostic(path, renames) {
   const detail = renames.map((rename3) => rename3.dropped ? `${rename3.path} ignored because ${rename3.canonical} is also configured` : `${rename3.path} renamed to ${rename3.canonical}`).join(", ");
@@ -9258,8 +9501,7 @@ function loadOmoConfig(options = {}) {
   })) {
     const loaded = readConfigSource(candidate2.path, candidate2.scope, fileSystem);
     sources.push(loaded.source);
-    if (loaded.diagnostic !== undefined)
-      diagnostics.push(loaded.diagnostic);
+    diagnostics.push(...loaded.diagnostics);
     if (loaded.value !== undefined) {
       const canonicalized = canonicalizeLegacyCategoryNames(loaded.value);
       if (canonicalized.renames.length > 0) {
@@ -9282,7 +9524,8 @@ function loadOmoConfig(options = {}) {
     ...options.harness === undefined ? {} : { harness: options.harness },
     ...requestedProfile === undefined ? {} : { profile: requestedProfile }
   });
-  const finalConfig = OmoConfigSchema.safeParse(mergeOmoConfigRecords(DEFAULT_RAW_CONFIG, resolved.config));
+  const finalInput = mergeOmoConfigRecords(DEFAULT_RAW_CONFIG, resolved.config);
+  const finalConfig = OmoConfigSchema.safeParse(finalInput);
   if (finalConfig.success) {
     return {
       config: stripResolutionControlKeys(finalConfig.data),
@@ -9292,30 +9535,115 @@ function loadOmoConfig(options = {}) {
       sources
     };
   }
+  const pruned = pruneInvalidConfigPaths(finalInput, finalConfig.error.issues, (record2) => {
+    const parsed = OmoConfigSchema.safeParse(record2);
+    return parsed.success ? { success: true } : { success: false, issues: parsed.error.issues };
+  });
+  if (pruned.ok) {
+    return {
+      config: stripResolutionControlKeys(OmoConfigSchema.parse(pruned.config)),
+      diagnostics: [...diagnostics, ...resolved.diagnostics, ...invalidValueDiagnostics(MERGED_OMO_CONFIG_PATH, pruned.dropped)],
+      layers,
+      ...resolved.profile === undefined ? {} : { profile: resolved.profile },
+      sources
+    };
+  }
   return {
     config: stripResolutionControlKeys(OmoConfigSchema.parse(DEFAULT_RAW_CONFIG)),
-    diagnostics: [...diagnostics, ...resolved.diagnostics, validationDiagnostic("(merged omo config)", finalConfig.error.issues)],
+    diagnostics: [...diagnostics, ...resolved.diagnostics, validationDiagnostic(MERGED_OMO_CONFIG_PATH, finalConfig.error.issues)],
     layers,
     ...resolved.profile === undefined ? {} : { profile: resolved.profile },
     sources
   };
 }
 
-// ../src/install/codex-default-role-config.ts
-function readDefaultRoleConfig(options = {}) {
+// ../src/install/codex-cache-fs.ts
+import { lstat } from "node:fs/promises";
+async function fileExistsStrict(path) {
+  try {
+    await lstat(path);
+    return true;
+  } catch (error2) {
+    if (isNodeErrorWithCode(error2) && error2.code === "ENOENT")
+      return false;
+    throw error2;
+  }
+}
+function isPlainRecord(value) {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+function isNodeErrorWithCode(error2) {
+  return typeof error2 === "object" && error2 !== null && "code" in error2;
+}
+
+// ../src/install/codex-agent-config.ts
+function readCodexAgentConfig(options = {}) {
   const result = loadOmoConfig({ ...options, harness: "codex" });
+  const overrides = readAgentOverrides(result);
   return {
-    enabled: result.config.agents?.default?.disable !== true,
-    warnings: result.diagnostics.map((diagnostic) => diagnostic.message)
+    defaultRoleEnabled: result.config.agents?.default?.disable !== true,
+    agentOverrides: overrides.agentOverrides,
+    warnings: [...result.diagnostics.map((diagnostic) => diagnostic.message), ...overrides.warnings]
   };
+}
+function unmanagedAgentOverrideWarnings(agentOverrides, managedAgentNames) {
+  return [...agentOverrides.keys()].filter((name) => !managedAgentNames.has(name)).map((name) => `[codex].agents.${name} does not name a LazyCodex-managed agent role; its model override was not applied`);
+}
+function readAgentOverrides(result) {
+  let merged = {};
+  for (const layer of result.layers)
+    merged = mergeOmoConfigRecords(merged, layer.config);
+  const profile = result.profile === undefined ? undefined : recordAt(recordAt(merged, "profiles"), result.profile);
+  let agents = {};
+  for (const scope of [merged, profile]) {
+    agents = mergeOmoConfigRecords(agents, recordAt(recordAt(scope, "[codex]"), "agents") ?? {});
+  }
+  const agentOverrides = new Map;
+  const warnings = [];
+  for (const [name, value] of Object.entries(agents)) {
+    if (name === "default")
+      continue;
+    const parsed = OmoAgentDefSchema.safeParse(value);
+    if (!parsed.success) {
+      warnings.push(`[codex].agents.${name} is invalid and was ignored: ${parsed.error.issues[0]?.message ?? "unknown error"}`);
+      continue;
+    }
+    const override = toCodexAgentOverride(parsed.data.model, parsed.data.reasoning);
+    if (override.model !== undefined || override.reasoningEffort !== undefined)
+      agentOverrides.set(name, override);
+  }
+  return { agentOverrides, warnings };
+}
+function toCodexAgentOverride(model, reasoning) {
+  const split = model === undefined ? undefined : splitReasoningSuffix(model);
+  const effort = codexReasoningEffort(reasoning ?? split?.level);
+  return {
+    ...split === undefined || split.base === "" ? {} : { model: split.base },
+    ...effort === undefined ? {} : { reasoningEffort: effort }
+  };
+}
+function codexReasoningEffort(reasoning) {
+  if (reasoning === undefined || reasoning === "auto")
+    return;
+  return reasoning === "off" ? "none" : reasoning;
+}
+function recordAt(value, key) {
+  if (!isPlainRecord(value))
+    return;
+  const child = value[key];
+  return isPlainRecord(child) ? child : undefined;
 }
 
 // ../src/install/link-cached-plugin-agents.ts
-import { copyFile, lstat as lstat5, mkdir as mkdir4, readdir as readdir2, rm as rm7, writeFile as writeFile5 } from "node:fs/promises";
-import { basename as basename4, join as join13 } from "node:path";
+import { copyFile, lstat as lstat6, mkdir as mkdir4, readdir as readdir2, readFile as readFile8, rm as rm8, writeFile as writeFile6 } from "node:fs/promises";
+import { basename as basename4, join as join14 } from "node:path";
+
+// ../src/install/agent-model-overrides.ts
+import { readFile as readFile5, rm as rm5, writeFile as writeFile4 } from "node:fs/promises";
+import { join as join10 } from "node:path";
 
 // ../src/install/preserved-agent-settings.ts
-import { lstat, readFile as readFile4, readdir, writeFile as writeFile3 } from "node:fs/promises";
+import { lstat as lstat2, readFile as readFile4, readdir, writeFile as writeFile3 } from "node:fs/promises";
 import { join as join9 } from "node:path";
 
 // ../src/install/toml-section-editor.ts
@@ -10119,6 +10447,17 @@ async function restorePreservedServiceTier(input) {
     return;
   await writeFile3(input.linkPath, replacement.content);
 }
+async function restorePreservedModel(input) {
+  if (input.value === null)
+    return;
+  const content = await readFile4(input.linkPath, "utf8");
+  if (extractModel(content) === input.value)
+    return;
+  const replacement = replaceTopLevelStringSetting(content, "model", input.value, { insertIfMissing: true });
+  if (!replacement.replaced)
+    return;
+  await writeFile3(input.linkPath, replacement.content);
+}
 async function readTextIfExists(path) {
   try {
     return await readFile4(path, "utf8");
@@ -10201,7 +10540,7 @@ function agentNameFromToml(fileName) {
 }
 async function exists(path) {
   try {
-    await lstat(path);
+    await lstat2(path);
     return true;
   } catch (error2) {
     if (nodeErrorCode(error2) !== "ENOENT")
@@ -10215,9 +10554,86 @@ function nodeErrorCode(error2) {
   return typeof error2.code === "string" ? error2.code : null;
 }
 
+// ../src/install/agent-model-overrides.ts
+var RECEIPT_FILE = ".lazycodex-agent-models.json";
+async function readAgentModelReceipts(codexHome) {
+  const content = await readTextIfExists(receiptPath(codexHome));
+  if (content === null)
+    return new Map;
+  const parsed = parseJson(content);
+  if (!isPlainRecord(parsed))
+    return new Map;
+  const receipts = new Map;
+  for (const [name, value] of Object.entries(parsed)) {
+    if (!isPlainRecord(value))
+      continue;
+    const model = value["model"];
+    const reasoningEffort = value["reasoningEffort"];
+    receipts.set(name, {
+      ...typeof model === "string" ? { model } : {},
+      ...typeof reasoningEffort === "string" ? { reasoningEffort } : {}
+    });
+  }
+  return receipts;
+}
+async function writeAgentModelReceipts(codexHome, receipts) {
+  const path = receiptPath(codexHome);
+  if (receipts.size === 0) {
+    await rm5(path, { force: true });
+    return;
+  }
+  await writeFile4(path, `${JSON.stringify(Object.fromEntries(receipts), null, "\t")}
+`);
+}
+async function applyAgentOverride(input) {
+  if (input.override === undefined)
+    return;
+  let content = await readFile5(input.linkPath, "utf8");
+  if (input.override.model !== undefined) {
+    content = replaceTopLevelStringSetting(content, "model", input.override.model, { insertIfMissing: true }).content;
+  }
+  if (input.override.reasoningEffort !== undefined) {
+    content = replaceTopLevelStringSetting(content, "model_reasoning_effort", input.override.reasoningEffort, {
+      insertIfMissing: true
+    }).content;
+  }
+  await writeFile4(input.linkPath, content);
+}
+function receiptPath(codexHome) {
+  return join10(codexHome, "agents", RECEIPT_FILE);
+}
+function parseJson(content) {
+  try {
+    return JSON.parse(content);
+  } catch (error2) {
+    if (error2 instanceof SyntaxError)
+      return null;
+    throw error2;
+  }
+}
+
+// ../src/install/managed-agent-model-defaults.ts
+var PREVIOUSLY_BUNDLED_AGENT_MODELS = new Set([
+  "gpt-5.2",
+  "gpt-5.4-mini",
+  "gpt-5.5",
+  "gpt-5.6-luna",
+  "gpt-5.6-luna-fast",
+  "gpt-5.6-sol",
+  "gpt-5.6-terra",
+  "gpt-6-astra"
+]);
+function handEditedAgentModel(installedModel, receipt) {
+  if (installedModel === null)
+    return null;
+  if (receipt?.model !== undefined)
+    return installedModel === receipt.model ? null : installedModel;
+  return PREVIOUSLY_BUNDLED_AGENT_MODELS.has(installedModel) ? null : installedModel;
+}
+
 // ../src/install/retired-managed-agent-purge.ts
-import { lstat as lstat2, readFile as readFile5, rm as rm5 } from "node:fs/promises";
-import { join as join10 } from "node:path";
+import { lstat as lstat3, readFile as readFile6, rm as rm6 } from "node:fs/promises";
+import { join as join11 } from "node:path";
 var RETIRED_MANAGED_AGENT_FILES = [
   {
     fileName: "codex-ultrawork-reviewer.toml",
@@ -10229,20 +10645,20 @@ var RETIRED_MANAGED_AGENT_FILES = [
   }
 ];
 async function purgeRetiredManagedAgentFiles(input) {
-  const agentsDir = join10(input.codexHome, "agents");
+  const agentsDir = join11(input.codexHome, "agents");
   if (!await exists2(agentsDir))
     return;
   for (const retiredAgent of RETIRED_MANAGED_AGENT_FILES) {
-    const agentPath = join10(agentsDir, retiredAgent.fileName);
+    const agentPath = join11(agentsDir, retiredAgent.fileName);
     if (!await exists2(agentPath))
       continue;
-    const agentStat = await lstat2(agentPath);
+    const agentStat = await lstat3(agentPath);
     if (agentStat.isDirectory() && !agentStat.isSymbolicLink())
       continue;
     const content = await readTextIfExists2(agentPath);
     if (content === null || !hasRequiredMarkers(content, retiredAgent.requiredMarkers))
       continue;
-    await rm5(agentPath, { force: true });
+    await rm6(agentPath, { force: true });
   }
 }
 function hasRequiredMarkers(content, markers) {
@@ -10250,7 +10666,7 @@ function hasRequiredMarkers(content, markers) {
 }
 async function readTextIfExists2(path) {
   try {
-    return await readFile5(path, "utf8");
+    return await readFile6(path, "utf8");
   } catch (error2) {
     if (nodeErrorCode2(error2) === "ENOENT")
       return null;
@@ -10259,7 +10675,7 @@ async function readTextIfExists2(path) {
 }
 async function exists2(path) {
   try {
-    await lstat2(path);
+    await lstat3(path);
     return true;
   } catch (error2) {
     if (nodeErrorCode2(error2) !== "ENOENT")
@@ -10275,18 +10691,18 @@ function nodeErrorCode2(error2) {
 
 // ../src/install/default-agent-role.ts
 import { createHash as createHash3 } from "node:crypto";
-import { lstat as lstat4, readFile as readFile6, rm as rm6 } from "node:fs/promises";
-import { join as join12 } from "node:path";
+import { lstat as lstat5, readFile as readFile7, rm as rm7 } from "node:fs/promises";
+import { join as join13 } from "node:path";
 
 // ../src/install/codex-config-atomic-write.ts
-import { lstat as lstat3, readlink, realpath, rename as rename3, unlink, writeFile as writeFile4 } from "node:fs/promises";
-import { basename as basename3, dirname as dirname6, isAbsolute as isAbsolute2, join as join11, resolve as resolve4 } from "node:path";
+import { lstat as lstat4, readlink, realpath, rename as rename3, unlink, writeFile as writeFile5 } from "node:fs/promises";
+import { basename as basename3, dirname as dirname6, isAbsolute as isAbsolute2, join as join12, resolve as resolve4 } from "node:path";
 var RENAME_RETRY_DELAYS_MS = [10, 25, 50];
 var RETRIABLE_RENAME_CODES = new Set(["EPERM", "EBUSY"]);
 async function writeFileAtomic(targetPath, data) {
   const writeTarget = await resolveSymlinkTarget(targetPath);
-  const temporaryPath = join11(dirname6(writeTarget), `.tmp-${basename3(writeTarget)}-${process.pid}-${Date.now()}`);
-  await writeFile4(temporaryPath, data);
+  const temporaryPath = join12(dirname6(writeTarget), `.tmp-${basename3(writeTarget)}-${process.pid}-${Date.now()}`);
+  await writeFile5(temporaryPath, data);
   try {
     await renameWithRetry(temporaryPath, writeTarget);
   } catch (error2) {
@@ -10300,7 +10716,7 @@ async function writeFileAtomic(targetPath, data) {
 }
 async function resolveSymlinkTarget(targetPath) {
   try {
-    const linkStats = await lstat3(targetPath);
+    const linkStats = await lstat4(targetPath);
     if (!linkStats.isSymbolicLink())
       return targetPath;
   } catch (error2) {
@@ -10391,11 +10807,11 @@ function tomlKeySegment(value) {
 // ../src/install/default-agent-role.ts
 var REGISTRATION = { name: "default", configFile: "./agents/default.toml" };
 async function installDefaultAgentRole(input) {
-  const target = join12(input.codexHome, "agents", "default.toml");
-  const receipt = join12(input.codexHome, "agents", ".lazycodex-default.sha256");
-  const configPath = join12(input.codexHome, "config.toml");
+  const target = join13(input.codexHome, "agents", "default.toml");
+  const receipt = join13(input.codexHome, "agents", ".lazycodex-default.sha256");
+  const configPath = join13(input.codexHome, "config.toml");
   const config2 = await readIfPresent(configPath);
-  const entry = await lstat4(target).catch((error2) => {
+  const entry = await lstat5(target).catch((error2) => {
     if (error2 instanceof Error && "code" in error2 && error2.code === "ENOENT")
       return null;
     throw error2;
@@ -10416,15 +10832,15 @@ async function installDefaultAgentRole(input) {
         if (next !== config2)
           await writeFileAtomic(configPath, next);
       }
-      await rm6(target);
-      await rm6(receipt);
+      await rm7(target);
+      await rm7(receipt);
     }
     return null;
   }
   if (foreign || existing !== null && !owned) {
     throw new Error("Preserved user-owned agents.default / agents/default.toml. Move it aside to install the LazyCodex fallback, or set [codex].agents.default.disable = true in omo.jsonc. Explicit LazyCodex roles remain required.");
   }
-  const worker = await readFile6(input.worker.path, "utf8");
+  const worker = await readFile7(input.worker.path, "utf8");
   const content = worker.replace(/^name\s*=\s*["']lazycodex-worker-medium["']\s*$/m, 'name = "default"');
   if (content === worker)
     throw new Error("Cannot derive default: medium worker has no matching internal name");
@@ -10434,7 +10850,7 @@ async function installDefaultAgentRole(input) {
 }
 async function readIfPresent(path) {
   try {
-    return await readFile6(path, "utf8");
+    return await readFile7(path, "utf8");
   } catch (error2) {
     if (error2 instanceof Error && "code" in error2 && error2.code === "ENOENT")
       return null;
@@ -10454,27 +10870,19 @@ async function linkCachedPluginAgents(input) {
     await writeManifest(input.pluginRoot, []);
     return [];
   }
-  const agentsDir = join13(input.codexHome, "agents");
+  const agentsDir = join14(input.codexHome, "agents");
   await mkdir4(agentsDir, { recursive: true });
+  const previousReceipts = await readAgentModelReceipts(input.codexHome);
+  const receipts = new Map;
   const linked = [];
   for (const agentPath of bundledAgents) {
     const agentFileName = basename4(agentPath);
     const agentName = agentNameFromToml2(agentFileName);
-    const linkPath = join13(agentsDir, agentFileName);
-    await replaceWithCopy(linkPath, agentPath);
-    await restorePreservedReasoning({
-      agentName,
-      linkPath,
-      target: agentPath,
-      value: input.preservedReasoning?.get(agentName)
-    });
-    await restorePreservedServiceTier({
-      linkPath,
-      preserved: input.preservedServiceTier?.has(agentName) ?? false,
-      value: input.preservedServiceTier?.get(agentName) ?? null
-    });
+    const linkPath = join14(agentsDir, agentFileName);
+    receipts.set(agentName, await syncAgentFile({ ...input, agentName, agentPath, linkPath, previousReceipt: previousReceipts.get(agentName) }));
     linked.push({ name: agentFileName, path: linkPath, target: agentPath });
   }
+  await writeAgentModelReceipts(input.codexHome, receipts);
   const worker = linked.find((entry) => entry.name === "lazycodex-worker-medium.toml");
   if (worker !== undefined) {
     const fallback = await installDefaultAgentRole({ codexHome: input.codexHome, worker, enabled: input.defaultRoleEnabled !== false });
@@ -10484,8 +10892,33 @@ async function linkCachedPluginAgents(input) {
   await writeManifest(input.pluginRoot, linked.map((entry) => entry.path));
   return linked;
 }
+async function syncAgentFile(input) {
+  const installed = await readTextIfExists(input.linkPath);
+  const installedModel = installed === null ? null : extractModel(installed);
+  const preservedReasoning = input.preservedReasoning?.get(input.agentName);
+  const override = input.agentOverrides?.get(input.agentName);
+  await replaceWithCopy(input.linkPath, input.agentPath);
+  await restorePreservedModel({ linkPath: input.linkPath, value: handEditedAgentModel(installedModel, input.previousReceipt) });
+  await restorePreservedReasoning({
+    agentName: input.agentName,
+    linkPath: input.linkPath,
+    target: input.agentPath,
+    value: preservedReasoning?.effort === input.previousReceipt?.reasoningEffort ? undefined : preservedReasoning
+  });
+  await restorePreservedServiceTier({
+    linkPath: input.linkPath,
+    preserved: input.preservedServiceTier?.has(input.agentName) ?? false,
+    value: input.preservedServiceTier?.get(input.agentName) ?? null
+  });
+  await applyAgentOverride({ linkPath: input.linkPath, override });
+  const model = override?.model ?? extractModel(await readFile8(input.agentPath, "utf8"));
+  return {
+    ...model === null ? {} : { model },
+    ...override?.reasoningEffort === undefined ? {} : { reasoningEffort: override.reasoningEffort }
+  };
+}
 async function discoverBundledAgents(pluginRoot) {
-  const componentsRoot = join13(pluginRoot, "components");
+  const componentsRoot = join14(pluginRoot, "components");
   if (!await exists3(componentsRoot))
     return [];
   const componentEntries = await readdir2(componentsRoot, { withFileTypes: true });
@@ -10493,14 +10926,14 @@ async function discoverBundledAgents(pluginRoot) {
   for (const entry of componentEntries) {
     if (!entry.isDirectory())
       continue;
-    const agentsRoot = join13(componentsRoot, entry.name, "agents");
+    const agentsRoot = join14(componentsRoot, entry.name, "agents");
     if (!await exists3(agentsRoot))
       continue;
     const agentEntries = await readdir2(agentsRoot, { withFileTypes: true });
     for (const file of agentEntries) {
       if (!file.isFile() || !file.name.endsWith(".toml"))
         continue;
-      agents.push(join13(agentsRoot, file.name));
+      agents.push(join14(agentsRoot, file.name));
     }
   }
   agents.sort();
@@ -10513,16 +10946,16 @@ async function replaceWithCopy(linkPath, target) {
 async function prepareReplacement(linkPath) {
   if (!await exists3(linkPath))
     return;
-  const entryStat = await lstat5(linkPath);
+  const entryStat = await lstat6(linkPath);
   if (entryStat.isDirectory() && !entryStat.isSymbolicLink()) {
     throw new Error(`${linkPath} already exists and is a directory; refusing to replace`);
   }
-  await rm7(linkPath, { force: true });
+  await rm8(linkPath, { force: true });
 }
 async function writeManifest(pluginRoot, agentPaths) {
-  const manifestPath = join13(pluginRoot, MANIFEST_FILE);
+  const manifestPath = join14(pluginRoot, MANIFEST_FILE);
   const payload = { agents: [...agentPaths].sort() };
-  await writeFile5(manifestPath, `${JSON.stringify(payload, null, "\t")}
+  await writeFile6(manifestPath, `${JSON.stringify(payload, null, "\t")}
 `);
 }
 function agentNameFromToml2(fileName) {
@@ -10530,7 +10963,7 @@ function agentNameFromToml2(fileName) {
 }
 async function exists3(path) {
   try {
-    await lstat5(path);
+    await lstat6(path);
     return true;
   } catch (error2) {
     if (nodeErrorCode3(error2) !== "ENOENT")
@@ -10545,8 +10978,8 @@ function nodeErrorCode3(error2) {
 }
 
 // ../src/install/codex-cache-bins.ts
-import { chmod as chmod2, lstat as lstat9, mkdir as mkdir5, readFile as readFile9, readdir as readdir4, readlink as readlink4, rm as rm10, stat as stat4, symlink, writeFile as writeFile6 } from "node:fs/promises";
-import { basename as basename5, isAbsolute as isAbsolute4, join as join17, relative as relative2, resolve as resolve6, sep } from "node:path";
+import { chmod as chmod2, lstat as lstat9, mkdir as mkdir5, readFile as readFile11, readdir as readdir4, readlink as readlink4, rm as rm11, stat as stat4, symlink, writeFile as writeFile7 } from "node:fs/promises";
+import { basename as basename5, isAbsolute as isAbsolute4, join as join18, relative as relative2, resolve as resolve6, sep } from "node:path";
 
 // ../src/install/codex-cache-command-shim.ts
 var COMMAND_SHIM_MARKER = ":: generated by oh-my-openagent Codex installer";
@@ -10590,36 +11023,15 @@ function windowsCommandShim(targetPath) {
 }
 
 // ../src/install/codex-cache-dangling-bins.ts
-import { lstat as lstat7, readFile as readFile7, readdir as readdir3, readlink as readlink2, rm as rm8, stat as stat3 } from "node:fs/promises";
-import { dirname as dirname7, isAbsolute as isAbsolute3, join as join14, resolve as resolve5 } from "node:path";
-
-// ../src/install/codex-cache-fs.ts
-import { lstat as lstat6 } from "node:fs/promises";
-async function fileExistsStrict(path) {
-  try {
-    await lstat6(path);
-    return true;
-  } catch (error2) {
-    if (isNodeErrorWithCode(error2) && error2.code === "ENOENT")
-      return false;
-    throw error2;
-  }
-}
-function isPlainRecord(value) {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
-}
-function isNodeErrorWithCode(error2) {
-  return typeof error2 === "object" && error2 !== null && "code" in error2;
-}
-
-// ../src/install/codex-cache-dangling-bins.ts
+import { lstat as lstat7, readFile as readFile9, readdir as readdir3, readlink as readlink2, rm as rm9, stat as stat3 } from "node:fs/promises";
+import { dirname as dirname7, isAbsolute as isAbsolute3, join as join15, resolve as resolve5 } from "node:path";
 async function removeDanglingManagedComponentBins(binDir, platform, managedBinNames) {
   const entries = await readdir3(binDir, { withFileTypes: true });
   for (const entry of entries) {
     const binName = managedBinNameForEntry(entry.name, platform);
     if (binName === null || !managedBinNames.has(binName))
       continue;
-    const linkPath = join14(binDir, entry.name);
+    const linkPath = join15(binDir, entry.name);
     if (platform === "win32") {
       await removeDanglingGeneratedCommandShim(linkPath);
       continue;
@@ -10640,7 +11052,7 @@ async function removeDanglingManagedSymlink(linkPath) {
     const linkTarget = await readlink2(linkPath);
     const target = isAbsolute3(linkTarget) ? linkTarget : resolve5(dirname7(linkPath), linkTarget);
     if (!await isFileSystemEntry(target) && isManagedComponentBinTarget(target))
-      await rm8(linkPath, { force: true });
+      await rm9(linkPath, { force: true });
   } catch (error2) {
     if (isNodeErrorWithCode(error2) && error2.code === "ENOENT")
       return;
@@ -10652,12 +11064,12 @@ async function removeDanglingGeneratedCommandShim(linkPath) {
     const linkStat = await lstat7(linkPath);
     if (!linkStat.isFile())
       return;
-    const content = await readFile7(linkPath, "utf8");
+    const content = await readFile9(linkPath, "utf8");
     if (!content.includes(COMMAND_SHIM_MARKER))
       return;
     const target = extractCommandShimTarget(content);
     if (target !== null && !await isFileSystemEntry(target) && isManagedComponentBinTarget(target))
-      await rm8(linkPath, { force: true });
+      await rm9(linkPath, { force: true });
   } catch (error2) {
     if (isNodeErrorWithCode(error2) && error2.code === "ENOENT")
       return;
@@ -10700,8 +11112,8 @@ function hasOmoCodexPluginPrefix(parts, endExclusive) {
 }
 
 // ../src/install/codex-cache-legacy-bins.ts
-import { lstat as lstat8, readFile as readFile8, readlink as readlink3, rm as rm9 } from "node:fs/promises";
-import { join as join15 } from "node:path";
+import { lstat as lstat8, readFile as readFile10, readlink as readlink3, rm as rm10 } from "node:fs/promises";
+import { join as join16 } from "node:path";
 var LEGACY_CODEX_COMPONENT_BINS = [
   { name: "omo", component: "ulw-loop" },
   { name: "codex-comment-checker", component: "comment-checker" },
@@ -10714,7 +11126,7 @@ var LEGACY_CODEX_COMPONENT_BINS = [
 var LEGACY_CODEX_COMPONENT_BIN_NAMES = LEGACY_CODEX_COMPONENT_BINS.map((entry) => entry.name);
 async function removeLegacyCodexComponentBins(binDir, platform) {
   for (const entry of LEGACY_CODEX_COMPONENT_BINS) {
-    const linkPath = join15(binDir, platform === "win32" ? `${entry.name}.cmd` : entry.name);
+    const linkPath = join16(binDir, platform === "win32" ? `${entry.name}.cmd` : entry.name);
     await removeLegacyCodexComponentBin(linkPath, entry.component, platform);
   }
 }
@@ -10726,14 +11138,14 @@ async function removeLegacyCodexComponentBin(linkPath, component, platform) {
         return;
       const target = await readlink3(linkPath);
       if (isManagedLegacyComponentTarget(target, component))
-        await rm9(linkPath, { force: true });
+        await rm10(linkPath, { force: true });
       return;
     }
     if (!stat4.isFile())
       return;
-    const content = await readFile8(linkPath, "utf8");
+    const content = await readFile10(linkPath, "utf8");
     if (content.includes(COMMAND_SHIM_MARKER))
-      await rm9(linkPath, { force: true });
+      await rm10(linkPath, { force: true });
   } catch (error2) {
     if (isNodeErrorWithCode2(error2) && error2.code === "ENOENT")
       return;
@@ -10765,10 +11177,10 @@ function isNodeErrorWithCode2(error2) {
 }
 
 // ../src/install/codex-cache-runtime-wrapper.ts
-import { join as join16 } from "node:path";
+import { join as join17 } from "node:path";
 var RUNTIME_WRAPPER_MARKER = "OMO_GENERATED_RUNTIME_WRAPPER";
 function posixRuntimeWrapper(binName, cliPath, codexHome, binDir, nodeCliPath) {
-  const ulwLoopBin = toPosixPath2(join16(binDir, "omo-ulw-loop"));
+  const ulwLoopBin = toPosixPath2(join17(binDir, "omo-ulw-loop"));
   const nodeCli = escapePosixDoubleQuoted(toPosixPath2(nodeCliPath));
   const escapedCliPath = escapePosixDoubleQuoted(toPosixPath2(cliPath));
   const escapedCodexHome = escapePosixDoubleQuoted(toPosixPath2(codexHome));
@@ -10815,7 +11227,7 @@ function posixRuntimeWrapper(binName, cliPath, codexHome, binDir, nodeCliPath) {
 `);
 }
 function windowsRuntimeWrapper(binName, cliPath, codexHome, binDir, nodeCliPath) {
-  const ulwLoopBin = join16(binDir, "omo-ulw-loop.cmd");
+  const ulwLoopBin = join17(binDir, "omo-ulw-loop.cmd");
   return [
     "@echo off",
     `rem ${RUNTIME_WRAPPER_MARKER}`,
@@ -10881,23 +11293,23 @@ async function linkCachedPluginBins(input) {
   return linked;
 }
 async function linkRootRuntimeBin(input) {
-  const cliPath = join17(input.repoRoot, "dist", "cli", "index.js");
+  const cliPath = join18(input.repoRoot, "dist", "cli", "index.js");
   const platform = input.platform ?? process.platform;
-  const legacyPath = join17(input.binDir, platform === "win32" ? "omo.cmd" : "omo");
+  const legacyPath = join18(input.binDir, platform === "win32" ? "omo.cmd" : "omo");
   if (!await isFile2(cliPath)) {
     await removeGeneratedRuntimeWrapper(legacyPath);
     return null;
   }
   const binName = "omo-agent-toolkit";
-  const nodeCliPath = join17(input.repoRoot, "dist", "cli-node", "index.js");
+  const nodeCliPath = join18(input.repoRoot, "dist", "cli-node", "index.js");
   await mkdir5(input.binDir, { recursive: true });
   if (platform === "win32") {
-    const linkPath2 = join17(input.binDir, `${binName}.cmd`);
+    const linkPath2 = join18(input.binDir, `${binName}.cmd`);
     await replaceRuntimeWrapper(linkPath2, windowsRuntimeWrapper(binName, cliPath, input.codexHome, input.binDir, nodeCliPath));
     await removeGeneratedRuntimeWrapper(legacyPath);
     return { name: binName, path: linkPath2, target: cliPath };
   }
-  const linkPath = join17(input.binDir, binName);
+  const linkPath = join18(input.binDir, binName);
   await replaceRuntimeWrapper(linkPath, posixRuntimeWrapper(binName, cliPath, input.codexHome, input.binDir, nodeCliPath));
   await chmod2(linkPath, 493);
   await removeGeneratedRuntimeWrapper(legacyPath);
@@ -10905,11 +11317,11 @@ async function linkRootRuntimeBin(input) {
 }
 async function linkCachedPluginBin(binDir, link, platform) {
   if (platform === "win32") {
-    const linkPath2 = join17(binDir, `${link.name}.cmd`);
+    const linkPath2 = join18(binDir, `${link.name}.cmd`);
     await replaceCommandShim(linkPath2, link.target);
     return linkPath2;
   }
-  const linkPath = join17(binDir, link.name);
+  const linkPath = join18(binDir, link.name);
   await replaceSymlink(linkPath, link.target);
   return linkPath;
 }
@@ -10930,21 +11342,21 @@ async function discoverPackageBins(root) {
 async function collectPackageBins(directory, root, links) {
   const entries = await readdir4(directory, { withFileTypes: true });
   if (entries.some((entry) => entry.isFile() && entry.name === "package.json")) {
-    await appendPackageBinLinks(join17(directory, "package.json"), directory, root, links);
+    await appendPackageBinLinks(join18(directory, "package.json"), directory, root, links);
   }
   for (const entry of entries) {
     if (!entry.isDirectory())
       continue;
     if (entry.name === "node_modules" || entry.name === ".git" || entry.name === "dist")
       continue;
-    const childPath = join17(directory, entry.name);
+    const childPath = join18(directory, entry.name);
     if (!childPath.startsWith(root))
       continue;
     await collectPackageBins(childPath, root, links);
   }
 }
 async function appendPackageBinLinks(packageJsonPath, packageRoot, root, links) {
-  const packageJson = JSON.parse(await readFile9(packageJsonPath, "utf8"));
+  const packageJson = JSON.parse(await readFile11(packageJsonPath, "utf8"));
   if (!isPlainRecord(packageJson))
     return;
   const packageName = packageJson.name;
@@ -10990,19 +11402,19 @@ function resolvePackageBinTarget(packageRoot, target) {
 async function replaceSymlink(linkPath, targetPath) {
   if (await existingNonSymlink(linkPath))
     throw new Error(`${linkPath} already exists and is not a symlink`);
-  await rm10(linkPath, { force: true });
+  await rm11(linkPath, { force: true });
   await symlink(targetPath, linkPath);
 }
 async function replaceCommandShim(linkPath, targetPath) {
   if (await existingNonShim(linkPath))
     throw new Error(`${linkPath} already exists and is not a command shim`);
-  await writeFile6(linkPath, windowsCommandShim(targetPath));
+  await writeFile7(linkPath, windowsCommandShim(targetPath));
 }
 async function replaceRuntimeWrapper(linkPath, content) {
   if (await existingNonRuntimeWrapper(linkPath))
     throw new Error(`${linkPath} already exists and is not a generated OMO runtime wrapper`);
-  await rm10(linkPath, { force: true });
-  await writeFile6(linkPath, content);
+  await rm11(linkPath, { force: true });
+  await writeFile7(linkPath, content);
 }
 async function removeGeneratedRuntimeWrapper(path) {
   try {
@@ -11011,7 +11423,7 @@ async function removeGeneratedRuntimeWrapper(path) {
       return;
     const content = await readGeneratedWrapperContent(path);
     if (content.includes(RUNTIME_WRAPPER_MARKER))
-      await rm10(path, { force: true });
+      await rm11(path, { force: true });
   } catch (error2) {
     if (isNodeErrorWithCode(error2) && error2.code === "ENOENT")
       return;
@@ -11020,7 +11432,7 @@ async function removeGeneratedRuntimeWrapper(path) {
 }
 async function readGeneratedWrapperContent(path) {
   try {
-    return await readFile9(path, "utf8");
+    return await readFile11(path, "utf8");
   } catch (error2) {
     if (isNodeErrorWithCode(error2) && (error2.code === "ENOENT" || error2.code === "EISDIR"))
       return "";
@@ -11034,7 +11446,7 @@ async function existingNonRuntimeWrapper(path) {
       return false;
     if (!stat5.isFile())
       return true;
-    const content = await readFile9(path, "utf8");
+    const content = await readFile11(path, "utf8");
     return !content.includes(RUNTIME_WRAPPER_MARKER);
   } catch (error2) {
     if (isNodeErrorWithCode(error2) && error2.code === "ENOENT")
@@ -11047,7 +11459,7 @@ async function existingNonShim(path) {
     const stat5 = await lstat9(path);
     if (!stat5.isFile())
       return true;
-    const content = await readFile9(path, "utf8");
+    const content = await readFile11(path, "utf8");
     if (content.includes(COMMAND_SHIM_MARKER))
       return false;
     throw new Error(`${path} already exists and is not a generated command shim`);
@@ -11072,7 +11484,7 @@ async function existingNonSymlink(path) {
 }
 
 // ../src/install/codex-config-toml.ts
-import { mkdir as mkdir6, readFile as readFile11 } from "node:fs/promises";
+import { mkdir as mkdir6, readFile as readFile13 } from "node:fs/promises";
 import { dirname as dirname9 } from "node:path";
 
 // ../src/install/toml-setting-reader.ts
@@ -11198,6 +11610,12 @@ ${featureName} = true
 `);
   }
   return replaceOrInsertSetting(config2, section, featureName, "true");
+}
+function removeFeature(config2, featureName) {
+  const section = findTomlSection(config2, "features");
+  if (section !== null)
+    return removeSetting(config2, section, featureName);
+  return removeRootSetting(config2, `features.${featureName}`);
 }
 
 // ../src/install/codex-config-marketplaces.ts
@@ -11514,8 +11932,8 @@ function isRootSetting(line, key) {
 }
 
 // ../src/install/codex-model-catalog.ts
-import { readFile as readFile10 } from "node:fs/promises";
-import { join as join18 } from "node:path";
+import { readFile as readFile12 } from "node:fs/promises";
+import { join as join19 } from "node:path";
 var FALLBACK_CODEX_MODEL_CATALOG = {
   current: {
     model: "gpt-6-astra",
@@ -11546,9 +11964,9 @@ var FALLBACK_CODEX_MODEL_CATALOG = {
   ]
 };
 async function readCodexModelCatalog(codexPackageRoot) {
-  const catalogPath = join18(codexPackageRoot, "plugin", "model-catalog.json");
+  const catalogPath = join19(codexPackageRoot, "plugin", "model-catalog.json");
   try {
-    const parsed = JSON.parse(await readFile10(catalogPath, "utf8"));
+    const parsed = JSON.parse(await readFile12(catalogPath, "utf8"));
     return parseCodexModelCatalog(parsed) ?? FALLBACK_CODEX_MODEL_CATALOG;
   } catch (error2) {
     if (error2 instanceof Error)
@@ -11630,7 +12048,7 @@ function isRootSetting2(line, key) {
 
 // ../src/install/codex-multi-agent-v2-config.ts
 import { readFileSync as readFileSync2 } from "node:fs";
-import { dirname as dirname8, isAbsolute as isAbsolute5, join as join19 } from "node:path";
+import { dirname as dirname8, isAbsolute as isAbsolute5, join as join20 } from "node:path";
 var CODEX_AGENTS_HEADER = "agents";
 var CODEX_MULTI_AGENT_V2_HEADER = "features.multi_agent_v2";
 function ensureCodexMultiAgentV2Config(config2, options = {}) {
@@ -11658,8 +12076,8 @@ function resolveCodexMultiAgentVersion(config2, configPath) {
 }
 function resolveCatalogPath(configuredPath, configPath) {
   if (configuredPath === null)
-    return join19(dirname8(configPath), "models_cache.json");
-  return isAbsolute5(configuredPath) ? configuredPath : join19(dirname8(configPath), configuredPath);
+    return join20(dirname8(configPath), "models_cache.json");
+  return isAbsolute5(configuredPath) ? configuredPath : join20(dirname8(configPath), configuredPath);
 }
 function readCatalogMultiAgentVersion(model, cachePath) {
   let raw;
@@ -11773,7 +12191,7 @@ async function updateCodexConfig(input) {
   await mkdir6(dirname9(input.configPath), { recursive: true });
   let config2;
   try {
-    config2 = await readFile11(input.configPath, "utf8");
+    config2 = await readFile13(input.configPath, "utf8");
   } catch (error2) {
     if (!isMissingFileError(error2))
       throw error2;
@@ -11791,6 +12209,7 @@ async function updateCodexConfig(input) {
   config2 = ensureFeatureEnabled(config2, "plugins");
   config2 = ensureFeatureEnabled(config2, "plugin_hooks");
   config2 = ensureFeatureEnabled(config2, "multi_agent");
+  config2 = removeFeature(config2, "child_agents_md");
   config2 = removeUnsupportedCodexMultiAgentModeConfig(config2);
   config2 = ensureCodexReasoningConfig(config2, applyReasoningOverride(await readCodexModelCatalog(input.repoRoot), input.reasoning));
   config2 = ensureCodexMultiAgentV2Config(config2, {
@@ -11819,14 +12238,14 @@ function isMissingFileError(error2) {
 }
 
 // ../src/install/codex-git-bash-mcp-env.ts
-import { readFile as readFile12, writeFile as writeFile7 } from "node:fs/promises";
-import { join as join20 } from "node:path";
+import { readFile as readFile14, writeFile as writeFile8 } from "node:fs/promises";
+import { join as join21 } from "node:path";
 var GIT_BASH_ENV_KEY = "OMO_CODEX_GIT_BASH_PATH";
 async function stampGitBashMcpEnv(input) {
-  const manifestPath = join20(input.pluginRoot, ".mcp.json");
+  const manifestPath = join21(input.pluginRoot, ".mcp.json");
   if (!await fileExistsStrict(manifestPath))
     return false;
-  const parsed = JSON.parse(await readFile12(manifestPath, "utf8"));
+  const parsed = JSON.parse(await readFile14(manifestPath, "utf8"));
   if (!isPlainRecord(parsed) || !isPlainRecord(parsed["mcpServers"]))
     return false;
   let changed = false;
@@ -11844,15 +12263,15 @@ async function stampGitBashMcpEnv(input) {
   }
   if (!changed)
     return false;
-  await writeFile7(manifestPath, `${JSON.stringify(parsed, null, "\t")}
+  await writeFile8(manifestPath, `${JSON.stringify(parsed, null, "\t")}
 `);
   return true;
 }
 
 // ../src/install/codex-hook-trust.ts
 import { createHash as createHash4 } from "node:crypto";
-import { readFile as readFile13 } from "node:fs/promises";
-import { join as join21 } from "node:path";
+import { readFile as readFile15 } from "node:fs/promises";
+import { join as join22 } from "node:path";
 var EVENT_LABELS = new Map([
   ["PreToolUse", "pre_tool_use"],
   ["PermissionRequest", "permission_request"],
@@ -11866,18 +12285,18 @@ var EVENT_LABELS = new Map([
   ["Stop", "stop"]
 ]);
 async function trustedHookStatesForPlugin(input) {
-  const manifestPath = join21(input.pluginRoot, ".codex-plugin", "plugin.json");
+  const manifestPath = join22(input.pluginRoot, ".codex-plugin", "plugin.json");
   if (!await exists4(manifestPath))
     return [];
-  const manifest = JSON.parse(await readFile13(manifestPath, "utf8"));
+  const manifest = JSON.parse(await readFile15(manifestPath, "utf8"));
   if (!isPlainRecord(manifest))
     return [];
   const states = [];
   for (const hookPath of hookManifestPaths(manifest.hooks)) {
-    const hooksPath = join21(input.pluginRoot, hookPath);
+    const hooksPath = join22(input.pluginRoot, hookPath);
     if (!await exists4(hooksPath))
       continue;
-    const parsed = JSON.parse(await readFile13(hooksPath, "utf8"));
+    const parsed = JSON.parse(await readFile15(hooksPath, "utf8"));
     if (!isPlainRecord(parsed) || !isPlainRecord(parsed.hooks))
       continue;
     states.push(...trustedHookStatesForHooksFile({
@@ -11960,7 +12379,7 @@ function stripDotSlash(value) {
 }
 async function exists4(path) {
   try {
-    await readFile13(path, "utf8");
+    await readFile15(path, "utf8");
     return true;
   } catch (error2) {
     if (error2 instanceof Error)
@@ -11971,7 +12390,7 @@ async function exists4(path) {
 
 // ../src/install/codex-installer-bin-dir.ts
 import { homedir as homedir4 } from "node:os";
-import { join as join22, resolve as resolve7 } from "node:path";
+import { join as join23, resolve as resolve7 } from "node:path";
 function resolveCodexInstallerBinDir(input) {
   const explicitBinDir = input.binDir ?? input.env?.CODEX_LOCAL_BIN_DIR;
   if (explicitBinDir !== undefined && explicitBinDir.trim().length > 0)
@@ -11980,7 +12399,7 @@ function resolveCodexInstallerBinDir(input) {
   const defaultCodexHome = resolve7(homeDir, ".codex");
   const resolvedCodexHome = resolve7(input.codexHome);
   if (resolvedCodexHome !== defaultCodexHome)
-    return join22(resolvedCodexHome, "bin");
+    return join23(resolvedCodexHome, "bin");
   return resolve7(homeDir, ".local", "bin");
 }
 
@@ -12059,7 +12478,7 @@ function isKnownNonGitBashLauncher(path) {
 }
 function whereCommand(command) {
   try {
-    return execFileSync2("where", [command], { encoding: "utf8" }).split(/\r?\n/).map((line) => line.trim()).filter((line) => line.length > 0);
+    return execFileSync2("where", [command], { encoding: "utf8", windowsHide: true }).split(/\r?\n/).map((line) => line.trim()).filter((line) => line.length > 0);
   } catch (error2) {
     if (error2 instanceof Error)
       return [];
@@ -12136,24 +12555,27 @@ async function resolveGitBashStep(options, degraded) {
   return false;
 }
 async function linkBundledAgentsStep(options) {
-  const agentsTarget = join23(options.codexHome, "agents");
+  const agentsTarget = join24(options.codexHome, "agents");
   try {
-    const stageRoot = join23(options.pluginData, "bootstrap", "agents-stage");
+    const stageRoot = join24(options.pluginData, "bootstrap", "agents-stage");
     await stageBundledAgents(options.pluginRoot, stageRoot);
     const preservedReasoning = await capturePreservedAgentReasoning({ codexHome: options.codexHome });
     const preservedServiceTier = await capturePreservedAgentServiceTier({ codexHome: options.codexHome });
-    const config2 = readDefaultRoleConfig({ env: options.env });
+    const config2 = readCodexAgentConfig({ env: options.env });
     const linked = await linkCachedPluginAgents({
       codexHome: options.codexHome,
       pluginRoot: stageRoot,
       preservedReasoning,
       preservedServiceTier,
-      defaultRoleEnabled: config2.enabled
+      defaultRoleEnabled: config2.defaultRoleEnabled,
+      agentOverrides: config2.agentOverrides
     });
+    const managedAgentNames = new Set(linked.map((link) => agentNameFromToml3(link.name)));
+    const warnings = [...config2.warnings, ...unmanagedAgentOverrideWarnings(config2.agentOverrides, managedAgentNames)];
     const agentConfigs = linked.map((link) => ({ configFile: `./agents/${link.name}`, name: agentNameFromToml3(link.name) })).sort((left, right) => left.name.localeCompare(right.name));
     return {
       agentConfigs,
-      degraded: config2.warnings.map((reason) => ({ component: "agents-config", hint: BOOTSTRAP_DOCTOR_HINT, reason }))
+      degraded: warnings.map((reason) => ({ component: "agents-config", hint: BOOTSTRAP_DOCTOR_HINT, reason }))
     };
   } catch (error2) {
     return {
@@ -12169,23 +12591,23 @@ async function linkBundledAgentsStep(options) {
   }
 }
 async function stageBundledAgents(pluginRoot, stageRoot) {
-  await rm11(stageRoot, { force: true, recursive: true });
+  await rm12(stageRoot, { force: true, recursive: true });
   await mkdir7(stageRoot, { recursive: true });
-  const componentsRoot = join23(pluginRoot, "components");
+  const componentsRoot = join24(pluginRoot, "components");
   for (const componentName of await directoryNames(componentsRoot)) {
-    const agentsDir = join23(componentsRoot, componentName, "agents");
+    const agentsDir = join24(componentsRoot, componentName, "agents");
     const agentFiles = (await fileNames(agentsDir)).filter((name) => name.endsWith(".toml"));
     if (agentFiles.length === 0)
       continue;
-    const stagedAgentsDir = join23(stageRoot, "components", componentName, "agents");
+    const stagedAgentsDir = join24(stageRoot, "components", componentName, "agents");
     await mkdir7(stagedAgentsDir, { recursive: true });
     for (const agentFile of agentFiles) {
-      await copyFile2(join23(agentsDir, agentFile), join23(stagedAgentsDir, agentFile));
+      await copyFile2(join24(agentsDir, agentFile), join24(stagedAgentsDir, agentFile));
     }
   }
 }
 async function updateConfigStep(options, inputs, degraded) {
-  const configPath = join23(options.codexHome, "config.toml");
+  const configPath = join24(options.codexHome, "config.toml");
   try {
     await assertWritableConfigIfPresent(configPath);
     const existingConfig = await readConfigIfPresent(configPath);
@@ -12231,7 +12653,7 @@ function errorCode(error2) {
 }
 async function readConfigIfPresent(configPath) {
   try {
-    return await readFile14(configPath, "utf8");
+    return await readFile16(configPath, "utf8");
   } catch (error2) {
     if (errorCode(error2) === "ENOENT")
       return "";
@@ -12252,7 +12674,7 @@ async function linkComponentBinsStep(options, degraded) {
   await linkRuntimeWrapperStep(options, binDir, degraded);
 }
 async function linkRuntimeWrapperStep(options, binDir, degraded) {
-  const cliPath = join23(options.pluginRoot, "dist", "cli", "index.js");
+  const cliPath = join24(options.pluginRoot, "dist", "cli", "index.js");
   try {
     const linked = await linkRootRuntimeBin({
       binDir,
@@ -12285,7 +12707,7 @@ async function stampGitBashEnvStep(options, degraded) {
     degraded.push({
       component: "git-bash-env",
       hint: BOOTSTRAP_DOCTOR_HINT,
-      reason: `failed to stamp ${join23(options.pluginRoot, ".mcp.json")}: ${errorMessage(error2)}`
+      reason: `failed to stamp ${join24(options.pluginRoot, ".mcp.json")}: ${errorMessage(error2)}`
     });
   }
 }
@@ -12353,11 +12775,11 @@ function resolvePluginDataRoot(env) {
   const fromEnv = env["PLUGIN_DATA"]?.trim();
   if (fromEnv !== undefined && fromEnv.length > 0)
     return fromEnv;
-  return join24(homedir5(), ".local", "share", "lazycodex");
+  return join25(homedir5(), ".local", "share", "lazycodex");
 }
 async function readPluginVersion(pluginRoot) {
   try {
-    const parsed = JSON.parse(await readFile15(join24(pluginRoot, ".codex-plugin", "plugin.json"), "utf8"));
+    const parsed = JSON.parse(await readFile17(join25(pluginRoot, ".codex-plugin", "plugin.json"), "utf8"));
     if (typeof parsed !== "object" || parsed === null)
       return;
     const version2 = parsed["version"];
@@ -12427,7 +12849,7 @@ async function runBootstrapWorker(options = {}) {
       degraded.push({
         component: "bootstrap",
         hint: BOOTSTRAP_DOCTOR_HINT,
-        reason: `plugin version unresolved from ${join24(pluginRoot, ".codex-plugin", "plugin.json")}`
+        reason: `plugin version unresolved from ${join25(pluginRoot, ".codex-plugin", "plugin.json")}`
       });
     }
     for (const step of steps) {
@@ -12470,7 +12892,7 @@ function resolvePluginRoot(env) {
 }
 async function appendBootstrapLog(pluginData, now, event, details) {
   try {
-    const logPath = join24(pluginData, "bootstrap", "bootstrap.log");
+    const logPath = join25(pluginData, "bootstrap", "bootstrap.log");
     await mkdir8(dirname10(logPath), { recursive: true });
     await appendFile2(logPath, `${JSON.stringify({ timestamp: new Date(now).toISOString(), event, ...details })}
 `);

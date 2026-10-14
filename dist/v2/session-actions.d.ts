@@ -2,6 +2,10 @@ import { storedMessagesToV1 } from "./message-shape";
 import type { AdapterState } from "./adapter-state";
 import { SessionHttpError } from "./serve-http";
 export declare function sessionIDFrom(input: unknown): string | undefined;
+export type ModelVariantLookup = (model: {
+    id: string;
+    providerID: string;
+}) => Promise<readonly string[] | undefined>;
 type SessionApi = {
     get: (input: {
         sessionID: string;
@@ -51,8 +55,8 @@ type SessionApi = {
 };
 export declare function withParent(session: Record<string, unknown>, state: AdapterState): Record<string, unknown>;
 export declare function childSessions(sessions: Array<Record<string, unknown>>, parentID: string, state: AdapterState): Array<Record<string, unknown>>;
-export declare function createSession(api: SessionApi, input: unknown, state: AdapterState, directory: string): Promise<Record<string, unknown>>;
-export declare function sendPrompt(api: SessionApi, input: unknown): Promise<unknown>;
+export declare function createSession(api: SessionApi, input: unknown, state: AdapterState, directory: string, variantsOf?: ModelVariantLookup): Promise<Record<string, unknown>>;
+export declare function sendPrompt(api: SessionApi, input: unknown, variantsOf?: ModelVariantLookup): Promise<unknown>;
 export declare function readMessages(api: SessionApi, input: unknown): Promise<ReturnType<typeof storedMessagesToV1>>;
 export declare function readMessage(api: SessionApi, input: unknown): Promise<ReturnType<typeof storedMessagesToV1>[number] | undefined>;
 export { SessionHttpError };

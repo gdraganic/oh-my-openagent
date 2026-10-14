@@ -13,6 +13,7 @@ export declare function resolveServeOrigin(input: {
     listenPort: () => Promise<number | undefined>;
 }): Promise<string | undefined>;
 export declare function listenPortOf(pid?: number): Promise<number | undefined>;
+export declare function listModels(origin: string, directory: string, fetchImpl: typeof fetch): Promise<Array<Record<string, unknown>>>;
 export declare function listSessions(origin: string, fetchImpl: typeof fetch): Promise<Array<Record<string, unknown>>>;
 export declare function activeSessions(origin: string, fetchImpl: typeof fetch): Promise<Record<string, {
     type: string;

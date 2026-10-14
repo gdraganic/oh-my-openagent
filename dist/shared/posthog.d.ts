@@ -14,6 +14,7 @@ export type PostHogSource = "cli" | "plugin";
 export type PostHogActivityReason = "run_started" | "plugin_loaded";
 export type PostHogClient = {
     readonly trackActive: (distinctId: string, reason: PostHogActivityReason) => void;
+    readonly flush: () => Promise<void>;
     readonly shutdown: () => Promise<void>;
 };
 type CreatePostHogOptions = {

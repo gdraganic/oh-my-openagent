@@ -7,10 +7,6 @@ export type FacadeDeps = {
     argv?: readonly string[];
     listenPort?: () => Promise<number | undefined>;
 };
-/**
- * V1 hook code calls `ctx.client` with the OpenAPI `{ path, body }` shape
- * and reads `{ data }`. This facade speaks that shape on top of OpenCode 2.
- */
 export declare function createV1PluginInput(ctx: V2Context, deps?: FacadeDeps): {
     directory: string;
     worktree: string;

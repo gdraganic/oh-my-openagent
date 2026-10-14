@@ -2682,7 +2682,7 @@ class LspClient extends LspClientConnection {
         } catch (error) {
           if (this.isUnsupportedDiagnosticPullError(error)) {
             this.setDiagnosticPullSupported(false);
-            pushFallbackOnly = true;
+            continue;
           } else if (error instanceof LspRequestTimeoutError) {
             pushFallbackOnly = true;
           } else {
@@ -4953,7 +4953,8 @@ function missingDependencyAvailability(error) {
         extensions: [...error.lookup.server.extensions],
         installHint: error.lookup.installHint,
         installDecisionTool: context.capabilities.installDecisionTool,
-        installDecisionsPath: context.installDecisionsPath
+        installDecisionsPath: context.installDecisionsPath,
+        decision: loadInstallDecision(error.lookup.server.id)?.decision ?? null
       };
     default: {
       const exhaustive = error.lookup;
