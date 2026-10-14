@@ -19,7 +19,8 @@ function isCompactionAgent(agent: string): boolean {
 
 async function getAgentFromMessageFiles(sessionID: string, client?: OpencodeClient): Promise<string | undefined> {
   const currentAgent = await readCurrentSessionAgent(client, sessionID)
-  if (currentAgent !== undefined) return isCompactionAgent(currentAgent) ? undefined : currentAgent
+  if (currentAgent.kind === "agent") return isCompactionAgent(currentAgent.name) ? undefined : currentAgent.name
+  if (currentAgent.kind === "default") return undefined
 
   if (isSqliteBackend() && client) {
     const firstAgent = await findFirstMessageWithAgentFromSDK(client, sessionID)
