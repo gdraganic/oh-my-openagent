@@ -84411,14 +84411,14 @@ function hasCurrentAgent(client) {
 }
 async function readCurrentSessionAgent(client, sessionID) {
   if (!hasCurrentAgent(client))
-    return;
+    return { kind: "unknown" };
   try {
     const agent = normalizeSDKResponse(await client.session.currentAgent({ path: { id: sessionID } }), null);
-    return typeof agent === "string" && agent.trim().length > 0 ? agent : undefined;
+    return typeof agent === "string" && agent.trim().length > 0 ? { kind: "agent", name: agent } : { kind: "default" };
   } catch (error) {
     if (!(error instanceof Error))
       throw error;
-    return;
+    return { kind: "unknown" };
   }
 }
 
@@ -84427,8 +84427,10 @@ async function isCallerOrchestrator(sessionID, client) {
   if (!sessionID)
     return false;
   const currentAgent = await readCurrentSessionAgent(client, sessionID);
-  if (currentAgent !== undefined)
-    return getAgentConfigKey(currentAgent) === "atlas";
+  if (currentAgent.kind === "agent")
+    return getAgentConfigKey(currentAgent.name) === "atlas";
+  if (currentAgent.kind === "default")
+    return false;
   if (isSqliteBackend() && client) {
     try {
       const nearest2 = await findNearestMessageWithFieldsFromSDK(client, sessionID);
@@ -98397,7 +98399,7 @@ function getCachedVersion(options = {}) {
 // package.json
 var package_default = {
   name: "oh-my-opencode",
-  version: "5.0.1-fork.4",
+  version: "5.0.1-fork.5",
   description: "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
   main: "./dist/index.js",
   types: "dist/index.d.ts",
@@ -114064,8 +114066,10 @@ function isCompactionAgent2(agent) {
 }
 async function getAgentFromMessageFiles(sessionID, client3) {
   const currentAgent = await readCurrentSessionAgent(client3, sessionID);
-  if (currentAgent !== undefined)
-    return isCompactionAgent2(currentAgent) ? undefined : currentAgent;
+  if (currentAgent.kind === "agent")
+    return isCompactionAgent2(currentAgent.name) ? undefined : currentAgent.name;
+  if (currentAgent.kind === "default")
+    return;
   if (isSqliteBackend() && client3) {
     const firstAgent2 = await findFirstMessageWithAgentFromSDK(client3, sessionID);
     if (firstAgent2 && !isCompactionAgent2(firstAgent2))
