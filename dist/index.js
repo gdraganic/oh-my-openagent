@@ -89005,6 +89005,27 @@ async function handleSessionIdle(args) {
     log2(`[${HOOK_NAME2}] Skipped: background tasks running`, { sessionID });
     return;
   }
+  let todos = [];
+  try {
+    const response = await ctx.client.session.todo({ path: { id: sessionID } });
+    todos = normalizeSDKResponse(response, [], { preferResponseOnMissingData: true });
+  } catch (error) {
+    const loggedError = error instanceof Error ? { name: error.name, message: error.message } : String(error);
+    log2(`[${HOOK_NAME2}] Todo fetch failed`, { sessionID, error: loggedError });
+    return;
+  }
+  if (!todos || todos.length === 0) {
+    sessionStateStore.resetContinuationProgress(sessionID);
+    log2(`[${HOOK_NAME2}] No todos`, { sessionID });
+    return;
+  }
+  const incompleteCount = getIncompleteCount(todos);
+  if (incompleteCount === 0) {
+    state2.allTodosCompletedAt = Date.now();
+    sessionStateStore.resetContinuationProgress(sessionID);
+    log2(`[${HOOK_NAME2}] All todos complete`, { sessionID, total: todos.length });
+    return;
+  }
   let prefetchedMessages;
   try {
     const messagesResp = await ctx.client.session.messages({
@@ -89027,27 +89048,6 @@ async function handleSessionIdle(args) {
   } catch (error) {
     const loggedError = error instanceof Error ? { name: error.name, message: error.message } : String(error);
     log2(`[${HOOK_NAME2}] Messages fetch failed, skipping continuation`, { sessionID, error: loggedError });
-    return;
-  }
-  let todos = [];
-  try {
-    const response = await ctx.client.session.todo({ path: { id: sessionID } });
-    todos = normalizeSDKResponse(response, [], { preferResponseOnMissingData: true });
-  } catch (error) {
-    const loggedError = error instanceof Error ? { name: error.name, message: error.message } : String(error);
-    log2(`[${HOOK_NAME2}] Todo fetch failed`, { sessionID, error: loggedError });
-    return;
-  }
-  if (!todos || todos.length === 0) {
-    sessionStateStore.resetContinuationProgress(sessionID);
-    log2(`[${HOOK_NAME2}] No todos`, { sessionID });
-    return;
-  }
-  const incompleteCount = getIncompleteCount(todos);
-  if (incompleteCount === 0) {
-    state2.allTodosCompletedAt = Date.now();
-    sessionStateStore.resetContinuationProgress(sessionID);
-    log2(`[${HOOK_NAME2}] All todos complete`, { sessionID, total: todos.length });
     return;
   }
   if (state2.inFlight) {
@@ -98399,7 +98399,7 @@ function getCachedVersion(options = {}) {
 // package.json
 var package_default = {
   name: "oh-my-opencode",
-  version: "5.0.1-fork.5",
+  version: "5.0.1-fork.6",
   description: "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
   main: "./dist/index.js",
   types: "dist/index.d.ts",
