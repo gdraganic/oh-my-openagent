@@ -98372,7 +98372,7 @@ function getCachedVersion(options = {}) {
 // package.json
 var package_default = {
   name: "oh-my-opencode",
-  version: "5.0.1-fork.2",
+  version: "5.0.1-fork.3",
   description: "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
   main: "./dist/index.js",
   types: "dist/index.d.ts",
@@ -149315,10 +149315,23 @@ async function buildTuiRuntimeSnapshot(input) {
     version: MIRROR_SCHEMA_VERSION,
     projectDir: canonicalProjectDir(input.projectDir),
     updatedAt: Date.now(),
-    activeAgents: await activeAgentsFromStatuses(statuses, input.client, input.sessionAgentResolver ?? getLastAgentFromSession),
+    activeAgents: await activeAgentsFromStatuses(statuses, input.client, input.sessionAgentResolver ?? resolveSessionAgent),
     jobBoard: input.backgroundManager.getTasksSnapshot().map(toJobRow),
     loop: loop.kind === "live" ? redactLoopText(loop) : null
   };
+}
+async function resolveSessionAgent(sessionID, client3) {
+  if (!client3.session.currentAgent)
+    return getLastAgentFromSession(sessionID, client3);
+  try {
+    const response = await client3.session.currentAgent({ path: { id: sessionID } });
+    const agent = normalizeSDKResponse(response, null);
+    return typeof agent === "string" && agent.trim().length > 0 ? agent.toLowerCase() : null;
+  } catch (error) {
+    if (!(error instanceof Error))
+      throw error;
+    return null;
+  }
 }
 async function readStatuses(input) {
   if (input.getStatuses) {
@@ -175994,7 +176007,7 @@ function createToolExecuteAfterHandler3(args) {
 }
 
 // packages/omo-opencode/src/plugin/session-agent-resolver.ts
-async function resolveSessionAgent(client5, sessionId) {
+async function resolveSessionAgent2(client5, sessionId) {
   try {
     const messagesResp = await client5.session.messages({ path: { id: sessionId } });
     const messages = normalizeSDKResponse(messagesResp, []);
@@ -176101,7 +176114,7 @@ function createToolExecuteBeforeHandler3(args) {
       if (category) {
         replaceToolArgs(output, { subagent_type: "sisyphus-junior" });
       } else if (!subagentType && taskId) {
-        const resolvedAgent = await resolveSessionAgent(ctx.client, taskId);
+        const resolvedAgent = await resolveSessionAgent2(ctx.client, taskId);
         replaceToolArgs(output, { subagent_type: resolvedAgent ?? "continue" });
       }
     }
@@ -188382,6 +188395,12 @@ function createV1PluginInput(ctx, deps = {}) {
       if (!sessionID)
         return sdkResult(undefined);
       return sdkResult(withParent(await sessionApi.get({ sessionID }), state3));
+    },
+    async currentAgent(input) {
+      const sessionID = sessionIDFrom(input);
+      if (!sessionID)
+        return sdkResult(undefined);
+      return sdkResult((await sessionApi.get({ sessionID })).agent);
     },
     async messages(input) {
       return sdkResult(await readMessages3(sessionApi, input));

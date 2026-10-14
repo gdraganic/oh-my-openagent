@@ -87977,7 +87977,7 @@ init_shared();
 // package.json
 var package_default = {
   name: "oh-my-opencode",
-  version: "5.0.1-fork.2",
+  version: "5.0.1-fork.3",
   description: "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
   main: "./dist/index.js",
   types: "dist/index.d.ts",

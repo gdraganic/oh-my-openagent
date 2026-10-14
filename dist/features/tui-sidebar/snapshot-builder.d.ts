@@ -4,6 +4,11 @@ export type TuiMirrorClient = {
     readonly session: {
         readonly status: () => Promise<unknown>;
         readonly activeStatus?: () => Promise<unknown>;
+        readonly currentAgent?: (input: {
+            readonly path: {
+                readonly id: string;
+            };
+        }) => Promise<unknown>;
         readonly messages: (input: {
             readonly path: {
                 readonly id: string;
