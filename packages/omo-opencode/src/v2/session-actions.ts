@@ -42,6 +42,23 @@ function modelRef(value: unknown, variant: unknown): { id: string; providerID: s
   return { id, providerID: value.providerID, ...(resolvedVariant ? { variant: resolvedVariant } : {}) }
 }
 
+export type ModelVariantLookup = (model: { id: string; providerID: string }) => Promise<readonly string[] | undefined>
+
+// OpenCode 1 ignored a variant the model does not offer; OpenCode 2 rejects the
+// request. A fallback model inherits the requested agent's variant (explore's
+// "low" on claude-haiku-4-5, which offers only high and max), so drop a variant
+// the target model does not list and let the model run at its default.
+async function supportedModel(
+  model: { id: string; providerID: string; variant?: string } | undefined,
+  variantsOf?: ModelVariantLookup,
+): Promise<{ id: string; providerID: string; variant?: string } | undefined> {
+  if (!model?.variant || !variantsOf) return model
+  const variants = await variantsOf({ id: model.id, providerID: model.providerID }).catch(() => undefined)
+  if (!variants || variants.includes(model.variant)) return model
+  const { variant: _unsupported, ...rest } = model
+  return rest
+}
+
 function permissionsFrom(value: unknown): Array<{ action: string; resource: string; effect: "allow" | "deny" | "ask" }> {
   if (!Array.isArray(value)) return []
   const rules: Array<{ action: string; resource: string; effect: "allow" | "deny" | "ask" }> = []
@@ -96,7 +113,13 @@ export function childSessions(sessions: Array<Record<string, unknown>>, parentID
   }).map((session) => withParent(session, state))
 }
 
-export async function createSession(api: SessionApi, input: unknown, state: AdapterState, directory: string): Promise<Record<string, unknown>> {
+export async function createSession(
+  api: SessionApi,
+  input: unknown,
+  state: AdapterState,
+  directory: string,
+  variantsOf?: ModelVariantLookup,
+): Promise<Record<string, unknown>> {
   const body = bodyOf(input)
   const query = isRecord(input) && isRecord(input.query) ? input.query : {}
   const parentID = typeof body.parentID === "string" ? body.parentID : undefined
@@ -104,7 +127,7 @@ export async function createSession(api: SessionApi, input: unknown, state: Adap
     ...(isRecord(body.metadata) ? body.metadata : {}),
     ...(parentID ? { omoParentID: parentID } : {}),
   }
-  const model = modelRef(body.model, body.variant)
+  const model = await supportedModel(modelRef(body.model, body.variant), variantsOf)
   const permissions = permissionsFrom(body.permission)
   const created = await api.create({
     ...(typeof body.title === "string" ? { title: body.title } : {}),
@@ -120,12 +143,12 @@ export async function createSession(api: SessionApi, input: unknown, state: Adap
   return session
 }
 
-export async function sendPrompt(api: SessionApi, input: unknown): Promise<unknown> {
+export async function sendPrompt(api: SessionApi, input: unknown, variantsOf?: ModelVariantLookup): Promise<unknown> {
   const sessionID = sessionIDFrom(input)
   if (!sessionID) return undefined
   const body = bodyOf(input)
   if (typeof body.agent === "string") await api.switchAgent({ sessionID, agent: body.agent })
-  const model = modelRef(body.model, body.variant)
+  const model = await supportedModel(modelRef(body.model, body.variant), variantsOf)
   if (model) await api.switchModel({ sessionID, model })
   if (typeof body.system === "string" && body.system.length > 0) await api.synthetic({ sessionID, text: body.system })
   const denies = toolDenies(body.tools)

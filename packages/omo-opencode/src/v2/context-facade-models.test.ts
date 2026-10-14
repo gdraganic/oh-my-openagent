@@ -63,3 +63,70 @@ describe("V2 context facade provider list", () => {
     expect(providerModels(result, "openai")).toEqual(["gpt-5.6-luna"])
   })
 })
+
+describe("V2 session model variants", () => {
+  function createSessionContext(calls: { create: unknown[]; switchModel: unknown[] }): Plugin.Context {
+    return {
+      location: { directory: "/tmp/project", project: { id: "proj", directory: "/tmp/project", canonical: "/tmp/project" } },
+      provider: { list: async () => ({ data: [] }) },
+      model: {
+        list: async () => ({
+          data: [
+            { providerID: "anthropic", id: "claude-haiku-4-5", variants: [{ id: "high" }, { id: "max" }] },
+            { providerID: "openai", id: "gpt-5.6-luna-fast", variants: [{ id: "low" }, { id: "high" }] },
+          ],
+        }),
+      },
+      session: {
+        create: async (input: unknown) => {
+          calls.create.push(input)
+          return { id: "ses_child" }
+        },
+        switchAgent: async () => undefined,
+        switchModel: async (input: unknown) => {
+          calls.switchModel.push(input)
+        },
+        prompt: async () => ({ id: "inbox" }),
+      },
+    } as unknown as Plugin.Context
+  }
+
+  test("#given a fallback model that does not offer the requested variant #when a child session is created and prompted #then the variant is dropped", async () => {
+    // given
+    const calls = { create: [] as unknown[], switchModel: [] as unknown[] }
+    const fetchImpl = (async () => new Response("down", { status: 503 })) as unknown as typeof fetch
+    const v1 = createV1PluginInput(createSessionContext(calls), { fetchImpl, argv: [] })
+    const client = v1.client as unknown as {
+      session: {
+        create: (input: unknown) => Promise<unknown>
+        promptAsync: (input: unknown) => Promise<unknown>
+      }
+    }
+    const model = { providerID: "anthropic", modelID: "claude-haiku-4-5" }
+
+    // when
+    await client.session.create({ body: { agent: "explore", model, variant: "low" } })
+    await client.session.promptAsync({ path: { id: "ses_child" }, body: { model, variant: "low", parts: [{ type: "text", text: "go" }] } })
+
+    // then
+    expect(calls.create).toEqual([expect.objectContaining({ model: { id: "claude-haiku-4-5", providerID: "anthropic" } })])
+    expect(calls.switchModel).toEqual([{ sessionID: "ses_child", model: { id: "claude-haiku-4-5", providerID: "anthropic" } }])
+  })
+
+  test("#given a model that offers the requested variant #when a child session is prompted #then the variant is kept", async () => {
+    // given
+    const calls = { create: [] as unknown[], switchModel: [] as unknown[] }
+    const fetchImpl = (async () => new Response("down", { status: 503 })) as unknown as typeof fetch
+    const v1 = createV1PluginInput(createSessionContext(calls), { fetchImpl, argv: [] })
+    const client = v1.client as unknown as { session: { promptAsync: (input: unknown) => Promise<unknown> } }
+
+    // when
+    await client.session.promptAsync({
+      path: { id: "ses_child" },
+      body: { model: { providerID: "openai", modelID: "gpt-5.6-luna-fast" }, variant: "low", parts: [{ type: "text", text: "go" }] },
+    })
+
+    // then
+    expect(calls.switchModel).toEqual([{ sessionID: "ses_child", model: { id: "gpt-5.6-luna-fast", providerID: "openai", variant: "low" } }])
+  })
+})
