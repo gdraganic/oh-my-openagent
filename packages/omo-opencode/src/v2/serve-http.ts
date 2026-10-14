@@ -58,6 +58,19 @@ async function getJson(url: string, fetchImpl: typeof fetch): Promise<unknown> {
   return response.json()
 }
 
+// The plugin model registry omits service-tier models (-fast, -pro, -flex) that
+// the server's HTTP model list and the session runner accept.
+export async function listModels(origin: string, directory: string, fetchImpl: typeof fetch): Promise<Array<Record<string, unknown>>> {
+  const headers = new Headers({ "x-opencode-directory": directory })
+  const auth = getServerBasicAuthHeader()
+  if (auth) headers.set("Authorization", auth)
+  const response = await fetchImpl(new URL("/api/model", origin).toString(), { headers })
+  if (response.status === 401) throw new SessionHttpError(401)
+  if (!response.ok) throw new SessionHttpError(response.status)
+  const body: unknown = await response.json()
+  return isRecord(body) && Array.isArray(body.data) ? body.data.filter(isRecord) : []
+}
+
 export async function listSessions(origin: string, fetchImpl: typeof fetch): Promise<Array<Record<string, unknown>>> {
   const sessions: Array<Record<string, unknown>> = []
   let cursor: string | undefined
