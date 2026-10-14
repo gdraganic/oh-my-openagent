@@ -1,14 +1,30 @@
 # Fork changelog
 
-Releases of [rubimpassos/oh-my-openagent](https://github.com/rubimpassos/oh-my-openagent), the OpenCode 2 line of Oh-My-OpenAgent. Each release is built from `main` (upstream plus this fork's OpenCode 2 work) and tagged `v<upstream version>-fork.<n>`; the `releases` branch always points at the latest one. Install it in `opencode.json`:
+Releases of [gdraganic/oh-my-openagent](https://github.com/gdraganic/oh-my-openagent) (continued from [rubimpassos/oh-my-openagent](https://github.com/rubimpassos/oh-my-openagent)), the OpenCode 2 line of Oh-My-OpenAgent. Each release is built from `main` (upstream plus this fork's OpenCode 2 work) and tagged `v<upstream version>-fork.<n>`; the `releases` branch always points at the latest one. Install it in `opencode.json`:
 
 ```json
-{ "plugins": ["oh-my-opencode@git+https://github.com/rubimpassos/oh-my-openagent.git#releases"] }
+{ "plugins": ["oh-my-opencode@git+https://github.com/gdraganic/oh-my-openagent.git#releases"] }
 ```
 
 `#releases` follows new releases: OpenCode flags the plugin as outdated when the branch moves, and Update in OpenChamber's Settings → Plugins installs it. Use a tag (`#v5.0.1-fork.1`) to stay on one version or to roll back. Either way the plugin arrives built, so OpenCode loads it without building anything. Upstream's own changes are in [CHANGELOG.md](CHANGELOG.md).
 
 To release: add a `## [<version>] - YYYY-MM-DD` section here on `main` (with the `Fork-Patch: v2-support` trailer), then run the **Fork release** workflow with that version.
+
+## [5.1.33-fork.1] - 2026-10-14
+
+**Rebased on upstream 5.1.33.** The OpenCode 2 line was built on upstream from 2026-09-28; it now carries every upstream change since, including the security fixes: secret redaction across memory injection and commits, credentials preserved across uncertain token refreshes, escaped untrusted gateway rule text, a sandboxed child memory home, and builtin categories that no longer route to gateways such as OpenRouter that you never configured.
+
+### Fixes
+
+- Delegated tasks run on the model you configured again. OpenCode 2 lists the -fast, -pro and -flex service tiers only through the server, so upstream's stricter task model selection treated a configured `openai/gpt-5.6-luna-fast` as unreachable and switched to its fallback. The provider list now includes those tiers.
+- A fallback model no longer fails on a reasoning level it does not offer. OpenCode 2 rejects an unsupported variant instead of ignoring it; a task that fell back from explore's `low` to `claude-haiku-4-5` (which offers only `high` and `max`) failed and left the parent task waiting. The variant is now dropped for that model.
+- The "Continue." sent after a manual compaction goes through the shared prompt gate, so it cannot collide with todo or goal continuations on the same idle.
+- `lsof` runs through upstream's shared spawn shim instead of a raw Bun global.
+
+### Changed
+
+- The fork syncs with upstream `dev` directly instead of the head of upstream PR #9016, which was pinned to the upstream it was opened against.
+- Upstream workflows added since the previous base are not carried in the fork.
 
 ## [5.0.1-fork.7] - 2026-10-14
 
