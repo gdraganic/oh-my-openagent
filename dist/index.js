@@ -89769,10 +89769,11 @@ async function buildReadyNotificationContent(ctx, input) {
 
 // packages/omo-opencode/src/hooks/session-notification-platform.ts
 import { platform } from "os";
-function detectPlatform() {
-  const detected = platform();
-  if (detected === "darwin" || detected === "linux" || detected === "win32")
+function detectPlatform(detected = platform(), env = process.env) {
+  if (detected === "darwin" || detected === "win32")
     return detected;
+  if (detected === "linux")
+    return env.DISPLAY || env.WAYLAND_DISPLAY ? "linux" : "unsupported";
   return "unsupported";
 }
 function getDefaultSoundPath(platform2) {
@@ -98399,7 +98400,7 @@ function getCachedVersion(options = {}) {
 // package.json
 var package_default = {
   name: "oh-my-opencode",
-  version: "5.0.1-fork.6",
+  version: "5.0.1-fork.7",
   description: "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
   main: "./dist/index.js",
   types: "dist/index.d.ts",
