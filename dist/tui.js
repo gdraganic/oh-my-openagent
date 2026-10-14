@@ -60508,6 +60508,9 @@ var init_opencode_message_dir = __esm(() => {
   init_logger2();
 });
 
+// packages/omo-opencode/src/shared/current-session-agent.ts
+var init_current_session_agent = () => {};
+
 // packages/omo-opencode/src/shared/session-utils.ts
 var init_session_utils = __esm(() => {
   init_hook_message_injector();
@@ -60515,6 +60518,7 @@ var init_session_utils = __esm(() => {
   init_opencode_storage_detection();
   init_logger2();
   init_agent_display_names();
+  init_current_session_agent();
 });
 
 // packages/omo-opencode/src/shared/event-session-id.ts
@@ -87977,7 +87981,7 @@ init_shared();
 // package.json
 var package_default = {
   name: "oh-my-opencode",
-  version: "5.0.1-fork.3",
+  version: "5.0.1-fork.4",
   description: "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
   main: "./dist/index.js",
   types: "dist/index.d.ts",
