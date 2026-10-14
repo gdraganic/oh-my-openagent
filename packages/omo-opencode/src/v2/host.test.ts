@@ -597,7 +597,8 @@ describe("OpenCode V2 adapter", () => {
     fake.pushEvent({ type: "session.idle", data: { sessionID: "ses_auto" } })
     fake.pushEvent({ type: "session.compaction.ended", data: { sessionID: "ses_manual", reason: "manual" } })
     fake.pushEvent({ type: "session.idle", data: { sessionID: "ses_manual" } })
-    await waitFor(() => fake.prompts.some((prompt) => prompt.sessionID === "ses_manual"))
+    // The shared prompt gate settles the idle session before it dispatches.
+    await waitFor(() => fake.prompts.some((prompt) => prompt.sessionID === "ses_manual"), 100)
     expect(restored).toEqual(["ses_auto", "ses_manual"])
     expect(fake.prompts.map((prompt) => prompt.sessionID)).toEqual(["ses_manual"])
     expect(fake.prompts[0]?.text).toBe("Continue.")
@@ -755,8 +756,8 @@ function jsonResponse(body: unknown): Response {
   return new Response(JSON.stringify(body), { status: 200, headers: { "content-type": "application/json" } })
 }
 
-async function waitFor(ready: () => boolean): Promise<void> {
-  for (let attempt = 0; attempt < 20; attempt += 1) {
+async function waitFor(ready: () => boolean, attempts = 20): Promise<void> {
+  for (let attempt = 0; attempt < attempts; attempt += 1) {
     if (ready()) return
     await new Promise((resolve) => setTimeout(resolve, 10))
   }

@@ -6,7 +6,7 @@ import { validatePluginConfig } from "../config/validate"
 import { createAdapterState } from "./adapter-state"
 import { startClientStatePublisher, startSerialLoop } from "./client-state"
 import { createV1PluginInput } from "./context-facade"
-import { registerV1Hooks, type V1HookMap } from "./hook-bridge"
+import { registerV1Hooks, type PromptAsyncClient, type V1HookMap } from "./hook-bridge"
 import { createGoalSync } from "./goal-sync"
 import { registerGoalSync } from "../hooks/goal/sync-bridge"
 import { categoryModels, createNotifier } from "./client-control"
@@ -46,7 +46,7 @@ export async function setupOpenCodeV2(
     return
   }
 
-  const stopEvents = await registerV1Hooks(ctx, hooks, state)
+  const stopEvents = await registerV1Hooks(ctx, hooks, state, v1Input.client as unknown as PromptAsyncClient)
   const scratch: Record<string, unknown> = {}
   if (typeof hooks.config === "function") {
     try {

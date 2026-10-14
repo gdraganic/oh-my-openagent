@@ -5,6 +5,9 @@ import type { AdapterState } from "./adapter-state"
 import { toV1Event } from "./event-shape"
 import { hookMessagesToV1, writeHookMessagesBack } from "./message-shape"
 import { jsonMetadata } from "./tool-schema"
+import { dispatchInternalPrompt, type InternalPromptDispatchArgs } from "../shared/prompt-async-gate"
+
+export type PromptAsyncClient = Extract<InternalPromptDispatchArgs, { mode: "async" }>["client"]
 
 type V2Context = Plugin.Context
 
@@ -61,7 +64,7 @@ function noteRuntimeEvent(state: AdapterState | undefined, event: ReturnType<typ
 }
 
 async function continueAfterManualCompaction(
-  ctx: V2Context,
+  promptClient: PromptAsyncClient | undefined,
   state: AdapterState | undefined,
   event: ReturnType<typeof toV1Event>,
   autocontinue: V1Handler | undefined,
@@ -77,9 +80,17 @@ async function continueAfterManualCompaction(
     }, output)
     if (event.properties.reason === "manual" && output.enabled !== false) state.pendingManualContinue.add(sessionID)
   }
-  if (event.type === "session.idle" && state.pendingManualContinue.has(sessionID)) {
+  if (event.type === "session.idle" && state.pendingManualContinue.has(sessionID) && promptClient) {
     state.pendingManualContinue.delete(sessionID)
-    await ctx.session.prompt({ sessionID, text: "Continue." })
+    // Through the shared gate, so it cannot race todo or goal continuations on the same idle.
+    await dispatchInternalPrompt({
+      mode: "async",
+      client: promptClient,
+      sessionID,
+      source: "v2-manual-compaction-continue",
+      queueBehavior: "defer",
+      input: { path: { id: sessionID }, body: { parts: [{ type: "text", text: "Continue." }] } },
+    })
   }
 }
 
@@ -132,7 +143,12 @@ function resultText(content: unknown): string {
   return JSON.stringify(content ?? "")
 }
 
-export async function registerV1Hooks(ctx: V2Context, hooks: V1HookMap, state?: AdapterState): Promise<() => void> {
+export async function registerV1Hooks(
+  ctx: V2Context,
+  hooks: V1HookMap,
+  state?: AdapterState,
+  promptClient?: PromptAsyncClient,
+): Promise<() => void> {
   const controller = new AbortController()
   const chatMessage = asHandler(hooks["chat.message"])
   const chatParams = asHandler(hooks["chat.params"])
@@ -311,7 +327,7 @@ export async function registerV1Hooks(ctx: V2Context, hooks: V1HookMap, state?: 
           for (const event of withV1Lifecycle(toV1Event(raw))) {
             noteRuntimeEvent(state, event)
             if (eventHandler) await safeCall("event", () => eventHandler({ event }))
-            await safeCall("compaction.autocontinue", () => continueAfterManualCompaction(ctx, state, event, autocontinue))
+            await safeCall("compaction.autocontinue", () => continueAfterManualCompaction(promptClient, state, event, autocontinue))
           }
         }
       } catch (error) {
