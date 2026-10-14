@@ -77,7 +77,7 @@ docs/
 - **No HTML.** Markdown only. No `<details>` / `<summary>` (causes rendering issues in some terminals).
 - **Code blocks** use language fences. Use `jsonc` for config snippets to preserve comments.
 - **Visual QA evidence** must come from the real-pty + xterm.js flow ([`script/qa/web-terminal-visual-qa.mjs`](../script/qa/web-terminal-visual-qa.mjs)). NEVER use `tmux capture-pane` for color/visual/CJK evidence; tmux is boot-smoke only.
-- **Docs touching `packages/web/` re-trigger the web CI** via [`web-ci.yml`](../.github/workflows/web-ci.yml).
+- **Docs touching `packages/web/` re-trigger the web CI** via [`web-ci.yml`](https://github.com/code-yeongyu/oh-my-openagent/blob/dev/.github/workflows/web-ci.yml).
 
 ## ANTI-PATTERNS
 
