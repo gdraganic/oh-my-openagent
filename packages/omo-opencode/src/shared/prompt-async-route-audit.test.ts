@@ -37,6 +37,10 @@ const PROMPT_GATE_FILES = new Set([
 ])
 const RAW_PROMPT_ALLOWLIST = new Map<string, string>([
   [
+    path.join(SOURCE_ROOT, "v2", "project-config.ts"),
+    "executes a user-invoked slash command registered on OpenCode 2; the expanded command is the user's own turn and keeps the user's steer/queue delivery, so it is not an internal injection for the shared gate",
+  ],
+  [
     path.join(SOURCE_ROOT, "plugin", "event.ts"),
     "team idle wake hint wires a client facade for downstream gate-routed dispatch",
   ],
