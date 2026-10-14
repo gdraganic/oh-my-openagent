@@ -98,6 +98,18 @@ export function createV1PluginInput(ctx: V2Context, deps: FacadeDeps = {}): {
     }
   }
 
+  const variantsOf = async (model: { id: string; providerID: string }): Promise<readonly string[] | undefined> => {
+    const match = (await modelsWithServiceTiers()).find((entry) => modelKey(entry) === `${model.providerID}/${model.id}`)
+    if (!match || typeof match !== "object") return undefined
+    const variants = (match as { variants?: unknown }).variants
+    if (!Array.isArray(variants)) return undefined
+    return variants.flatMap((variant) => {
+      if (typeof variant === "string") return [variant]
+      if (variant && typeof variant === "object" && typeof (variant as { id?: unknown }).id === "string") return [(variant as { id: string }).id]
+      return []
+    })
+  }
+
   const session: Record<string, unknown> = {
     async get(input: unknown) {
       const sessionID = sessionIDFrom(input)
@@ -116,13 +128,13 @@ export function createV1PluginInput(ctx: V2Context, deps: FacadeDeps = {}): {
       return sdkResult(await readMessage(sessionApi, input))
     },
     async prompt(input: unknown) {
-      return sdkResult(await sendPrompt(sessionApi, input))
+      return sdkResult(await sendPrompt(sessionApi, input, variantsOf))
     },
     async promptAsync(input: unknown) {
-      return sdkResult(await sendPrompt(sessionApi, input))
+      return sdkResult(await sendPrompt(sessionApi, input, variantsOf))
     },
     async create(input: unknown) {
-      return sdkResult(await createSession(sessionApi, input, state, directory))
+      return sdkResult(await createSession(sessionApi, input, state, directory, variantsOf))
     },
     async abort(input: unknown) {
       const sessionID = sessionIDFrom(input)
