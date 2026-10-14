@@ -1,13 +1,12 @@
 name: Fork sync (main)
 # Default branch of this fork: schedules only run from here.
 
-# Keeps this fork's `main` branch (the OpenCode V2 line) current with its two sources:
-#   - upstream `dev` (code-yeongyu/oh-my-openagent)
-#   - the OpenCode V2 port in upstream PR #9016, while it is open
-# `main` is rebuilt as <base> + every commit carrying the trailer
-# `Fork-Patch: v2-support` (the trailer keeps its original name). The base is the PR head while the PR is open, and
-# upstream `dev` once it is merged or closed. A conflict or a failing V2 test
-# leaves the branch untouched and opens (or updates) an issue.
+# Keeps this fork's `main` branch (the OpenCode V2 line) current with upstream `dev`
+# (code-yeongyu/oh-my-openagent). `main` is rebuilt as upstream `dev` + every commit
+# carrying the trailer `Fork-Patch: v2-support`, which includes the OpenCode V2 port
+# from upstream PR #9016. Rebasing on the PR head instead would pin the fork to the
+# upstream commit that PR was opened against and drop every later upstream fix.
+# A conflict or a failing V2 test leaves the branch untouched and opens (or updates) an issue.
 on:
   schedule:
     - cron: '17 */6 * * *'
@@ -23,7 +22,6 @@ concurrency:
 
 env:
   UPSTREAM: code-yeongyu/oh-my-openagent
-  PR_NUMBER: '9016'
   BRANCH: main
 
 jobs:
@@ -37,18 +35,13 @@ jobs:
 
       - name: Fetch sources
         id: sources
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
           git config user.name "fork-sync"
           git config user.email "fork-sync@users.noreply.github.com"
           git remote add upstream "https://github.com/${UPSTREAM}.git"
-          git fetch --no-tags upstream dev "pull/${PR_NUMBER}/head:refs/remotes/upstream/pr"
-          state=$(gh pr view "$PR_NUMBER" -R "$UPSTREAM" --json state -q .state)
-          echo "pr_state=$state" >> "$GITHUB_OUTPUT"
-          if [ "$state" = "OPEN" ]; then base=upstream/pr; else base=upstream/dev; fi
-          echo "base=$base" >> "$GITHUB_OUTPUT"
-          echo "base_sha=$(git rev-parse "$base")" >> "$GITHUB_OUTPUT"
+          git fetch --no-tags upstream dev
+          echo "base=upstream/dev" >> "$GITHUB_OUTPUT"
+          echo "base_sha=$(git rev-parse upstream/dev)" >> "$GITHUB_OUTPUT"
 
       - name: Rebuild main
         id: rebuild
@@ -81,7 +74,9 @@ jobs:
         continue-on-error: true
         run: |
           bun install --frozen-lockfile || bun install
-          bun test packages/omo-opencode/src/v2 packages/omo-config-core/src/loader
+          bun test packages/omo-opencode/src/v2 packages/omo-config-core/src/loader \
+            packages/omo-opencode/src/shared/prompt-async-route-audit.test.ts \
+            packages/omo-opencode/src/shared/opencode-adapter-bun-runtime-audit.test.ts
 
       - name: Push
         if: steps.rebuild.outputs.conflict == '' && steps.rebuild.outputs.unchanged != 'true' && steps.test.outcome == 'success'
@@ -99,7 +94,7 @@ jobs:
           if [ -n "$CONFLICT" ]; then reason="Cherry-pick conflict on: $CONFLICT"; else reason="V2 adapter tests failed after rebase"; fi
           body="$reason
 
-          Base: \`$BASE\` @ \`$BASE_SHA\` (PR #${PR_NUMBER} state: ${{ steps.sources.outputs.pr_state }})
+          Base: \`$BASE\` @ \`$BASE_SHA\`
           Run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
 
           \`${BRANCH}\` was left unchanged."
