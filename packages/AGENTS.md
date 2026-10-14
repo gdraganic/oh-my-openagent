@@ -69,7 +69,7 @@ Each contains only a `bin/oh-my-opencode.js` launcher and a `package.json`. [`sc
 - **No new package without explicit need.** Adding a sibling package complicates publish + CI. Justify the boundary first.
 - **Platform launcher packages** are generated. Do NOT edit their launcher payloads by hand. Modify [`script/build-binaries.ts`](../script/build-binaries.ts).
 - **`lsp-tools-mcp` + `lsp-daemon` are vendored Node-targeted source.** Build them with `bun run build:lsp-tools-mcp` / `bun run build:lsp-daemon` (each runs `npm ci` + `npm run build`) before workflows or package tasks that need their `dist/`.
-- **`packages/web/` is excluded from root `bun test`** (own [`web-ci.yml`](../.github/workflows/web-ci.yml)); non-platform packages build in root `ci.yml`, platform launchers only via `publish-platform.yml` (triggered by `publish.yml`).
+- **`packages/web/` is excluded from root `bun test`** (own [`web-ci.yml`](https://github.com/code-yeongyu/oh-my-openagent/blob/dev/.github/workflows/web-ci.yml)); non-platform packages build in root `ci.yml`, platform launchers only via `publish-platform.yml` (triggered by `publish.yml`).
 
 ## ANTI-PATTERNS
 
