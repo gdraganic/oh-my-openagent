@@ -1,4 +1,7 @@
 import { getServerBasicAuthHeader } from "../shared/opencode-server-auth"
+import { readFileSync } from "node:fs"
+import { join } from "node:path"
+import { getOpenCodeConfigDir } from "../shared/opencode-config-dir"
 import { spawn } from "../shared/bun-spawn-shim"
 
 export type SessionPage = {
@@ -48,11 +51,64 @@ export async function listenPortOf(pid = process.pid): Promise<number | undefine
   return match ? Number(match[1]) : undefined
 }
 
+// The background service (`opencode serve --service`) authenticates with the
+// password in <config dir>/service.json; OPENCODE_SERVER_PASSWORD inherited from
+// the launching client (OpenChamber) can be a different server's password.
+// Try each candidate and keep the one the server accepts.
+function basicAuth(password: string): string {
+  const username = process.env.OPENCODE_SERVER_USERNAME ?? "opencode"
+  return `Basic ${Buffer.from(`${username}:${password}`, "utf8").toString("base64")}`
+}
+
+function servicePassword(): string | undefined {
+  try {
+    const parsed: unknown = JSON.parse(readFileSync(join(getOpenCodeConfigDir({ binary: "opencode" }), "service.json"), "utf8"))
+    return isRecord(parsed) && typeof parsed.password === "string" && parsed.password.length > 0 ? parsed.password : undefined
+  } catch {
+    return undefined
+  }
+}
+
+export function serverAuthCandidates(): Array<string | undefined> {
+  const candidates: Array<string | undefined> = []
+  const fromEnv = getServerBasicAuthHeader()
+  if (fromEnv) candidates.push(fromEnv)
+  const fromService = servicePassword()
+  if (fromService) {
+    const header = basicAuth(fromService)
+    if (!candidates.includes(header)) candidates.push(header)
+  }
+  if (candidates.length === 0) candidates.push(undefined)
+  return candidates
+}
+
+let acceptedAuth: string | undefined
+
+export function _resetServerAuthForTesting(): void {
+  acceptedAuth = undefined
+}
+
+export async function serverFetch(url: string, init: RequestInit, fetchImpl: typeof fetch): Promise<Response> {
+  const candidates = serverAuthCandidates()
+  const ordered = acceptedAuth !== undefined && candidates.includes(acceptedAuth)
+    ? [acceptedAuth, ...candidates.filter((candidate) => candidate !== acceptedAuth)]
+    : candidates
+  let response: Response | undefined
+  for (const auth of ordered) {
+    const headers = new Headers(init.headers)
+    if (auth) headers.set("Authorization", auth)
+    else headers.delete("Authorization")
+    response = await fetchImpl(url, { ...init, headers })
+    if (response.status !== 401) {
+      acceptedAuth = auth
+      return response
+    }
+  }
+  return response as Response
+}
+
 async function getJson(url: string, fetchImpl: typeof fetch): Promise<unknown> {
-  const headers = new Headers()
-  const auth = getServerBasicAuthHeader()
-  if (auth) headers.set("Authorization", auth)
-  const response = await fetchImpl(url, { headers })
+  const response = await serverFetch(url, {}, fetchImpl)
   if (response.status === 401) throw new SessionHttpError(401)
   if (!response.ok) throw new SessionHttpError(response.status)
   return response.json()
@@ -61,10 +117,7 @@ async function getJson(url: string, fetchImpl: typeof fetch): Promise<unknown> {
 // The plugin model registry omits service-tier models (-fast, -pro, -flex) that
 // the server's HTTP model list and the session runner accept.
 export async function listModels(origin: string, directory: string, fetchImpl: typeof fetch): Promise<Array<Record<string, unknown>>> {
-  const headers = new Headers({ "x-opencode-directory": directory })
-  const auth = getServerBasicAuthHeader()
-  if (auth) headers.set("Authorization", auth)
-  const response = await fetchImpl(new URL("/api/model", origin).toString(), { headers })
+  const response = await serverFetch(new URL("/api/model", origin).toString(), { headers: { "x-opencode-directory": directory } }, fetchImpl)
   if (response.status === 401) throw new SessionHttpError(401)
   if (!response.ok) throw new SessionHttpError(response.status)
   const body: unknown = await response.json()
@@ -95,18 +148,13 @@ export async function activeSessions(origin: string, fetchImpl: typeof fetch): P
   return status
 }
 
-const authHeaders = (): Headers => {
-  const headers = new Headers({ "content-type": "application/json" })
-  const auth = getServerBasicAuthHeader()
-  if (auth) headers.set("Authorization", auth)
-  return headers
-}
+const jsonHeaders = { "content-type": "application/json" }
 
 const unwrap = (body: unknown): unknown => (isRecord(body) && "data" in body ? body.data : body)
 
 /** A session record over HTTP; `metadata` is what OpenCode stored for it. */
 export async function getSessionRecord(origin: string, sessionID: string, fetchImpl: typeof fetch): Promise<Record<string, unknown>> {
-  const response = await fetchImpl(`${origin}/api/session/${encodeURIComponent(sessionID)}`, { headers: authHeaders() })
+  const response = await serverFetch(`${origin}/api/session/${encodeURIComponent(sessionID)}`, { headers: jsonHeaders }, fetchImpl)
   if (!response.ok) throw new SessionHttpError(response.status)
   const session = unwrap(await response.json())
   return isRecord(session) ? session : {}
@@ -118,10 +166,10 @@ export async function getSessionRecord(origin: string, sessionID: string, fetchI
  * OpenChamber writes goal metadata through.
  */
 export async function patchSessionMetadata(origin: string, sessionID: string, metadata: Record<string, unknown>, fetchImpl: typeof fetch): Promise<void> {
-  const response = await fetchImpl(`${origin}/api/session/${encodeURIComponent(sessionID)}`, {
+  const response = await serverFetch(`${origin}/api/session/${encodeURIComponent(sessionID)}`, {
     method: "PATCH",
-    headers: authHeaders(),
+    headers: jsonHeaders,
     body: JSON.stringify({ metadata }),
-  })
+  }, fetchImpl)
   if (!response.ok) throw new SessionHttpError(response.status)
 }
