@@ -10,6 +10,18 @@ Releases of [gdraganic/oh-my-openagent](https://github.com/gdraganic/oh-my-opena
 
 To release: add a `## [<version>] - YYYY-MM-DD` section here on `main` (with the `Fork-Patch: v2-support` trailer), then run the **Fork release** workflow with that version.
 
+## [5.1.33-fork.2] - 2026-10-15
+
+Rebased on upstream `dev` of 2026-10-15 (225 commits since fork.1, still upstream 5.1.33).
+
+### Fixes
+
+- Under the OpenCode background service (`opencode serve --service`, which OpenChamber uses), the adapter's own HTTP requests now reach the right server with the right password. It took the first listening port on the whole machine instead of its own, and it sent the password inherited from the launching client, which the service rejects. Every request failed quietly, so delegated tasks lost their configured `-fast` model (explore ran on its fallback), and session listing and goal metadata sync did not work.
+
+### Tests
+
+- Regression tests from @mradwankhalil (SwarmStorm/oh-my-openagent#1): a messages transform that inserts a message, such as the team-mode status injector, keeps every other message's content in place and leaves tool messages with only tool results. This fork's write-back already does that; the tests guard it.
+
 ## [5.1.33-fork.1] - 2026-10-14
 
 **Rebased on upstream 5.1.33.** The OpenCode 2 line was built on upstream from 2026-09-28; it now carries every upstream change since, including the security fixes: secret redaction across memory injection and commits, credentials preserved across uncertain token refreshes, escaped untrusted gateway rule text, a sandboxed child memory home, and builtin categories that no longer route to gateways such as OpenRouter that you never configured.
