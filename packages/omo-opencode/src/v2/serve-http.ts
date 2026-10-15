@@ -39,7 +39,7 @@ export async function resolveServeOrigin(input: {
 }
 
 export async function listenPortOf(pid = process.pid): Promise<number | undefined> {
-  const proc = spawn(["lsof", "-nP", "-p", String(pid), "-iTCP", "-sTCP:LISTEN"], {
+  const proc = spawn(["lsof", "-a", "-nP", "-p", String(pid), "-iTCP", "-sTCP:LISTEN"], {
     stdout: "pipe",
     stderr: "ignore",
   })
