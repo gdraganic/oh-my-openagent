@@ -52,7 +52,7 @@ var package_default;
 var init_package = __esm(() => {
   package_default = {
     name: "oh-my-opencode",
-    version: "5.1.33-fork.1",
+    version: "5.1.33-fork.2",
     description: "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
     main: "./dist/index.js",
     types: "dist/index.d.ts",
@@ -126662,6 +126662,8 @@ function classifyWorktree(input2) {
     return { path: record3.path, ref, decision: "KEEP", reason: "locked" };
   if (!input2.pathExists)
     return { path: record3.path, ref, decision: "PRUNE" };
+  if (input2.current)
+    return { path: record3.path, ref, decision: "KEEP", reason: "current" };
   if (input2.external)
     return { path: record3.path, ref, decision: "KEEP", reason: "external" };
   if (!input2.merged && !input2.agedOut) {
@@ -126867,14 +126869,16 @@ async function isOlderThan(worktreePath, days, now) {
 async function classifyRecord(repo, record3, defaultBranch, options) {
   const pathExists4 = existsSync68(record3.path);
   const external2 = isExcludedPath(record3.path, options.excludePrefixes, options.home);
-  if (record3.locked || !pathExists4 || external2) {
+  const current = options.currentWorktree !== undefined && record3.path === options.currentWorktree;
+  if (record3.locked || !pathExists4 || external2 || current) {
     return classifyWorktree({
       record: record3,
       pathExists: pathExists4,
       merged: false,
       agedOut: false,
       dirty: false,
-      external: external2
+      external: external2,
+      current
     });
   }
   const merged = await isMerged(repo, worktreeRef(record3), defaultBranch);
@@ -126883,15 +126887,20 @@ async function classifyRecord(repo, record3, defaultBranch, options) {
   return classifyWorktree({ record: record3, pathExists: pathExists4, merged, agedOut, dirty, external: external2 });
 }
 async function sweepRepo(repo, options) {
-  const root = normalize2(await resolveRepoRoot(repo) ?? repo);
-  const defaultBranch = await detectDefaultBranch(root);
+  const toplevel = normalize2(await resolveRepoRoot(repo) ?? repo);
+  const defaultBranch = await detectDefaultBranch(toplevel);
   if (defaultBranch === undefined) {
-    throw new Error(`Could not determine the default branch for ${root}`);
+    throw new Error(`Could not determine the default branch for ${toplevel}`);
   }
-  const records = linkedWorktrees(parseWorktreeList(await listWorktreesPorcelain(root)));
+  const allRecords = parseWorktreeList(await listWorktreesPorcelain(toplevel));
+  const records = linkedWorktrees(allRecords);
+  const startedInLinked = records.some((record3) => record3.path === toplevel);
+  const mainWorktree = allRecords[0]?.path;
+  const root = startedInLinked && mainWorktree !== undefined && existsSync68(mainWorktree) ? mainWorktree : toplevel;
+  const currentWorktree = startedInLinked ? toplevel : undefined;
   const classifications = [];
   for (const record3 of records) {
-    classifications.push(await classifyRecord(root, record3, defaultBranch, options));
+    classifications.push(await classifyRecord(root, record3, defaultBranch, { ...options, currentWorktree }));
   }
   const removed2 = [];
   const failed = [];
@@ -126996,8 +127005,9 @@ Examples:
   $ omo-agent-toolkit worktree-sweep --repo /path/to/repo --repo /path/to/other --apply
 
 Lines: SWEEP <path> <ref> | KEEP(<reason>) <path> <ref> | PRUNE <path> <ref>
-KEEP reasons: locked, external, unmerged, dirty. Dry-run is the default; --apply
-removes with 'git worktree remove' (never --force) and then prunes.
+KEEP reasons: locked, current, external, unmerged, dirty. Dry-run is the
+default; --apply removes with 'git worktree remove' (never --force) and then
+prunes.
 `).action(async (options) => {
     const exitCode = await worktreeSweep({
       apply: options.apply === true,

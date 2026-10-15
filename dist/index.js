@@ -6175,58 +6175,52 @@ function toGitFileStatus(statusToken) {
     return "deleted";
   return "modified";
 }
-function normalizeGitStatusPath(statusToken, filePath) {
-  if (statusToken !== "R" && statusToken !== "C")
-    return filePath;
-  const arrowIndex = filePath.lastIndexOf(" -> ");
-  return arrowIndex === -1 ? filePath : filePath.slice(arrowIndex + 4);
-}
-function parseGitStatusPorcelainLine(line) {
-  if (!line)
-    return null;
-  const statusToken = line.substring(0, 2).trim();
-  const filePath = normalizeGitStatusPath(statusToken, line.substring(3));
-  if (!filePath)
-    return null;
-  return {
-    filePath,
-    status: toGitFileStatus(statusToken)
-  };
-}
 
-// packages/utils/src/git-worktree/parse-status-porcelain.ts
-function parseGitStatusPorcelain(output) {
+// packages/utils/src/git-worktree/parse-status-porcelain-z.ts
+function parseGitStatusPorcelainZ(output) {
   const map = new Map;
   if (!output)
     return map;
-  for (const line of output.split(`
-`)) {
-    const parsed = parseGitStatusPorcelainLine(line);
-    if (!parsed)
+  const fields = output.split("\x00");
+  for (let index = 0;index < fields.length; index++) {
+    const record13 = fields[index];
+    if (record13.length < 4)
       continue;
-    map.set(parsed.filePath, parsed.status);
+    const statusCode = record13.substring(0, 2);
+    map.set(record13.substring(3), statusCode.includes("C") ? "added" : toGitFileStatus(statusCode.trim()));
+    if (statusCode.includes("R") || statusCode.includes("C"))
+      index++;
   }
   return map;
 }
-var init_parse_status_porcelain = () => {};
+var init_parse_status_porcelain_z = () => {};
 
-// packages/utils/src/git-worktree/parse-diff-numstat.ts
-function parseGitDiffNumstat(output, statusMap) {
+// packages/utils/src/git-worktree/parse-diff-numstat-z.ts
+function toCount(value) {
+  return value === "-" ? 0 : parseInt(value, 10);
+}
+function parseGitDiffNumstatZ(output, statusMap) {
   if (!output)
     return [];
   const stats = [];
-  for (const line of output.split(`
-`)) {
-    const parts = line.split("\t");
-    if (parts.length < 3)
+  const fields = output.split("\x00");
+  for (let index = 0;index < fields.length; index++) {
+    const field = fields[index];
+    const firstTab = field.indexOf("\t");
+    const secondTab = field.indexOf("\t", firstTab + 1);
+    if (firstTab === -1 || secondTab === -1)
       continue;
-    const [addedStr, removedStr, path4] = parts;
-    const added = addedStr === "-" ? 0 : parseInt(addedStr, 10);
-    const removed = removedStr === "-" ? 0 : parseInt(removedStr, 10);
+    let path4 = field.slice(secondTab + 1);
+    if (path4 === "") {
+      index += 2;
+      path4 = fields[index];
+    }
+    if (!path4)
+      continue;
     stats.push({
       path: path4,
-      added,
-      removed,
+      added: toCount(field.slice(0, firstTab)),
+      removed: toCount(field.slice(firstTab + 1, secondTab)),
       status: statusMap.get(path4) ?? "modified"
     });
   }
@@ -6239,46 +6233,43 @@ import * as fs3 from "fs";
 import { join as join12 } from "path";
 function collectGitDiffStats(directory) {
   try {
-    const diffOutput = childProcess.execFileSync("git", ["diff", "--numstat", "HEAD"], {
+    const diffOutput = childProcess.execFileSync("git", ["diff", "--numstat", "-z", "-M", "HEAD"], {
       cwd: directory,
       encoding: "utf-8",
       timeout: 5000,
       stdio: ["pipe", "pipe", "pipe"]
-    }).trimEnd();
-    const statusOutput = childProcess.execFileSync("git", ["status", "--porcelain"], {
+    });
+    const statusOutput = childProcess.execFileSync("git", ["status", "--porcelain", "-z", "--find-renames", "--untracked-files=all"], {
       cwd: directory,
       encoding: "utf-8",
       timeout: 5000,
       stdio: ["pipe", "pipe", "pipe"]
-    }).trimEnd();
-    const untrackedOutput = childProcess.execFileSync("git", ["ls-files", "--others", "--exclude-standard"], {
+    });
+    const untrackedOutput = childProcess.execFileSync("git", ["ls-files", "-z", "--others", "--exclude-standard"], {
       cwd: directory,
       encoding: "utf-8",
       timeout: 5000,
       stdio: ["pipe", "pipe", "pipe"]
-    }).trimEnd();
-    const untrackedNumstat = untrackedOutput ? untrackedOutput.split(`
-`).filter(Boolean).map((filePath) => {
+    });
+    const untrackedNumstat = untrackedOutput ? untrackedOutput.split("\x00").filter(Boolean).map((filePath) => {
       try {
         const content = fs3.readFileSync(join12(directory, filePath), "utf-8");
         const lineCount = content.split(`
 `).length - (content.endsWith(`
 `) ? 1 : 0);
-        return `${lineCount}	0	${filePath}`;
+        return `${lineCount}	0	${filePath}\x00`;
       } catch (error) {
         if (!(error instanceof Error)) {
           throw error;
         }
-        return `0	0	${filePath}`;
+        return `0	0	${filePath}\x00`;
       }
-    }).join(`
-`) : "";
-    const combinedNumstat = [diffOutput, untrackedNumstat].filter(Boolean).join(`
-`).trim();
+    }).join("") : "";
+    const combinedNumstat = diffOutput + untrackedNumstat;
     if (!combinedNumstat)
       return [];
-    const statusMap = parseGitStatusPorcelain(statusOutput);
-    return parseGitDiffNumstat(combinedNumstat, statusMap);
+    const statusMap = parseGitStatusPorcelainZ(statusOutput);
+    return parseGitDiffNumstatZ(combinedNumstat, statusMap);
   } catch (error) {
     if (!(error instanceof Error)) {
       throw error;
@@ -6287,12 +6278,17 @@ function collectGitDiffStats(directory) {
   }
 }
 var init_collect_git_diff_stats = __esm(() => {
-  init_parse_status_porcelain();
+  init_parse_status_porcelain_z();
 });
 
 // packages/utils/src/git-worktree/format-file-changes.ts
 function normalizePath(path4) {
   return path4.replaceAll("\\", "/");
+}
+function displayPath2(path4) {
+  if (!UNSAFE_DISPLAY_CHARACTER.test(path4))
+    return path4;
+  return JSON.stringify(path4).replace(UNSAFE_DISPLAY_CHARACTERS, (character) => `\\u${character.charCodeAt(0).toString(16).padStart(4, "0")}`);
 }
 function formatFileChanges(stats, notepadPath) {
   if (stats.length === 0)
@@ -6306,21 +6302,21 @@ No file changes detected.
   if (modified.length > 0) {
     lines.push("Modified files:");
     for (const f of modified) {
-      lines.push(`  ${f.path}  (+${f.added}, -${f.removed})`);
+      lines.push(`  ${displayPath2(f.path)}  (+${f.added}, -${f.removed})`);
     }
     lines.push("");
   }
   if (added.length > 0) {
     lines.push("Created files:");
     for (const f of added) {
-      lines.push(`  ${f.path}  (+${f.added})`);
+      lines.push(`  ${displayPath2(f.path)}  (+${f.added})`);
     }
     lines.push("");
   }
   if (deleted.length > 0) {
     lines.push("Deleted files:");
     for (const f of deleted) {
-      lines.push(`  ${f.path}  (-${f.removed})`);
+      lines.push(`  ${displayPath2(f.path)}  (-${f.removed})`);
     }
     lines.push("");
   }
@@ -6332,17 +6328,23 @@ No file changes detected.
     });
     if (notepadStat) {
       lines.push("[NOTEPAD UPDATED]");
-      lines.push(`  ${notepadStat.path}  (+${notepadStat.added})`);
+      lines.push(`  ${displayPath2(notepadStat.path)}  (+${notepadStat.added})`);
       lines.push("");
     }
   }
   return lines.join(`
 `);
 }
+var UNSAFE_DISPLAY_CHARACTER, UNSAFE_DISPLAY_CHARACTERS;
+var init_format_file_changes = __esm(() => {
+  UNSAFE_DISPLAY_CHARACTER = /[\p{Cc}\u2028\u2029]/u;
+  UNSAFE_DISPLAY_CHARACTERS = /[\p{Cc}\u2028\u2029]/gu;
+});
 
 // packages/utils/src/git-worktree/index.ts
 var init_git_worktree = __esm(() => {
   init_collect_git_diff_stats();
+  init_format_file_changes();
 });
 
 // packages/utils/src/internal-initiator-marker.ts
@@ -88457,8 +88459,8 @@ function resolveSkillPathReferences(content, basePath) {
       if (relativePathFromBase2.startsWith("..") || win324.isAbsolute(relativePathFromBase2)) {
         return match;
       }
-      const displayPath3 = toDisplayPath(resolvedPath2);
-      return relativePath.endsWith("/") && !displayPath3.endsWith("/") ? `${displayPath3}/` : displayPath3;
+      const displayPath4 = toDisplayPath(resolvedPath2);
+      return relativePath.endsWith("/") && !displayPath4.endsWith("/") ? `${displayPath4}/` : displayPath4;
     }
     if (isPosixAbsolutePath2(normalizedBase)) {
       const displayBase = toDisplayPath(normalizedBase);
@@ -88474,8 +88476,8 @@ function resolveSkillPathReferences(content, basePath) {
     if (relativePathFromBase.startsWith("..") || isAbsolute5(relativePathFromBase)) {
       return match;
     }
-    const displayPath2 = toDisplayPath(resolvedPath);
-    return relativePath.endsWith("/") && !displayPath2.endsWith("/") ? `${displayPath2}/` : displayPath2;
+    const displayPath3 = toDisplayPath(resolvedPath);
+    return relativePath.endsWith("/") && !displayPath3.endsWith("/") ? `${displayPath3}/` : displayPath3;
   });
 }
 // packages/claude-code-compat-core/src/features/claude-code-plugin-loader/skill-loader.ts
@@ -99522,7 +99524,7 @@ function getCachedVersion(options = {}) {
 // package.json
 var package_default = {
   name: "oh-my-opencode",
-  version: "5.1.33-fork.1",
+  version: "5.1.33-fork.2",
   description: "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
   main: "./dist/index.js",
   types: "dist/index.d.ts",
@@ -189790,10 +189792,12 @@ function configPathsOf(directory) {
 init_logger2();
 
 // packages/omo-opencode/src/v2/catalog.ts
-import { existsSync as existsSync120, readFileSync as readFileSync85 } from "fs";
-import { join as join149 } from "path";
+import { existsSync as existsSync120, readFileSync as readFileSync86 } from "fs";
+import { join as join150 } from "path";
 
 // packages/omo-opencode/src/v2/serve-http.ts
+import { readFileSync as readFileSync85 } from "fs";
+import { join as join148 } from "path";
 init_bun_spawn_shim();
 
 class SessionHttpError extends Error {
@@ -189824,7 +189828,7 @@ async function resolveServeOrigin(input) {
   return `http://${hostname}:${port}`;
 }
 async function listenPortOf(pid = process.pid) {
-  const proc = spawn(["lsof", "-nP", "-p", String(pid), "-iTCP", "-sTCP:LISTEN"], {
+  const proc = spawn(["lsof", "-a", "-nP", "-p", String(pid), "-iTCP", "-sTCP:LISTEN"], {
     stdout: "pipe",
     stderr: "ignore"
   });
@@ -189832,12 +189836,54 @@ async function listenPortOf(pid = process.pid) {
   const match = text.match(/:(\d+)\s+\(LISTEN\)/);
   return match ? Number(match[1]) : undefined;
 }
+function basicAuth(password) {
+  const username = process.env.OPENCODE_SERVER_USERNAME ?? "opencode";
+  return `Basic ${Buffer.from(`${username}:${password}`, "utf8").toString("base64")}`;
+}
+function servicePassword() {
+  try {
+    const parsed = JSON.parse(readFileSync85(join148(getOpenCodeConfigDir({ binary: "opencode" }), "service.json"), "utf8"));
+    return isRecord19(parsed) && typeof parsed.password === "string" && parsed.password.length > 0 ? parsed.password : undefined;
+  } catch {
+    return;
+  }
+}
+function serverAuthCandidates() {
+  const candidates = [];
+  const fromEnv = getServerBasicAuthHeader();
+  if (fromEnv)
+    candidates.push(fromEnv);
+  const fromService = servicePassword();
+  if (fromService) {
+    const header = basicAuth(fromService);
+    if (!candidates.includes(header))
+      candidates.push(header);
+  }
+  if (candidates.length === 0)
+    candidates.push(undefined);
+  return candidates;
+}
+var acceptedAuth;
+async function serverFetch(url2, init, fetchImpl) {
+  const candidates = serverAuthCandidates();
+  const ordered = acceptedAuth !== undefined && candidates.includes(acceptedAuth) ? [acceptedAuth, ...candidates.filter((candidate2) => candidate2 !== acceptedAuth)] : candidates;
+  let response;
+  for (const auth2 of ordered) {
+    const headers = new Headers(init.headers);
+    if (auth2)
+      headers.set("Authorization", auth2);
+    else
+      headers.delete("Authorization");
+    response = await fetchImpl(url2, { ...init, headers });
+    if (response.status !== 401) {
+      acceptedAuth = auth2;
+      return response;
+    }
+  }
+  return response;
+}
 async function getJson(url2, fetchImpl) {
-  const headers = new Headers;
-  const auth2 = getServerBasicAuthHeader();
-  if (auth2)
-    headers.set("Authorization", auth2);
-  const response = await fetchImpl(url2, { headers });
+  const response = await serverFetch(url2, {}, fetchImpl);
   if (response.status === 401)
     throw new SessionHttpError(401);
   if (!response.ok)
@@ -189845,11 +189891,7 @@ async function getJson(url2, fetchImpl) {
   return response.json();
 }
 async function listModels(origin, directory, fetchImpl) {
-  const headers = new Headers({ "x-opencode-directory": directory });
-  const auth2 = getServerBasicAuthHeader();
-  if (auth2)
-    headers.set("Authorization", auth2);
-  const response = await fetchImpl(new URL("/api/model", origin).toString(), { headers });
+  const response = await serverFetch(new URL("/api/model", origin).toString(), { headers: { "x-opencode-directory": directory } }, fetchImpl);
   if (response.status === 401)
     throw new SessionHttpError(401);
   if (!response.ok)
@@ -189883,34 +189925,28 @@ async function activeSessions(origin, fetchImpl) {
     status[sessionID] = { type: "busy" };
   return status;
 }
-var authHeaders = () => {
-  const headers = new Headers({ "content-type": "application/json" });
-  const auth2 = getServerBasicAuthHeader();
-  if (auth2)
-    headers.set("Authorization", auth2);
-  return headers;
-};
+var jsonHeaders = { "content-type": "application/json" };
 var unwrap2 = (body) => isRecord19(body) && ("data" in body) ? body.data : body;
 async function getSessionRecord(origin, sessionID, fetchImpl) {
-  const response = await fetchImpl(`${origin}/api/session/${encodeURIComponent(sessionID)}`, { headers: authHeaders() });
+  const response = await serverFetch(`${origin}/api/session/${encodeURIComponent(sessionID)}`, { headers: jsonHeaders }, fetchImpl);
   if (!response.ok)
     throw new SessionHttpError(response.status);
   const session = unwrap2(await response.json());
   return isRecord19(session) ? session : {};
 }
 async function patchSessionMetadata(origin, sessionID, metadata, fetchImpl) {
-  const response = await fetchImpl(`${origin}/api/session/${encodeURIComponent(sessionID)}`, {
+  const response = await serverFetch(`${origin}/api/session/${encodeURIComponent(sessionID)}`, {
     method: "PATCH",
-    headers: authHeaders(),
+    headers: jsonHeaders,
     body: JSON.stringify({ metadata })
-  });
+  }, fetchImpl);
   if (!response.ok)
     throw new SessionHttpError(response.status);
 }
 
 // packages/omo-opencode/src/v2/session-db.ts
 import { existsSync as existsSync119 } from "fs";
-import { join as join148 } from "path";
+import { join as join149 } from "path";
 function isRecord20(value) {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
@@ -189928,7 +189964,7 @@ async function openReadonly(file2) {
   }
 }
 function openCodeDatabasePath() {
-  return join148(getDataDir(), "opencode", "opencode.db");
+  return join149(getDataDir(), "opencode", "opencode.db");
 }
 async function sessionsFromDatabase(file2 = openCodeDatabasePath()) {
   const db = await openReadonly(file2);
@@ -190008,10 +190044,10 @@ function stripJsonc(text) {
 }
 function configData(directory = getOpenCodeConfigDir({ binary: "opencode" })) {
   for (const name of ["opencode.jsonc", "opencode.json"]) {
-    const file2 = join149(directory, name);
+    const file2 = join150(directory, name);
     if (!existsSync120(file2))
       continue;
-    const parsed = JSON.parse(stripJsonc(readFileSync85(file2, "utf8")));
+    const parsed = JSON.parse(stripJsonc(readFileSync86(file2, "utf8")));
     if (!isRecord21(parsed))
       return { data: {} };
     const model = parsed.model;
@@ -191127,8 +191163,8 @@ async function registerV1Hooks(ctx, hooks2, state3, promptClient) {
 }
 
 // packages/omo-opencode/src/v2/goal-sync.ts
-import { existsSync as existsSync121, readdirSync as readdirSync37, readFileSync as readFileSync86 } from "fs";
-import { join as join150 } from "path";
+import { existsSync as existsSync121, readdirSync as readdirSync37, readFileSync as readFileSync87 } from "fs";
+import { join as join151 } from "path";
 init_logger2();
 var OMO_GOAL_DRIVER = "omo";
 var isRecord27 = (value) => typeof value === "object" && value !== null && !Array.isArray(value);
@@ -191155,14 +191191,14 @@ var USER_KEYS = ["status", "objective", "tokenBudget"];
 var userChanged = (mirror, written) => USER_KEYS.some((key) => (mirror[key] ?? null) !== (written[key] ?? null));
 function readGoals(projectDir) {
   const goals = new Map;
-  const goalDir = join150(projectDir, ".omo", "goal");
+  const goalDir = join151(projectDir, ".omo", "goal");
   if (!existsSync121(goalDir))
     return goals;
   for (const name of readdirSync37(goalDir)) {
     if (!name.endsWith(".json"))
       continue;
     try {
-      const goal2 = GoalFileSchema.parse(JSON.parse(readFileSync86(join150(goalDir, name), "utf8"))).goal;
+      const goal2 = GoalFileSchema.parse(JSON.parse(readFileSync87(join151(goalDir, name), "utf8"))).goal;
       if (goal2)
         goals.set(goal2.sessionID, goal2);
     } catch {}
@@ -191296,19 +191332,19 @@ function createGoalSync(input) {
 
 // packages/omo-opencode/src/v2/project-config.ts
 init_logger2();
-import { existsSync as existsSync122, readFileSync as readFileSync88, statSync as statSync19 } from "fs";
-import { join as join152 } from "path";
+import { existsSync as existsSync122, readFileSync as readFileSync89, statSync as statSync19 } from "fs";
+import { join as join153 } from "path";
 
 // packages/omo-opencode/src/v2/agent-markdown.ts
-import { mkdirSync as mkdirSync33, readFileSync as readFileSync87, writeFileSync as writeFileSync35 } from "fs";
-import { join as join151 } from "path";
+import { mkdirSync as mkdirSync33, readFileSync as readFileSync88, writeFileSync as writeFileSync35 } from "fs";
+import { join as join152 } from "path";
 var ACTION_ALIASES = {
   bash: "shell"
 };
 function agentMarkdownDirectory(override) {
   if (override)
     return override;
-  return join151(getOpenCodeConfigDir({ binary: "opencode" }), "agents");
+  return join152(getOpenCodeConfigDir({ binary: "opencode" }), "agents");
 }
 function agentFileName(name) {
   const cleaned = name.replace(/[\\/]/g, "-").replace(/^\.+/, "").trim();
@@ -191399,10 +191435,10 @@ function writeAgentMarkdown(input) {
     const markdown = renderAgentMarkdown(name, value);
     if (!markdown)
       continue;
-    const path28 = join151(input.directory, agentFileName(name));
+    const path28 = join152(input.directory, agentFileName(name));
     let changed = true;
     try {
-      changed = readFileSync87(path28, "utf8") !== markdown;
+      changed = readFileSync88(path28, "utf8") !== markdown;
     } catch {
       changed = true;
     }
@@ -191454,10 +191490,10 @@ function skillRecords(skills2) {
   for (const entry of skills2.paths) {
     if (typeof entry !== "string" || !existsSync122(entry))
       continue;
-    const file2 = statSync19(entry).isDirectory() ? join152(entry, "SKILL.md") : entry;
+    const file2 = statSync19(entry).isDirectory() ? join153(entry, "SKILL.md") : entry;
     if (!existsSync122(file2))
       continue;
-    const content = readFileSync88(file2, "utf8");
+    const content = readFileSync89(file2, "utf8");
     const name = file2.split(/[\\/]/).at(-1)?.replace(/\.md$/i, "") || "skill";
     records.push({ id: name, name, path: file2, content });
   }
