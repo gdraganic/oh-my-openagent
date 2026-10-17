@@ -10,6 +10,16 @@ Releases of [gdraganic/oh-my-openagent](https://github.com/gdraganic/oh-my-opena
 
 To release: add a `## [<version>] - YYYY-MM-DD` section here on `main` (with the `Fork-Patch: v2-support` trailer), then run the **Fork release** workflow with that version.
 
+## [5.1.35-fork.1] - 2026-10-17
+
+Rebased on upstream `dev` of 2026-10-17 (769 commits since fork.2): upstream releases 5.1.34 and 5.1.35. Upstream highlights: `oracle`, `momus` and `plan-reviewer` fall back to Argon before the previous pro model; telemetry opt-outs (`OMO_DISABLE_TELEMETRY=1`, `DO_NOT_TRACK`) are checked when events are sent, so turning telemetry off mid-session takes effect. Upstream has paused its own OpenCode V2 work (#9389), so this fork remains the way to run oMo on OpenCode 2.x.
+
+### Fixes
+
+- Service-tier models such as `gpt-6-luna-fast` now reach oMo's model list. OpenCode lists a tier with the same provider API name as its base model, and the adapter merged the two, so explore, librarian and quick fell back to their next model (`claude-haiku-5-5`).
+- On a fresh install or with an empty cache, agents no longer resolve to providers that are not connected (explore and librarian on `kimi-for-coding`). The adapter builds the connected-providers cache before agents pick their models.
+- The fork's `OMO_CONFIG_DIR` startup patch was updated for upstream's new migration result field.
+
 ## [5.1.33-fork.2] - 2026-10-15
 
 Rebased on upstream `dev` of 2026-10-15 (225 commits since fork.1, still upstream 5.1.33).
