@@ -49,7 +49,7 @@ function modelKey(model: unknown): string {
   if (!model || typeof model !== "object") return ""
   const record = model as Record<string, unknown>
   const provider = record.providerID ?? record.provider
-  const id = record.modelID ?? record.id
+  const id = record.id ?? record.modelID
   return `${String(provider)}/${String(id)}`
 }
 
@@ -89,11 +89,17 @@ export function createV1PluginInput(ctx: V2Context, deps: FacadeDeps = {}): {
     const registry = rowsOf(await ctx.model.list())
     try {
       const resolvedOrigin = await origin()
-      if (!resolvedOrigin) return registry
+      if (!resolvedOrigin) {
+        log("[oh-my-openagent] service-tier models skipped: server origin unknown")
+        return registry
+      }
       const seen = new Set(registry.map(modelKey))
       const extra = (await listModels(resolvedOrigin, directory, fetchImpl)).filter((model) => !seen.has(modelKey(model)))
       return [...registry, ...extra]
-    } catch {
+    } catch (error) {
+      log("[oh-my-openagent] service-tier models unavailable", {
+        error: error instanceof Error ? error.message : String(error),
+      })
       return registry
     }
   }

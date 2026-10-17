@@ -33,7 +33,9 @@ export function modelsFrom(value: unknown): { data: Array<{ provider: string; id
   return {
     data: rowsFrom(value).flatMap((model) => {
       const provider = typeof model.providerID === "string" ? model.providerID : typeof model.provider === "string" ? model.provider : undefined
-      const id = typeof model.modelID === "string" ? model.modelID : typeof model.id === "string" ? model.id : undefined
+      // `id` selects the model; `modelID` is the provider API name, which a
+      // service tier (gpt-6-luna-fast) shares with its base model.
+      const id = typeof model.id === "string" ? model.id : typeof model.modelID === "string" ? model.modelID : undefined
       return provider && id ? [{ provider, id }] : []
     }),
   }
