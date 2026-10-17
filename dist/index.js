@@ -4701,11 +4701,6 @@ function formatDurationHuman(milliseconds) {
   return `${seconds}s`;
 }
 
-// packages/utils/src/shell-command-escape.ts
-function shellEscapeForDoubleQuotedCommand(value) {
-  return value.replace(/\\/g, "\\\\").replace(/\$/g, "\\$").replace(/`/g, "\\`").replace(/"/g, "\\\"").replace(/;/g, "\\;").replace(/\|/g, "\\|").replace(/&/g, "\\&").replace(/#/g, "\\#").replace(/\(/g, "\\(").replace(/\)/g, "\\)");
-}
-
 // packages/utils/src/jsonc-parser.ts
 function stripBom3(content) {
   return content.charCodeAt(0) === 65279 ? content.slice(1) : content;
@@ -8358,9 +8353,22 @@ function buildTmuxAttachCommand(serverUrl, sessionId, directory = process.cwd())
   const escapedDirectory = shellQuoteForNestedCommand(directory || process.cwd());
   return `${TMUX_COMMAND_SHELL} -c "opencode attach ${escapedUrl} --session ${escapedSessionId} --dir ${escapedDirectory}"`;
 }
+function withoutNul(value) {
+  return value.replaceAll("\x00", "");
+}
+function escapeTmuxFormat(value) {
+  return value.replaceAll("#", "##");
+}
+function buildSubagentPaneTitle(description) {
+  const shown = withoutNul(description).slice(0, PANE_TITLE_DESCRIPTION_LIMIT);
+  return `omo-subagent-${escapeTmuxFormat(shown)}`;
+}
 function buildTmuxPlaceholderCommand(description) {
-  const escapedDescription = shellEscapeForDoubleQuotedCommand(description);
-  return `${TMUX_COMMAND_SHELL} -c "printf '%s\\n%s\\n' \\"OMO subagent pane ready: ${escapedDescription}\\" \\"Focus this pane to attach.\\"; while :; do sleep 86400; done"`;
+  const clean = withoutNul(description);
+  const shown = clean.length > PLACEHOLDER_DESCRIPTION_LIMIT ? `${clean.slice(0, PLACEHOLDER_DESCRIPTION_LIMIT)}\u2026` : clean;
+  const banner = shellQuoteForNestedCommand(`OMO subagent pane ready: ${shown}`);
+  const hint = shellQuoteForNestedCommand("Focus this pane to attach.");
+  return `${TMUX_COMMAND_SHELL} -c "printf '%s\\n%s\\n' ${banner} ${hint}; while :; do sleep 86400; done"`;
 }
 function buildPaneAuthEnvironmentArgs() {
   const password = process.env.OPENCODE_SERVER_PASSWORD;
@@ -8374,10 +8382,7 @@ function buildPaneAuthEnvironmentArgs() {
   }
   return args;
 }
-var TMUX_COMMAND_SHELL = "/bin/sh";
-var init_pane_command = __esm(() => {
-  init_src();
-});
+var TMUX_COMMAND_SHELL = "/bin/sh", PLACEHOLDER_DESCRIPTION_LIMIT = 2000, PANE_TITLE_DESCRIPTION_LIMIT = 20;
 
 // packages/tmux-core/src/tmux-utils/pane-spawn.ts
 async function resolveSpawnTmuxPaneDeps(deps) {
@@ -8449,7 +8454,7 @@ async function spawnTmuxPane(sessionId, description, config2, serverUrl, _direct
   if (result.exitCode !== 0 || !paneId) {
     return { success: false };
   }
-  const title = `omo-subagent-${description.slice(0, 20)}`;
+  const title = buildSubagentPaneTitle(description);
   const titleResult = await runTmuxCommand2(tmux, ["select-pane", "-t", paneId, "-T", title]);
   if (titleResult.exitCode !== 0) {
     log4("[spawnTmuxPane] WARNING: failed to set pane title", {
@@ -8464,7 +8469,6 @@ async function spawnTmuxPane(sessionId, description, config2, serverUrl, _direct
 var init_pane_spawn = __esm(() => {
   init_environment();
   init_server_health();
-  init_pane_command();
 });
 
 // packages/tmux-core/src/tmux-utils/pane-close.ts
@@ -8555,7 +8559,7 @@ async function replaceTmuxPane(paneId, sessionId, description, config2, _serverU
     log4("[replaceTmuxPane] FAILED", { paneId, exitCode: result.exitCode, stderr: result.stderr.trim() });
     return { success: false };
   }
-  const title = `omo-subagent-${description.slice(0, 20)}`;
+  const title = buildSubagentPaneTitle(description);
   const titleResult = await runTmuxCommand2(tmux, ["select-pane", "-t", paneId, "-T", title]);
   if (titleResult.exitCode !== 0) {
     log4("[replaceTmuxPane] WARNING: failed to set pane title", {
@@ -8570,7 +8574,6 @@ async function replaceTmuxPane(paneId, sessionId, description, config2, _serverU
 }
 var init_pane_replace = __esm(() => {
   init_environment();
-  init_pane_command();
 });
 
 // packages/tmux-core/src/tmux-utils/pane-activate.ts
@@ -8615,7 +8618,6 @@ async function activateTmuxPane(paneId, sessionId, serverUrl, directory, deps = 
 var init_pane_activate = __esm(() => {
   init_runner();
   init_environment();
-  init_pane_command();
 });
 
 // packages/tmux-core/src/tmux-utils/window-spawn.ts
@@ -8683,7 +8685,7 @@ async function spawnTmuxWindow(sessionId, description, config2, serverUrl, _dire
     log4("[spawnTmuxWindow] FAILED", { exitCode: result.exitCode, stderr: result.stderr.trim() });
     return { success: false };
   }
-  const title = `omo-subagent-${description.slice(0, 20)}`;
+  const title = buildSubagentPaneTitle(description);
   const titleResult = await runTmuxCommand2(tmux, ["select-pane", "-t", paneId, "-T", title]);
   if (titleResult.exitCode !== 0) {
     log4("[spawnTmuxWindow] WARNING: failed to set pane title", {
@@ -8700,7 +8702,6 @@ var ISOLATED_WINDOW_NAME = "omo-agents";
 var init_window_spawn = __esm(() => {
   init_environment();
   init_server_health();
-  init_pane_command();
 });
 
 // packages/tmux-core/src/tmux-utils/session-spawn.ts
@@ -8807,7 +8808,7 @@ async function spawnTmuxSession(sessionId, description, config2, serverUrl, _dir
     log4("[spawnTmuxSession] FAILED", { exitCode: result.exitCode, stderr: result.stderr.trim() });
     return { success: false };
   }
-  const title = `omo-subagent-${description.slice(0, 20)}`;
+  const title = buildSubagentPaneTitle(description);
   const titleResult = await runTmuxCommand2(tmux, ["select-pane", "-t", paneId, "-T", title]);
   if (titleResult.exitCode !== 0) {
     log4("[spawnTmuxSession] WARNING: failed to set pane title", {
@@ -8824,7 +8825,6 @@ var ISOLATED_SESSION_NAME_PREFIX = "omo-agents";
 var init_session_spawn = __esm(() => {
   init_environment();
   init_server_health();
-  init_pane_command();
 });
 
 // packages/tmux-core/src/tmux-utils/session-kill.ts
@@ -9054,7 +9054,6 @@ var init_tmux_utils = __esm(() => {
   init_session_spawn();
   init_session_kill();
   init_stale_session_sweep();
-  init_pane_command();
   init_layout();
   init_spawn_process();
 });
@@ -9085,6 +9084,7 @@ __export(exports_src, {
   getPaneDimensions: () => getPaneDimensions,
   getIsolatedSessionName: () => getIsolatedSessionName,
   getCurrentPaneId: () => getCurrentPaneId,
+  escapeTmuxFormat: () => escapeTmuxFormat,
   enforceMainPaneWidth: () => enforceMainPaneWidth,
   createServerHealthStateForTesting: () => createServerHealthStateForTesting,
   createServerHealthState: () => createServerHealthState,
@@ -9092,6 +9092,7 @@ __export(exports_src, {
   closeTmuxPane: () => closeTmuxPane,
   buildTmuxPlaceholderCommand: () => buildTmuxPlaceholderCommand,
   buildTmuxAttachCommand: () => buildTmuxAttachCommand,
+  buildSubagentPaneTitle: () => buildSubagentPaneTitle,
   buildPaneAuthEnvironmentArgs: () => buildPaneAuthEnvironmentArgs,
   applyLayout: () => applyLayout,
   activateTmuxPane: () => activateTmuxPane,
@@ -9622,7 +9623,7 @@ var init_stale_attach_pane_sweep = __esm(() => {
 });
 
 // packages/omo-opencode/src/shared/tmux/tmux-utils/pane-command.ts
-var init_pane_command2 = __esm(() => {
+var init_pane_command = __esm(() => {
   init_src2();
 });
 
@@ -9657,7 +9658,7 @@ var init_tmux_utils2 = __esm(() => {
   init_session_kill2();
   init_stale_session_sweep2();
   init_stale_attach_pane_sweep();
-  init_pane_command2();
+  init_pane_command();
   init_layout2();
 });
 
@@ -19947,7 +19948,7 @@ function selectExistingTeammatePane(teammatePanes, callerPaneId) {
 function buildSplitArgs(callerPaneId, teammatePanes, member) {
   const environmentArgs = buildPaneEnvironmentArgs();
   if (teammatePanes.length === 0) {
-    return ["split-window", ...environmentArgs, "-t", callerPaneId, "-h", "-d", "-l", "70%", "-P", "-F", "#{pane_id}", "-c", getPaneWorkingDirectory(member)];
+    return ["split-window", ...environmentArgs, "-t", callerPaneId, "-h", "-d", "-l", "70%", "-P", "-F", "#{pane_id}", "-c", escapeTmuxFormat(getPaneWorkingDirectory(member))];
   }
   return [
     "split-window",
@@ -19960,7 +19961,7 @@ function buildSplitArgs(callerPaneId, teammatePanes, member) {
     "-F",
     "#{pane_id}",
     "-c",
-    getPaneWorkingDirectory(member)
+    escapeTmuxFormat(getPaneWorkingDirectory(member))
   ];
 }
 async function createTeamLayoutInCallerWindow(tmuxPath2, callerPaneId, windowTarget, members, serverUrl, deps) {
@@ -22453,8 +22454,17 @@ function isFileExistsError(error) {
 function backupCandidate(basePath, attempt) {
   return attempt === 0 ? basePath : `${basePath}.${attempt}`;
 }
+function writePlannedBackup(plannedPath, content, fileSystem) {
+  try {
+    if (fileSystem.existsSync(plannedPath) && fileSystem.readFileSync(plannedPath, "utf-8") === content)
+      return plannedPath;
+  } catch {}
+  return writeBackupFrom(plannedPath, content, fileSystem);
+}
 function writeBackup(path, content, fileSystem) {
-  const basePath = `${path}.bak.${backupSuffix()}`;
+  return writeBackupFrom(`${path}.bak.${backupSuffix()}`, content, fileSystem);
+}
+function writeBackupFrom(basePath, content, fileSystem) {
   let attempt = 0;
   while (true) {
     const candidate = backupCandidate(basePath, attempt);
@@ -22559,7 +22569,7 @@ function updateOmoConfig(options) {
   if (existed) {
     try {
       assertConfigPathIsSafe(path, fileSystem);
-      backupPath = writeBackup(path, content, fileSystem);
+      backupPath = options.backupPath === undefined ? writeBackup(path, content, fileSystem) : writePlannedBackup(options.backupPath, content, fileSystem);
     } catch (error) {
       if (error instanceof OmoConfigWriteError)
         throw error;
@@ -22876,6 +22886,7 @@ var writeOmoMigrationTarget = (input) => {
   const options = writerInput(input.targetPath, input.env);
   const result = updateOmoConfig({
     ...options,
+    ...input.backupPath === undefined ? {} : { backupPath: input.backupPath },
     edits: input.edits,
     env: input.env,
     fileSystem: input.fileSystem,
@@ -22884,6 +22895,7 @@ var writeOmoMigrationTarget = (input) => {
   if (!sameResolvedPath(result.path, input.targetPath)) {
     throw new MigrationTransactionError(`Migration writer resolved ${result.path} instead of ${input.targetPath}`);
   }
+  return result.backupPath === undefined ? {} : { backupPath: result.backupPath };
 };
 function prepareTargetWrite(input) {
   const targetCleanup = stripRetiredCodegraph(input.target);
@@ -22921,12 +22933,14 @@ function prepareTargetReplacement(input) {
   };
 }
 function writePreparedTarget(input) {
-  input.writeTarget({
+  const written = input.writeTarget({
+    ...input.backupPath === undefined ? {} : { backupPath: input.backupPath },
     edits: input.prepared.edits,
     env: input.env,
     fileSystem: input.fileSystem,
     targetPath: input.targetPath
   });
+  return written?.backupPath;
 }
 
 // packages/omo-config-core/src/migration/journal.ts
@@ -22966,6 +22980,9 @@ function parseJournal(value) {
   if (!value["completedMoves"].every((path) => typeof path === "string")) {
     throw new Error("Migration journal completed moves are invalid");
   }
+  const targetBackupPath = value["targetBackupPath"];
+  if (targetBackupPath !== undefined && typeof targetBackupPath !== "string")
+    throw new Error("Migration journal target backup is invalid");
   if (!Array.isArray(value["backupMoves"]))
     throw new Error("Migration journal backup plan is invalid");
   const backupMoves = [];
@@ -22980,6 +22997,7 @@ function parseJournal(value) {
     completedMoves: [...value["completedMoves"]],
     diagnostics: diagnostics === undefined ? [] : [...diagnostics],
     migrationId: value["migrationId"],
+    ...targetBackupPath === undefined ? {} : { targetBackupPath },
     targetPath: value["targetPath"],
     targetWrite: {
       additions: { ...value["targetWrite"]["additions"] },
@@ -23168,12 +23186,24 @@ function acquireMigrationLock(input) {
 }
 
 // packages/omo-config-core/src/migration/recovery.ts
+function backupPathForResume(planned, targetPath, fileSystem) {
+  if (planned === undefined || !fileSystem.existsSync(planned) || !fileSystem.existsSync(targetPath))
+    return planned;
+  if (fileSystem.readFileSync(planned, "utf-8") === fileSystem.readFileSync(targetPath, "utf-8"))
+    return planned;
+  let attempt = 1;
+  while (fileSystem.existsSync(`${planned}.${attempt}`))
+    attempt += 1;
+  return `${planned}.${attempt}`;
+}
 function resumeMigrationJournal(input) {
-  const journal = readMigrationJournal(input.fileSystem, input.env);
-  if (journal === null)
-    return false;
+  const read = readMigrationJournal(input.fileSystem, input.env);
+  if (read === null)
+    return { resumed: false };
+  let journal = read;
   input.renewLock();
   const target = targetDocument(journal.targetPath, input.fileSystem);
+  let writtenBackupPath;
   if (!hasMigrationMarker(target, journal.migrationId)) {
     const prepared = journal.targetWrite.mode === "replace-target" ? prepareTargetReplacement({
       document: journal.targetWrite.additions,
@@ -23186,7 +23216,13 @@ function resumeMigrationJournal(input) {
       target,
       targetPath: journal.targetPath
     });
-    writePreparedTarget({
+    const backupPath = backupPathForResume(journal.targetBackupPath, journal.targetPath, input.fileSystem);
+    if (backupPath !== journal.targetBackupPath && backupPath !== undefined) {
+      journal = { ...journal, targetBackupPath: backupPath };
+      writeMigrationJournal(journal, input.fileSystem, input.env, input.process, input.clock);
+    }
+    writtenBackupPath = writePreparedTarget({
+      ...journal.targetBackupPath === undefined ? {} : { backupPath: journal.targetBackupPath },
       env: input.env,
       fileSystem: input.fileSystem,
       prepared,
@@ -23212,7 +23248,8 @@ function resumeMigrationJournal(input) {
     writeMigrationJournal(targetRecorded, input.fileSystem, input.env, input.process, input.clock);
   }
   removeMigrationJournal(input.fileSystem, input.env);
-  return true;
+  const targetBackupPath = writtenBackupPath ?? (journal.targetBackupPath !== undefined && input.fileSystem.existsSync(journal.targetBackupPath) ? journal.targetBackupPath : undefined);
+  return targetBackupPath === undefined ? { resumed: true } : { resumed: true, targetBackupPath };
 }
 
 // packages/omo-config-core/src/migration/batch.ts
@@ -23266,6 +23303,15 @@ function assertSafeSourcePaths(sources, protectedPaths) {
 function directoryPath2(path) {
   return path.startsWith("/") ? posix3.dirname(path) : dirname4(path);
 }
+function plannedTargetBackupPath(targetPath, clock, fileSystem) {
+  if (!fileSystem.existsSync(targetPath))
+    return;
+  const base = `${targetPath}.bak.${new Date(clock.now()).toISOString().replace(/[:.]/g, "-")}`;
+  let candidate = base;
+  for (let attempt = 1;fileSystem.existsSync(candidate); attempt += 1)
+    candidate = `${base}.${attempt}`;
+  return candidate;
+}
 function ensureBackupDirectories(moves, fileSystem) {
   for (const move of moves)
     fileSystem.mkdirSync(directoryPath2(move.to), { recursive: true });
@@ -23304,11 +23350,13 @@ function executePlan(input) {
   if (input.dryRun)
     return { diagnostics, journalResumed, preview, status: "planned" };
   ensureBackupDirectories(moves, fileSystem);
+  const targetBackupPath = plannedTargetBackupPath(plan.targetPath, input.clock, fileSystem);
   const journal = {
     backupMoves: moves,
     completedMoves: [],
     diagnostics,
     migrationId: plan.id,
+    ...targetBackupPath === undefined ? {} : { targetBackupPath },
     targetPath: plan.targetPath,
     targetWrite: {
       additions: transformed.document,
@@ -23320,7 +23368,7 @@ function executePlan(input) {
   writeMigrationJournal(journal, fileSystem, env, input.process, input.clock);
   input.onBoundary?.("journal-written");
   input.renewLock();
-  writePreparedTarget({ env, fileSystem, prepared, targetPath: plan.targetPath, writeTarget: input.writeTarget });
+  writePreparedTarget({ ...targetBackupPath === undefined ? {} : { backupPath: targetBackupPath }, env, fileSystem, prepared, targetPath: plan.targetPath, writeTarget: input.writeTarget });
   input.onBoundary?.("target-written");
   const targetRecorded = { ...journal, targetWritten: true };
   writeMigrationJournal(targetRecorded, fileSystem, env, input.process, input.clock);
@@ -23336,7 +23384,7 @@ function executePlan(input) {
     input.onBoundary?.("source-recorded");
   }
   removeMigrationJournal(fileSystem, env);
-  return { diagnostics, journalResumed, preview, status: "migrated" };
+  return { diagnostics, journalResumed, preview, status: "migrated", ...targetBackupPath === undefined ? {} : { targetBackupPath } };
 }
 function runMigrations(options) {
   const clock = options.clock ?? DEFAULT_MIGRATION_CLOCK;
@@ -23350,7 +23398,8 @@ function runMigrations(options) {
   if (lock === null)
     return { journalResumed: false, results: [], status: "locked" };
   try {
-    const journalResumed = resumeMigrationJournal({ clock, env, fileSystem, process: process2, renewLock: lock.renew, writeTarget });
+    const resumed = resumeMigrationJournal({ clock, env, fileSystem, process: process2, renewLock: lock.renew, writeTarget });
+    const journalResumed = resumed.resumed;
     lock.renew();
     const results = options.discover().map((plan) => executePlan({
       clock,
@@ -23366,7 +23415,7 @@ function runMigrations(options) {
     }));
     if (options.dryRun !== true)
       options.afterMigrations?.(results);
-    return { journalResumed, results, status: "completed" };
+    return { journalResumed, ...resumed.targetBackupPath === undefined ? {} : { resumedTargetBackupPath: resumed.targetBackupPath }, results, status: "completed" };
   } finally {
     lock.release();
   }
@@ -23430,6 +23479,11 @@ var AGENT_MODEL_REQUIREMENTS = {
     fallbackChain: [
       { providers: ["openai", "chatgpt-subscription", "opencode"], model: "gpt-5.6-sol", variant: "xhigh" },
       { providers: ["github-copilot"], model: "gpt-5.6-sol", variant: "high" },
+      {
+        providers: ["google", "google-vertex", "opencode"],
+        model: "gemini-4-argon",
+        variant: "high"
+      },
       {
         providers: ["google", "github-copilot", "opencode"],
         model: "gemini-3.1-pro",
@@ -23520,6 +23574,11 @@ var AGENT_MODEL_REQUIREMENTS = {
         variant: "max"
       },
       {
+        providers: ["google", "google-vertex", "opencode"],
+        model: "gemini-4-argon",
+        variant: "high"
+      },
+      {
         providers: ["google", "github-copilot", "opencode"],
         model: "gemini-3.1-pro",
         variant: "high"
@@ -23561,6 +23620,7 @@ var AGENT_MODEL_REQUIREMENTS = {
 var CATEGORY_MODEL_REQUIREMENTS = {
   "visual-engineering": {
     fallbackChain: [
+      { providers: ["google", "google-vertex", "opencode"], model: "gemini-4-argon", variant: "low" },
       {
         providers: ["anthropic", "anthropic-api", "github-copilot", "opencode"],
         model: "claude-fable-5-1",
@@ -23696,6 +23756,7 @@ var CATEGORY_MODEL_REQUIREMENTS = {
   writing: {
     requiresAnyModel: true,
     fallbackChain: [
+      { providers: ["google", "google-vertex", "opencode"], model: "gemini-4-argon", variant: "low" },
       {
         providers: ["anthropic", "anthropic-api", "github-copilot", "opencode"],
         model: "claude-opus-5-5",
@@ -28217,7 +28278,7 @@ Approach:
 var GOOGLE_CATEGORIES = [
   {
     name: "visual-engineering",
-    config: { model: "anthropic/claude-fable-5-1", variant: "max" },
+    config: { model: "google/gemini-4-argon", variant: "low" },
     description: "Visual design, UI/UX, frontend, styling, animation, and design systems",
     promptAppend: VISUAL_CATEGORY_PROMPT_APPEND
   },
@@ -28258,7 +28319,7 @@ ANTI-AI-SLOP RULES (NON-NEGOTIABLE):
 var KIMI_CATEGORIES = [
   {
     name: "writing",
-    config: { model: "anthropic/claude-opus-5-5", variant: "low" },
+    config: { model: "google/gemini-4-argon", variant: "low" },
     description: "Documentation, prose, technical writing",
     promptAppend: WRITING_CATEGORY_PROMPT_APPEND
   }
@@ -29774,6 +29835,28 @@ var model_capabilities_generated_default = {
   generatedAt: "2026-07-29T03:28:21.339Z",
   sourceUrl: "https://models.dev/api.json",
   models: {
+    "gemini-4-argon": {
+      id: "gemini-4-argon",
+      family: "gemini",
+      reasoning: true,
+      temperature: false,
+      toolCall: true,
+      modalities: {
+        input: [
+          "text",
+          "image",
+          "audio",
+          "pdf"
+        ],
+        output: [
+          "text"
+        ]
+      },
+      limit: {
+        context: 1048576,
+        output: 65535
+      }
+    },
     "glm-5": {
       id: "glm-5",
       family: "glm",
@@ -99524,7 +99607,7 @@ function getCachedVersion(options = {}) {
 // package.json
 var package_default = {
   name: "oh-my-opencode",
-  version: "5.1.33-fork.2",
+  version: "5.1.35-fork.1",
   description: "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
   main: "./dist/index.js",
   types: "dist/index.d.ts",
@@ -99704,7 +99787,7 @@ var package_default = {
   },
   devDependencies: {
     "@clack/prompts": "^1.8.1",
-    "@code-yeongyu/senpi": "2026.10.13",
+    "@code-yeongyu/senpi": "2026.10.16",
     "@modelcontextprotocol/sdk": "^1.30.0",
     "@oh-my-opencode/agents-md-core": "workspace:*",
     "@oh-my-opencode/ast-grep-mcp": "workspace:*",
@@ -99755,7 +99838,7 @@ var package_default = {
     "js-yaml": "^5.4.2",
     "jsonc-parser": "^3.3.1",
     "node-pty": "^1.1.0",
-    omowright: "github:code-yeongyu/omowright#293ca5002cbd4c8b0c104c5934683385ef7e0d3a",
+    omowright: "github:code-yeongyu/omowright#f87ef4d63fe7b56fe117dbab246c8ad88dd8a780",
     picocolors: "^1.1.1",
     picomatch: "^4.0.7",
     "posthog-node": "^5.52.4",
@@ -99763,18 +99846,18 @@ var package_default = {
     typescript: "^7.0.2"
   },
   optionalDependencies: {
-    "oh-my-opencode-darwin-arm64": "5.1.33",
-    "oh-my-opencode-darwin-x64": "5.1.33",
-    "oh-my-opencode-darwin-x64-baseline": "5.1.33",
-    "oh-my-opencode-linux-arm64": "5.1.33",
-    "oh-my-opencode-linux-arm64-musl": "5.1.33",
-    "oh-my-opencode-linux-x64": "5.1.33",
-    "oh-my-opencode-linux-x64-baseline": "5.1.33",
-    "oh-my-opencode-linux-x64-musl": "5.1.33",
-    "oh-my-opencode-linux-x64-musl-baseline": "5.1.33",
-    "oh-my-opencode-windows-arm64": "5.1.33",
-    "oh-my-opencode-windows-x64": "5.1.33",
-    "oh-my-opencode-windows-x64-baseline": "5.1.33"
+    "oh-my-opencode-darwin-arm64": "5.1.35",
+    "oh-my-opencode-darwin-x64": "5.1.35",
+    "oh-my-opencode-darwin-x64-baseline": "5.1.35",
+    "oh-my-opencode-linux-arm64": "5.1.35",
+    "oh-my-opencode-linux-arm64-musl": "5.1.35",
+    "oh-my-opencode-linux-x64": "5.1.35",
+    "oh-my-opencode-linux-x64-baseline": "5.1.35",
+    "oh-my-opencode-linux-x64-musl": "5.1.35",
+    "oh-my-opencode-linux-x64-musl-baseline": "5.1.35",
+    "oh-my-opencode-windows-arm64": "5.1.35",
+    "oh-my-opencode-windows-x64": "5.1.35",
+    "oh-my-opencode-windows-x64-baseline": "5.1.35"
   },
   overrides: {
     hono: "^4.13.8",
@@ -100994,7 +101077,8 @@ function runOpenCodeStartupMigration(options) {
       migratedFrom: [],
       reloadRequired: false,
       results: [],
-      skippedConflictCount: 0
+      skippedConflictCount: 0,
+      targetBackupPaths: []
     };
   }
   if (homeDir.length === 0) {
@@ -101004,7 +101088,8 @@ function runOpenCodeStartupMigration(options) {
       migratedFrom: [],
       reloadRequired: false,
       results: [],
-      skippedConflictCount: 0
+      skippedConflictCount: 0,
+      targetBackupPaths: []
     };
   }
   try {
@@ -101028,12 +101113,18 @@ function runOpenCodeStartupMigration(options) {
       })
     });
     const migratedFrom = uniqueSources(batch.results);
+    const targetBackupPaths = [
+      ...batch.resumedTargetBackupPath === undefined ? [] : [batch.resumedTargetBackupPath],
+      ...batch.results.flatMap((result) => result.targetBackupPath === undefined ? [] : [result.targetBackupPath])
+    ];
     return {
       journalResumed: batch.journalResumed,
       migratedFrom,
       reloadRequired: batch.journalResumed || migratedFrom.length > 0,
       results: batch.results,
       skippedConflictCount: skippedConflictCount(batch.results),
+      targetBackupPaths,
+      ...batch.resumedTargetBackupPath === undefined ? {} : { resumedTargetBackupPath: batch.resumedTargetBackupPath },
       ...batch.status === "locked" ? { error: "Configuration migration is already running" } : {}
     };
   } catch (error) {
@@ -101043,7 +101134,8 @@ function runOpenCodeStartupMigration(options) {
       migratedFrom: [],
       reloadRequired: false,
       results: [],
-      skippedConflictCount: 0
+      skippedConflictCount: 0,
+      targetBackupPaths: []
     };
   }
 }
@@ -179256,7 +179348,7 @@ function shouldDisableTelemetry(input) {
   const env = input.env ?? process.env;
   const globalPrefix = input.globalEnvPrefix ?? "OMO";
   const prefixes = Array.from(new Set([globalPrefix, input.productEnvPrefix]));
-  if (isDisableFlag(env["DO_NOT_TRACK"])) {
+  if (isDisableFlag(env["DO_NOT_TRACK"]) || isDisableFlag(env[`${globalPrefix}_DISABLE_TELEMETRY`])) {
     return true;
   }
   for (const prefix of prefixes) {
@@ -189018,11 +189110,12 @@ function startupToastBody(input) {
   const summary = input.migratedFrom.length === 0 ? "" : `Migrated ${input.migratedFrom.length} legacy source${input.migratedFrom.length === 1 ? "" : "s"}.`;
   const conflicts = input.skippedConflictCount === 0 ? "" : ` Kept ${input.skippedConflictCount} existing value${input.skippedConflictCount === 1 ? "" : "s"}.`;
   const diagnostics = input.diagnostics.length === 0 ? "" : ` ${input.diagnostics.join(" ")}`;
+  const backups = input.targetBackupPaths.length === 0 ? "" : ` Previous config saved as ${input.targetBackupPaths.join(", ")}.`;
   if (input.error !== undefined) {
-    return { title: "Configuration migration failed", message: `${input.error}${diagnostics}`, variant: "error" };
+    return { title: "Configuration migration failed", message: `${input.error}${backups}${diagnostics}`, variant: "error" };
   }
-  if (summary.length > 0)
-    return { title: "Configuration migrated", message: `${summary}${conflicts}${diagnostics}`, variant: "success" };
+  if (summary.length > 0 || backups.length > 0)
+    return { title: "Configuration migrated", message: `${summary}${conflicts}${backups}${diagnostics}`.trim(), variant: "success" };
   if (diagnostics.length > 0)
     return { title: "Configuration diagnostics", message: input.diagnostics.join(" "), variant: "warning" };
   return;
@@ -189045,7 +189138,8 @@ function createPluginModule(overrides2 = {}) {
       error: startupMigration.error,
       journalResumed: startupMigration.journalResumed,
       migratedFrom: startupMigration.migratedFrom,
-      skippedConflictCount: startupMigration.skippedConflictCount
+      skippedConflictCount: startupMigration.skippedConflictCount,
+      targetBackupPaths: startupMigration.targetBackupPaths
     });
     if (startupMigration.error !== undefined) {
       console.warn(`[config-migration] legacy configuration changes were not applied: ${startupMigration.error}`);
@@ -189054,7 +189148,8 @@ function createPluginModule(overrides2 = {}) {
       diagnostics: startupDiagnostics,
       ...startupMigration.error === undefined ? {} : { error: startupMigration.error },
       migratedFrom: startupMigration.migratedFrom,
-      skippedConflictCount: startupMigration.skippedConflictCount
+      skippedConflictCount: startupMigration.skippedConflictCount,
+      targetBackupPaths: startupMigration.targetBackupPaths
     });
     if (toast !== undefined)
       showStartupToast(input.client, toast, deps.log);
@@ -190005,7 +190100,7 @@ function modelsFrom(value) {
   return {
     data: rowsFrom(value).flatMap((model) => {
       const provider = typeof model.providerID === "string" ? model.providerID : typeof model.provider === "string" ? model.provider : undefined;
-      const id = typeof model.modelID === "string" ? model.modelID : typeof model.id === "string" ? model.id : undefined;
+      const id = typeof model.id === "string" ? model.id : typeof model.modelID === "string" ? model.modelID : undefined;
       return provider && id ? [{ provider, id }] : [];
     })
   };
@@ -190497,7 +190592,7 @@ function modelKey(model) {
     return "";
   const record16 = model;
   const provider = record16.providerID ?? record16.provider;
-  const id = record16.modelID ?? record16.id;
+  const id = record16.id ?? record16.modelID;
   return `${String(provider)}/${String(id)}`;
 }
 function createV1PluginInput(ctx, deps = {}) {
@@ -190513,12 +190608,17 @@ function createV1PluginInput(ctx, deps = {}) {
     const registry2 = rowsOf(await ctx.model.list());
     try {
       const resolvedOrigin = await origin();
-      if (!resolvedOrigin)
+      if (!resolvedOrigin) {
+        log2("[oh-my-openagent] service-tier models skipped: server origin unknown");
         return registry2;
+      }
       const seen = new Set(registry2.map(modelKey));
       const extra = (await listModels(resolvedOrigin, directory, fetchImpl)).filter((model) => !seen.has(modelKey(model)));
       return [...registry2, ...extra];
-    } catch {
+    } catch (error) {
+      log2("[oh-my-openagent] service-tier models unavailable", {
+        error: error instanceof Error ? error.message : String(error)
+      });
       return registry2;
     }
   };
@@ -191806,6 +191906,27 @@ async function projectProviders(ctx, providers) {
 function isRecord30(value) {
   return typeof value === "object" && value !== null;
 }
+var PROVIDER_CACHE_TIMEOUT_MS = 1e4;
+async function primeConnectedProvidersCache(client5, deps = {}) {
+  if ((deps.hasCache ?? hasConnectedProvidersCache)())
+    return;
+  let timer;
+  try {
+    await Promise.race([
+      (deps.update ?? updateConnectedProvidersCache)(client5),
+      new Promise((_, reject) => {
+        timer = setTimeout(() => reject(new Error("timed out")), deps.timeoutMs ?? PROVIDER_CACHE_TIMEOUT_MS);
+      })
+    ]);
+  } catch (error) {
+    log2("[oh-my-openagent] connected providers cache priming failed", {
+      error: error instanceof Error ? error.message : String(error)
+    });
+  } finally {
+    if (timer)
+      clearTimeout(timer);
+  }
+}
 async function setupOpenCodeV2(ctx, deps) {
   if (typeof ctx.app.version === "string" && ctx.app.version.length > 0)
     setVersionCache(ctx.app.version);
@@ -191826,6 +191947,7 @@ async function setupOpenCodeV2(ctx, deps) {
   }
   const stopEvents = await registerV1Hooks(ctx, hooks2, state3, v1Input.client);
   const scratch = {};
+  await primeConnectedProvidersCache(v1Input.client);
   if (typeof hooks2.config === "function") {
     try {
       await hooks2.config(scratch);

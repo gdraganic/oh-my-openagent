@@ -14,6 +14,9 @@ export declare function deviceChoices(devices: readonly ListedDevice[]): {
 export declare const DEFAULT_ACCOUNTS_ORIGIN = "https://signin.omo.dev";
 /** The sign-in origin: the `--accounts` flag, then `OMO_SERVICE_ACCOUNTS_URL`, then the default. */
 export declare function accountsOrigin(options: Pick<Options, "accounts">, env: Record<string, string | undefined>): string;
-export declare function configureServiceAuthCommands(program: Command): void;
+/** The one switch for OmO service accounts (#10262): set to true when accounts open to everyone. */
+export declare const SERVICE_ACCOUNTS_OPEN: boolean;
+export declare const SERVICE_ACCOUNTS_CLOSED_MESSAGE = "OmO accounts aren't available yet.";
+export declare function configureServiceAuthCommands(program: Command, open?: boolean): void;
 export declare function runServiceAuthCommand(args: readonly string[]): Promise<void>;
 export {};

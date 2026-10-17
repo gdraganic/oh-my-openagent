@@ -284,6 +284,7 @@ function toDiagnosticRecord(input, now) {
     timestamp: now.toISOString(),
     event: input.event,
     source: input.source,
+    ...input.count === undefined ? {} : { count: input.count },
     ...serializeError(input.error, input.errorKind)
   };
 }
@@ -372,7 +373,7 @@ function shouldDisableTelemetry(input) {
   const env = input.env ?? process.env;
   const globalPrefix = input.globalEnvPrefix ?? "OMO";
   const prefixes = Array.from(new Set([globalPrefix, input.productEnvPrefix]));
-  if (isDisableFlag(env["DO_NOT_TRACK"])) {
+  if (isDisableFlag(env["DO_NOT_TRACK"]) || isDisableFlag(env[`${globalPrefix}_DISABLE_TELEMETRY`])) {
     return true;
   }
   for (const prefix of prefixes) {

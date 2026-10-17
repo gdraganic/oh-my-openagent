@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// omo-codex-install:698e3a259dda9c2dff569b51328c4ef50f64f9bc199e045d958f27e5ec8bcca9:ef14b9876c4d8e0abe251c0724abb8b8ce29b9e779dbb2f1cdbf3b9dc94e8b0d
+// omo-codex-install:3c2fcef1197dcdf71fecb94da887a58cb6456f5fceb10966d7261c0c7b596d0b:4b04748a7f23bef06c824c624c3875f14a9f5dc568e7cad91c2573b1da73f239
 var __defProp = Object.defineProperty;
 var __returnValue = (v) => v;
 function __exportSetter(name, newValue) {
@@ -238,6 +238,9 @@ var init_activity_state = __esm(() => {
   capturedDaysByStateDir = new Map;
 });
 
+// packages/telemetry-core/src/consent-gated-fetch.ts
+var init_consent_gated_fetch = () => {};
+
 // packages/telemetry-core/src/constants.ts
 var DEFAULT_POSTHOG_HOST = "https://us.i.posthog.com", DEFAULT_POSTHOG_API_KEY = "phc_CFJhj5HyvA62QPhvyaUCtaq23aUfznnijg5VaaGkNk74", UNCONFIGURED_POSTHOG_API_KEY = "phc_REPLACE_ME_OMO_NATIVE";
 
@@ -285,6 +288,7 @@ function toDiagnosticRecord(input, now) {
     timestamp: now.toISOString(),
     event: input.event,
     source: input.source,
+    ...input.count === undefined ? {} : { count: input.count },
     ...serializeError(input.error, input.errorKind)
   };
 }
@@ -377,7 +381,7 @@ function shouldDisableTelemetry(input) {
   const env = input.env ?? process.env;
   const globalPrefix = input.globalEnvPrefix ?? "OMO";
   const prefixes = Array.from(new Set([globalPrefix, input.productEnvPrefix]));
-  if (isDisableFlag(env["DO_NOT_TRACK"])) {
+  if (isDisableFlag(env["DO_NOT_TRACK"]) || isDisableFlag(env[`${globalPrefix}_DISABLE_TELEMETRY`])) {
     return true;
   }
   for (const prefix of prefixes) {
@@ -407,6 +411,47 @@ var TRUTHY_DISABLE_VALUES, SEND_OPT_OUT_VALUES;
 var init_env = __esm(() => {
   TRUTHY_DISABLE_VALUES = ["1", "true", "yes"];
   SEND_OPT_OUT_VALUES = ["0", "false", "no", "yes"];
+});
+
+// packages/telemetry-core/src/event-id.ts
+import { randomBytes as nodeRandomBytes } from "node:crypto";
+function createUuidV7Generator(source = {}) {
+  const now = source.now ?? Date.now;
+  const randomBytes = source.randomBytes ?? ((size) => new Uint8Array(nodeRandomBytes(size)));
+  let lastMs = -1;
+  let counter = 0;
+  return () => {
+    const random = randomBytes(10);
+    const wallMs = Math.floor(now());
+    if (wallMs > lastMs) {
+      lastMs = wallMs;
+      counter = (random[0] << 8 | random[1]) & COUNTER_SEED_MASK;
+    } else if (counter < MAX_COUNTER) {
+      counter += 1;
+    } else {
+      lastMs += 1;
+      counter = (random[0] << 8 | random[1]) & COUNTER_SEED_MASK;
+    }
+    const bytes = new Uint8Array(16);
+    let timestamp = lastMs;
+    for (let index = 5;index >= 0; index -= 1) {
+      bytes[index] = timestamp % 256;
+      timestamp = Math.floor(timestamp / 256);
+    }
+    bytes[6] = 112 | counter >> 8;
+    bytes[7] = counter & 255;
+    bytes[8] = 128 | random[2] & 63;
+    bytes.set(random.subarray(3, 10), 9);
+    return formatUuid(bytes);
+  };
+}
+function formatUuid(bytes) {
+  const hex = Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+}
+var MAX_COUNTER = 4095, COUNTER_SEED_MASK = 2047, fallbackEventId;
+var init_event_id = __esm(() => {
+  fallbackEventId = createUuidV7Generator();
 });
 
 // node_modules/.bun/posthog-node@5.52.4/node_modules/posthog-node/dist/extensions/error-tracking/modifiers/module.node.mjs
@@ -875,7 +920,7 @@ class V7Generator {
     return value;
   }
   generateOrAbortCore(unixTsMs, rollbackAllowance) {
-    const MAX_COUNTER = 4398046511103;
+    const MAX_COUNTER2 = 4398046511103;
     if (!Number.isInteger(unixTsMs) || unixTsMs < 1 || unixTsMs > 281474976710655)
       throw new RangeError("`unixTsMs` must be a 48-bit positive integer");
     if (rollbackAllowance < 0 || rollbackAllowance > 281474976710655)
@@ -887,7 +932,7 @@ class V7Generator {
       if (!(unixTsMs + rollbackAllowance >= this.timestamp))
         return;
       this.counter++;
-      if (this.counter > MAX_COUNTER) {
+      if (this.counter > MAX_COUNTER2) {
         this.timestamp++;
         this.resetCounter();
       }
@@ -10241,8 +10286,10 @@ var init_record_daily_active = () => {};
 // packages/telemetry-core/src/index.ts
 var init_src = __esm(() => {
   init_activity_state();
+  init_consent_gated_fetch();
   init_diagnostics();
   init_env();
+  init_event_id();
   init_events();
   init_machine_id();
   init_posthog_client();
@@ -10254,7 +10301,7 @@ var package_default;
 var init_package = __esm(() => {
   package_default = {
     name: "@oh-my-opencode/omo-codex",
-    version: "5.1.33",
+    version: "5.1.35",
     type: "module",
     private: true,
     description: "Codex harness adapter for oh-my-openagent. Vendored Codex plugin namespace (omo) + TypeScript installer + telemetry.",

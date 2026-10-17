@@ -3377,6 +3377,11 @@ var init_agent_model_requirements = __esm(() => {
         { providers: ["openai", "chatgpt-subscription", "opencode"], model: "gpt-5.6-sol", variant: "xhigh" },
         { providers: ["github-copilot"], model: "gpt-5.6-sol", variant: "high" },
         {
+          providers: ["google", "google-vertex", "opencode"],
+          model: "gemini-4-argon",
+          variant: "high"
+        },
+        {
           providers: ["google", "github-copilot", "opencode"],
           model: "gemini-3.1-pro",
           variant: "high"
@@ -3466,6 +3471,11 @@ var init_agent_model_requirements = __esm(() => {
           variant: "max"
         },
         {
+          providers: ["google", "google-vertex", "opencode"],
+          model: "gemini-4-argon",
+          variant: "high"
+        },
+        {
           providers: ["google", "github-copilot", "opencode"],
           model: "gemini-3.1-pro",
           variant: "high"
@@ -3511,6 +3521,7 @@ var init_category_model_requirements = __esm(() => {
   CATEGORY_MODEL_REQUIREMENTS = {
     "visual-engineering": {
       fallbackChain: [
+        { providers: ["google", "google-vertex", "opencode"], model: "gemini-4-argon", variant: "low" },
         {
           providers: ["anthropic", "anthropic-api", "github-copilot", "opencode"],
           model: "claude-fable-5-1",
@@ -3646,6 +3657,7 @@ var init_category_model_requirements = __esm(() => {
     writing: {
       requiresAnyModel: true,
       fallbackChain: [
+        { providers: ["google", "google-vertex", "opencode"], model: "gemini-4-argon", variant: "low" },
         {
           providers: ["anthropic", "anthropic-api", "github-copilot", "opencode"],
           model: "claude-opus-5-5",
@@ -5157,7 +5169,7 @@ var init_google_categories = __esm(() => {
   GOOGLE_CATEGORIES = [
     {
       name: "visual-engineering",
-      config: { model: "anthropic/claude-fable-5-1", variant: "max" },
+      config: { model: "google/gemini-4-argon", variant: "low" },
       description: "Visual design, UI/UX, frontend, styling, animation, and design systems",
       promptAppend: VISUAL_CATEGORY_PROMPT_APPEND
     },
@@ -5200,7 +5212,7 @@ var init_kimi_categories = __esm(() => {
   KIMI_CATEGORIES = [
     {
       name: "writing",
-      config: { model: "anthropic/claude-opus-5-5", variant: "low" },
+      config: { model: "google/gemini-4-argon", variant: "low" },
       description: "Documentation, prose, technical writing",
       promptAppend: WRITING_CATEGORY_PROMPT_APPEND
     }
@@ -5995,6 +6007,28 @@ var init_model_capabilities_generated = __esm(() => {
     generatedAt: "2026-07-29T03:28:21.339Z",
     sourceUrl: "https://models.dev/api.json",
     models: {
+      "gemini-4-argon": {
+        id: "gemini-4-argon",
+        family: "gemini",
+        reasoning: true,
+        temperature: false,
+        toolCall: true,
+        modalities: {
+          input: [
+            "text",
+            "image",
+            "audio",
+            "pdf"
+          ],
+          output: [
+            "text"
+          ]
+        },
+        limit: {
+          context: 1048576,
+          output: 65535
+        }
+      },
       "glm-5": {
         id: "glm-5",
         family: "glm",
@@ -61006,9 +61040,6 @@ var init_server_health = __esm(() => {
 // packages/tmux-core/src/tmux-utils/pane-dimensions.ts
 var init_pane_dimensions = () => {};
 
-// packages/tmux-core/src/tmux-utils/pane-command.ts
-var init_pane_command = () => {};
-
 // packages/tmux-core/src/tmux-utils/pane-spawn.ts
 var init_pane_spawn = () => {};
 
@@ -61048,7 +61079,6 @@ var init_tmux_utils = __esm(() => {
   init_session_spawn();
   init_session_kill();
   init_stale_session_sweep();
-  init_pane_command();
   init_layout();
   init_spawn_process();
 });
@@ -61136,7 +61166,7 @@ var init_stale_session_sweep2 = () => {};
 var init_stale_attach_pane_sweep = () => {};
 
 // packages/omo-opencode/src/shared/tmux/tmux-utils/pane-command.ts
-var init_pane_command2 = () => {};
+var init_pane_command = () => {};
 
 // packages/omo-opencode/src/shared/tmux/tmux-utils/layout.ts
 var init_layout2 = () => {};
@@ -61155,7 +61185,7 @@ var init_tmux_utils2 = __esm(() => {
   init_session_kill2();
   init_stale_session_sweep2();
   init_stale_attach_pane_sweep();
-  init_pane_command2();
+  init_pane_command();
   init_layout2();
 });
 
@@ -88779,7 +88809,7 @@ init_shared();
 // package.json
 var package_default = {
   name: "oh-my-opencode",
-  version: "5.1.33-fork.2",
+  version: "5.1.35-fork.1",
   description: "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
   main: "./dist/index.js",
   types: "dist/index.d.ts",
@@ -88959,7 +88989,7 @@ var package_default = {
   },
   devDependencies: {
     "@clack/prompts": "^1.8.1",
-    "@code-yeongyu/senpi": "2026.10.13",
+    "@code-yeongyu/senpi": "2026.10.16",
     "@modelcontextprotocol/sdk": "^1.30.0",
     "@oh-my-opencode/agents-md-core": "workspace:*",
     "@oh-my-opencode/ast-grep-mcp": "workspace:*",
@@ -89010,7 +89040,7 @@ var package_default = {
     "js-yaml": "^5.4.2",
     "jsonc-parser": "^3.3.1",
     "node-pty": "^1.1.0",
-    omowright: "github:code-yeongyu/omowright#293ca5002cbd4c8b0c104c5934683385ef7e0d3a",
+    omowright: "github:code-yeongyu/omowright#f87ef4d63fe7b56fe117dbab246c8ad88dd8a780",
     picocolors: "^1.1.1",
     picomatch: "^4.0.7",
     "posthog-node": "^5.52.4",
@@ -89018,18 +89048,18 @@ var package_default = {
     typescript: "^7.0.2"
   },
   optionalDependencies: {
-    "oh-my-opencode-darwin-arm64": "5.1.33",
-    "oh-my-opencode-darwin-x64": "5.1.33",
-    "oh-my-opencode-darwin-x64-baseline": "5.1.33",
-    "oh-my-opencode-linux-arm64": "5.1.33",
-    "oh-my-opencode-linux-arm64-musl": "5.1.33",
-    "oh-my-opencode-linux-x64": "5.1.33",
-    "oh-my-opencode-linux-x64-baseline": "5.1.33",
-    "oh-my-opencode-linux-x64-musl": "5.1.33",
-    "oh-my-opencode-linux-x64-musl-baseline": "5.1.33",
-    "oh-my-opencode-windows-arm64": "5.1.33",
-    "oh-my-opencode-windows-x64": "5.1.33",
-    "oh-my-opencode-windows-x64-baseline": "5.1.33"
+    "oh-my-opencode-darwin-arm64": "5.1.35",
+    "oh-my-opencode-darwin-x64": "5.1.35",
+    "oh-my-opencode-darwin-x64-baseline": "5.1.35",
+    "oh-my-opencode-linux-arm64": "5.1.35",
+    "oh-my-opencode-linux-arm64-musl": "5.1.35",
+    "oh-my-opencode-linux-x64": "5.1.35",
+    "oh-my-opencode-linux-x64-baseline": "5.1.35",
+    "oh-my-opencode-linux-x64-musl": "5.1.35",
+    "oh-my-opencode-linux-x64-musl-baseline": "5.1.35",
+    "oh-my-opencode-windows-arm64": "5.1.35",
+    "oh-my-opencode-windows-x64": "5.1.35",
+    "oh-my-opencode-windows-x64-baseline": "5.1.35"
   },
   overrides: {
     hono: "^4.13.8",

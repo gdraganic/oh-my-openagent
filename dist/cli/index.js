@@ -47,12 +47,2080 @@ var __export = (target, all) => {
 var __esm = (fn, res) => () => (fn && (res = fn(fn = 0)), res);
 var __require = import.meta.require;
 
+// node_modules/.bun/commander@15.0.0/node_modules/commander/lib/error.js
+var CommanderError, InvalidArgumentError;
+var init_error = __esm(() => {
+  CommanderError = class CommanderError extends Error {
+    constructor(exitCode, code, message) {
+      super(message);
+      Error.captureStackTrace(this, this.constructor);
+      this.name = this.constructor.name;
+      this.code = code;
+      this.exitCode = exitCode;
+      this.nestedError = undefined;
+    }
+  };
+  InvalidArgumentError = class InvalidArgumentError extends CommanderError {
+    constructor(message) {
+      super(1, "commander.invalidArgument", message);
+      Error.captureStackTrace(this, this.constructor);
+      this.name = this.constructor.name;
+    }
+  };
+});
+
+// node_modules/.bun/commander@15.0.0/node_modules/commander/lib/argument.js
+class Argument {
+  constructor(name, description) {
+    this.description = description || "";
+    this.variadic = false;
+    this.parseArg = undefined;
+    this.defaultValue = undefined;
+    this.defaultValueDescription = undefined;
+    this.argChoices = undefined;
+    switch (name[0]) {
+      case "<":
+        this.required = true;
+        this._name = name.slice(1, -1);
+        break;
+      case "[":
+        this.required = false;
+        this._name = name.slice(1, -1);
+        break;
+      default:
+        this.required = true;
+        this._name = name;
+        break;
+    }
+    if (this._name.endsWith("...")) {
+      this.variadic = true;
+      this._name = this._name.slice(0, -3);
+    }
+  }
+  name() {
+    return this._name;
+  }
+  _collectValue(value, previous) {
+    if (previous === this.defaultValue || !Array.isArray(previous)) {
+      return [value];
+    }
+    previous.push(value);
+    return previous;
+  }
+  default(value, description) {
+    this.defaultValue = value;
+    this.defaultValueDescription = description;
+    return this;
+  }
+  argParser(fn) {
+    this.parseArg = fn;
+    return this;
+  }
+  choices(values) {
+    this.argChoices = values.slice();
+    this.parseArg = (arg, previous) => {
+      if (!this.argChoices.includes(arg)) {
+        throw new InvalidArgumentError(`Allowed choices are ${this.argChoices.join(", ")}.`);
+      }
+      if (this.variadic) {
+        return this._collectValue(arg, previous);
+      }
+      return arg;
+    };
+    return this;
+  }
+  argRequired() {
+    this.required = true;
+    return this;
+  }
+  argOptional() {
+    this.required = false;
+    return this;
+  }
+}
+function humanReadableArgName(arg) {
+  const nameOutput = arg.name() + (arg.variadic === true ? "..." : "");
+  return arg.required ? "<" + nameOutput + ">" : "[" + nameOutput + "]";
+}
+var init_argument = __esm(() => {
+  init_error();
+});
+
+// node_modules/.bun/commander@15.0.0/node_modules/commander/lib/help.js
+import { stripVTControlCharacters } from "util";
+
+class Help {
+  constructor() {
+    this.helpWidth = undefined;
+    this.minWidthToWrap = 40;
+    this.sortSubcommands = false;
+    this.sortOptions = false;
+    this.showGlobalOptions = false;
+  }
+  prepareContext(contextOptions) {
+    this.helpWidth = this.helpWidth ?? contextOptions.helpWidth ?? 80;
+  }
+  visibleCommands(cmd) {
+    const visibleCommands = cmd.commands.filter((cmd2) => !cmd2._hidden);
+    const helpCommand = cmd._getHelpCommand();
+    if (helpCommand && !helpCommand._hidden) {
+      visibleCommands.push(helpCommand);
+    }
+    if (this.sortSubcommands) {
+      visibleCommands.sort((a, b) => {
+        return a.name().localeCompare(b.name());
+      });
+    }
+    return visibleCommands;
+  }
+  compareOptions(a, b) {
+    const getSortKey = (option) => {
+      return option.short ? option.short.replace(/^-/, "") : option.long.replace(/^--/, "");
+    };
+    return getSortKey(a).localeCompare(getSortKey(b));
+  }
+  visibleOptions(cmd) {
+    const visibleOptions = cmd.options.filter((option) => !option.hidden);
+    const helpOption = cmd._getHelpOption();
+    if (helpOption && !helpOption.hidden) {
+      const removeShort = helpOption.short && cmd._findOption(helpOption.short);
+      const removeLong = helpOption.long && cmd._findOption(helpOption.long);
+      if (!removeShort && !removeLong) {
+        visibleOptions.push(helpOption);
+      } else if (helpOption.long && !removeLong) {
+        visibleOptions.push(cmd.createOption(helpOption.long, helpOption.description));
+      } else if (helpOption.short && !removeShort) {
+        visibleOptions.push(cmd.createOption(helpOption.short, helpOption.description));
+      }
+    }
+    if (this.sortOptions) {
+      visibleOptions.sort(this.compareOptions);
+    }
+    return visibleOptions;
+  }
+  visibleGlobalOptions(cmd) {
+    if (!this.showGlobalOptions)
+      return [];
+    const globalOptions = [];
+    for (let ancestorCmd = cmd.parent;ancestorCmd; ancestorCmd = ancestorCmd.parent) {
+      const visibleOptions = ancestorCmd.options.filter((option) => !option.hidden);
+      globalOptions.push(...visibleOptions);
+    }
+    if (this.sortOptions) {
+      globalOptions.sort(this.compareOptions);
+    }
+    return globalOptions;
+  }
+  visibleArguments(cmd) {
+    if (cmd._argsDescription) {
+      cmd.registeredArguments.forEach((argument) => {
+        argument.description = argument.description || cmd._argsDescription[argument.name()] || "";
+      });
+    }
+    if (cmd.registeredArguments.find((argument) => argument.description)) {
+      return cmd.registeredArguments;
+    }
+    return [];
+  }
+  subcommandTerm(cmd) {
+    const args = cmd.registeredArguments.map((arg) => humanReadableArgName(arg)).join(" ");
+    return cmd._name + (cmd._aliases[0] ? "|" + cmd._aliases[0] : "") + (cmd.options.length ? " [options]" : "") + (args ? " " + args : "");
+  }
+  optionTerm(option) {
+    return option.flags;
+  }
+  argumentTerm(argument) {
+    return argument.name();
+  }
+  longestSubcommandTermLength(cmd, helper) {
+    return helper.visibleCommands(cmd).reduce((max, command) => {
+      return Math.max(max, this.displayWidth(helper.styleSubcommandTerm(helper.subcommandTerm(command))));
+    }, 0);
+  }
+  longestOptionTermLength(cmd, helper) {
+    return helper.visibleOptions(cmd).reduce((max, option) => {
+      return Math.max(max, this.displayWidth(helper.styleOptionTerm(helper.optionTerm(option))));
+    }, 0);
+  }
+  longestGlobalOptionTermLength(cmd, helper) {
+    return helper.visibleGlobalOptions(cmd).reduce((max, option) => {
+      return Math.max(max, this.displayWidth(helper.styleOptionTerm(helper.optionTerm(option))));
+    }, 0);
+  }
+  longestArgumentTermLength(cmd, helper) {
+    return helper.visibleArguments(cmd).reduce((max, argument) => {
+      return Math.max(max, this.displayWidth(helper.styleArgumentTerm(helper.argumentTerm(argument))));
+    }, 0);
+  }
+  commandUsage(cmd) {
+    let cmdName = cmd._name;
+    if (cmd._aliases[0]) {
+      cmdName = cmdName + "|" + cmd._aliases[0];
+    }
+    let ancestorCmdNames = "";
+    for (let ancestorCmd = cmd.parent;ancestorCmd; ancestorCmd = ancestorCmd.parent) {
+      ancestorCmdNames = ancestorCmd.name() + " " + ancestorCmdNames;
+    }
+    return ancestorCmdNames + cmdName + " " + cmd.usage();
+  }
+  commandDescription(cmd) {
+    return cmd.description();
+  }
+  subcommandDescription(cmd) {
+    return cmd.summary() || cmd.description();
+  }
+  optionDescription(option) {
+    const extraInfo = [];
+    if (option.argChoices) {
+      extraInfo.push(`choices: ${option.argChoices.map((choice) => JSON.stringify(choice)).join(", ")}`);
+    }
+    if (option.defaultValue !== undefined) {
+      const showDefault = option.required || option.optional || option.isBoolean() && typeof option.defaultValue === "boolean";
+      if (showDefault) {
+        extraInfo.push(`default: ${option.defaultValueDescription || JSON.stringify(option.defaultValue)}`);
+      }
+    }
+    if (option.presetArg !== undefined && option.optional) {
+      extraInfo.push(`preset: ${JSON.stringify(option.presetArg)}`);
+    }
+    if (option.envVar !== undefined) {
+      extraInfo.push(`env: ${option.envVar}`);
+    }
+    if (extraInfo.length > 0) {
+      const extraDescription = `(${extraInfo.join(", ")})`;
+      if (option.description) {
+        return `${option.description} ${extraDescription}`;
+      }
+      return extraDescription;
+    }
+    return option.description;
+  }
+  argumentDescription(argument) {
+    const extraInfo = [];
+    if (argument.argChoices) {
+      extraInfo.push(`choices: ${argument.argChoices.map((choice) => JSON.stringify(choice)).join(", ")}`);
+    }
+    if (argument.defaultValue !== undefined) {
+      extraInfo.push(`default: ${argument.defaultValueDescription || JSON.stringify(argument.defaultValue)}`);
+    }
+    if (extraInfo.length > 0) {
+      const extraDescription = `(${extraInfo.join(", ")})`;
+      if (argument.description) {
+        return `${argument.description} ${extraDescription}`;
+      }
+      return extraDescription;
+    }
+    return argument.description;
+  }
+  formatItemList(heading, items, helper) {
+    if (items.length === 0)
+      return [];
+    return [helper.styleTitle(heading), ...items, ""];
+  }
+  groupItems(unsortedItems, visibleItems, getGroup) {
+    const result = new Map;
+    unsortedItems.forEach((item) => {
+      const group = getGroup(item);
+      if (!result.has(group))
+        result.set(group, []);
+    });
+    visibleItems.forEach((item) => {
+      const group = getGroup(item);
+      if (!result.has(group)) {
+        result.set(group, []);
+      }
+      result.get(group).push(item);
+    });
+    return result;
+  }
+  formatHelp(cmd, helper) {
+    const termWidth = helper.padWidth(cmd, helper);
+    const helpWidth = helper.helpWidth ?? 80;
+    function callFormatItem(term, description) {
+      return helper.formatItem(term, termWidth, description, helper);
+    }
+    let output = [
+      `${helper.styleTitle("Usage:")} ${helper.styleUsage(helper.commandUsage(cmd))}`,
+      ""
+    ];
+    const commandDescription = helper.commandDescription(cmd);
+    if (commandDescription.length > 0) {
+      output = output.concat([
+        helper.boxWrap(helper.styleCommandDescription(commandDescription), helpWidth),
+        ""
+      ]);
+    }
+    const argumentList = helper.visibleArguments(cmd).map((argument) => {
+      return callFormatItem(helper.styleArgumentTerm(helper.argumentTerm(argument)), helper.styleArgumentDescription(helper.argumentDescription(argument)));
+    });
+    output = output.concat(this.formatItemList("Arguments:", argumentList, helper));
+    const optionGroups = this.groupItems(cmd.options, helper.visibleOptions(cmd), (option) => option.helpGroupHeading ?? "Options:");
+    optionGroups.forEach((options, group) => {
+      const optionList = options.map((option) => {
+        return callFormatItem(helper.styleOptionTerm(helper.optionTerm(option)), helper.styleOptionDescription(helper.optionDescription(option)));
+      });
+      output = output.concat(this.formatItemList(group, optionList, helper));
+    });
+    if (helper.showGlobalOptions) {
+      const globalOptionList = helper.visibleGlobalOptions(cmd).map((option) => {
+        return callFormatItem(helper.styleOptionTerm(helper.optionTerm(option)), helper.styleOptionDescription(helper.optionDescription(option)));
+      });
+      output = output.concat(this.formatItemList("Global Options:", globalOptionList, helper));
+    }
+    const commandGroups = this.groupItems(cmd.commands, helper.visibleCommands(cmd), (sub) => sub.helpGroup() || "Commands:");
+    commandGroups.forEach((commands, group) => {
+      const commandList = commands.map((sub) => {
+        return callFormatItem(helper.styleSubcommandTerm(helper.subcommandTerm(sub)), helper.styleSubcommandDescription(helper.subcommandDescription(sub)));
+      });
+      output = output.concat(this.formatItemList(group, commandList, helper));
+    });
+    return output.join(`
+`);
+  }
+  displayWidth(str) {
+    return stripVTControlCharacters(str).length;
+  }
+  styleTitle(str) {
+    return str;
+  }
+  styleUsage(str) {
+    return str.split(" ").map((word) => {
+      if (word === "[options]")
+        return this.styleOptionText(word);
+      if (word === "[command]")
+        return this.styleSubcommandText(word);
+      if (word[0] === "[" || word[0] === "<")
+        return this.styleArgumentText(word);
+      return this.styleCommandText(word);
+    }).join(" ");
+  }
+  styleCommandDescription(str) {
+    return this.styleDescriptionText(str);
+  }
+  styleOptionDescription(str) {
+    return this.styleDescriptionText(str);
+  }
+  styleSubcommandDescription(str) {
+    return this.styleDescriptionText(str);
+  }
+  styleArgumentDescription(str) {
+    return this.styleDescriptionText(str);
+  }
+  styleDescriptionText(str) {
+    return str;
+  }
+  styleOptionTerm(str) {
+    return this.styleOptionText(str);
+  }
+  styleSubcommandTerm(str) {
+    return str.split(" ").map((word) => {
+      if (word === "[options]")
+        return this.styleOptionText(word);
+      if (word[0] === "[" || word[0] === "<")
+        return this.styleArgumentText(word);
+      return this.styleSubcommandText(word);
+    }).join(" ");
+  }
+  styleArgumentTerm(str) {
+    return this.styleArgumentText(str);
+  }
+  styleOptionText(str) {
+    return str;
+  }
+  styleArgumentText(str) {
+    return str;
+  }
+  styleSubcommandText(str) {
+    return str;
+  }
+  styleCommandText(str) {
+    return str;
+  }
+  padWidth(cmd, helper) {
+    return Math.max(helper.longestOptionTermLength(cmd, helper), helper.longestGlobalOptionTermLength(cmd, helper), helper.longestSubcommandTermLength(cmd, helper), helper.longestArgumentTermLength(cmd, helper));
+  }
+  preformatted(str) {
+    return /\n[^\S\r\n]/.test(str);
+  }
+  formatItem(term, termWidth, description, helper) {
+    const itemIndent = 2;
+    const itemIndentStr = " ".repeat(itemIndent);
+    if (!description)
+      return itemIndentStr + term;
+    const paddedTerm = term.padEnd(termWidth + term.length - helper.displayWidth(term));
+    const spacerWidth = 2;
+    const helpWidth = this.helpWidth ?? 80;
+    const remainingWidth = helpWidth - termWidth - spacerWidth - itemIndent;
+    let formattedDescription;
+    if (remainingWidth < this.minWidthToWrap || helper.preformatted(description)) {
+      formattedDescription = description;
+    } else {
+      const wrappedDescription = helper.boxWrap(description, remainingWidth);
+      formattedDescription = wrappedDescription.replace(/\n/g, `
+` + " ".repeat(termWidth + spacerWidth));
+    }
+    return itemIndentStr + paddedTerm + " ".repeat(spacerWidth) + formattedDescription.replace(/\n/g, `
+${itemIndentStr}`);
+  }
+  boxWrap(str, width) {
+    if (width < this.minWidthToWrap)
+      return str;
+    const rawLines = str.split(/\r\n|\n/);
+    const chunkPattern = /[\s]*[^\s]+/g;
+    const wrappedLines = [];
+    rawLines.forEach((line) => {
+      const chunks = line.match(chunkPattern);
+      if (chunks === null) {
+        wrappedLines.push("");
+        return;
+      }
+      let sumChunks = [chunks.shift()];
+      let sumWidth = this.displayWidth(sumChunks[0]);
+      chunks.forEach((chunk) => {
+        const visibleWidth = this.displayWidth(chunk);
+        if (sumWidth + visibleWidth <= width) {
+          sumChunks.push(chunk);
+          sumWidth += visibleWidth;
+          return;
+        }
+        wrappedLines.push(sumChunks.join(""));
+        const nextChunk = chunk.trimStart();
+        sumChunks = [nextChunk];
+        sumWidth = this.displayWidth(nextChunk);
+      });
+      wrappedLines.push(sumChunks.join(""));
+    });
+    return wrappedLines.join(`
+`);
+  }
+}
+var init_help = __esm(() => {
+  init_argument();
+});
+
+// node_modules/.bun/commander@15.0.0/node_modules/commander/lib/option.js
+class Option {
+  constructor(flags, description) {
+    this.flags = flags;
+    this.description = description || "";
+    this.required = flags.includes("<");
+    this.optional = flags.includes("[");
+    this.variadic = /\w\.\.\.[>\]]$/.test(flags);
+    this.mandatory = false;
+    const optionFlags = splitOptionFlags(flags);
+    this.short = optionFlags.shortFlag;
+    this.long = optionFlags.longFlag;
+    this.negate = false;
+    if (this.long) {
+      this.negate = this.long.startsWith("--no-");
+    }
+    this.defaultValue = undefined;
+    this.defaultValueDescription = undefined;
+    this.presetArg = undefined;
+    this.envVar = undefined;
+    this.parseArg = undefined;
+    this.hidden = false;
+    this.argChoices = undefined;
+    this.conflictsWith = [];
+    this.implied = undefined;
+    this.helpGroupHeading = undefined;
+  }
+  default(value, description) {
+    this.defaultValue = value;
+    this.defaultValueDescription = description;
+    return this;
+  }
+  preset(arg) {
+    this.presetArg = arg;
+    return this;
+  }
+  conflicts(names) {
+    this.conflictsWith = this.conflictsWith.concat(names);
+    return this;
+  }
+  implies(impliedOptionValues) {
+    let newImplied = impliedOptionValues;
+    if (typeof impliedOptionValues === "string") {
+      newImplied = { [impliedOptionValues]: true };
+    }
+    this.implied = Object.assign(this.implied || {}, newImplied);
+    return this;
+  }
+  env(name) {
+    this.envVar = name;
+    return this;
+  }
+  argParser(fn) {
+    this.parseArg = fn;
+    return this;
+  }
+  makeOptionMandatory(mandatory = true) {
+    this.mandatory = !!mandatory;
+    return this;
+  }
+  hideHelp(hide = true) {
+    this.hidden = !!hide;
+    return this;
+  }
+  _collectValue(value, previous) {
+    if (previous === this.defaultValue || !Array.isArray(previous)) {
+      return [value];
+    }
+    previous.push(value);
+    return previous;
+  }
+  choices(values) {
+    this.argChoices = values.slice();
+    this.parseArg = (arg, previous) => {
+      if (!this.argChoices.includes(arg)) {
+        throw new InvalidArgumentError(`Allowed choices are ${this.argChoices.join(", ")}.`);
+      }
+      if (this.variadic) {
+        return this._collectValue(arg, previous);
+      }
+      return arg;
+    };
+    return this;
+  }
+  name() {
+    if (this.long) {
+      return this.long.replace(/^--/, "");
+    }
+    return this.short.replace(/^-/, "");
+  }
+  attributeName() {
+    if (this.negate) {
+      return camelcase(this.name().replace(/^no-/, ""));
+    }
+    return camelcase(this.name());
+  }
+  helpGroup(heading) {
+    this.helpGroupHeading = heading;
+    return this;
+  }
+  is(arg) {
+    return this.short === arg || this.long === arg;
+  }
+  isBoolean() {
+    return !this.required && !this.optional && !this.negate;
+  }
+}
+
+class DualOptions {
+  constructor(options) {
+    this.positiveOptions = new Map;
+    this.negativeOptions = new Map;
+    this.dualOptions = new Set;
+    options.forEach((option) => {
+      if (option.negate) {
+        this.negativeOptions.set(option.attributeName(), option);
+      } else {
+        this.positiveOptions.set(option.attributeName(), option);
+      }
+    });
+    this.negativeOptions.forEach((value, key) => {
+      if (this.positiveOptions.has(key)) {
+        this.dualOptions.add(key);
+      }
+    });
+  }
+  valueFromOption(value, option) {
+    const optionKey = option.attributeName();
+    if (!this.dualOptions.has(optionKey))
+      return true;
+    const preset = this.negativeOptions.get(optionKey).presetArg;
+    const negativeValue = preset !== undefined ? preset : false;
+    return option.negate === (negativeValue === value);
+  }
+}
+function camelcase(str) {
+  return str.split("-").reduce((str2, word) => {
+    return str2 + word[0].toUpperCase() + word.slice(1);
+  });
+}
+function splitOptionFlags(flags) {
+  let shortFlag;
+  let longFlag;
+  const shortFlagExp = /^-[^-]$/;
+  const longFlagExp = /^--[^-]/;
+  const flagParts = flags.split(/[ |,]+/).concat("guard");
+  if (shortFlagExp.test(flagParts[0]))
+    shortFlag = flagParts.shift();
+  if (longFlagExp.test(flagParts[0]))
+    longFlag = flagParts.shift();
+  if (!shortFlag && shortFlagExp.test(flagParts[0]))
+    shortFlag = flagParts.shift();
+  if (!shortFlag && longFlagExp.test(flagParts[0])) {
+    shortFlag = longFlag;
+    longFlag = flagParts.shift();
+  }
+  if (flagParts[0].startsWith("-")) {
+    const unsupportedFlag = flagParts[0];
+    const baseError = `option creation failed due to '${unsupportedFlag}' in option flags '${flags}'`;
+    if (/^-[^-][^-]/.test(unsupportedFlag))
+      throw new Error(`${baseError}
+- a short flag is a single dash and a single character
+  - either use a single dash and a single character (for a short flag)
+  - or use a double dash for a long option (and can have two, like '--ws, --workspace')`);
+    if (shortFlagExp.test(unsupportedFlag))
+      throw new Error(`${baseError}
+- too many short flags`);
+    if (longFlagExp.test(unsupportedFlag))
+      throw new Error(`${baseError}
+- too many long flags`);
+    throw new Error(`${baseError}
+- unrecognised flag format`);
+  }
+  if (shortFlag === undefined && longFlag === undefined)
+    throw new Error(`option creation failed due to no flags found in '${flags}'.`);
+  return { shortFlag, longFlag };
+}
+var init_option = __esm(() => {
+  init_error();
+});
+
+// node_modules/.bun/commander@15.0.0/node_modules/commander/lib/suggestSimilar.js
+function editDistance(a, b) {
+  if (Math.abs(a.length - b.length) > maxDistance)
+    return Math.max(a.length, b.length);
+  const d = [];
+  for (let i = 0;i <= a.length; i++) {
+    d[i] = [i];
+  }
+  for (let j = 0;j <= b.length; j++) {
+    d[0][j] = j;
+  }
+  for (let j = 1;j <= b.length; j++) {
+    for (let i = 1;i <= a.length; i++) {
+      let cost;
+      if (a[i - 1] === b[j - 1]) {
+        cost = 0;
+      } else {
+        cost = 1;
+      }
+      d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost);
+      if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) {
+        d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+      }
+    }
+  }
+  return d[a.length][b.length];
+}
+function suggestSimilar(word, candidates) {
+  if (!candidates || candidates.length === 0)
+    return "";
+  candidates = Array.from(new Set(candidates));
+  const searchingOptions = word.startsWith("--");
+  if (searchingOptions) {
+    word = word.slice(2);
+    candidates = candidates.map((candidate) => candidate.slice(2));
+  }
+  let similar = [];
+  let bestDistance = maxDistance;
+  const minSimilarity = 0.4;
+  candidates.forEach((candidate) => {
+    if (candidate.length <= 1)
+      return;
+    const distance = editDistance(word, candidate);
+    const length = Math.max(word.length, candidate.length);
+    const similarity = (length - distance) / length;
+    if (similarity > minSimilarity) {
+      if (distance < bestDistance) {
+        bestDistance = distance;
+        similar = [candidate];
+      } else if (distance === bestDistance) {
+        similar.push(candidate);
+      }
+    }
+  });
+  similar.sort((a, b) => a.localeCompare(b));
+  if (searchingOptions) {
+    similar = similar.map((candidate) => `--${candidate}`);
+  }
+  if (similar.length > 1) {
+    return `
+(Did you mean one of ${similar.join(", ")}?)`;
+  }
+  if (similar.length === 1) {
+    return `
+(Did you mean ${similar[0]}?)`;
+  }
+  return "";
+}
+var maxDistance = 3;
+
+// node_modules/.bun/commander@15.0.0/node_modules/commander/lib/command.js
+import { EventEmitter } from "events";
+import childProcess from "child_process";
+import path from "path";
+import fs from "fs";
+import process2 from "process";
+import { stripVTControlCharacters as stripVTControlCharacters2 } from "util";
+function incrementNodeInspectorPort(args) {
+  return args.map((arg) => {
+    if (!arg.startsWith("--inspect")) {
+      return arg;
+    }
+    let debugOption;
+    let debugHost = "127.0.0.1";
+    let debugPort = "9229";
+    let match;
+    if ((match = arg.match(/^(--inspect(-brk)?)$/)) !== null) {
+      debugOption = match[1];
+    } else if ((match = arg.match(/^(--inspect(-brk|-port)?)=([^:]+)$/)) !== null) {
+      debugOption = match[1];
+      if (/^\d+$/.test(match[3])) {
+        debugPort = match[3];
+      } else {
+        debugHost = match[3];
+      }
+    } else if ((match = arg.match(/^(--inspect(-brk|-port)?)=([^:]+):(\d+)$/)) !== null) {
+      debugOption = match[1];
+      debugHost = match[3];
+      debugPort = match[4];
+    }
+    if (debugOption && debugPort !== "0") {
+      return `${debugOption}=${debugHost}:${parseInt(debugPort) + 1}`;
+    }
+    return arg;
+  });
+}
+function useColor() {
+  if (process2.env.NO_COLOR || process2.env.FORCE_COLOR === "0" || process2.env.FORCE_COLOR === "false")
+    return false;
+  if (process2.env.FORCE_COLOR || process2.env.CLICOLOR_FORCE !== undefined)
+    return true;
+  return;
+}
+var Command;
+var init_command = __esm(() => {
+  init_argument();
+  init_error();
+  init_help();
+  init_option();
+  Command = class Command extends EventEmitter {
+    constructor(name) {
+      super();
+      this.commands = [];
+      this.options = [];
+      this.parent = null;
+      this._allowUnknownOption = false;
+      this._allowExcessArguments = false;
+      this.registeredArguments = [];
+      this._args = this.registeredArguments;
+      this.args = [];
+      this.rawArgs = [];
+      this.processedArgs = [];
+      this._scriptPath = null;
+      this._name = name || "";
+      this._optionValues = {};
+      this._optionValueSources = {};
+      this._storeOptionsAsProperties = false;
+      this._actionHandler = null;
+      this._executableHandler = false;
+      this._executableFile = null;
+      this._executableDir = null;
+      this._defaultCommandName = null;
+      this._exitCallback = null;
+      this._aliases = [];
+      this._combineFlagAndOptionalValue = true;
+      this._description = "";
+      this._summary = "";
+      this._argsDescription = undefined;
+      this._enablePositionalOptions = false;
+      this._passThroughOptions = false;
+      this._lifeCycleHooks = {};
+      this._showHelpAfterError = false;
+      this._showSuggestionAfterError = true;
+      this._savedState = null;
+      this._outputConfiguration = {
+        writeOut: (str) => process2.stdout.write(str),
+        writeErr: (str) => process2.stderr.write(str),
+        outputError: (str, write) => write(str),
+        getOutHelpWidth: () => process2.stdout.isTTY ? process2.stdout.columns : undefined,
+        getErrHelpWidth: () => process2.stderr.isTTY ? process2.stderr.columns : undefined,
+        getOutHasColors: () => useColor() ?? (process2.stdout.isTTY && process2.stdout.hasColors?.()),
+        getErrHasColors: () => useColor() ?? (process2.stderr.isTTY && process2.stderr.hasColors?.()),
+        stripColor: (str) => stripVTControlCharacters2(str)
+      };
+      this._hidden = false;
+      this._helpOption = undefined;
+      this._addImplicitHelpCommand = undefined;
+      this._helpCommand = undefined;
+      this._helpConfiguration = {};
+      this._helpGroupHeading = undefined;
+      this._defaultCommandGroup = undefined;
+      this._defaultOptionGroup = undefined;
+    }
+    copyInheritedSettings(sourceCommand) {
+      this._outputConfiguration = sourceCommand._outputConfiguration;
+      this._helpOption = sourceCommand._helpOption;
+      this._helpCommand = sourceCommand._helpCommand;
+      this._helpConfiguration = sourceCommand._helpConfiguration;
+      this._exitCallback = sourceCommand._exitCallback;
+      this._storeOptionsAsProperties = sourceCommand._storeOptionsAsProperties;
+      this._combineFlagAndOptionalValue = sourceCommand._combineFlagAndOptionalValue;
+      this._allowExcessArguments = sourceCommand._allowExcessArguments;
+      this._enablePositionalOptions = sourceCommand._enablePositionalOptions;
+      this._showHelpAfterError = sourceCommand._showHelpAfterError;
+      this._showSuggestionAfterError = sourceCommand._showSuggestionAfterError;
+      return this;
+    }
+    _getCommandAndAncestors() {
+      const result = [];
+      for (let command = this;command; command = command.parent) {
+        result.push(command);
+      }
+      return result;
+    }
+    command(nameAndArgs, actionOptsOrExecDesc, execOpts) {
+      let desc = actionOptsOrExecDesc;
+      let opts = execOpts;
+      if (typeof desc === "object" && desc !== null) {
+        opts = desc;
+        desc = null;
+      }
+      opts = opts || {};
+      const [, name, args] = nameAndArgs.match(/([^ ]+) *(.*)/);
+      const cmd = this.createCommand(name);
+      if (desc) {
+        cmd.description(desc);
+        cmd._executableHandler = true;
+      }
+      if (opts.isDefault)
+        this._defaultCommandName = cmd._name;
+      cmd._hidden = !!(opts.noHelp || opts.hidden);
+      cmd._executableFile = opts.executableFile || null;
+      if (args)
+        cmd.arguments(args);
+      this._registerCommand(cmd);
+      cmd.parent = this;
+      cmd.copyInheritedSettings(this);
+      if (desc)
+        return this;
+      return cmd;
+    }
+    createCommand(name) {
+      return new Command(name);
+    }
+    createHelp() {
+      return Object.assign(new Help, this.configureHelp());
+    }
+    configureHelp(configuration) {
+      if (configuration === undefined)
+        return this._helpConfiguration;
+      this._helpConfiguration = configuration;
+      return this;
+    }
+    configureOutput(configuration) {
+      if (configuration === undefined)
+        return this._outputConfiguration;
+      this._outputConfiguration = {
+        ...this._outputConfiguration,
+        ...configuration
+      };
+      return this;
+    }
+    showHelpAfterError(displayHelp = true) {
+      if (typeof displayHelp !== "string")
+        displayHelp = !!displayHelp;
+      this._showHelpAfterError = displayHelp;
+      return this;
+    }
+    showSuggestionAfterError(displaySuggestion = true) {
+      this._showSuggestionAfterError = !!displaySuggestion;
+      return this;
+    }
+    addCommand(cmd, opts) {
+      if (!cmd._name) {
+        throw new Error(`Command passed to .addCommand() must have a name
+- specify the name in Command constructor or using .name()`);
+      }
+      opts = opts || {};
+      if (opts.isDefault)
+        this._defaultCommandName = cmd._name;
+      if (opts.noHelp || opts.hidden)
+        cmd._hidden = true;
+      this._registerCommand(cmd);
+      cmd.parent = this;
+      cmd._checkForBrokenPassThrough();
+      return this;
+    }
+    createArgument(name, description) {
+      return new Argument(name, description);
+    }
+    argument(name, description, parseArg, defaultValue) {
+      const argument = this.createArgument(name, description);
+      if (typeof parseArg === "function") {
+        argument.default(defaultValue).argParser(parseArg);
+      } else {
+        argument.default(parseArg);
+      }
+      this.addArgument(argument);
+      return this;
+    }
+    arguments(names) {
+      names.trim().split(/ +/).forEach((detail) => {
+        this.argument(detail);
+      });
+      return this;
+    }
+    addArgument(argument) {
+      const previousArgument = this.registeredArguments.slice(-1)[0];
+      if (previousArgument?.variadic) {
+        throw new Error(`only the last argument can be variadic '${previousArgument.name()}'`);
+      }
+      if (argument.required && argument.defaultValue !== undefined && argument.parseArg === undefined) {
+        throw new Error(`a default value for a required argument is never used: '${argument.name()}'`);
+      }
+      this.registeredArguments.push(argument);
+      return this;
+    }
+    helpCommand(enableOrNameAndArgs, description) {
+      if (typeof enableOrNameAndArgs === "boolean") {
+        this._addImplicitHelpCommand = enableOrNameAndArgs;
+        if (enableOrNameAndArgs && this._defaultCommandGroup) {
+          this._initCommandGroup(this._getHelpCommand());
+        }
+        return this;
+      }
+      const nameAndArgs = enableOrNameAndArgs ?? "help [command]";
+      const [, helpName, helpArgs] = nameAndArgs.match(/([^ ]+) *(.*)/);
+      const helpDescription = description ?? "display help for command";
+      const helpCommand = this.createCommand(helpName);
+      helpCommand.helpOption(false);
+      if (helpArgs)
+        helpCommand.arguments(helpArgs);
+      if (helpDescription)
+        helpCommand.description(helpDescription);
+      this._addImplicitHelpCommand = true;
+      this._helpCommand = helpCommand;
+      if (enableOrNameAndArgs || description)
+        this._initCommandGroup(helpCommand);
+      return this;
+    }
+    addHelpCommand(helpCommand, deprecatedDescription) {
+      if (typeof helpCommand !== "object") {
+        this.helpCommand(helpCommand, deprecatedDescription);
+        return this;
+      }
+      this._addImplicitHelpCommand = true;
+      this._helpCommand = helpCommand;
+      this._initCommandGroup(helpCommand);
+      return this;
+    }
+    _getHelpCommand() {
+      const hasImplicitHelpCommand = this._addImplicitHelpCommand ?? (this.commands.length && !this._actionHandler && !this._findCommand("help"));
+      if (hasImplicitHelpCommand) {
+        if (this._helpCommand === undefined) {
+          this.helpCommand(undefined, undefined);
+        }
+        return this._helpCommand;
+      }
+      return null;
+    }
+    hook(event, listener) {
+      const allowedValues = ["preSubcommand", "preAction", "postAction"];
+      if (!allowedValues.includes(event)) {
+        throw new Error(`Unexpected value for event passed to hook : '${event}'.
+Expecting one of '${allowedValues.join("', '")}'`);
+      }
+      if (this._lifeCycleHooks[event]) {
+        this._lifeCycleHooks[event].push(listener);
+      } else {
+        this._lifeCycleHooks[event] = [listener];
+      }
+      return this;
+    }
+    exitOverride(fn) {
+      if (fn) {
+        this._exitCallback = fn;
+      } else {
+        this._exitCallback = (err) => {
+          if (err.code !== "commander.executeSubCommandAsync") {
+            throw err;
+          } else {}
+        };
+      }
+      return this;
+    }
+    _exit(exitCode, code, message) {
+      if (this._exitCallback) {
+        this._exitCallback(new CommanderError(exitCode, code, message));
+      }
+      process2.exit(exitCode);
+    }
+    action(fn) {
+      const listener = (args) => {
+        const expectedArgsCount = this.registeredArguments.length;
+        const actionArgs = args.slice(0, expectedArgsCount);
+        if (this._storeOptionsAsProperties) {
+          actionArgs[expectedArgsCount] = this;
+        } else {
+          actionArgs[expectedArgsCount] = this.opts();
+        }
+        actionArgs.push(this);
+        return fn.apply(this, actionArgs);
+      };
+      this._actionHandler = listener;
+      return this;
+    }
+    createOption(flags, description) {
+      return new Option(flags, description);
+    }
+    _callParseArg(target, value, previous, invalidArgumentMessage) {
+      try {
+        return target.parseArg(value, previous);
+      } catch (err) {
+        if (err.code === "commander.invalidArgument") {
+          const message = `${invalidArgumentMessage} ${err.message}`;
+          this.error(message, { exitCode: err.exitCode, code: err.code });
+        }
+        throw err;
+      }
+    }
+    _registerOption(option) {
+      const matchingOption = option.short && this._findOption(option.short) || option.long && this._findOption(option.long);
+      if (matchingOption) {
+        const matchingFlag = option.long && this._findOption(option.long) ? option.long : option.short;
+        throw new Error(`Cannot add option '${option.flags}'${this._name && ` to command '${this._name}'`} due to conflicting flag '${matchingFlag}'
+-  already used by option '${matchingOption.flags}'`);
+      }
+      this._initOptionGroup(option);
+      this.options.push(option);
+    }
+    _registerCommand(command) {
+      const knownBy = (cmd) => {
+        return [cmd.name()].concat(cmd.aliases());
+      };
+      const alreadyUsed = knownBy(command).find((name) => this._findCommand(name));
+      if (alreadyUsed) {
+        const existingCmd = knownBy(this._findCommand(alreadyUsed)).join("|");
+        const newCmd = knownBy(command).join("|");
+        throw new Error(`cannot add command '${newCmd}' as already have command '${existingCmd}'`);
+      }
+      this._initCommandGroup(command);
+      this.commands.push(command);
+    }
+    addOption(option) {
+      this._registerOption(option);
+      const oname = option.name();
+      const name = option.attributeName();
+      if (option.defaultValue !== undefined) {
+        this.setOptionValueWithSource(name, option.defaultValue, "default");
+      }
+      const handleOptionValue = (val, invalidValueMessage, valueSource) => {
+        if (val == null && option.presetArg !== undefined) {
+          val = option.presetArg;
+        }
+        const oldValue = this.getOptionValue(name);
+        if (val !== null && option.parseArg) {
+          val = this._callParseArg(option, val, oldValue, invalidValueMessage);
+        } else if (val !== null && option.variadic) {
+          val = option._collectValue(val, oldValue);
+        }
+        if (val == null) {
+          if (option.negate) {
+            val = false;
+          } else if (option.isBoolean() || option.optional) {
+            val = true;
+          } else {
+            val = "";
+          }
+        }
+        this.setOptionValueWithSource(name, val, valueSource);
+      };
+      this.on("option:" + oname, (val) => {
+        const invalidValueMessage = `error: option '${option.flags}' argument '${val}' is invalid.`;
+        handleOptionValue(val, invalidValueMessage, "cli");
+      });
+      if (option.envVar) {
+        this.on("optionEnv:" + oname, (val) => {
+          const invalidValueMessage = `error: option '${option.flags}' value '${val}' from env '${option.envVar}' is invalid.`;
+          handleOptionValue(val, invalidValueMessage, "env");
+        });
+      }
+      return this;
+    }
+    _optionEx(config, flags, description, fn, defaultValue) {
+      if (typeof flags === "object" && flags instanceof Option) {
+        throw new Error("To add an Option object use addOption() instead of option() or requiredOption()");
+      }
+      const option = this.createOption(flags, description);
+      option.makeOptionMandatory(!!config.mandatory);
+      if (typeof fn === "function") {
+        option.default(defaultValue).argParser(fn);
+      } else if (fn instanceof RegExp) {
+        const regex = fn;
+        fn = (val, def) => {
+          const m = regex.exec(val);
+          return m ? m[0] : def;
+        };
+        option.default(defaultValue).argParser(fn);
+      } else {
+        option.default(fn);
+      }
+      return this.addOption(option);
+    }
+    option(flags, description, parseArg, defaultValue) {
+      return this._optionEx({}, flags, description, parseArg, defaultValue);
+    }
+    requiredOption(flags, description, parseArg, defaultValue) {
+      return this._optionEx({ mandatory: true }, flags, description, parseArg, defaultValue);
+    }
+    combineFlagAndOptionalValue(combine = true) {
+      this._combineFlagAndOptionalValue = !!combine;
+      return this;
+    }
+    allowUnknownOption(allowUnknown = true) {
+      this._allowUnknownOption = !!allowUnknown;
+      return this;
+    }
+    allowExcessArguments(allowExcess = true) {
+      this._allowExcessArguments = !!allowExcess;
+      return this;
+    }
+    enablePositionalOptions(positional = true) {
+      this._enablePositionalOptions = !!positional;
+      return this;
+    }
+    passThroughOptions(passThrough = true) {
+      this._passThroughOptions = !!passThrough;
+      this._checkForBrokenPassThrough();
+      return this;
+    }
+    _checkForBrokenPassThrough() {
+      if (this.parent && this._passThroughOptions && !this.parent._enablePositionalOptions) {
+        throw new Error(`passThroughOptions cannot be used for '${this._name}' without turning on enablePositionalOptions for parent command(s)`);
+      }
+    }
+    storeOptionsAsProperties(storeAsProperties = true) {
+      if (this.options.length) {
+        throw new Error("call .storeOptionsAsProperties() before adding options");
+      }
+      if (Object.keys(this._optionValues).length) {
+        throw new Error("call .storeOptionsAsProperties() before setting option values");
+      }
+      this._storeOptionsAsProperties = !!storeAsProperties;
+      return this;
+    }
+    getOptionValue(key) {
+      if (this._storeOptionsAsProperties) {
+        return this[key];
+      }
+      return this._optionValues[key];
+    }
+    setOptionValue(key, value) {
+      return this.setOptionValueWithSource(key, value, undefined);
+    }
+    setOptionValueWithSource(key, value, source) {
+      if (this._storeOptionsAsProperties) {
+        this[key] = value;
+      } else {
+        this._optionValues[key] = value;
+      }
+      this._optionValueSources[key] = source;
+      return this;
+    }
+    getOptionValueSource(key) {
+      return this._optionValueSources[key];
+    }
+    getOptionValueSourceWithGlobals(key) {
+      let source;
+      this._getCommandAndAncestors().forEach((cmd) => {
+        if (cmd.getOptionValueSource(key) !== undefined) {
+          source = cmd.getOptionValueSource(key);
+        }
+      });
+      return source;
+    }
+    _prepareUserArgs(argv, parseOptions) {
+      if (argv !== undefined && !Array.isArray(argv)) {
+        throw new Error("first parameter to parse must be array or undefined");
+      }
+      parseOptions = parseOptions || {};
+      if (argv === undefined && parseOptions.from === undefined) {
+        if (process2.versions?.electron) {
+          parseOptions.from = "electron";
+        }
+        const execArgv = process2.execArgv ?? [];
+        if (execArgv.includes("-e") || execArgv.includes("--eval") || execArgv.includes("-p") || execArgv.includes("--print")) {
+          parseOptions.from = "eval";
+        }
+      }
+      if (argv === undefined) {
+        argv = process2.argv;
+      }
+      this.rawArgs = argv.slice();
+      let userArgs;
+      switch (parseOptions.from) {
+        case undefined:
+        case "node":
+          this._scriptPath = argv[1];
+          userArgs = argv.slice(2);
+          break;
+        case "electron":
+          if (process2.defaultApp) {
+            this._scriptPath = argv[1];
+            userArgs = argv.slice(2);
+          } else {
+            userArgs = argv.slice(1);
+          }
+          break;
+        case "user":
+          userArgs = argv.slice(0);
+          break;
+        case "eval":
+          userArgs = argv.slice(1);
+          break;
+        default:
+          throw new Error(`unexpected parse option { from: '${parseOptions.from}' }`);
+      }
+      if (!this._name && this._scriptPath)
+        this.nameFromFilename(this._scriptPath);
+      this._name = this._name || "program";
+      return userArgs;
+    }
+    parse(argv, parseOptions) {
+      this._prepareForParse();
+      const userArgs = this._prepareUserArgs(argv, parseOptions);
+      this._parseCommand([], userArgs);
+      return this;
+    }
+    async parseAsync(argv, parseOptions) {
+      this._prepareForParse();
+      const userArgs = this._prepareUserArgs(argv, parseOptions);
+      await this._parseCommand([], userArgs);
+      return this;
+    }
+    _prepareForParse() {
+      if (this._savedState === null) {
+        this.options.filter((option) => option.negate && option.defaultValue === undefined && this.getOptionValue(option.attributeName()) === undefined).forEach((option) => {
+          const positiveLongFlag = option.long.replace(/^--no-/, "--");
+          if (!this._findOption(positiveLongFlag)) {
+            this.setOptionValueWithSource(option.attributeName(), true, "default");
+          }
+        });
+        this.saveStateBeforeParse();
+      } else {
+        this.restoreStateBeforeParse();
+      }
+    }
+    saveStateBeforeParse() {
+      this._savedState = {
+        _name: this._name,
+        _optionValues: { ...this._optionValues },
+        _optionValueSources: { ...this._optionValueSources }
+      };
+    }
+    restoreStateBeforeParse() {
+      if (this._storeOptionsAsProperties)
+        throw new Error(`Can not call parse again when storeOptionsAsProperties is true.
+- either make a new Command for each call to parse, or stop storing options as properties`);
+      this._name = this._savedState._name;
+      this._scriptPath = null;
+      this.rawArgs = [];
+      this._optionValues = { ...this._savedState._optionValues };
+      this._optionValueSources = { ...this._savedState._optionValueSources };
+      this.args = [];
+      this.processedArgs = [];
+    }
+    _checkForMissingExecutable(executableFile, executableDir, subcommandName) {
+      if (fs.existsSync(executableFile))
+        return;
+      const executableDirMessage = executableDir ? `searched for local subcommand relative to directory '${executableDir}'` : "no directory for search for local subcommand, use .executableDir() to supply a custom directory";
+      const executableMissing = `'${executableFile}' does not exist
+ - if '${subcommandName}' is not meant to be an executable command, remove description parameter from '.command()' and use '.description()' instead
+ - if the default executable name is not suitable, use the executableFile option to supply a custom name or path
+ - ${executableDirMessage}`;
+      throw new Error(executableMissing);
+    }
+    _executeSubCommand(subcommand, args) {
+      args = args.slice();
+      const sourceExt = [".js", ".ts", ".tsx", ".mjs", ".cjs"];
+      function findFile(baseDir, baseName) {
+        const localBin = path.resolve(baseDir, baseName);
+        if (fs.existsSync(localBin))
+          return localBin;
+        if (sourceExt.includes(path.extname(baseName)))
+          return;
+        const foundExt = sourceExt.find((ext) => fs.existsSync(`${localBin}${ext}`));
+        if (foundExt)
+          return `${localBin}${foundExt}`;
+        return;
+      }
+      this._checkForMissingMandatoryOptions();
+      this._checkForConflictingOptions();
+      let executableFile = subcommand._executableFile || `${this._name}-${subcommand._name}`;
+      let executableDir = this._executableDir || "";
+      if (this._scriptPath) {
+        let resolvedScriptPath;
+        try {
+          resolvedScriptPath = fs.realpathSync(this._scriptPath);
+        } catch {
+          resolvedScriptPath = this._scriptPath;
+        }
+        executableDir = path.resolve(path.dirname(resolvedScriptPath), executableDir);
+      }
+      if (executableDir) {
+        let localFile = findFile(executableDir, executableFile);
+        if (!localFile && !subcommand._executableFile && this._scriptPath) {
+          const legacyName = path.basename(this._scriptPath, path.extname(this._scriptPath));
+          if (legacyName !== this._name) {
+            localFile = findFile(executableDir, `${legacyName}-${subcommand._name}`);
+          }
+        }
+        executableFile = localFile || executableFile;
+      }
+      const launchWithNode = sourceExt.includes(path.extname(executableFile));
+      let proc;
+      if (process2.platform !== "win32") {
+        if (launchWithNode) {
+          args.unshift(executableFile);
+          args = incrementNodeInspectorPort(process2.execArgv).concat(args);
+          proc = childProcess.spawn(process2.argv[0], args, { stdio: "inherit" });
+        } else {
+          proc = childProcess.spawn(executableFile, args, { stdio: "inherit" });
+        }
+      } else {
+        this._checkForMissingExecutable(executableFile, executableDir, subcommand._name);
+        args.unshift(executableFile);
+        args = incrementNodeInspectorPort(process2.execArgv).concat(args);
+        proc = childProcess.spawn(process2.execPath, args, { stdio: "inherit" });
+      }
+      if (!proc.killed) {
+        const signals = ["SIGUSR1", "SIGUSR2", "SIGTERM", "SIGINT", "SIGHUP"];
+        signals.forEach((signal) => {
+          process2.on(signal, () => {
+            if (proc.killed === false && proc.exitCode === null) {
+              proc.kill(signal);
+            }
+          });
+        });
+      }
+      const exitCallback = this._exitCallback;
+      proc.on("close", (code) => {
+        code = code ?? 1;
+        if (!exitCallback) {
+          process2.exit(code);
+        } else {
+          exitCallback(new CommanderError(code, "commander.executeSubCommandAsync", "(close)"));
+        }
+      });
+      proc.on("error", (err) => {
+        if (err.code === "ENOENT") {
+          this._checkForMissingExecutable(executableFile, executableDir, subcommand._name);
+        } else if (err.code === "EACCES") {
+          throw new Error(`'${executableFile}' not executable`);
+        }
+        if (!exitCallback) {
+          process2.exit(1);
+        } else {
+          const wrappedError = new CommanderError(1, "commander.executeSubCommandAsync", "(error)");
+          wrappedError.nestedError = err;
+          exitCallback(wrappedError);
+        }
+      });
+      this.runningCommand = proc;
+    }
+    _dispatchSubcommand(commandName, operands, unknown) {
+      const subCommand = this._findCommand(commandName);
+      if (!subCommand)
+        this.help({ error: true });
+      subCommand._prepareForParse();
+      let promiseChain;
+      promiseChain = this._chainOrCallSubCommandHook(promiseChain, subCommand, "preSubcommand");
+      promiseChain = this._chainOrCall(promiseChain, () => {
+        if (subCommand._executableHandler) {
+          this._executeSubCommand(subCommand, operands.concat(unknown));
+        } else {
+          return subCommand._parseCommand(operands, unknown);
+        }
+      });
+      return promiseChain;
+    }
+    _dispatchHelpCommand(subcommandName) {
+      if (!subcommandName) {
+        this.help();
+      }
+      const subCommand = this._findCommand(subcommandName);
+      if (subCommand && !subCommand._executableHandler) {
+        subCommand.help();
+      }
+      return this._dispatchSubcommand(subcommandName, [], [this._getHelpOption()?.long ?? this._getHelpOption()?.short ?? "--help"]);
+    }
+    _checkNumberOfArguments() {
+      this.registeredArguments.forEach((arg, i) => {
+        if (arg.required && this.args[i] == null) {
+          this.missingArgument(arg.name());
+        }
+      });
+      if (this.registeredArguments.length > 0 && this.registeredArguments[this.registeredArguments.length - 1].variadic) {
+        return;
+      }
+      if (this.args.length > this.registeredArguments.length) {
+        this._excessArguments(this.args);
+      }
+    }
+    _processArguments() {
+      const myParseArg = (argument, value, previous) => {
+        let parsedValue = value;
+        if (value !== null && argument.parseArg) {
+          const invalidValueMessage = `error: command-argument value '${value}' is invalid for argument '${argument.name()}'.`;
+          parsedValue = this._callParseArg(argument, value, previous, invalidValueMessage);
+        }
+        return parsedValue;
+      };
+      this._checkNumberOfArguments();
+      const processedArgs = [];
+      this.registeredArguments.forEach((declaredArg, index) => {
+        let value = declaredArg.defaultValue;
+        if (declaredArg.variadic) {
+          if (index < this.args.length) {
+            value = this.args.slice(index);
+            if (declaredArg.parseArg) {
+              value = value.reduce((processed, v) => {
+                return myParseArg(declaredArg, v, processed);
+              }, declaredArg.defaultValue);
+            }
+          } else if (value === undefined) {
+            value = [];
+          }
+        } else if (index < this.args.length) {
+          value = this.args[index];
+          if (declaredArg.parseArg) {
+            value = myParseArg(declaredArg, value, declaredArg.defaultValue);
+          }
+        }
+        processedArgs[index] = value;
+      });
+      this.processedArgs = processedArgs;
+    }
+    _chainOrCall(promise, fn) {
+      if (promise?.then && typeof promise.then === "function") {
+        return promise.then(() => fn());
+      }
+      return fn();
+    }
+    _chainOrCallHooks(promise, event) {
+      let result = promise;
+      const hooks = [];
+      this._getCommandAndAncestors().reverse().filter((cmd) => cmd._lifeCycleHooks[event] !== undefined).forEach((hookedCommand) => {
+        hookedCommand._lifeCycleHooks[event].forEach((callback) => {
+          hooks.push({ hookedCommand, callback });
+        });
+      });
+      if (event === "postAction") {
+        hooks.reverse();
+      }
+      hooks.forEach((hookDetail) => {
+        result = this._chainOrCall(result, () => {
+          return hookDetail.callback(hookDetail.hookedCommand, this);
+        });
+      });
+      return result;
+    }
+    _chainOrCallSubCommandHook(promise, subCommand, event) {
+      let result = promise;
+      if (this._lifeCycleHooks[event] !== undefined) {
+        this._lifeCycleHooks[event].forEach((hook) => {
+          result = this._chainOrCall(result, () => {
+            return hook(this, subCommand);
+          });
+        });
+      }
+      return result;
+    }
+    _parseCommand(operands, unknown) {
+      const parsed = this.parseOptions(unknown);
+      this._parseOptionsEnv();
+      this._parseOptionsImplied();
+      operands = operands.concat(parsed.operands);
+      unknown = parsed.unknown;
+      this.args = operands.concat(unknown);
+      if (operands && this._findCommand(operands[0])) {
+        return this._dispatchSubcommand(operands[0], operands.slice(1), unknown);
+      }
+      if (this._getHelpCommand() && operands[0] === this._getHelpCommand().name()) {
+        return this._dispatchHelpCommand(operands[1]);
+      }
+      if (this._defaultCommandName) {
+        this._outputHelpIfRequested(unknown);
+        return this._dispatchSubcommand(this._defaultCommandName, operands, unknown);
+      }
+      if (this.commands.length && this.args.length === 0 && !this._actionHandler && !this._defaultCommandName) {
+        this.help({ error: true });
+      }
+      this._outputHelpIfRequested(parsed.unknown);
+      this._checkForMissingMandatoryOptions();
+      this._checkForConflictingOptions();
+      const checkForUnknownOptions = () => {
+        if (parsed.unknown.length > 0) {
+          this.unknownOption(parsed.unknown[0]);
+        }
+      };
+      const commandEvent = `command:${this.name()}`;
+      if (this._actionHandler) {
+        checkForUnknownOptions();
+        this._processArguments();
+        let promiseChain;
+        promiseChain = this._chainOrCallHooks(promiseChain, "preAction");
+        promiseChain = this._chainOrCall(promiseChain, () => this._actionHandler(this.processedArgs));
+        if (this.parent) {
+          promiseChain = this._chainOrCall(promiseChain, () => {
+            this.parent.emit(commandEvent, operands, unknown);
+          });
+        }
+        promiseChain = this._chainOrCallHooks(promiseChain, "postAction");
+        return promiseChain;
+      }
+      if (this.parent?.listenerCount(commandEvent)) {
+        checkForUnknownOptions();
+        this._processArguments();
+        this.parent.emit(commandEvent, operands, unknown);
+      } else if (operands.length) {
+        if (this._findCommand("*")) {
+          return this._dispatchSubcommand("*", operands, unknown);
+        }
+        if (this.listenerCount("command:*")) {
+          this.emit("command:*", operands, unknown);
+        } else if (this.commands.length) {
+          this.unknownCommand();
+        } else {
+          checkForUnknownOptions();
+          this._processArguments();
+        }
+      } else if (this.commands.length) {
+        checkForUnknownOptions();
+        this.help({ error: true });
+      } else {
+        checkForUnknownOptions();
+        this._processArguments();
+      }
+    }
+    _findCommand(name) {
+      if (!name)
+        return;
+      return this.commands.find((cmd) => cmd._name === name || cmd._aliases.includes(name));
+    }
+    _findOption(arg) {
+      return this.options.find((option) => option.is(arg));
+    }
+    _checkForMissingMandatoryOptions() {
+      this._getCommandAndAncestors().forEach((cmd) => {
+        cmd.options.forEach((anOption) => {
+          if (anOption.mandatory && cmd.getOptionValue(anOption.attributeName()) === undefined) {
+            cmd.missingMandatoryOptionValue(anOption);
+          }
+        });
+      });
+    }
+    _checkForConflictingLocalOptions() {
+      const definedNonDefaultOptions = this.options.filter((option) => {
+        const optionKey = option.attributeName();
+        if (this.getOptionValue(optionKey) === undefined) {
+          return false;
+        }
+        return this.getOptionValueSource(optionKey) !== "default";
+      });
+      const optionsWithConflicting = definedNonDefaultOptions.filter((option) => option.conflictsWith.length > 0);
+      optionsWithConflicting.forEach((option) => {
+        const conflictingAndDefined = definedNonDefaultOptions.find((defined) => option.conflictsWith.includes(defined.attributeName()));
+        if (conflictingAndDefined) {
+          this._conflictingOption(option, conflictingAndDefined);
+        }
+      });
+    }
+    _checkForConflictingOptions() {
+      this._getCommandAndAncestors().forEach((cmd) => {
+        cmd._checkForConflictingLocalOptions();
+      });
+    }
+    parseOptions(args) {
+      const operands = [];
+      const unknown = [];
+      let dest = operands;
+      function maybeOption(arg) {
+        return arg.length > 1 && arg[0] === "-";
+      }
+      const negativeNumberArg = (arg) => {
+        if (!/^-(\d+|\d*\.\d+)(e[+-]?\d+)?$/.test(arg))
+          return false;
+        return !this._getCommandAndAncestors().some((cmd) => cmd.options.map((opt) => opt.short).some((short) => /^-\d$/.test(short)));
+      };
+      let activeVariadicOption = null;
+      let activeGroup = null;
+      let i = 0;
+      while (i < args.length || activeGroup) {
+        const arg = activeGroup ?? args[i++];
+        activeGroup = null;
+        if (arg === "--") {
+          if (dest === unknown)
+            dest.push(arg);
+          dest.push(...args.slice(i));
+          break;
+        }
+        if (activeVariadicOption && (!maybeOption(arg) || negativeNumberArg(arg))) {
+          this.emit(`option:${activeVariadicOption.name()}`, arg);
+          continue;
+        }
+        activeVariadicOption = null;
+        if (maybeOption(arg)) {
+          const option = this._findOption(arg);
+          if (option) {
+            if (option.required) {
+              const value = args[i++];
+              if (value === undefined)
+                this.optionMissingArgument(option);
+              this.emit(`option:${option.name()}`, value);
+            } else if (option.optional) {
+              let value = null;
+              if (i < args.length && (!maybeOption(args[i]) || negativeNumberArg(args[i]))) {
+                value = args[i++];
+              }
+              this.emit(`option:${option.name()}`, value);
+            } else {
+              this.emit(`option:${option.name()}`);
+            }
+            activeVariadicOption = option.variadic ? option : null;
+            continue;
+          }
+        }
+        if (arg.length > 2 && arg[0] === "-" && arg[1] !== "-") {
+          const option = this._findOption(`-${arg[1]}`);
+          if (option) {
+            if (option.required || option.optional && this._combineFlagAndOptionalValue) {
+              this.emit(`option:${option.name()}`, arg.slice(2));
+            } else {
+              this.emit(`option:${option.name()}`);
+              activeGroup = `-${arg.slice(2)}`;
+            }
+            continue;
+          }
+        }
+        if (/^--[^=]+=/.test(arg)) {
+          const index = arg.indexOf("=");
+          const option = this._findOption(arg.slice(0, index));
+          if (option && (option.required || option.optional)) {
+            this.emit(`option:${option.name()}`, arg.slice(index + 1));
+            continue;
+          }
+        }
+        if (dest === operands && maybeOption(arg) && !(this.commands.length === 0 && negativeNumberArg(arg))) {
+          dest = unknown;
+        }
+        if ((this._enablePositionalOptions || this._passThroughOptions) && operands.length === 0 && unknown.length === 0) {
+          if (this._findCommand(arg)) {
+            operands.push(arg);
+            unknown.push(...args.slice(i));
+            break;
+          } else if (this._getHelpCommand() && arg === this._getHelpCommand().name()) {
+            operands.push(arg, ...args.slice(i));
+            break;
+          } else if (this._defaultCommandName) {
+            unknown.push(arg, ...args.slice(i));
+            break;
+          }
+        }
+        if (this._passThroughOptions) {
+          dest.push(arg, ...args.slice(i));
+          break;
+        }
+        dest.push(arg);
+      }
+      return { operands, unknown };
+    }
+    opts() {
+      if (this._storeOptionsAsProperties) {
+        const result = {};
+        const len = this.options.length;
+        for (let i = 0;i < len; i++) {
+          const key = this.options[i].attributeName();
+          result[key] = key === this._versionOptionName ? this._version : this[key];
+        }
+        return result;
+      }
+      return this._optionValues;
+    }
+    optsWithGlobals() {
+      return this._getCommandAndAncestors().reduce((combinedOptions, cmd) => Object.assign(combinedOptions, cmd.opts()), {});
+    }
+    error(message, errorOptions) {
+      this._outputConfiguration.outputError(`${message}
+`, this._outputConfiguration.writeErr);
+      if (typeof this._showHelpAfterError === "string") {
+        this._outputConfiguration.writeErr(`${this._showHelpAfterError}
+`);
+      } else if (this._showHelpAfterError) {
+        this._outputConfiguration.writeErr(`
+`);
+        this.outputHelp({ error: true });
+      }
+      const config = errorOptions || {};
+      const exitCode = config.exitCode || 1;
+      const code = config.code || "commander.error";
+      this._exit(exitCode, code, message);
+    }
+    _parseOptionsEnv() {
+      this.options.forEach((option) => {
+        if (option.envVar && option.envVar in process2.env) {
+          const optionKey = option.attributeName();
+          if (this.getOptionValue(optionKey) === undefined || ["default", "config", "env"].includes(this.getOptionValueSource(optionKey))) {
+            if (option.required || option.optional) {
+              this.emit(`optionEnv:${option.name()}`, process2.env[option.envVar]);
+            } else {
+              this.emit(`optionEnv:${option.name()}`);
+            }
+          }
+        }
+      });
+    }
+    _parseOptionsImplied() {
+      const dualHelper = new DualOptions(this.options);
+      const hasCustomOptionValue = (optionKey) => {
+        return this.getOptionValue(optionKey) !== undefined && !["default", "implied"].includes(this.getOptionValueSource(optionKey));
+      };
+      this.options.filter((option) => option.implied !== undefined && hasCustomOptionValue(option.attributeName()) && dualHelper.valueFromOption(this.getOptionValue(option.attributeName()), option)).forEach((option) => {
+        Object.keys(option.implied).filter((impliedKey) => !hasCustomOptionValue(impliedKey)).forEach((impliedKey) => {
+          this.setOptionValueWithSource(impliedKey, option.implied[impliedKey], "implied");
+        });
+      });
+    }
+    missingArgument(name) {
+      const message = `error: missing required argument '${name}'`;
+      this.error(message, { code: "commander.missingArgument" });
+    }
+    optionMissingArgument(option) {
+      const message = `error: option '${option.flags}' argument missing`;
+      this.error(message, { code: "commander.optionMissingArgument" });
+    }
+    missingMandatoryOptionValue(option) {
+      const message = `error: required option '${option.flags}' not specified`;
+      this.error(message, { code: "commander.missingMandatoryOptionValue" });
+    }
+    _conflictingOption(option, conflictingOption) {
+      const findBestOptionFromValue = (option2) => {
+        const optionKey = option2.attributeName();
+        const optionValue = this.getOptionValue(optionKey);
+        const negativeOption = this.options.find((target) => target.negate && optionKey === target.attributeName());
+        const positiveOption = this.options.find((target) => !target.negate && optionKey === target.attributeName());
+        if (negativeOption && (negativeOption.presetArg === undefined && optionValue === false || negativeOption.presetArg !== undefined && optionValue === negativeOption.presetArg)) {
+          return negativeOption;
+        }
+        return positiveOption || option2;
+      };
+      const getErrorMessage = (option2) => {
+        const bestOption = findBestOptionFromValue(option2);
+        const optionKey = bestOption.attributeName();
+        const source = this.getOptionValueSource(optionKey);
+        if (source === "env") {
+          return `environment variable '${bestOption.envVar}'`;
+        }
+        return `option '${bestOption.flags}'`;
+      };
+      const message = `error: ${getErrorMessage(option)} cannot be used with ${getErrorMessage(conflictingOption)}`;
+      this.error(message, { code: "commander.conflictingOption" });
+    }
+    unknownOption(flag) {
+      if (this._allowUnknownOption)
+        return;
+      let suggestion = "";
+      if (flag.startsWith("--") && this._showSuggestionAfterError) {
+        let candidateFlags = [];
+        let command = this;
+        do {
+          const moreFlags = command.createHelp().visibleOptions(command).filter((option) => option.long).map((option) => option.long);
+          candidateFlags = candidateFlags.concat(moreFlags);
+          command = command.parent;
+        } while (command && !command._enablePositionalOptions);
+        suggestion = suggestSimilar(flag, candidateFlags);
+      }
+      const message = `error: unknown option '${flag}'${suggestion}`;
+      this.error(message, { code: "commander.unknownOption" });
+    }
+    _excessArguments(receivedArgs) {
+      if (this._allowExcessArguments)
+        return;
+      const expected = this.registeredArguments.length;
+      const s = expected === 1 ? "" : "s";
+      const received = receivedArgs.length;
+      const forSubcommand = this.parent ? ` for '${this.name()}'` : "";
+      const details = receivedArgs.join(", ");
+      const message = `error: too many arguments${forSubcommand}. Expected ${expected} argument${s} but got ${received}: ${details}.`;
+      this.error(message, { code: "commander.excessArguments" });
+    }
+    unknownCommand() {
+      const unknownName = this.args[0];
+      let suggestion = "";
+      if (this._showSuggestionAfterError) {
+        const candidateNames = [];
+        this.createHelp().visibleCommands(this).forEach((command) => {
+          candidateNames.push(command.name());
+          if (command.alias())
+            candidateNames.push(command.alias());
+        });
+        suggestion = suggestSimilar(unknownName, candidateNames);
+      }
+      const message = `error: unknown command '${unknownName}'${suggestion}`;
+      this.error(message, { code: "commander.unknownCommand" });
+    }
+    version(str, flags, description) {
+      if (str === undefined)
+        return this._version;
+      this._version = str;
+      flags = flags || "-V, --version";
+      description = description || "output the version number";
+      const versionOption = this.createOption(flags, description);
+      this._versionOptionName = versionOption.attributeName();
+      this._registerOption(versionOption);
+      this.on("option:" + versionOption.name(), () => {
+        this._outputConfiguration.writeOut(`${str}
+`);
+        this._exit(0, "commander.version", str);
+      });
+      return this;
+    }
+    description(str, argsDescription) {
+      if (str === undefined && argsDescription === undefined)
+        return this._description;
+      this._description = str;
+      if (argsDescription) {
+        this._argsDescription = argsDescription;
+      }
+      return this;
+    }
+    summary(str) {
+      if (str === undefined)
+        return this._summary;
+      this._summary = str;
+      return this;
+    }
+    alias(alias) {
+      if (alias === undefined)
+        return this._aliases[0];
+      let command = this;
+      if (this.commands.length !== 0 && this.commands[this.commands.length - 1]._executableHandler) {
+        command = this.commands[this.commands.length - 1];
+      }
+      if (alias === command._name)
+        throw new Error("Command alias can't be the same as its name");
+      const matchingCommand = this.parent?._findCommand(alias);
+      if (matchingCommand) {
+        const existingCmd = [matchingCommand.name()].concat(matchingCommand.aliases()).join("|");
+        throw new Error(`cannot add alias '${alias}' to command '${this.name()}' as already have command '${existingCmd}'`);
+      }
+      command._aliases.push(alias);
+      return this;
+    }
+    aliases(aliases) {
+      if (aliases === undefined)
+        return this._aliases;
+      aliases.forEach((alias) => this.alias(alias));
+      return this;
+    }
+    usage(str) {
+      if (str === undefined) {
+        if (this._usage)
+          return this._usage;
+        const args = this.registeredArguments.map((arg) => {
+          return humanReadableArgName(arg);
+        });
+        return [].concat(this.options.length || this._helpOption !== null ? "[options]" : [], this.commands.length ? "[command]" : [], this.registeredArguments.length ? args : []).join(" ");
+      }
+      this._usage = str;
+      return this;
+    }
+    name(str) {
+      if (str === undefined)
+        return this._name;
+      this._name = str;
+      return this;
+    }
+    helpGroup(heading) {
+      if (heading === undefined)
+        return this._helpGroupHeading ?? "";
+      this._helpGroupHeading = heading;
+      return this;
+    }
+    commandsGroup(heading) {
+      if (heading === undefined)
+        return this._defaultCommandGroup ?? "";
+      this._defaultCommandGroup = heading;
+      return this;
+    }
+    optionsGroup(heading) {
+      if (heading === undefined)
+        return this._defaultOptionGroup ?? "";
+      this._defaultOptionGroup = heading;
+      return this;
+    }
+    _initOptionGroup(option) {
+      if (this._defaultOptionGroup && !option.helpGroupHeading)
+        option.helpGroup(this._defaultOptionGroup);
+    }
+    _initCommandGroup(cmd) {
+      if (this._defaultCommandGroup && !cmd.helpGroup())
+        cmd.helpGroup(this._defaultCommandGroup);
+    }
+    nameFromFilename(filename) {
+      this._name = path.basename(filename, path.extname(filename));
+      return this;
+    }
+    executableDir(path2) {
+      if (path2 === undefined)
+        return this._executableDir;
+      this._executableDir = path2;
+      return this;
+    }
+    helpInformation(contextOptions) {
+      const helper = this.createHelp();
+      const context = this._getOutputContext(contextOptions);
+      helper.prepareContext({
+        error: context.error,
+        helpWidth: context.helpWidth,
+        outputHasColors: context.hasColors
+      });
+      const text = helper.formatHelp(this, helper);
+      if (context.hasColors)
+        return text;
+      return this._outputConfiguration.stripColor(text);
+    }
+    _getOutputContext(contextOptions) {
+      contextOptions = contextOptions || {};
+      const error = !!contextOptions.error;
+      let baseWrite;
+      let hasColors;
+      let helpWidth;
+      if (error) {
+        baseWrite = (str) => this._outputConfiguration.writeErr(str);
+        hasColors = this._outputConfiguration.getErrHasColors();
+        helpWidth = this._outputConfiguration.getErrHelpWidth();
+      } else {
+        baseWrite = (str) => this._outputConfiguration.writeOut(str);
+        hasColors = this._outputConfiguration.getOutHasColors();
+        helpWidth = this._outputConfiguration.getOutHelpWidth();
+      }
+      const write = (str) => {
+        if (!hasColors)
+          str = this._outputConfiguration.stripColor(str);
+        return baseWrite(str);
+      };
+      return { error, write, hasColors, helpWidth };
+    }
+    outputHelp(contextOptions) {
+      let deprecatedCallback;
+      if (typeof contextOptions === "function") {
+        deprecatedCallback = contextOptions;
+        contextOptions = undefined;
+      }
+      const outputContext = this._getOutputContext(contextOptions);
+      const eventContext = {
+        error: outputContext.error,
+        write: outputContext.write,
+        command: this
+      };
+      this._getCommandAndAncestors().reverse().forEach((command) => command.emit("beforeAllHelp", eventContext));
+      this.emit("beforeHelp", eventContext);
+      let helpInformation = this.helpInformation({ error: outputContext.error });
+      if (deprecatedCallback) {
+        helpInformation = deprecatedCallback(helpInformation);
+        if (typeof helpInformation !== "string" && !Buffer.isBuffer(helpInformation)) {
+          throw new Error("outputHelp callback must return a string or a Buffer");
+        }
+      }
+      outputContext.write(helpInformation);
+      if (this._getHelpOption()?.long) {
+        this.emit(this._getHelpOption().long);
+      }
+      this.emit("afterHelp", eventContext);
+      this._getCommandAndAncestors().forEach((command) => command.emit("afterAllHelp", eventContext));
+    }
+    helpOption(flags, description) {
+      if (typeof flags === "boolean") {
+        if (flags) {
+          if (this._helpOption === null)
+            this._helpOption = undefined;
+          if (this._defaultOptionGroup) {
+            this._initOptionGroup(this._getHelpOption());
+          }
+        } else {
+          this._helpOption = null;
+        }
+        return this;
+      }
+      this._helpOption = this.createOption(flags ?? "-h, --help", description ?? "display help for command");
+      if (flags || description)
+        this._initOptionGroup(this._helpOption);
+      return this;
+    }
+    _getHelpOption() {
+      if (this._helpOption === undefined) {
+        this.helpOption(undefined, undefined);
+      }
+      return this._helpOption;
+    }
+    addHelpOption(option) {
+      this._helpOption = option;
+      this._initOptionGroup(option);
+      return this;
+    }
+    help(contextOptions) {
+      this.outputHelp(contextOptions);
+      let exitCode = Number(process2.exitCode ?? 0);
+      if (exitCode === 0 && contextOptions && typeof contextOptions !== "function" && contextOptions.error) {
+        exitCode = 1;
+      }
+      this._exit(exitCode, "commander.help", "(outputHelp)");
+    }
+    addHelpText(position, text) {
+      const allowedValues = ["beforeAll", "before", "after", "afterAll"];
+      if (!allowedValues.includes(position)) {
+        throw new Error(`Unexpected value for position to addHelpText.
+Expecting one of '${allowedValues.join("', '")}'`);
+      }
+      const helpEvent = `${position}Help`;
+      this.on(helpEvent, (context) => {
+        let helpStr;
+        if (typeof text === "function") {
+          helpStr = text({ error: context.error, command: context.command });
+        } else {
+          helpStr = text;
+        }
+        if (helpStr) {
+          context.write(`${helpStr}
+`);
+        }
+      });
+      return this;
+    }
+    _outputHelpIfRequested(args) {
+      const helpOption = this._getHelpOption();
+      const helpRequested = helpOption && args.find((arg) => helpOption.is(arg));
+      if (helpRequested) {
+        this.outputHelp();
+        this._exit(0, "commander.helpDisplayed", "(outputHelp)");
+      }
+    }
+  };
+});
+
+// node_modules/.bun/commander@15.0.0/node_modules/commander/index.js
+var program;
+var init_commander = __esm(() => {
+  init_argument();
+  init_command();
+  init_error();
+  init_help();
+  init_option();
+  program = new Command;
+});
+
 // package.json
 var package_default;
 var init_package = __esm(() => {
   package_default = {
     name: "oh-my-opencode",
-    version: "5.1.33-fork.2",
+    version: "5.1.35-fork.1",
     description: "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
     main: "./dist/index.js",
     types: "dist/index.d.ts",
@@ -232,7 +2300,7 @@ var init_package = __esm(() => {
     },
     devDependencies: {
       "@clack/prompts": "^1.8.1",
-      "@code-yeongyu/senpi": "2026.10.13",
+      "@code-yeongyu/senpi": "2026.10.16",
       "@modelcontextprotocol/sdk": "^1.30.0",
       "@oh-my-opencode/agents-md-core": "workspace:*",
       "@oh-my-opencode/ast-grep-mcp": "workspace:*",
@@ -283,7 +2351,7 @@ var init_package = __esm(() => {
       "js-yaml": "^5.4.2",
       "jsonc-parser": "^3.3.1",
       "node-pty": "^1.1.0",
-      omowright: "github:code-yeongyu/omowright#293ca5002cbd4c8b0c104c5934683385ef7e0d3a",
+      omowright: "github:code-yeongyu/omowright#f87ef4d63fe7b56fe117dbab246c8ad88dd8a780",
       picocolors: "^1.1.1",
       picomatch: "^4.0.7",
       "posthog-node": "^5.52.4",
@@ -291,18 +2359,18 @@ var init_package = __esm(() => {
       typescript: "^7.0.2"
     },
     optionalDependencies: {
-      "oh-my-opencode-darwin-arm64": "5.1.33",
-      "oh-my-opencode-darwin-x64": "5.1.33",
-      "oh-my-opencode-darwin-x64-baseline": "5.1.33",
-      "oh-my-opencode-linux-arm64": "5.1.33",
-      "oh-my-opencode-linux-arm64-musl": "5.1.33",
-      "oh-my-opencode-linux-x64": "5.1.33",
-      "oh-my-opencode-linux-x64-baseline": "5.1.33",
-      "oh-my-opencode-linux-x64-musl": "5.1.33",
-      "oh-my-opencode-linux-x64-musl-baseline": "5.1.33",
-      "oh-my-opencode-windows-arm64": "5.1.33",
-      "oh-my-opencode-windows-x64": "5.1.33",
-      "oh-my-opencode-windows-x64-baseline": "5.1.33"
+      "oh-my-opencode-darwin-arm64": "5.1.35",
+      "oh-my-opencode-darwin-x64": "5.1.35",
+      "oh-my-opencode-darwin-x64-baseline": "5.1.35",
+      "oh-my-opencode-linux-arm64": "5.1.35",
+      "oh-my-opencode-linux-arm64-musl": "5.1.35",
+      "oh-my-opencode-linux-x64": "5.1.35",
+      "oh-my-opencode-linux-x64-baseline": "5.1.35",
+      "oh-my-opencode-linux-x64-musl": "5.1.35",
+      "oh-my-opencode-linux-x64-musl-baseline": "5.1.35",
+      "oh-my-opencode-windows-arm64": "5.1.35",
+      "oh-my-opencode-windows-x64": "5.1.35",
+      "oh-my-opencode-windows-x64-baseline": "5.1.35"
     },
     overrides: {
       hono: "^4.13.8",
@@ -7227,6 +9295,11 @@ var init_agent_model_requirements = __esm(() => {
         { providers: ["openai", "chatgpt-subscription", "opencode"], model: "gpt-5.6-sol", variant: "xhigh" },
         { providers: ["github-copilot"], model: "gpt-5.6-sol", variant: "high" },
         {
+          providers: ["google", "google-vertex", "opencode"],
+          model: "gemini-4-argon",
+          variant: "high"
+        },
+        {
           providers: ["google", "github-copilot", "opencode"],
           model: "gemini-3.1-pro",
           variant: "high"
@@ -7316,6 +9389,11 @@ var init_agent_model_requirements = __esm(() => {
           variant: "max"
         },
         {
+          providers: ["google", "google-vertex", "opencode"],
+          model: "gemini-4-argon",
+          variant: "high"
+        },
+        {
           providers: ["google", "github-copilot", "opencode"],
           model: "gemini-3.1-pro",
           variant: "high"
@@ -7361,6 +9439,7 @@ var init_category_model_requirements = __esm(() => {
   CATEGORY_MODEL_REQUIREMENTS = {
     "visual-engineering": {
       fallbackChain: [
+        { providers: ["google", "google-vertex", "opencode"], model: "gemini-4-argon", variant: "low" },
         {
           providers: ["anthropic", "anthropic-api", "github-copilot", "opencode"],
           model: "claude-fable-5-1",
@@ -7496,6 +9575,7 @@ var init_category_model_requirements = __esm(() => {
     writing: {
       requiresAnyModel: true,
       fallbackChain: [
+        { providers: ["google", "google-vertex", "opencode"], model: "gemini-4-argon", variant: "low" },
         {
           providers: ["anthropic", "anthropic-api", "github-copilot", "opencode"],
           model: "claude-opus-5-5",
@@ -9320,7 +11400,7 @@ var init_google_categories = __esm(() => {
   GOOGLE_CATEGORIES = [
     {
       name: "visual-engineering",
-      config: { model: "anthropic/claude-fable-5-1", variant: "max" },
+      config: { model: "google/gemini-4-argon", variant: "low" },
       description: "Visual design, UI/UX, frontend, styling, animation, and design systems",
       promptAppend: VISUAL_CATEGORY_PROMPT_APPEND
     },
@@ -9363,7 +11443,7 @@ var init_kimi_categories = __esm(() => {
   KIMI_CATEGORIES = [
     {
       name: "writing",
-      config: { model: "anthropic/claude-opus-5-5", variant: "low" },
+      config: { model: "google/gemini-4-argon", variant: "low" },
       description: "Documentation, prose, technical writing",
       promptAppend: WRITING_CATEGORY_PROMPT_APPEND
     }
@@ -10411,6 +12491,28 @@ var init_model_capabilities_generated = __esm(() => {
     generatedAt: "2026-07-29T03:28:21.339Z",
     sourceUrl: "https://models.dev/api.json",
     models: {
+      "gemini-4-argon": {
+        id: "gemini-4-argon",
+        family: "gemini",
+        reasoning: true,
+        temperature: false,
+        toolCall: true,
+        modalities: {
+          input: [
+            "text",
+            "image",
+            "audio",
+            "pdf"
+          ],
+          output: [
+            "text"
+          ]
+        },
+        limit: {
+          context: 1048576,
+          output: 65535
+        }
+      },
       "glm-5": {
         id: "glm-5",
         family: "glm",
@@ -65525,9 +67627,6 @@ var init_server_health = __esm(() => {
 // packages/tmux-core/src/tmux-utils/pane-dimensions.ts
 var init_pane_dimensions = () => {};
 
-// packages/tmux-core/src/tmux-utils/pane-command.ts
-var init_pane_command = () => {};
-
 // packages/tmux-core/src/tmux-utils/pane-spawn.ts
 var init_pane_spawn = () => {};
 
@@ -65567,7 +67666,6 @@ var init_tmux_utils = __esm(() => {
   init_session_spawn();
   init_session_kill();
   init_stale_session_sweep();
-  init_pane_command();
   init_layout();
   init_spawn_process();
 });
@@ -65657,7 +67755,7 @@ var init_stale_session_sweep2 = () => {};
 var init_stale_attach_pane_sweep = () => {};
 
 // packages/omo-opencode/src/shared/tmux/tmux-utils/pane-command.ts
-var init_pane_command2 = () => {};
+var init_pane_command = () => {};
 
 // packages/omo-opencode/src/shared/tmux/tmux-utils/layout.ts
 var init_layout2 = () => {};
@@ -65676,7 +67774,7 @@ var init_tmux_utils2 = __esm(() => {
   init_session_kill2();
   init_stale_session_sweep2();
   init_stale_attach_pane_sweep();
-  init_pane_command2();
+  init_pane_command();
   init_layout2();
 });
 
@@ -90402,8 +92500,17 @@ function isFileExistsError(error62) {
 function backupCandidate(basePath, attempt) {
   return attempt === 0 ? basePath : `${basePath}.${attempt}`;
 }
+function writePlannedBackup(plannedPath, content, fileSystem) {
+  try {
+    if (fileSystem.existsSync(plannedPath) && fileSystem.readFileSync(plannedPath, "utf-8") === content)
+      return plannedPath;
+  } catch {}
+  return writeBackupFrom(plannedPath, content, fileSystem);
+}
 function writeBackup(path7, content, fileSystem) {
-  const basePath = `${path7}.bak.${backupSuffix()}`;
+  return writeBackupFrom(`${path7}.bak.${backupSuffix()}`, content, fileSystem);
+}
+function writeBackupFrom(basePath, content, fileSystem) {
   let attempt = 0;
   while (true) {
     const candidate2 = backupCandidate(basePath, attempt);
@@ -90508,7 +92615,7 @@ function updateOmoConfig(options) {
   if (existed) {
     try {
       assertConfigPathIsSafe(path7, fileSystem);
-      backupPath = writeBackup(path7, content, fileSystem);
+      backupPath = options.backupPath === undefined ? writeBackup(path7, content, fileSystem) : writePlannedBackup(options.backupPath, content, fileSystem);
     } catch (error62) {
       if (error62 instanceof OmoConfigWriteError)
         throw error62;
@@ -90879,17 +92986,20 @@ function prepareTargetReplacement(input2) {
   };
 }
 function writePreparedTarget(input2) {
-  input2.writeTarget({
+  const written = input2.writeTarget({
+    ...input2.backupPath === undefined ? {} : { backupPath: input2.backupPath },
     edits: input2.prepared.edits,
     env: input2.env,
     fileSystem: input2.fileSystem,
     targetPath: input2.targetPath
   });
+  return written?.backupPath;
 }
 var OMO_HARNESS_BLOCKS, writeOmoMigrationTarget = (input2) => {
   const options = writerInput(input2.targetPath, input2.env);
   const result = updateOmoConfig({
     ...options,
+    ...input2.backupPath === undefined ? {} : { backupPath: input2.backupPath },
     edits: input2.edits,
     env: input2.env,
     fileSystem: input2.fileSystem,
@@ -90898,6 +93008,7 @@ var OMO_HARNESS_BLOCKS, writeOmoMigrationTarget = (input2) => {
   if (!sameResolvedPath(result.path, input2.targetPath)) {
     throw new MigrationTransactionError(`Migration writer resolved ${result.path} instead of ${input2.targetPath}`);
   }
+  return result.backupPath === undefined ? {} : { backupPath: result.backupPath };
 };
 var init_commit = __esm(() => {
   init_plain_object();
@@ -90949,6 +93060,9 @@ function parseJournal(value) {
   if (!value["completedMoves"].every((path7) => typeof path7 === "string")) {
     throw new Error("Migration journal completed moves are invalid");
   }
+  const targetBackupPath = value["targetBackupPath"];
+  if (targetBackupPath !== undefined && typeof targetBackupPath !== "string")
+    throw new Error("Migration journal target backup is invalid");
   if (!Array.isArray(value["backupMoves"]))
     throw new Error("Migration journal backup plan is invalid");
   const backupMoves = [];
@@ -90963,6 +93077,7 @@ function parseJournal(value) {
     completedMoves: [...value["completedMoves"]],
     diagnostics: diagnostics === undefined ? [] : [...diagnostics],
     migrationId: value["migrationId"],
+    ...targetBackupPath === undefined ? {} : { targetBackupPath },
     targetPath: value["targetPath"],
     targetWrite: {
       additions: { ...value["targetWrite"]["additions"] },
@@ -91158,12 +93273,24 @@ var init_lock = __esm(() => {
 });
 
 // packages/omo-config-core/src/migration/recovery.ts
+function backupPathForResume(planned, targetPath, fileSystem) {
+  if (planned === undefined || !fileSystem.existsSync(planned) || !fileSystem.existsSync(targetPath))
+    return planned;
+  if (fileSystem.readFileSync(planned, "utf-8") === fileSystem.readFileSync(targetPath, "utf-8"))
+    return planned;
+  let attempt = 1;
+  while (fileSystem.existsSync(`${planned}.${attempt}`))
+    attempt += 1;
+  return `${planned}.${attempt}`;
+}
 function resumeMigrationJournal(input2) {
-  const journal = readMigrationJournal(input2.fileSystem, input2.env);
-  if (journal === null)
-    return false;
+  const read = readMigrationJournal(input2.fileSystem, input2.env);
+  if (read === null)
+    return { resumed: false };
+  let journal = read;
   input2.renewLock();
   const target = targetDocument(journal.targetPath, input2.fileSystem);
+  let writtenBackupPath;
   if (!hasMigrationMarker(target, journal.migrationId)) {
     const prepared = journal.targetWrite.mode === "replace-target" ? prepareTargetReplacement({
       document: journal.targetWrite.additions,
@@ -91176,7 +93303,13 @@ function resumeMigrationJournal(input2) {
       target,
       targetPath: journal.targetPath
     });
-    writePreparedTarget({
+    const backupPath = backupPathForResume(journal.targetBackupPath, journal.targetPath, input2.fileSystem);
+    if (backupPath !== journal.targetBackupPath && backupPath !== undefined) {
+      journal = { ...journal, targetBackupPath: backupPath };
+      writeMigrationJournal(journal, input2.fileSystem, input2.env, input2.process, input2.clock);
+    }
+    writtenBackupPath = writePreparedTarget({
+      ...journal.targetBackupPath === undefined ? {} : { backupPath: journal.targetBackupPath },
       env: input2.env,
       fileSystem: input2.fileSystem,
       prepared,
@@ -91202,7 +93335,8 @@ function resumeMigrationJournal(input2) {
     writeMigrationJournal(targetRecorded, input2.fileSystem, input2.env, input2.process, input2.clock);
   }
   removeMigrationJournal(input2.fileSystem, input2.env);
-  return true;
+  const targetBackupPath = writtenBackupPath ?? (journal.targetBackupPath !== undefined && input2.fileSystem.existsSync(journal.targetBackupPath) ? journal.targetBackupPath : undefined);
+  return targetBackupPath === undefined ? { resumed: true } : { resumed: true, targetBackupPath };
 }
 var init_recovery = __esm(() => {
   init_commit();
@@ -91262,6 +93396,15 @@ function assertSafeSourcePaths(sources, protectedPaths) {
 function directoryPath2(path7) {
   return path7.startsWith("/") ? posix4.dirname(path7) : dirname7(path7);
 }
+function plannedTargetBackupPath(targetPath, clock, fileSystem) {
+  if (!fileSystem.existsSync(targetPath))
+    return;
+  const base = `${targetPath}.bak.${new Date(clock.now()).toISOString().replace(/[:.]/g, "-")}`;
+  let candidate2 = base;
+  for (let attempt = 1;fileSystem.existsSync(candidate2); attempt += 1)
+    candidate2 = `${base}.${attempt}`;
+  return candidate2;
+}
 function ensureBackupDirectories(moves, fileSystem) {
   for (const move of moves)
     fileSystem.mkdirSync(directoryPath2(move.to), { recursive: true });
@@ -91300,11 +93443,13 @@ function executePlan(input2) {
   if (input2.dryRun)
     return { diagnostics, journalResumed, preview, status: "planned" };
   ensureBackupDirectories(moves, fileSystem);
+  const targetBackupPath = plannedTargetBackupPath(plan.targetPath, input2.clock, fileSystem);
   const journal = {
     backupMoves: moves,
     completedMoves: [],
     diagnostics,
     migrationId: plan.id,
+    ...targetBackupPath === undefined ? {} : { targetBackupPath },
     targetPath: plan.targetPath,
     targetWrite: {
       additions: transformed.document,
@@ -91316,7 +93461,7 @@ function executePlan(input2) {
   writeMigrationJournal(journal, fileSystem, env, input2.process, input2.clock);
   input2.onBoundary?.("journal-written");
   input2.renewLock();
-  writePreparedTarget({ env, fileSystem, prepared, targetPath: plan.targetPath, writeTarget: input2.writeTarget });
+  writePreparedTarget({ ...targetBackupPath === undefined ? {} : { backupPath: targetBackupPath }, env, fileSystem, prepared, targetPath: plan.targetPath, writeTarget: input2.writeTarget });
   input2.onBoundary?.("target-written");
   const targetRecorded = { ...journal, targetWritten: true };
   writeMigrationJournal(targetRecorded, fileSystem, env, input2.process, input2.clock);
@@ -91332,7 +93477,7 @@ function executePlan(input2) {
     input2.onBoundary?.("source-recorded");
   }
   removeMigrationJournal(fileSystem, env);
-  return { diagnostics, journalResumed, preview, status: "migrated" };
+  return { diagnostics, journalResumed, preview, status: "migrated", ...targetBackupPath === undefined ? {} : { targetBackupPath } };
 }
 function runMigrations(options) {
   const clock = options.clock ?? DEFAULT_MIGRATION_CLOCK;
@@ -91346,7 +93491,8 @@ function runMigrations(options) {
   if (lock === null)
     return { journalResumed: false, results: [], status: "locked" };
   try {
-    const journalResumed = resumeMigrationJournal({ clock, env, fileSystem, process: process3, renewLock: lock.renew, writeTarget });
+    const resumed = resumeMigrationJournal({ clock, env, fileSystem, process: process3, renewLock: lock.renew, writeTarget });
+    const journalResumed = resumed.resumed;
     lock.renew();
     const results = options.discover().map((plan) => executePlan({
       clock,
@@ -91362,7 +93508,7 @@ function runMigrations(options) {
     }));
     if (options.dryRun !== true)
       options.afterMigrations?.(results);
-    return { journalResumed, results, status: "completed" };
+    return { journalResumed, ...resumed.targetBackupPath === undefined ? {} : { resumedTargetBackupPath: resumed.targetBackupPath }, results, status: "completed" };
   } finally {
     lock.release();
   }
@@ -93259,7 +95405,8 @@ function runOpenCodeStartupMigration(options) {
       migratedFrom: [],
       reloadRequired: false,
       results: [],
-      skippedConflictCount: 0
+      skippedConflictCount: 0,
+      targetBackupPaths: []
     };
   }
   if (homeDir.length === 0) {
@@ -93269,7 +95416,8 @@ function runOpenCodeStartupMigration(options) {
       migratedFrom: [],
       reloadRequired: false,
       results: [],
-      skippedConflictCount: 0
+      skippedConflictCount: 0,
+      targetBackupPaths: []
     };
   }
   try {
@@ -93293,12 +95441,18 @@ function runOpenCodeStartupMigration(options) {
       })
     });
     const migratedFrom = uniqueSources(batch2.results);
+    const targetBackupPaths = [
+      ...batch2.resumedTargetBackupPath === undefined ? [] : [batch2.resumedTargetBackupPath],
+      ...batch2.results.flatMap((result) => result.targetBackupPath === undefined ? [] : [result.targetBackupPath])
+    ];
     return {
       journalResumed: batch2.journalResumed,
       migratedFrom,
       reloadRequired: batch2.journalResumed || migratedFrom.length > 0,
       results: batch2.results,
       skippedConflictCount: skippedConflictCount(batch2.results),
+      targetBackupPaths,
+      ...batch2.resumedTargetBackupPath === undefined ? {} : { resumedTargetBackupPath: batch2.resumedTargetBackupPath },
       ...batch2.status === "locked" ? { error: "Configuration migration is already running" } : {}
     };
   } catch (error62) {
@@ -93308,7 +95462,8 @@ function runOpenCodeStartupMigration(options) {
       migratedFrom: [],
       reloadRequired: false,
       results: [],
-      skippedConflictCount: 0
+      skippedConflictCount: 0,
+      targetBackupPaths: []
     };
   }
 }
@@ -93973,6 +96128,9 @@ var init_activity_state = __esm(() => {
   capturedDaysByStateDir = new Map;
 });
 
+// packages/telemetry-core/src/consent-gated-fetch.ts
+var init_consent_gated_fetch = () => {};
+
 // packages/telemetry-core/src/constants.ts
 var DEFAULT_POSTHOG_HOST = "https://us.i.posthog.com", DEFAULT_POSTHOG_API_KEY = "phc_CFJhj5HyvA62QPhvyaUCtaq23aUfznnijg5VaaGkNk74", UNCONFIGURED_POSTHOG_API_KEY = "phc_REPLACE_ME_OMO_NATIVE";
 
@@ -94020,6 +96178,7 @@ function toDiagnosticRecord(input2, now) {
     timestamp: now.toISOString(),
     event: input2.event,
     source: input2.source,
+    ...input2.count === undefined ? {} : { count: input2.count },
     ...serializeError(input2.error, input2.errorKind)
   };
 }
@@ -94112,7 +96271,7 @@ function shouldDisableTelemetry(input2) {
   const env = input2.env ?? process.env;
   const globalPrefix = input2.globalEnvPrefix ?? "OMO";
   const prefixes = Array.from(new Set([globalPrefix, input2.productEnvPrefix]));
-  if (isDisableFlag(env["DO_NOT_TRACK"])) {
+  if (isDisableFlag(env["DO_NOT_TRACK"]) || isDisableFlag(env[`${globalPrefix}_DISABLE_TELEMETRY`])) {
     return true;
   }
   for (const prefix of prefixes) {
@@ -94142,6 +96301,47 @@ var TRUTHY_DISABLE_VALUES, SEND_OPT_OUT_VALUES;
 var init_env = __esm(() => {
   TRUTHY_DISABLE_VALUES = ["1", "true", "yes"];
   SEND_OPT_OUT_VALUES = ["0", "false", "no", "yes"];
+});
+
+// packages/telemetry-core/src/event-id.ts
+import { randomBytes as nodeRandomBytes } from "crypto";
+function createUuidV7Generator(source = {}) {
+  const now = source.now ?? Date.now;
+  const randomBytes2 = source.randomBytes ?? ((size) => new Uint8Array(nodeRandomBytes(size)));
+  let lastMs = -1;
+  let counter = 0;
+  return () => {
+    const random = randomBytes2(10);
+    const wallMs = Math.floor(now());
+    if (wallMs > lastMs) {
+      lastMs = wallMs;
+      counter = (random[0] << 8 | random[1]) & COUNTER_SEED_MASK;
+    } else if (counter < MAX_COUNTER) {
+      counter += 1;
+    } else {
+      lastMs += 1;
+      counter = (random[0] << 8 | random[1]) & COUNTER_SEED_MASK;
+    }
+    const bytes = new Uint8Array(16);
+    let timestamp = lastMs;
+    for (let index = 5;index >= 0; index -= 1) {
+      bytes[index] = timestamp % 256;
+      timestamp = Math.floor(timestamp / 256);
+    }
+    bytes[6] = 112 | counter >> 8;
+    bytes[7] = counter & 255;
+    bytes[8] = 128 | random[2] & 63;
+    bytes.set(random.subarray(3, 10), 9);
+    return formatUuid(bytes);
+  };
+}
+function formatUuid(bytes) {
+  const hex3 = Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
+  return `${hex3.slice(0, 8)}-${hex3.slice(8, 12)}-${hex3.slice(12, 16)}-${hex3.slice(16, 20)}-${hex3.slice(20)}`;
+}
+var MAX_COUNTER = 4095, COUNTER_SEED_MASK = 2047, fallbackEventId;
+var init_event_id = __esm(() => {
+  fallbackEventId = createUuidV7Generator();
 });
 
 // node_modules/.bun/posthog-node@5.52.4/node_modules/posthog-node/dist/extensions/error-tracking/modifiers/module.node.mjs
@@ -94610,7 +96810,7 @@ class V7Generator {
     return value;
   }
   generateOrAbortCore(unixTsMs, rollbackAllowance) {
-    const MAX_COUNTER = 4398046511103;
+    const MAX_COUNTER2 = 4398046511103;
     if (!Number.isInteger(unixTsMs) || unixTsMs < 1 || unixTsMs > 281474976710655)
       throw new RangeError("`unixTsMs` must be a 48-bit positive integer");
     if (rollbackAllowance < 0 || rollbackAllowance > 281474976710655)
@@ -94622,7 +96822,7 @@ class V7Generator {
       if (!(unixTsMs + rollbackAllowance >= this.timestamp))
         return;
       this.counter++;
-      if (this.counter > MAX_COUNTER) {
+      if (this.counter > MAX_COUNTER2) {
         this.timestamp++;
         this.resetCounter();
       }
@@ -103976,8 +106176,10 @@ var init_record_daily_active = () => {};
 // packages/telemetry-core/src/index.ts
 var init_src5 = __esm(() => {
   init_activity_state();
+  init_consent_gated_fetch();
   init_diagnostics();
   init_env();
+  init_event_id();
   init_events();
   init_machine_id();
   init_posthog_client();
@@ -103989,7 +106191,7 @@ var package_default2;
 var init_package2 = __esm(() => {
   package_default2 = {
     name: "@oh-my-opencode/omo-codex",
-    version: "5.1.33",
+    version: "5.1.35",
     type: "module",
     private: true,
     description: "Codex harness adapter for oh-my-openagent. Vendored Codex plugin namespace (omo) + TypeScript installer + telemetry.",
@@ -105533,2049 +107735,8 @@ var init_auto_update_checker = __esm(() => {
   init_cache();
 });
 
-// node_modules/.bun/commander@15.0.0/node_modules/commander/lib/error.js
-class CommanderError extends Error {
-  constructor(exitCode, code, message) {
-    super(message);
-    Error.captureStackTrace(this, this.constructor);
-    this.name = this.constructor.name;
-    this.code = code;
-    this.exitCode = exitCode;
-    this.nestedError = undefined;
-  }
-}
-
-class InvalidArgumentError extends CommanderError {
-  constructor(message) {
-    super(1, "commander.invalidArgument", message);
-    Error.captureStackTrace(this, this.constructor);
-    this.name = this.constructor.name;
-  }
-}
-
-// node_modules/.bun/commander@15.0.0/node_modules/commander/lib/argument.js
-class Argument {
-  constructor(name, description) {
-    this.description = description || "";
-    this.variadic = false;
-    this.parseArg = undefined;
-    this.defaultValue = undefined;
-    this.defaultValueDescription = undefined;
-    this.argChoices = undefined;
-    switch (name[0]) {
-      case "<":
-        this.required = true;
-        this._name = name.slice(1, -1);
-        break;
-      case "[":
-        this.required = false;
-        this._name = name.slice(1, -1);
-        break;
-      default:
-        this.required = true;
-        this._name = name;
-        break;
-    }
-    if (this._name.endsWith("...")) {
-      this.variadic = true;
-      this._name = this._name.slice(0, -3);
-    }
-  }
-  name() {
-    return this._name;
-  }
-  _collectValue(value, previous) {
-    if (previous === this.defaultValue || !Array.isArray(previous)) {
-      return [value];
-    }
-    previous.push(value);
-    return previous;
-  }
-  default(value, description) {
-    this.defaultValue = value;
-    this.defaultValueDescription = description;
-    return this;
-  }
-  argParser(fn) {
-    this.parseArg = fn;
-    return this;
-  }
-  choices(values) {
-    this.argChoices = values.slice();
-    this.parseArg = (arg, previous) => {
-      if (!this.argChoices.includes(arg)) {
-        throw new InvalidArgumentError(`Allowed choices are ${this.argChoices.join(", ")}.`);
-      }
-      if (this.variadic) {
-        return this._collectValue(arg, previous);
-      }
-      return arg;
-    };
-    return this;
-  }
-  argRequired() {
-    this.required = true;
-    return this;
-  }
-  argOptional() {
-    this.required = false;
-    return this;
-  }
-}
-function humanReadableArgName(arg) {
-  const nameOutput = arg.name() + (arg.variadic === true ? "..." : "");
-  return arg.required ? "<" + nameOutput + ">" : "[" + nameOutput + "]";
-}
-
-// node_modules/.bun/commander@15.0.0/node_modules/commander/lib/command.js
-import { EventEmitter } from "events";
-import childProcess from "child_process";
-import path from "path";
-import fs from "fs";
-import process2 from "process";
-import { stripVTControlCharacters as stripVTControlCharacters2 } from "util";
-
-// node_modules/.bun/commander@15.0.0/node_modules/commander/lib/help.js
-import { stripVTControlCharacters } from "util";
-
-class Help {
-  constructor() {
-    this.helpWidth = undefined;
-    this.minWidthToWrap = 40;
-    this.sortSubcommands = false;
-    this.sortOptions = false;
-    this.showGlobalOptions = false;
-  }
-  prepareContext(contextOptions) {
-    this.helpWidth = this.helpWidth ?? contextOptions.helpWidth ?? 80;
-  }
-  visibleCommands(cmd) {
-    const visibleCommands = cmd.commands.filter((cmd2) => !cmd2._hidden);
-    const helpCommand = cmd._getHelpCommand();
-    if (helpCommand && !helpCommand._hidden) {
-      visibleCommands.push(helpCommand);
-    }
-    if (this.sortSubcommands) {
-      visibleCommands.sort((a, b) => {
-        return a.name().localeCompare(b.name());
-      });
-    }
-    return visibleCommands;
-  }
-  compareOptions(a, b) {
-    const getSortKey = (option) => {
-      return option.short ? option.short.replace(/^-/, "") : option.long.replace(/^--/, "");
-    };
-    return getSortKey(a).localeCompare(getSortKey(b));
-  }
-  visibleOptions(cmd) {
-    const visibleOptions = cmd.options.filter((option) => !option.hidden);
-    const helpOption = cmd._getHelpOption();
-    if (helpOption && !helpOption.hidden) {
-      const removeShort = helpOption.short && cmd._findOption(helpOption.short);
-      const removeLong = helpOption.long && cmd._findOption(helpOption.long);
-      if (!removeShort && !removeLong) {
-        visibleOptions.push(helpOption);
-      } else if (helpOption.long && !removeLong) {
-        visibleOptions.push(cmd.createOption(helpOption.long, helpOption.description));
-      } else if (helpOption.short && !removeShort) {
-        visibleOptions.push(cmd.createOption(helpOption.short, helpOption.description));
-      }
-    }
-    if (this.sortOptions) {
-      visibleOptions.sort(this.compareOptions);
-    }
-    return visibleOptions;
-  }
-  visibleGlobalOptions(cmd) {
-    if (!this.showGlobalOptions)
-      return [];
-    const globalOptions = [];
-    for (let ancestorCmd = cmd.parent;ancestorCmd; ancestorCmd = ancestorCmd.parent) {
-      const visibleOptions = ancestorCmd.options.filter((option) => !option.hidden);
-      globalOptions.push(...visibleOptions);
-    }
-    if (this.sortOptions) {
-      globalOptions.sort(this.compareOptions);
-    }
-    return globalOptions;
-  }
-  visibleArguments(cmd) {
-    if (cmd._argsDescription) {
-      cmd.registeredArguments.forEach((argument) => {
-        argument.description = argument.description || cmd._argsDescription[argument.name()] || "";
-      });
-    }
-    if (cmd.registeredArguments.find((argument) => argument.description)) {
-      return cmd.registeredArguments;
-    }
-    return [];
-  }
-  subcommandTerm(cmd) {
-    const args = cmd.registeredArguments.map((arg) => humanReadableArgName(arg)).join(" ");
-    return cmd._name + (cmd._aliases[0] ? "|" + cmd._aliases[0] : "") + (cmd.options.length ? " [options]" : "") + (args ? " " + args : "");
-  }
-  optionTerm(option) {
-    return option.flags;
-  }
-  argumentTerm(argument) {
-    return argument.name();
-  }
-  longestSubcommandTermLength(cmd, helper) {
-    return helper.visibleCommands(cmd).reduce((max, command) => {
-      return Math.max(max, this.displayWidth(helper.styleSubcommandTerm(helper.subcommandTerm(command))));
-    }, 0);
-  }
-  longestOptionTermLength(cmd, helper) {
-    return helper.visibleOptions(cmd).reduce((max, option) => {
-      return Math.max(max, this.displayWidth(helper.styleOptionTerm(helper.optionTerm(option))));
-    }, 0);
-  }
-  longestGlobalOptionTermLength(cmd, helper) {
-    return helper.visibleGlobalOptions(cmd).reduce((max, option) => {
-      return Math.max(max, this.displayWidth(helper.styleOptionTerm(helper.optionTerm(option))));
-    }, 0);
-  }
-  longestArgumentTermLength(cmd, helper) {
-    return helper.visibleArguments(cmd).reduce((max, argument) => {
-      return Math.max(max, this.displayWidth(helper.styleArgumentTerm(helper.argumentTerm(argument))));
-    }, 0);
-  }
-  commandUsage(cmd) {
-    let cmdName = cmd._name;
-    if (cmd._aliases[0]) {
-      cmdName = cmdName + "|" + cmd._aliases[0];
-    }
-    let ancestorCmdNames = "";
-    for (let ancestorCmd = cmd.parent;ancestorCmd; ancestorCmd = ancestorCmd.parent) {
-      ancestorCmdNames = ancestorCmd.name() + " " + ancestorCmdNames;
-    }
-    return ancestorCmdNames + cmdName + " " + cmd.usage();
-  }
-  commandDescription(cmd) {
-    return cmd.description();
-  }
-  subcommandDescription(cmd) {
-    return cmd.summary() || cmd.description();
-  }
-  optionDescription(option) {
-    const extraInfo = [];
-    if (option.argChoices) {
-      extraInfo.push(`choices: ${option.argChoices.map((choice) => JSON.stringify(choice)).join(", ")}`);
-    }
-    if (option.defaultValue !== undefined) {
-      const showDefault = option.required || option.optional || option.isBoolean() && typeof option.defaultValue === "boolean";
-      if (showDefault) {
-        extraInfo.push(`default: ${option.defaultValueDescription || JSON.stringify(option.defaultValue)}`);
-      }
-    }
-    if (option.presetArg !== undefined && option.optional) {
-      extraInfo.push(`preset: ${JSON.stringify(option.presetArg)}`);
-    }
-    if (option.envVar !== undefined) {
-      extraInfo.push(`env: ${option.envVar}`);
-    }
-    if (extraInfo.length > 0) {
-      const extraDescription = `(${extraInfo.join(", ")})`;
-      if (option.description) {
-        return `${option.description} ${extraDescription}`;
-      }
-      return extraDescription;
-    }
-    return option.description;
-  }
-  argumentDescription(argument) {
-    const extraInfo = [];
-    if (argument.argChoices) {
-      extraInfo.push(`choices: ${argument.argChoices.map((choice) => JSON.stringify(choice)).join(", ")}`);
-    }
-    if (argument.defaultValue !== undefined) {
-      extraInfo.push(`default: ${argument.defaultValueDescription || JSON.stringify(argument.defaultValue)}`);
-    }
-    if (extraInfo.length > 0) {
-      const extraDescription = `(${extraInfo.join(", ")})`;
-      if (argument.description) {
-        return `${argument.description} ${extraDescription}`;
-      }
-      return extraDescription;
-    }
-    return argument.description;
-  }
-  formatItemList(heading, items, helper) {
-    if (items.length === 0)
-      return [];
-    return [helper.styleTitle(heading), ...items, ""];
-  }
-  groupItems(unsortedItems, visibleItems, getGroup) {
-    const result = new Map;
-    unsortedItems.forEach((item) => {
-      const group = getGroup(item);
-      if (!result.has(group))
-        result.set(group, []);
-    });
-    visibleItems.forEach((item) => {
-      const group = getGroup(item);
-      if (!result.has(group)) {
-        result.set(group, []);
-      }
-      result.get(group).push(item);
-    });
-    return result;
-  }
-  formatHelp(cmd, helper) {
-    const termWidth = helper.padWidth(cmd, helper);
-    const helpWidth = helper.helpWidth ?? 80;
-    function callFormatItem(term, description) {
-      return helper.formatItem(term, termWidth, description, helper);
-    }
-    let output = [
-      `${helper.styleTitle("Usage:")} ${helper.styleUsage(helper.commandUsage(cmd))}`,
-      ""
-    ];
-    const commandDescription = helper.commandDescription(cmd);
-    if (commandDescription.length > 0) {
-      output = output.concat([
-        helper.boxWrap(helper.styleCommandDescription(commandDescription), helpWidth),
-        ""
-      ]);
-    }
-    const argumentList = helper.visibleArguments(cmd).map((argument) => {
-      return callFormatItem(helper.styleArgumentTerm(helper.argumentTerm(argument)), helper.styleArgumentDescription(helper.argumentDescription(argument)));
-    });
-    output = output.concat(this.formatItemList("Arguments:", argumentList, helper));
-    const optionGroups = this.groupItems(cmd.options, helper.visibleOptions(cmd), (option) => option.helpGroupHeading ?? "Options:");
-    optionGroups.forEach((options, group) => {
-      const optionList = options.map((option) => {
-        return callFormatItem(helper.styleOptionTerm(helper.optionTerm(option)), helper.styleOptionDescription(helper.optionDescription(option)));
-      });
-      output = output.concat(this.formatItemList(group, optionList, helper));
-    });
-    if (helper.showGlobalOptions) {
-      const globalOptionList = helper.visibleGlobalOptions(cmd).map((option) => {
-        return callFormatItem(helper.styleOptionTerm(helper.optionTerm(option)), helper.styleOptionDescription(helper.optionDescription(option)));
-      });
-      output = output.concat(this.formatItemList("Global Options:", globalOptionList, helper));
-    }
-    const commandGroups = this.groupItems(cmd.commands, helper.visibleCommands(cmd), (sub) => sub.helpGroup() || "Commands:");
-    commandGroups.forEach((commands, group) => {
-      const commandList = commands.map((sub) => {
-        return callFormatItem(helper.styleSubcommandTerm(helper.subcommandTerm(sub)), helper.styleSubcommandDescription(helper.subcommandDescription(sub)));
-      });
-      output = output.concat(this.formatItemList(group, commandList, helper));
-    });
-    return output.join(`
-`);
-  }
-  displayWidth(str) {
-    return stripVTControlCharacters(str).length;
-  }
-  styleTitle(str) {
-    return str;
-  }
-  styleUsage(str) {
-    return str.split(" ").map((word) => {
-      if (word === "[options]")
-        return this.styleOptionText(word);
-      if (word === "[command]")
-        return this.styleSubcommandText(word);
-      if (word[0] === "[" || word[0] === "<")
-        return this.styleArgumentText(word);
-      return this.styleCommandText(word);
-    }).join(" ");
-  }
-  styleCommandDescription(str) {
-    return this.styleDescriptionText(str);
-  }
-  styleOptionDescription(str) {
-    return this.styleDescriptionText(str);
-  }
-  styleSubcommandDescription(str) {
-    return this.styleDescriptionText(str);
-  }
-  styleArgumentDescription(str) {
-    return this.styleDescriptionText(str);
-  }
-  styleDescriptionText(str) {
-    return str;
-  }
-  styleOptionTerm(str) {
-    return this.styleOptionText(str);
-  }
-  styleSubcommandTerm(str) {
-    return str.split(" ").map((word) => {
-      if (word === "[options]")
-        return this.styleOptionText(word);
-      if (word[0] === "[" || word[0] === "<")
-        return this.styleArgumentText(word);
-      return this.styleSubcommandText(word);
-    }).join(" ");
-  }
-  styleArgumentTerm(str) {
-    return this.styleArgumentText(str);
-  }
-  styleOptionText(str) {
-    return str;
-  }
-  styleArgumentText(str) {
-    return str;
-  }
-  styleSubcommandText(str) {
-    return str;
-  }
-  styleCommandText(str) {
-    return str;
-  }
-  padWidth(cmd, helper) {
-    return Math.max(helper.longestOptionTermLength(cmd, helper), helper.longestGlobalOptionTermLength(cmd, helper), helper.longestSubcommandTermLength(cmd, helper), helper.longestArgumentTermLength(cmd, helper));
-  }
-  preformatted(str) {
-    return /\n[^\S\r\n]/.test(str);
-  }
-  formatItem(term, termWidth, description, helper) {
-    const itemIndent = 2;
-    const itemIndentStr = " ".repeat(itemIndent);
-    if (!description)
-      return itemIndentStr + term;
-    const paddedTerm = term.padEnd(termWidth + term.length - helper.displayWidth(term));
-    const spacerWidth = 2;
-    const helpWidth = this.helpWidth ?? 80;
-    const remainingWidth = helpWidth - termWidth - spacerWidth - itemIndent;
-    let formattedDescription;
-    if (remainingWidth < this.minWidthToWrap || helper.preformatted(description)) {
-      formattedDescription = description;
-    } else {
-      const wrappedDescription = helper.boxWrap(description, remainingWidth);
-      formattedDescription = wrappedDescription.replace(/\n/g, `
-` + " ".repeat(termWidth + spacerWidth));
-    }
-    return itemIndentStr + paddedTerm + " ".repeat(spacerWidth) + formattedDescription.replace(/\n/g, `
-${itemIndentStr}`);
-  }
-  boxWrap(str, width) {
-    if (width < this.minWidthToWrap)
-      return str;
-    const rawLines = str.split(/\r\n|\n/);
-    const chunkPattern = /[\s]*[^\s]+/g;
-    const wrappedLines = [];
-    rawLines.forEach((line) => {
-      const chunks = line.match(chunkPattern);
-      if (chunks === null) {
-        wrappedLines.push("");
-        return;
-      }
-      let sumChunks = [chunks.shift()];
-      let sumWidth = this.displayWidth(sumChunks[0]);
-      chunks.forEach((chunk) => {
-        const visibleWidth = this.displayWidth(chunk);
-        if (sumWidth + visibleWidth <= width) {
-          sumChunks.push(chunk);
-          sumWidth += visibleWidth;
-          return;
-        }
-        wrappedLines.push(sumChunks.join(""));
-        const nextChunk = chunk.trimStart();
-        sumChunks = [nextChunk];
-        sumWidth = this.displayWidth(nextChunk);
-      });
-      wrappedLines.push(sumChunks.join(""));
-    });
-    return wrappedLines.join(`
-`);
-  }
-}
-
-// node_modules/.bun/commander@15.0.0/node_modules/commander/lib/option.js
-class Option {
-  constructor(flags, description) {
-    this.flags = flags;
-    this.description = description || "";
-    this.required = flags.includes("<");
-    this.optional = flags.includes("[");
-    this.variadic = /\w\.\.\.[>\]]$/.test(flags);
-    this.mandatory = false;
-    const optionFlags = splitOptionFlags(flags);
-    this.short = optionFlags.shortFlag;
-    this.long = optionFlags.longFlag;
-    this.negate = false;
-    if (this.long) {
-      this.negate = this.long.startsWith("--no-");
-    }
-    this.defaultValue = undefined;
-    this.defaultValueDescription = undefined;
-    this.presetArg = undefined;
-    this.envVar = undefined;
-    this.parseArg = undefined;
-    this.hidden = false;
-    this.argChoices = undefined;
-    this.conflictsWith = [];
-    this.implied = undefined;
-    this.helpGroupHeading = undefined;
-  }
-  default(value, description) {
-    this.defaultValue = value;
-    this.defaultValueDescription = description;
-    return this;
-  }
-  preset(arg) {
-    this.presetArg = arg;
-    return this;
-  }
-  conflicts(names) {
-    this.conflictsWith = this.conflictsWith.concat(names);
-    return this;
-  }
-  implies(impliedOptionValues) {
-    let newImplied = impliedOptionValues;
-    if (typeof impliedOptionValues === "string") {
-      newImplied = { [impliedOptionValues]: true };
-    }
-    this.implied = Object.assign(this.implied || {}, newImplied);
-    return this;
-  }
-  env(name) {
-    this.envVar = name;
-    return this;
-  }
-  argParser(fn) {
-    this.parseArg = fn;
-    return this;
-  }
-  makeOptionMandatory(mandatory = true) {
-    this.mandatory = !!mandatory;
-    return this;
-  }
-  hideHelp(hide = true) {
-    this.hidden = !!hide;
-    return this;
-  }
-  _collectValue(value, previous) {
-    if (previous === this.defaultValue || !Array.isArray(previous)) {
-      return [value];
-    }
-    previous.push(value);
-    return previous;
-  }
-  choices(values) {
-    this.argChoices = values.slice();
-    this.parseArg = (arg, previous) => {
-      if (!this.argChoices.includes(arg)) {
-        throw new InvalidArgumentError(`Allowed choices are ${this.argChoices.join(", ")}.`);
-      }
-      if (this.variadic) {
-        return this._collectValue(arg, previous);
-      }
-      return arg;
-    };
-    return this;
-  }
-  name() {
-    if (this.long) {
-      return this.long.replace(/^--/, "");
-    }
-    return this.short.replace(/^-/, "");
-  }
-  attributeName() {
-    if (this.negate) {
-      return camelcase(this.name().replace(/^no-/, ""));
-    }
-    return camelcase(this.name());
-  }
-  helpGroup(heading) {
-    this.helpGroupHeading = heading;
-    return this;
-  }
-  is(arg) {
-    return this.short === arg || this.long === arg;
-  }
-  isBoolean() {
-    return !this.required && !this.optional && !this.negate;
-  }
-}
-
-class DualOptions {
-  constructor(options) {
-    this.positiveOptions = new Map;
-    this.negativeOptions = new Map;
-    this.dualOptions = new Set;
-    options.forEach((option) => {
-      if (option.negate) {
-        this.negativeOptions.set(option.attributeName(), option);
-      } else {
-        this.positiveOptions.set(option.attributeName(), option);
-      }
-    });
-    this.negativeOptions.forEach((value, key) => {
-      if (this.positiveOptions.has(key)) {
-        this.dualOptions.add(key);
-      }
-    });
-  }
-  valueFromOption(value, option) {
-    const optionKey = option.attributeName();
-    if (!this.dualOptions.has(optionKey))
-      return true;
-    const preset = this.negativeOptions.get(optionKey).presetArg;
-    const negativeValue = preset !== undefined ? preset : false;
-    return option.negate === (negativeValue === value);
-  }
-}
-function camelcase(str) {
-  return str.split("-").reduce((str2, word) => {
-    return str2 + word[0].toUpperCase() + word.slice(1);
-  });
-}
-function splitOptionFlags(flags) {
-  let shortFlag;
-  let longFlag;
-  const shortFlagExp = /^-[^-]$/;
-  const longFlagExp = /^--[^-]/;
-  const flagParts = flags.split(/[ |,]+/).concat("guard");
-  if (shortFlagExp.test(flagParts[0]))
-    shortFlag = flagParts.shift();
-  if (longFlagExp.test(flagParts[0]))
-    longFlag = flagParts.shift();
-  if (!shortFlag && shortFlagExp.test(flagParts[0]))
-    shortFlag = flagParts.shift();
-  if (!shortFlag && longFlagExp.test(flagParts[0])) {
-    shortFlag = longFlag;
-    longFlag = flagParts.shift();
-  }
-  if (flagParts[0].startsWith("-")) {
-    const unsupportedFlag = flagParts[0];
-    const baseError = `option creation failed due to '${unsupportedFlag}' in option flags '${flags}'`;
-    if (/^-[^-][^-]/.test(unsupportedFlag))
-      throw new Error(`${baseError}
-- a short flag is a single dash and a single character
-  - either use a single dash and a single character (for a short flag)
-  - or use a double dash for a long option (and can have two, like '--ws, --workspace')`);
-    if (shortFlagExp.test(unsupportedFlag))
-      throw new Error(`${baseError}
-- too many short flags`);
-    if (longFlagExp.test(unsupportedFlag))
-      throw new Error(`${baseError}
-- too many long flags`);
-    throw new Error(`${baseError}
-- unrecognised flag format`);
-  }
-  if (shortFlag === undefined && longFlag === undefined)
-    throw new Error(`option creation failed due to no flags found in '${flags}'.`);
-  return { shortFlag, longFlag };
-}
-
-// node_modules/.bun/commander@15.0.0/node_modules/commander/lib/suggestSimilar.js
-var maxDistance = 3;
-function editDistance(a, b) {
-  if (Math.abs(a.length - b.length) > maxDistance)
-    return Math.max(a.length, b.length);
-  const d = [];
-  for (let i = 0;i <= a.length; i++) {
-    d[i] = [i];
-  }
-  for (let j = 0;j <= b.length; j++) {
-    d[0][j] = j;
-  }
-  for (let j = 1;j <= b.length; j++) {
-    for (let i = 1;i <= a.length; i++) {
-      let cost;
-      if (a[i - 1] === b[j - 1]) {
-        cost = 0;
-      } else {
-        cost = 1;
-      }
-      d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost);
-      if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) {
-        d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
-      }
-    }
-  }
-  return d[a.length][b.length];
-}
-function suggestSimilar(word, candidates) {
-  if (!candidates || candidates.length === 0)
-    return "";
-  candidates = Array.from(new Set(candidates));
-  const searchingOptions = word.startsWith("--");
-  if (searchingOptions) {
-    word = word.slice(2);
-    candidates = candidates.map((candidate) => candidate.slice(2));
-  }
-  let similar = [];
-  let bestDistance = maxDistance;
-  const minSimilarity = 0.4;
-  candidates.forEach((candidate) => {
-    if (candidate.length <= 1)
-      return;
-    const distance = editDistance(word, candidate);
-    const length = Math.max(word.length, candidate.length);
-    const similarity = (length - distance) / length;
-    if (similarity > minSimilarity) {
-      if (distance < bestDistance) {
-        bestDistance = distance;
-        similar = [candidate];
-      } else if (distance === bestDistance) {
-        similar.push(candidate);
-      }
-    }
-  });
-  similar.sort((a, b) => a.localeCompare(b));
-  if (searchingOptions) {
-    similar = similar.map((candidate) => `--${candidate}`);
-  }
-  if (similar.length > 1) {
-    return `
-(Did you mean one of ${similar.join(", ")}?)`;
-  }
-  if (similar.length === 1) {
-    return `
-(Did you mean ${similar[0]}?)`;
-  }
-  return "";
-}
-
-// node_modules/.bun/commander@15.0.0/node_modules/commander/lib/command.js
-class Command extends EventEmitter {
-  constructor(name) {
-    super();
-    this.commands = [];
-    this.options = [];
-    this.parent = null;
-    this._allowUnknownOption = false;
-    this._allowExcessArguments = false;
-    this.registeredArguments = [];
-    this._args = this.registeredArguments;
-    this.args = [];
-    this.rawArgs = [];
-    this.processedArgs = [];
-    this._scriptPath = null;
-    this._name = name || "";
-    this._optionValues = {};
-    this._optionValueSources = {};
-    this._storeOptionsAsProperties = false;
-    this._actionHandler = null;
-    this._executableHandler = false;
-    this._executableFile = null;
-    this._executableDir = null;
-    this._defaultCommandName = null;
-    this._exitCallback = null;
-    this._aliases = [];
-    this._combineFlagAndOptionalValue = true;
-    this._description = "";
-    this._summary = "";
-    this._argsDescription = undefined;
-    this._enablePositionalOptions = false;
-    this._passThroughOptions = false;
-    this._lifeCycleHooks = {};
-    this._showHelpAfterError = false;
-    this._showSuggestionAfterError = true;
-    this._savedState = null;
-    this._outputConfiguration = {
-      writeOut: (str) => process2.stdout.write(str),
-      writeErr: (str) => process2.stderr.write(str),
-      outputError: (str, write) => write(str),
-      getOutHelpWidth: () => process2.stdout.isTTY ? process2.stdout.columns : undefined,
-      getErrHelpWidth: () => process2.stderr.isTTY ? process2.stderr.columns : undefined,
-      getOutHasColors: () => useColor() ?? (process2.stdout.isTTY && process2.stdout.hasColors?.()),
-      getErrHasColors: () => useColor() ?? (process2.stderr.isTTY && process2.stderr.hasColors?.()),
-      stripColor: (str) => stripVTControlCharacters2(str)
-    };
-    this._hidden = false;
-    this._helpOption = undefined;
-    this._addImplicitHelpCommand = undefined;
-    this._helpCommand = undefined;
-    this._helpConfiguration = {};
-    this._helpGroupHeading = undefined;
-    this._defaultCommandGroup = undefined;
-    this._defaultOptionGroup = undefined;
-  }
-  copyInheritedSettings(sourceCommand) {
-    this._outputConfiguration = sourceCommand._outputConfiguration;
-    this._helpOption = sourceCommand._helpOption;
-    this._helpCommand = sourceCommand._helpCommand;
-    this._helpConfiguration = sourceCommand._helpConfiguration;
-    this._exitCallback = sourceCommand._exitCallback;
-    this._storeOptionsAsProperties = sourceCommand._storeOptionsAsProperties;
-    this._combineFlagAndOptionalValue = sourceCommand._combineFlagAndOptionalValue;
-    this._allowExcessArguments = sourceCommand._allowExcessArguments;
-    this._enablePositionalOptions = sourceCommand._enablePositionalOptions;
-    this._showHelpAfterError = sourceCommand._showHelpAfterError;
-    this._showSuggestionAfterError = sourceCommand._showSuggestionAfterError;
-    return this;
-  }
-  _getCommandAndAncestors() {
-    const result = [];
-    for (let command = this;command; command = command.parent) {
-      result.push(command);
-    }
-    return result;
-  }
-  command(nameAndArgs, actionOptsOrExecDesc, execOpts) {
-    let desc = actionOptsOrExecDesc;
-    let opts = execOpts;
-    if (typeof desc === "object" && desc !== null) {
-      opts = desc;
-      desc = null;
-    }
-    opts = opts || {};
-    const [, name, args] = nameAndArgs.match(/([^ ]+) *(.*)/);
-    const cmd = this.createCommand(name);
-    if (desc) {
-      cmd.description(desc);
-      cmd._executableHandler = true;
-    }
-    if (opts.isDefault)
-      this._defaultCommandName = cmd._name;
-    cmd._hidden = !!(opts.noHelp || opts.hidden);
-    cmd._executableFile = opts.executableFile || null;
-    if (args)
-      cmd.arguments(args);
-    this._registerCommand(cmd);
-    cmd.parent = this;
-    cmd.copyInheritedSettings(this);
-    if (desc)
-      return this;
-    return cmd;
-  }
-  createCommand(name) {
-    return new Command(name);
-  }
-  createHelp() {
-    return Object.assign(new Help, this.configureHelp());
-  }
-  configureHelp(configuration) {
-    if (configuration === undefined)
-      return this._helpConfiguration;
-    this._helpConfiguration = configuration;
-    return this;
-  }
-  configureOutput(configuration) {
-    if (configuration === undefined)
-      return this._outputConfiguration;
-    this._outputConfiguration = {
-      ...this._outputConfiguration,
-      ...configuration
-    };
-    return this;
-  }
-  showHelpAfterError(displayHelp = true) {
-    if (typeof displayHelp !== "string")
-      displayHelp = !!displayHelp;
-    this._showHelpAfterError = displayHelp;
-    return this;
-  }
-  showSuggestionAfterError(displaySuggestion = true) {
-    this._showSuggestionAfterError = !!displaySuggestion;
-    return this;
-  }
-  addCommand(cmd, opts) {
-    if (!cmd._name) {
-      throw new Error(`Command passed to .addCommand() must have a name
-- specify the name in Command constructor or using .name()`);
-    }
-    opts = opts || {};
-    if (opts.isDefault)
-      this._defaultCommandName = cmd._name;
-    if (opts.noHelp || opts.hidden)
-      cmd._hidden = true;
-    this._registerCommand(cmd);
-    cmd.parent = this;
-    cmd._checkForBrokenPassThrough();
-    return this;
-  }
-  createArgument(name, description) {
-    return new Argument(name, description);
-  }
-  argument(name, description, parseArg, defaultValue) {
-    const argument = this.createArgument(name, description);
-    if (typeof parseArg === "function") {
-      argument.default(defaultValue).argParser(parseArg);
-    } else {
-      argument.default(parseArg);
-    }
-    this.addArgument(argument);
-    return this;
-  }
-  arguments(names) {
-    names.trim().split(/ +/).forEach((detail) => {
-      this.argument(detail);
-    });
-    return this;
-  }
-  addArgument(argument) {
-    const previousArgument = this.registeredArguments.slice(-1)[0];
-    if (previousArgument?.variadic) {
-      throw new Error(`only the last argument can be variadic '${previousArgument.name()}'`);
-    }
-    if (argument.required && argument.defaultValue !== undefined && argument.parseArg === undefined) {
-      throw new Error(`a default value for a required argument is never used: '${argument.name()}'`);
-    }
-    this.registeredArguments.push(argument);
-    return this;
-  }
-  helpCommand(enableOrNameAndArgs, description) {
-    if (typeof enableOrNameAndArgs === "boolean") {
-      this._addImplicitHelpCommand = enableOrNameAndArgs;
-      if (enableOrNameAndArgs && this._defaultCommandGroup) {
-        this._initCommandGroup(this._getHelpCommand());
-      }
-      return this;
-    }
-    const nameAndArgs = enableOrNameAndArgs ?? "help [command]";
-    const [, helpName, helpArgs] = nameAndArgs.match(/([^ ]+) *(.*)/);
-    const helpDescription = description ?? "display help for command";
-    const helpCommand = this.createCommand(helpName);
-    helpCommand.helpOption(false);
-    if (helpArgs)
-      helpCommand.arguments(helpArgs);
-    if (helpDescription)
-      helpCommand.description(helpDescription);
-    this._addImplicitHelpCommand = true;
-    this._helpCommand = helpCommand;
-    if (enableOrNameAndArgs || description)
-      this._initCommandGroup(helpCommand);
-    return this;
-  }
-  addHelpCommand(helpCommand, deprecatedDescription) {
-    if (typeof helpCommand !== "object") {
-      this.helpCommand(helpCommand, deprecatedDescription);
-      return this;
-    }
-    this._addImplicitHelpCommand = true;
-    this._helpCommand = helpCommand;
-    this._initCommandGroup(helpCommand);
-    return this;
-  }
-  _getHelpCommand() {
-    const hasImplicitHelpCommand = this._addImplicitHelpCommand ?? (this.commands.length && !this._actionHandler && !this._findCommand("help"));
-    if (hasImplicitHelpCommand) {
-      if (this._helpCommand === undefined) {
-        this.helpCommand(undefined, undefined);
-      }
-      return this._helpCommand;
-    }
-    return null;
-  }
-  hook(event, listener) {
-    const allowedValues = ["preSubcommand", "preAction", "postAction"];
-    if (!allowedValues.includes(event)) {
-      throw new Error(`Unexpected value for event passed to hook : '${event}'.
-Expecting one of '${allowedValues.join("', '")}'`);
-    }
-    if (this._lifeCycleHooks[event]) {
-      this._lifeCycleHooks[event].push(listener);
-    } else {
-      this._lifeCycleHooks[event] = [listener];
-    }
-    return this;
-  }
-  exitOverride(fn) {
-    if (fn) {
-      this._exitCallback = fn;
-    } else {
-      this._exitCallback = (err) => {
-        if (err.code !== "commander.executeSubCommandAsync") {
-          throw err;
-        } else {}
-      };
-    }
-    return this;
-  }
-  _exit(exitCode, code, message) {
-    if (this._exitCallback) {
-      this._exitCallback(new CommanderError(exitCode, code, message));
-    }
-    process2.exit(exitCode);
-  }
-  action(fn) {
-    const listener = (args) => {
-      const expectedArgsCount = this.registeredArguments.length;
-      const actionArgs = args.slice(0, expectedArgsCount);
-      if (this._storeOptionsAsProperties) {
-        actionArgs[expectedArgsCount] = this;
-      } else {
-        actionArgs[expectedArgsCount] = this.opts();
-      }
-      actionArgs.push(this);
-      return fn.apply(this, actionArgs);
-    };
-    this._actionHandler = listener;
-    return this;
-  }
-  createOption(flags, description) {
-    return new Option(flags, description);
-  }
-  _callParseArg(target, value, previous, invalidArgumentMessage) {
-    try {
-      return target.parseArg(value, previous);
-    } catch (err) {
-      if (err.code === "commander.invalidArgument") {
-        const message = `${invalidArgumentMessage} ${err.message}`;
-        this.error(message, { exitCode: err.exitCode, code: err.code });
-      }
-      throw err;
-    }
-  }
-  _registerOption(option) {
-    const matchingOption = option.short && this._findOption(option.short) || option.long && this._findOption(option.long);
-    if (matchingOption) {
-      const matchingFlag = option.long && this._findOption(option.long) ? option.long : option.short;
-      throw new Error(`Cannot add option '${option.flags}'${this._name && ` to command '${this._name}'`} due to conflicting flag '${matchingFlag}'
--  already used by option '${matchingOption.flags}'`);
-    }
-    this._initOptionGroup(option);
-    this.options.push(option);
-  }
-  _registerCommand(command) {
-    const knownBy = (cmd) => {
-      return [cmd.name()].concat(cmd.aliases());
-    };
-    const alreadyUsed = knownBy(command).find((name) => this._findCommand(name));
-    if (alreadyUsed) {
-      const existingCmd = knownBy(this._findCommand(alreadyUsed)).join("|");
-      const newCmd = knownBy(command).join("|");
-      throw new Error(`cannot add command '${newCmd}' as already have command '${existingCmd}'`);
-    }
-    this._initCommandGroup(command);
-    this.commands.push(command);
-  }
-  addOption(option) {
-    this._registerOption(option);
-    const oname = option.name();
-    const name = option.attributeName();
-    if (option.defaultValue !== undefined) {
-      this.setOptionValueWithSource(name, option.defaultValue, "default");
-    }
-    const handleOptionValue = (val, invalidValueMessage, valueSource) => {
-      if (val == null && option.presetArg !== undefined) {
-        val = option.presetArg;
-      }
-      const oldValue = this.getOptionValue(name);
-      if (val !== null && option.parseArg) {
-        val = this._callParseArg(option, val, oldValue, invalidValueMessage);
-      } else if (val !== null && option.variadic) {
-        val = option._collectValue(val, oldValue);
-      }
-      if (val == null) {
-        if (option.negate) {
-          val = false;
-        } else if (option.isBoolean() || option.optional) {
-          val = true;
-        } else {
-          val = "";
-        }
-      }
-      this.setOptionValueWithSource(name, val, valueSource);
-    };
-    this.on("option:" + oname, (val) => {
-      const invalidValueMessage = `error: option '${option.flags}' argument '${val}' is invalid.`;
-      handleOptionValue(val, invalidValueMessage, "cli");
-    });
-    if (option.envVar) {
-      this.on("optionEnv:" + oname, (val) => {
-        const invalidValueMessage = `error: option '${option.flags}' value '${val}' from env '${option.envVar}' is invalid.`;
-        handleOptionValue(val, invalidValueMessage, "env");
-      });
-    }
-    return this;
-  }
-  _optionEx(config, flags, description, fn, defaultValue) {
-    if (typeof flags === "object" && flags instanceof Option) {
-      throw new Error("To add an Option object use addOption() instead of option() or requiredOption()");
-    }
-    const option = this.createOption(flags, description);
-    option.makeOptionMandatory(!!config.mandatory);
-    if (typeof fn === "function") {
-      option.default(defaultValue).argParser(fn);
-    } else if (fn instanceof RegExp) {
-      const regex = fn;
-      fn = (val, def) => {
-        const m = regex.exec(val);
-        return m ? m[0] : def;
-      };
-      option.default(defaultValue).argParser(fn);
-    } else {
-      option.default(fn);
-    }
-    return this.addOption(option);
-  }
-  option(flags, description, parseArg, defaultValue) {
-    return this._optionEx({}, flags, description, parseArg, defaultValue);
-  }
-  requiredOption(flags, description, parseArg, defaultValue) {
-    return this._optionEx({ mandatory: true }, flags, description, parseArg, defaultValue);
-  }
-  combineFlagAndOptionalValue(combine = true) {
-    this._combineFlagAndOptionalValue = !!combine;
-    return this;
-  }
-  allowUnknownOption(allowUnknown = true) {
-    this._allowUnknownOption = !!allowUnknown;
-    return this;
-  }
-  allowExcessArguments(allowExcess = true) {
-    this._allowExcessArguments = !!allowExcess;
-    return this;
-  }
-  enablePositionalOptions(positional = true) {
-    this._enablePositionalOptions = !!positional;
-    return this;
-  }
-  passThroughOptions(passThrough = true) {
-    this._passThroughOptions = !!passThrough;
-    this._checkForBrokenPassThrough();
-    return this;
-  }
-  _checkForBrokenPassThrough() {
-    if (this.parent && this._passThroughOptions && !this.parent._enablePositionalOptions) {
-      throw new Error(`passThroughOptions cannot be used for '${this._name}' without turning on enablePositionalOptions for parent command(s)`);
-    }
-  }
-  storeOptionsAsProperties(storeAsProperties = true) {
-    if (this.options.length) {
-      throw new Error("call .storeOptionsAsProperties() before adding options");
-    }
-    if (Object.keys(this._optionValues).length) {
-      throw new Error("call .storeOptionsAsProperties() before setting option values");
-    }
-    this._storeOptionsAsProperties = !!storeAsProperties;
-    return this;
-  }
-  getOptionValue(key) {
-    if (this._storeOptionsAsProperties) {
-      return this[key];
-    }
-    return this._optionValues[key];
-  }
-  setOptionValue(key, value) {
-    return this.setOptionValueWithSource(key, value, undefined);
-  }
-  setOptionValueWithSource(key, value, source) {
-    if (this._storeOptionsAsProperties) {
-      this[key] = value;
-    } else {
-      this._optionValues[key] = value;
-    }
-    this._optionValueSources[key] = source;
-    return this;
-  }
-  getOptionValueSource(key) {
-    return this._optionValueSources[key];
-  }
-  getOptionValueSourceWithGlobals(key) {
-    let source;
-    this._getCommandAndAncestors().forEach((cmd) => {
-      if (cmd.getOptionValueSource(key) !== undefined) {
-        source = cmd.getOptionValueSource(key);
-      }
-    });
-    return source;
-  }
-  _prepareUserArgs(argv, parseOptions) {
-    if (argv !== undefined && !Array.isArray(argv)) {
-      throw new Error("first parameter to parse must be array or undefined");
-    }
-    parseOptions = parseOptions || {};
-    if (argv === undefined && parseOptions.from === undefined) {
-      if (process2.versions?.electron) {
-        parseOptions.from = "electron";
-      }
-      const execArgv = process2.execArgv ?? [];
-      if (execArgv.includes("-e") || execArgv.includes("--eval") || execArgv.includes("-p") || execArgv.includes("--print")) {
-        parseOptions.from = "eval";
-      }
-    }
-    if (argv === undefined) {
-      argv = process2.argv;
-    }
-    this.rawArgs = argv.slice();
-    let userArgs;
-    switch (parseOptions.from) {
-      case undefined:
-      case "node":
-        this._scriptPath = argv[1];
-        userArgs = argv.slice(2);
-        break;
-      case "electron":
-        if (process2.defaultApp) {
-          this._scriptPath = argv[1];
-          userArgs = argv.slice(2);
-        } else {
-          userArgs = argv.slice(1);
-        }
-        break;
-      case "user":
-        userArgs = argv.slice(0);
-        break;
-      case "eval":
-        userArgs = argv.slice(1);
-        break;
-      default:
-        throw new Error(`unexpected parse option { from: '${parseOptions.from}' }`);
-    }
-    if (!this._name && this._scriptPath)
-      this.nameFromFilename(this._scriptPath);
-    this._name = this._name || "program";
-    return userArgs;
-  }
-  parse(argv, parseOptions) {
-    this._prepareForParse();
-    const userArgs = this._prepareUserArgs(argv, parseOptions);
-    this._parseCommand([], userArgs);
-    return this;
-  }
-  async parseAsync(argv, parseOptions) {
-    this._prepareForParse();
-    const userArgs = this._prepareUserArgs(argv, parseOptions);
-    await this._parseCommand([], userArgs);
-    return this;
-  }
-  _prepareForParse() {
-    if (this._savedState === null) {
-      this.options.filter((option) => option.negate && option.defaultValue === undefined && this.getOptionValue(option.attributeName()) === undefined).forEach((option) => {
-        const positiveLongFlag = option.long.replace(/^--no-/, "--");
-        if (!this._findOption(positiveLongFlag)) {
-          this.setOptionValueWithSource(option.attributeName(), true, "default");
-        }
-      });
-      this.saveStateBeforeParse();
-    } else {
-      this.restoreStateBeforeParse();
-    }
-  }
-  saveStateBeforeParse() {
-    this._savedState = {
-      _name: this._name,
-      _optionValues: { ...this._optionValues },
-      _optionValueSources: { ...this._optionValueSources }
-    };
-  }
-  restoreStateBeforeParse() {
-    if (this._storeOptionsAsProperties)
-      throw new Error(`Can not call parse again when storeOptionsAsProperties is true.
-- either make a new Command for each call to parse, or stop storing options as properties`);
-    this._name = this._savedState._name;
-    this._scriptPath = null;
-    this.rawArgs = [];
-    this._optionValues = { ...this._savedState._optionValues };
-    this._optionValueSources = { ...this._savedState._optionValueSources };
-    this.args = [];
-    this.processedArgs = [];
-  }
-  _checkForMissingExecutable(executableFile, executableDir, subcommandName) {
-    if (fs.existsSync(executableFile))
-      return;
-    const executableDirMessage = executableDir ? `searched for local subcommand relative to directory '${executableDir}'` : "no directory for search for local subcommand, use .executableDir() to supply a custom directory";
-    const executableMissing = `'${executableFile}' does not exist
- - if '${subcommandName}' is not meant to be an executable command, remove description parameter from '.command()' and use '.description()' instead
- - if the default executable name is not suitable, use the executableFile option to supply a custom name or path
- - ${executableDirMessage}`;
-    throw new Error(executableMissing);
-  }
-  _executeSubCommand(subcommand, args) {
-    args = args.slice();
-    const sourceExt = [".js", ".ts", ".tsx", ".mjs", ".cjs"];
-    function findFile(baseDir, baseName) {
-      const localBin = path.resolve(baseDir, baseName);
-      if (fs.existsSync(localBin))
-        return localBin;
-      if (sourceExt.includes(path.extname(baseName)))
-        return;
-      const foundExt = sourceExt.find((ext) => fs.existsSync(`${localBin}${ext}`));
-      if (foundExt)
-        return `${localBin}${foundExt}`;
-      return;
-    }
-    this._checkForMissingMandatoryOptions();
-    this._checkForConflictingOptions();
-    let executableFile = subcommand._executableFile || `${this._name}-${subcommand._name}`;
-    let executableDir = this._executableDir || "";
-    if (this._scriptPath) {
-      let resolvedScriptPath;
-      try {
-        resolvedScriptPath = fs.realpathSync(this._scriptPath);
-      } catch {
-        resolvedScriptPath = this._scriptPath;
-      }
-      executableDir = path.resolve(path.dirname(resolvedScriptPath), executableDir);
-    }
-    if (executableDir) {
-      let localFile = findFile(executableDir, executableFile);
-      if (!localFile && !subcommand._executableFile && this._scriptPath) {
-        const legacyName = path.basename(this._scriptPath, path.extname(this._scriptPath));
-        if (legacyName !== this._name) {
-          localFile = findFile(executableDir, `${legacyName}-${subcommand._name}`);
-        }
-      }
-      executableFile = localFile || executableFile;
-    }
-    const launchWithNode = sourceExt.includes(path.extname(executableFile));
-    let proc;
-    if (process2.platform !== "win32") {
-      if (launchWithNode) {
-        args.unshift(executableFile);
-        args = incrementNodeInspectorPort(process2.execArgv).concat(args);
-        proc = childProcess.spawn(process2.argv[0], args, { stdio: "inherit" });
-      } else {
-        proc = childProcess.spawn(executableFile, args, { stdio: "inherit" });
-      }
-    } else {
-      this._checkForMissingExecutable(executableFile, executableDir, subcommand._name);
-      args.unshift(executableFile);
-      args = incrementNodeInspectorPort(process2.execArgv).concat(args);
-      proc = childProcess.spawn(process2.execPath, args, { stdio: "inherit" });
-    }
-    if (!proc.killed) {
-      const signals = ["SIGUSR1", "SIGUSR2", "SIGTERM", "SIGINT", "SIGHUP"];
-      signals.forEach((signal) => {
-        process2.on(signal, () => {
-          if (proc.killed === false && proc.exitCode === null) {
-            proc.kill(signal);
-          }
-        });
-      });
-    }
-    const exitCallback = this._exitCallback;
-    proc.on("close", (code) => {
-      code = code ?? 1;
-      if (!exitCallback) {
-        process2.exit(code);
-      } else {
-        exitCallback(new CommanderError(code, "commander.executeSubCommandAsync", "(close)"));
-      }
-    });
-    proc.on("error", (err) => {
-      if (err.code === "ENOENT") {
-        this._checkForMissingExecutable(executableFile, executableDir, subcommand._name);
-      } else if (err.code === "EACCES") {
-        throw new Error(`'${executableFile}' not executable`);
-      }
-      if (!exitCallback) {
-        process2.exit(1);
-      } else {
-        const wrappedError = new CommanderError(1, "commander.executeSubCommandAsync", "(error)");
-        wrappedError.nestedError = err;
-        exitCallback(wrappedError);
-      }
-    });
-    this.runningCommand = proc;
-  }
-  _dispatchSubcommand(commandName, operands, unknown) {
-    const subCommand = this._findCommand(commandName);
-    if (!subCommand)
-      this.help({ error: true });
-    subCommand._prepareForParse();
-    let promiseChain;
-    promiseChain = this._chainOrCallSubCommandHook(promiseChain, subCommand, "preSubcommand");
-    promiseChain = this._chainOrCall(promiseChain, () => {
-      if (subCommand._executableHandler) {
-        this._executeSubCommand(subCommand, operands.concat(unknown));
-      } else {
-        return subCommand._parseCommand(operands, unknown);
-      }
-    });
-    return promiseChain;
-  }
-  _dispatchHelpCommand(subcommandName) {
-    if (!subcommandName) {
-      this.help();
-    }
-    const subCommand = this._findCommand(subcommandName);
-    if (subCommand && !subCommand._executableHandler) {
-      subCommand.help();
-    }
-    return this._dispatchSubcommand(subcommandName, [], [this._getHelpOption()?.long ?? this._getHelpOption()?.short ?? "--help"]);
-  }
-  _checkNumberOfArguments() {
-    this.registeredArguments.forEach((arg, i) => {
-      if (arg.required && this.args[i] == null) {
-        this.missingArgument(arg.name());
-      }
-    });
-    if (this.registeredArguments.length > 0 && this.registeredArguments[this.registeredArguments.length - 1].variadic) {
-      return;
-    }
-    if (this.args.length > this.registeredArguments.length) {
-      this._excessArguments(this.args);
-    }
-  }
-  _processArguments() {
-    const myParseArg = (argument, value, previous) => {
-      let parsedValue = value;
-      if (value !== null && argument.parseArg) {
-        const invalidValueMessage = `error: command-argument value '${value}' is invalid for argument '${argument.name()}'.`;
-        parsedValue = this._callParseArg(argument, value, previous, invalidValueMessage);
-      }
-      return parsedValue;
-    };
-    this._checkNumberOfArguments();
-    const processedArgs = [];
-    this.registeredArguments.forEach((declaredArg, index) => {
-      let value = declaredArg.defaultValue;
-      if (declaredArg.variadic) {
-        if (index < this.args.length) {
-          value = this.args.slice(index);
-          if (declaredArg.parseArg) {
-            value = value.reduce((processed, v) => {
-              return myParseArg(declaredArg, v, processed);
-            }, declaredArg.defaultValue);
-          }
-        } else if (value === undefined) {
-          value = [];
-        }
-      } else if (index < this.args.length) {
-        value = this.args[index];
-        if (declaredArg.parseArg) {
-          value = myParseArg(declaredArg, value, declaredArg.defaultValue);
-        }
-      }
-      processedArgs[index] = value;
-    });
-    this.processedArgs = processedArgs;
-  }
-  _chainOrCall(promise, fn) {
-    if (promise?.then && typeof promise.then === "function") {
-      return promise.then(() => fn());
-    }
-    return fn();
-  }
-  _chainOrCallHooks(promise, event) {
-    let result = promise;
-    const hooks = [];
-    this._getCommandAndAncestors().reverse().filter((cmd) => cmd._lifeCycleHooks[event] !== undefined).forEach((hookedCommand) => {
-      hookedCommand._lifeCycleHooks[event].forEach((callback) => {
-        hooks.push({ hookedCommand, callback });
-      });
-    });
-    if (event === "postAction") {
-      hooks.reverse();
-    }
-    hooks.forEach((hookDetail) => {
-      result = this._chainOrCall(result, () => {
-        return hookDetail.callback(hookDetail.hookedCommand, this);
-      });
-    });
-    return result;
-  }
-  _chainOrCallSubCommandHook(promise, subCommand, event) {
-    let result = promise;
-    if (this._lifeCycleHooks[event] !== undefined) {
-      this._lifeCycleHooks[event].forEach((hook) => {
-        result = this._chainOrCall(result, () => {
-          return hook(this, subCommand);
-        });
-      });
-    }
-    return result;
-  }
-  _parseCommand(operands, unknown) {
-    const parsed = this.parseOptions(unknown);
-    this._parseOptionsEnv();
-    this._parseOptionsImplied();
-    operands = operands.concat(parsed.operands);
-    unknown = parsed.unknown;
-    this.args = operands.concat(unknown);
-    if (operands && this._findCommand(operands[0])) {
-      return this._dispatchSubcommand(operands[0], operands.slice(1), unknown);
-    }
-    if (this._getHelpCommand() && operands[0] === this._getHelpCommand().name()) {
-      return this._dispatchHelpCommand(operands[1]);
-    }
-    if (this._defaultCommandName) {
-      this._outputHelpIfRequested(unknown);
-      return this._dispatchSubcommand(this._defaultCommandName, operands, unknown);
-    }
-    if (this.commands.length && this.args.length === 0 && !this._actionHandler && !this._defaultCommandName) {
-      this.help({ error: true });
-    }
-    this._outputHelpIfRequested(parsed.unknown);
-    this._checkForMissingMandatoryOptions();
-    this._checkForConflictingOptions();
-    const checkForUnknownOptions = () => {
-      if (parsed.unknown.length > 0) {
-        this.unknownOption(parsed.unknown[0]);
-      }
-    };
-    const commandEvent = `command:${this.name()}`;
-    if (this._actionHandler) {
-      checkForUnknownOptions();
-      this._processArguments();
-      let promiseChain;
-      promiseChain = this._chainOrCallHooks(promiseChain, "preAction");
-      promiseChain = this._chainOrCall(promiseChain, () => this._actionHandler(this.processedArgs));
-      if (this.parent) {
-        promiseChain = this._chainOrCall(promiseChain, () => {
-          this.parent.emit(commandEvent, operands, unknown);
-        });
-      }
-      promiseChain = this._chainOrCallHooks(promiseChain, "postAction");
-      return promiseChain;
-    }
-    if (this.parent?.listenerCount(commandEvent)) {
-      checkForUnknownOptions();
-      this._processArguments();
-      this.parent.emit(commandEvent, operands, unknown);
-    } else if (operands.length) {
-      if (this._findCommand("*")) {
-        return this._dispatchSubcommand("*", operands, unknown);
-      }
-      if (this.listenerCount("command:*")) {
-        this.emit("command:*", operands, unknown);
-      } else if (this.commands.length) {
-        this.unknownCommand();
-      } else {
-        checkForUnknownOptions();
-        this._processArguments();
-      }
-    } else if (this.commands.length) {
-      checkForUnknownOptions();
-      this.help({ error: true });
-    } else {
-      checkForUnknownOptions();
-      this._processArguments();
-    }
-  }
-  _findCommand(name) {
-    if (!name)
-      return;
-    return this.commands.find((cmd) => cmd._name === name || cmd._aliases.includes(name));
-  }
-  _findOption(arg) {
-    return this.options.find((option) => option.is(arg));
-  }
-  _checkForMissingMandatoryOptions() {
-    this._getCommandAndAncestors().forEach((cmd) => {
-      cmd.options.forEach((anOption) => {
-        if (anOption.mandatory && cmd.getOptionValue(anOption.attributeName()) === undefined) {
-          cmd.missingMandatoryOptionValue(anOption);
-        }
-      });
-    });
-  }
-  _checkForConflictingLocalOptions() {
-    const definedNonDefaultOptions = this.options.filter((option) => {
-      const optionKey = option.attributeName();
-      if (this.getOptionValue(optionKey) === undefined) {
-        return false;
-      }
-      return this.getOptionValueSource(optionKey) !== "default";
-    });
-    const optionsWithConflicting = definedNonDefaultOptions.filter((option) => option.conflictsWith.length > 0);
-    optionsWithConflicting.forEach((option) => {
-      const conflictingAndDefined = definedNonDefaultOptions.find((defined) => option.conflictsWith.includes(defined.attributeName()));
-      if (conflictingAndDefined) {
-        this._conflictingOption(option, conflictingAndDefined);
-      }
-    });
-  }
-  _checkForConflictingOptions() {
-    this._getCommandAndAncestors().forEach((cmd) => {
-      cmd._checkForConflictingLocalOptions();
-    });
-  }
-  parseOptions(args) {
-    const operands = [];
-    const unknown = [];
-    let dest = operands;
-    function maybeOption(arg) {
-      return arg.length > 1 && arg[0] === "-";
-    }
-    const negativeNumberArg = (arg) => {
-      if (!/^-(\d+|\d*\.\d+)(e[+-]?\d+)?$/.test(arg))
-        return false;
-      return !this._getCommandAndAncestors().some((cmd) => cmd.options.map((opt) => opt.short).some((short) => /^-\d$/.test(short)));
-    };
-    let activeVariadicOption = null;
-    let activeGroup = null;
-    let i = 0;
-    while (i < args.length || activeGroup) {
-      const arg = activeGroup ?? args[i++];
-      activeGroup = null;
-      if (arg === "--") {
-        if (dest === unknown)
-          dest.push(arg);
-        dest.push(...args.slice(i));
-        break;
-      }
-      if (activeVariadicOption && (!maybeOption(arg) || negativeNumberArg(arg))) {
-        this.emit(`option:${activeVariadicOption.name()}`, arg);
-        continue;
-      }
-      activeVariadicOption = null;
-      if (maybeOption(arg)) {
-        const option = this._findOption(arg);
-        if (option) {
-          if (option.required) {
-            const value = args[i++];
-            if (value === undefined)
-              this.optionMissingArgument(option);
-            this.emit(`option:${option.name()}`, value);
-          } else if (option.optional) {
-            let value = null;
-            if (i < args.length && (!maybeOption(args[i]) || negativeNumberArg(args[i]))) {
-              value = args[i++];
-            }
-            this.emit(`option:${option.name()}`, value);
-          } else {
-            this.emit(`option:${option.name()}`);
-          }
-          activeVariadicOption = option.variadic ? option : null;
-          continue;
-        }
-      }
-      if (arg.length > 2 && arg[0] === "-" && arg[1] !== "-") {
-        const option = this._findOption(`-${arg[1]}`);
-        if (option) {
-          if (option.required || option.optional && this._combineFlagAndOptionalValue) {
-            this.emit(`option:${option.name()}`, arg.slice(2));
-          } else {
-            this.emit(`option:${option.name()}`);
-            activeGroup = `-${arg.slice(2)}`;
-          }
-          continue;
-        }
-      }
-      if (/^--[^=]+=/.test(arg)) {
-        const index = arg.indexOf("=");
-        const option = this._findOption(arg.slice(0, index));
-        if (option && (option.required || option.optional)) {
-          this.emit(`option:${option.name()}`, arg.slice(index + 1));
-          continue;
-        }
-      }
-      if (dest === operands && maybeOption(arg) && !(this.commands.length === 0 && negativeNumberArg(arg))) {
-        dest = unknown;
-      }
-      if ((this._enablePositionalOptions || this._passThroughOptions) && operands.length === 0 && unknown.length === 0) {
-        if (this._findCommand(arg)) {
-          operands.push(arg);
-          unknown.push(...args.slice(i));
-          break;
-        } else if (this._getHelpCommand() && arg === this._getHelpCommand().name()) {
-          operands.push(arg, ...args.slice(i));
-          break;
-        } else if (this._defaultCommandName) {
-          unknown.push(arg, ...args.slice(i));
-          break;
-        }
-      }
-      if (this._passThroughOptions) {
-        dest.push(arg, ...args.slice(i));
-        break;
-      }
-      dest.push(arg);
-    }
-    return { operands, unknown };
-  }
-  opts() {
-    if (this._storeOptionsAsProperties) {
-      const result = {};
-      const len = this.options.length;
-      for (let i = 0;i < len; i++) {
-        const key = this.options[i].attributeName();
-        result[key] = key === this._versionOptionName ? this._version : this[key];
-      }
-      return result;
-    }
-    return this._optionValues;
-  }
-  optsWithGlobals() {
-    return this._getCommandAndAncestors().reduce((combinedOptions, cmd) => Object.assign(combinedOptions, cmd.opts()), {});
-  }
-  error(message, errorOptions) {
-    this._outputConfiguration.outputError(`${message}
-`, this._outputConfiguration.writeErr);
-    if (typeof this._showHelpAfterError === "string") {
-      this._outputConfiguration.writeErr(`${this._showHelpAfterError}
-`);
-    } else if (this._showHelpAfterError) {
-      this._outputConfiguration.writeErr(`
-`);
-      this.outputHelp({ error: true });
-    }
-    const config = errorOptions || {};
-    const exitCode = config.exitCode || 1;
-    const code = config.code || "commander.error";
-    this._exit(exitCode, code, message);
-  }
-  _parseOptionsEnv() {
-    this.options.forEach((option) => {
-      if (option.envVar && option.envVar in process2.env) {
-        const optionKey = option.attributeName();
-        if (this.getOptionValue(optionKey) === undefined || ["default", "config", "env"].includes(this.getOptionValueSource(optionKey))) {
-          if (option.required || option.optional) {
-            this.emit(`optionEnv:${option.name()}`, process2.env[option.envVar]);
-          } else {
-            this.emit(`optionEnv:${option.name()}`);
-          }
-        }
-      }
-    });
-  }
-  _parseOptionsImplied() {
-    const dualHelper = new DualOptions(this.options);
-    const hasCustomOptionValue = (optionKey) => {
-      return this.getOptionValue(optionKey) !== undefined && !["default", "implied"].includes(this.getOptionValueSource(optionKey));
-    };
-    this.options.filter((option) => option.implied !== undefined && hasCustomOptionValue(option.attributeName()) && dualHelper.valueFromOption(this.getOptionValue(option.attributeName()), option)).forEach((option) => {
-      Object.keys(option.implied).filter((impliedKey) => !hasCustomOptionValue(impliedKey)).forEach((impliedKey) => {
-        this.setOptionValueWithSource(impliedKey, option.implied[impliedKey], "implied");
-      });
-    });
-  }
-  missingArgument(name) {
-    const message = `error: missing required argument '${name}'`;
-    this.error(message, { code: "commander.missingArgument" });
-  }
-  optionMissingArgument(option) {
-    const message = `error: option '${option.flags}' argument missing`;
-    this.error(message, { code: "commander.optionMissingArgument" });
-  }
-  missingMandatoryOptionValue(option) {
-    const message = `error: required option '${option.flags}' not specified`;
-    this.error(message, { code: "commander.missingMandatoryOptionValue" });
-  }
-  _conflictingOption(option, conflictingOption) {
-    const findBestOptionFromValue = (option2) => {
-      const optionKey = option2.attributeName();
-      const optionValue = this.getOptionValue(optionKey);
-      const negativeOption = this.options.find((target) => target.negate && optionKey === target.attributeName());
-      const positiveOption = this.options.find((target) => !target.negate && optionKey === target.attributeName());
-      if (negativeOption && (negativeOption.presetArg === undefined && optionValue === false || negativeOption.presetArg !== undefined && optionValue === negativeOption.presetArg)) {
-        return negativeOption;
-      }
-      return positiveOption || option2;
-    };
-    const getErrorMessage = (option2) => {
-      const bestOption = findBestOptionFromValue(option2);
-      const optionKey = bestOption.attributeName();
-      const source = this.getOptionValueSource(optionKey);
-      if (source === "env") {
-        return `environment variable '${bestOption.envVar}'`;
-      }
-      return `option '${bestOption.flags}'`;
-    };
-    const message = `error: ${getErrorMessage(option)} cannot be used with ${getErrorMessage(conflictingOption)}`;
-    this.error(message, { code: "commander.conflictingOption" });
-  }
-  unknownOption(flag) {
-    if (this._allowUnknownOption)
-      return;
-    let suggestion = "";
-    if (flag.startsWith("--") && this._showSuggestionAfterError) {
-      let candidateFlags = [];
-      let command = this;
-      do {
-        const moreFlags = command.createHelp().visibleOptions(command).filter((option) => option.long).map((option) => option.long);
-        candidateFlags = candidateFlags.concat(moreFlags);
-        command = command.parent;
-      } while (command && !command._enablePositionalOptions);
-      suggestion = suggestSimilar(flag, candidateFlags);
-    }
-    const message = `error: unknown option '${flag}'${suggestion}`;
-    this.error(message, { code: "commander.unknownOption" });
-  }
-  _excessArguments(receivedArgs) {
-    if (this._allowExcessArguments)
-      return;
-    const expected = this.registeredArguments.length;
-    const s = expected === 1 ? "" : "s";
-    const received = receivedArgs.length;
-    const forSubcommand = this.parent ? ` for '${this.name()}'` : "";
-    const details = receivedArgs.join(", ");
-    const message = `error: too many arguments${forSubcommand}. Expected ${expected} argument${s} but got ${received}: ${details}.`;
-    this.error(message, { code: "commander.excessArguments" });
-  }
-  unknownCommand() {
-    const unknownName = this.args[0];
-    let suggestion = "";
-    if (this._showSuggestionAfterError) {
-      const candidateNames = [];
-      this.createHelp().visibleCommands(this).forEach((command) => {
-        candidateNames.push(command.name());
-        if (command.alias())
-          candidateNames.push(command.alias());
-      });
-      suggestion = suggestSimilar(unknownName, candidateNames);
-    }
-    const message = `error: unknown command '${unknownName}'${suggestion}`;
-    this.error(message, { code: "commander.unknownCommand" });
-  }
-  version(str, flags, description) {
-    if (str === undefined)
-      return this._version;
-    this._version = str;
-    flags = flags || "-V, --version";
-    description = description || "output the version number";
-    const versionOption = this.createOption(flags, description);
-    this._versionOptionName = versionOption.attributeName();
-    this._registerOption(versionOption);
-    this.on("option:" + versionOption.name(), () => {
-      this._outputConfiguration.writeOut(`${str}
-`);
-      this._exit(0, "commander.version", str);
-    });
-    return this;
-  }
-  description(str, argsDescription) {
-    if (str === undefined && argsDescription === undefined)
-      return this._description;
-    this._description = str;
-    if (argsDescription) {
-      this._argsDescription = argsDescription;
-    }
-    return this;
-  }
-  summary(str) {
-    if (str === undefined)
-      return this._summary;
-    this._summary = str;
-    return this;
-  }
-  alias(alias) {
-    if (alias === undefined)
-      return this._aliases[0];
-    let command = this;
-    if (this.commands.length !== 0 && this.commands[this.commands.length - 1]._executableHandler) {
-      command = this.commands[this.commands.length - 1];
-    }
-    if (alias === command._name)
-      throw new Error("Command alias can't be the same as its name");
-    const matchingCommand = this.parent?._findCommand(alias);
-    if (matchingCommand) {
-      const existingCmd = [matchingCommand.name()].concat(matchingCommand.aliases()).join("|");
-      throw new Error(`cannot add alias '${alias}' to command '${this.name()}' as already have command '${existingCmd}'`);
-    }
-    command._aliases.push(alias);
-    return this;
-  }
-  aliases(aliases) {
-    if (aliases === undefined)
-      return this._aliases;
-    aliases.forEach((alias) => this.alias(alias));
-    return this;
-  }
-  usage(str) {
-    if (str === undefined) {
-      if (this._usage)
-        return this._usage;
-      const args = this.registeredArguments.map((arg) => {
-        return humanReadableArgName(arg);
-      });
-      return [].concat(this.options.length || this._helpOption !== null ? "[options]" : [], this.commands.length ? "[command]" : [], this.registeredArguments.length ? args : []).join(" ");
-    }
-    this._usage = str;
-    return this;
-  }
-  name(str) {
-    if (str === undefined)
-      return this._name;
-    this._name = str;
-    return this;
-  }
-  helpGroup(heading) {
-    if (heading === undefined)
-      return this._helpGroupHeading ?? "";
-    this._helpGroupHeading = heading;
-    return this;
-  }
-  commandsGroup(heading) {
-    if (heading === undefined)
-      return this._defaultCommandGroup ?? "";
-    this._defaultCommandGroup = heading;
-    return this;
-  }
-  optionsGroup(heading) {
-    if (heading === undefined)
-      return this._defaultOptionGroup ?? "";
-    this._defaultOptionGroup = heading;
-    return this;
-  }
-  _initOptionGroup(option) {
-    if (this._defaultOptionGroup && !option.helpGroupHeading)
-      option.helpGroup(this._defaultOptionGroup);
-  }
-  _initCommandGroup(cmd) {
-    if (this._defaultCommandGroup && !cmd.helpGroup())
-      cmd.helpGroup(this._defaultCommandGroup);
-  }
-  nameFromFilename(filename) {
-    this._name = path.basename(filename, path.extname(filename));
-    return this;
-  }
-  executableDir(path2) {
-    if (path2 === undefined)
-      return this._executableDir;
-    this._executableDir = path2;
-    return this;
-  }
-  helpInformation(contextOptions) {
-    const helper = this.createHelp();
-    const context = this._getOutputContext(contextOptions);
-    helper.prepareContext({
-      error: context.error,
-      helpWidth: context.helpWidth,
-      outputHasColors: context.hasColors
-    });
-    const text = helper.formatHelp(this, helper);
-    if (context.hasColors)
-      return text;
-    return this._outputConfiguration.stripColor(text);
-  }
-  _getOutputContext(contextOptions) {
-    contextOptions = contextOptions || {};
-    const error = !!contextOptions.error;
-    let baseWrite;
-    let hasColors;
-    let helpWidth;
-    if (error) {
-      baseWrite = (str) => this._outputConfiguration.writeErr(str);
-      hasColors = this._outputConfiguration.getErrHasColors();
-      helpWidth = this._outputConfiguration.getErrHelpWidth();
-    } else {
-      baseWrite = (str) => this._outputConfiguration.writeOut(str);
-      hasColors = this._outputConfiguration.getOutHasColors();
-      helpWidth = this._outputConfiguration.getOutHelpWidth();
-    }
-    const write = (str) => {
-      if (!hasColors)
-        str = this._outputConfiguration.stripColor(str);
-      return baseWrite(str);
-    };
-    return { error, write, hasColors, helpWidth };
-  }
-  outputHelp(contextOptions) {
-    let deprecatedCallback;
-    if (typeof contextOptions === "function") {
-      deprecatedCallback = contextOptions;
-      contextOptions = undefined;
-    }
-    const outputContext = this._getOutputContext(contextOptions);
-    const eventContext = {
-      error: outputContext.error,
-      write: outputContext.write,
-      command: this
-    };
-    this._getCommandAndAncestors().reverse().forEach((command) => command.emit("beforeAllHelp", eventContext));
-    this.emit("beforeHelp", eventContext);
-    let helpInformation = this.helpInformation({ error: outputContext.error });
-    if (deprecatedCallback) {
-      helpInformation = deprecatedCallback(helpInformation);
-      if (typeof helpInformation !== "string" && !Buffer.isBuffer(helpInformation)) {
-        throw new Error("outputHelp callback must return a string or a Buffer");
-      }
-    }
-    outputContext.write(helpInformation);
-    if (this._getHelpOption()?.long) {
-      this.emit(this._getHelpOption().long);
-    }
-    this.emit("afterHelp", eventContext);
-    this._getCommandAndAncestors().forEach((command) => command.emit("afterAllHelp", eventContext));
-  }
-  helpOption(flags, description) {
-    if (typeof flags === "boolean") {
-      if (flags) {
-        if (this._helpOption === null)
-          this._helpOption = undefined;
-        if (this._defaultOptionGroup) {
-          this._initOptionGroup(this._getHelpOption());
-        }
-      } else {
-        this._helpOption = null;
-      }
-      return this;
-    }
-    this._helpOption = this.createOption(flags ?? "-h, --help", description ?? "display help for command");
-    if (flags || description)
-      this._initOptionGroup(this._helpOption);
-    return this;
-  }
-  _getHelpOption() {
-    if (this._helpOption === undefined) {
-      this.helpOption(undefined, undefined);
-    }
-    return this._helpOption;
-  }
-  addHelpOption(option) {
-    this._helpOption = option;
-    this._initOptionGroup(option);
-    return this;
-  }
-  help(contextOptions) {
-    this.outputHelp(contextOptions);
-    let exitCode = Number(process2.exitCode ?? 0);
-    if (exitCode === 0 && contextOptions && typeof contextOptions !== "function" && contextOptions.error) {
-      exitCode = 1;
-    }
-    this._exit(exitCode, "commander.help", "(outputHelp)");
-  }
-  addHelpText(position, text) {
-    const allowedValues = ["beforeAll", "before", "after", "afterAll"];
-    if (!allowedValues.includes(position)) {
-      throw new Error(`Unexpected value for position to addHelpText.
-Expecting one of '${allowedValues.join("', '")}'`);
-    }
-    const helpEvent = `${position}Help`;
-    this.on(helpEvent, (context) => {
-      let helpStr;
-      if (typeof text === "function") {
-        helpStr = text({ error: context.error, command: context.command });
-      } else {
-        helpStr = text;
-      }
-      if (helpStr) {
-        context.write(`${helpStr}
-`);
-      }
-    });
-    return this;
-  }
-  _outputHelpIfRequested(args) {
-    const helpOption = this._getHelpOption();
-    const helpRequested = helpOption && args.find((arg) => helpOption.is(arg));
-    if (helpRequested) {
-      this.outputHelp();
-      this._exit(0, "commander.helpDisplayed", "(outputHelp)");
-    }
-  }
-}
-function incrementNodeInspectorPort(args) {
-  return args.map((arg) => {
-    if (!arg.startsWith("--inspect")) {
-      return arg;
-    }
-    let debugOption;
-    let debugHost = "127.0.0.1";
-    let debugPort = "9229";
-    let match;
-    if ((match = arg.match(/^(--inspect(-brk)?)$/)) !== null) {
-      debugOption = match[1];
-    } else if ((match = arg.match(/^(--inspect(-brk|-port)?)=([^:]+)$/)) !== null) {
-      debugOption = match[1];
-      if (/^\d+$/.test(match[3])) {
-        debugPort = match[3];
-      } else {
-        debugHost = match[3];
-      }
-    } else if ((match = arg.match(/^(--inspect(-brk|-port)?)=([^:]+):(\d+)$/)) !== null) {
-      debugOption = match[1];
-      debugHost = match[3];
-      debugPort = match[4];
-    }
-    if (debugOption && debugPort !== "0") {
-      return `${debugOption}=${debugHost}:${parseInt(debugPort) + 1}`;
-    }
-    return arg;
-  });
-}
-function useColor() {
-  if (process2.env.NO_COLOR || process2.env.FORCE_COLOR === "0" || process2.env.FORCE_COLOR === "false")
-    return false;
-  if (process2.env.FORCE_COLOR || process2.env.CLICOLOR_FORCE !== undefined)
-    return true;
-  return;
-}
-
-// node_modules/.bun/commander@15.0.0/node_modules/commander/index.js
-var program = new Command;
+// packages/omo-opencode/src/cli/cli-program.ts
+init_commander();
 
 // packages/omo-opencode/src/cli/install.ts
 init_package();
@@ -113668,6 +113829,8 @@ var REQUIRED_PLUGIN_ARTIFACTS = [
   join64("extensions", "omo-computer-use.js"),
   join64("extensions", "omo-memory-doctor.js"),
   join64("extensions", "omo-memory-memfs.js"),
+  join64("extensions", "omo-memory-palace.js"),
+  join64("extensions", "omo-thread-client.js"),
   join64("extensions", "assets.generated.json"),
   join64("extensions", "omo-member.js"),
   join64("extensions", "memory-run-supervisor.mjs"),
@@ -117016,6 +117179,9 @@ var VERSION = package_default.version;
 async function install2(args) {
   return args.tui ? runTuiInstaller(args, VERSION) : runCliInstaller(args, VERSION);
 }
+
+// packages/omo-opencode/src/cli/cleanup-command.ts
+init_commander();
 // packages/omo-opencode/src/cli/cleanup.ts
 function resolveCleanupPlatform(options, invocationName = process.env.OMO_INVOCATION_NAME) {
   if (options.platform !== undefined)
@@ -124594,6 +124760,9 @@ Doctor failed unexpectedly: ${message}`];
   return lines;
 }
 
+// packages/omo-opencode/src/cli/mcp-oauth/index.ts
+init_commander();
+
 // packages/mcp-client-core/src/mcp-oauth/storage.ts
 import { createHash as createHash7 } from "crypto";
 import {
@@ -125455,10 +125624,684 @@ function createMcpOAuthCommand() {
   return mcp;
 }
 
-// packages/omo-opencode/src/cli/service-auth/browser.ts
+// packages/omo-opencode/src/cli/account-keys/keyring.ts
+import { Buffer as Buffer6 } from "buffer";
+import { randomUUID as randomUUID4 } from "crypto";
+
+// packages/memory-core/src/sync/keyring-port.ts
+import { Buffer as Buffer5 } from "buffer";
+import {
+  createPrivateKey as createPrivateKey2,
+  createPublicKey as createPublicKey2,
+  generateKeyPairSync,
+  sign as ed25519Sign
+} from "crypto";
+
+// packages/memory-core/src/sync/canonical-json.ts
+import { Buffer as Buffer3 } from "buffer";
+
+// packages/memory-core/src/sync/canonical-json-types.ts
+class CanonicalJsonError extends Error {
+  violation;
+  name = "CanonicalJsonError";
+  constructor(violation, message) {
+    super(message);
+    this.violation = violation;
+  }
+}
+
+// packages/memory-core/src/sync/canonical-json-serialize.ts
+import { Buffer as Buffer2 } from "buffer";
+function escapeCanonicalString(value) {
+  let out = '"';
+  for (const char of value) {
+    const code = char.codePointAt(0) ?? 0;
+    if (char === '"')
+      out += "\\\"";
+    else if (char === "\\")
+      out += "\\\\";
+    else if (char === "\b")
+      out += "\\b";
+    else if (char === "\t")
+      out += "\\t";
+    else if (char === `
+`)
+      out += "\\n";
+    else if (char === "\f")
+      out += "\\f";
+    else if (char === "\r")
+      out += "\\r";
+    else if (code < 32)
+      out += "\\u" + code.toString(16).padStart(4, "0");
+    else if (code >= 55296 && code <= 57343)
+      throw new CanonicalJsonError("encoding", "lone surrogate in string");
+    else
+      out += char;
+  }
+  return out + '"';
+}
+function compareUtf16(left, right) {
+  const a2 = Buffer2.from(left, "utf16le").swap16();
+  const b2 = Buffer2.from(right, "utf16le").swap16();
+  return Buffer2.compare(a2, b2);
+}
+var MAX_SERIALIZE_DEPTH = 64;
+function serializeValue(value, out, depth = 0) {
+  if (typeof value === "object" && value !== null && depth >= MAX_SERIALIZE_DEPTH) {
+    throw new CanonicalJsonError("json", `nesting deeper than ${MAX_SERIALIZE_DEPTH}`);
+  }
+  if (value === null)
+    out.push("null");
+  else if (typeof value === "boolean")
+    out.push(value ? "true" : "false");
+  else if (typeof value === "number")
+    out.push(JSON.stringify(value));
+  else if (typeof value === "string")
+    out.push(escapeCanonicalString(value));
+  else if (Array.isArray(value)) {
+    out.push("[");
+    value.forEach((element, index) => {
+      if (index > 0)
+        out.push(",");
+      serializeValue(element, out, depth + 1);
+    });
+    out.push("]");
+  } else {
+    out.push("{");
+    Object.keys(value).sort(compareUtf16).forEach((key, index) => {
+      if (index > 0)
+        out.push(",");
+      out.push(escapeCanonicalString(key), ":");
+      serializeValue(value[key], out, depth + 1);
+    });
+    out.push("}");
+  }
+}
+function canonicalizeJson(value) {
+  const out = [];
+  serializeValue(value, out);
+  return new TextEncoder().encode(out.join(""));
+}
+
+// packages/memory-core/src/sync/canonical-json.ts
+var MAX_CANONICAL_DEPTH = 64;
+
+class Parser {
+  text;
+  position = 0;
+  depth = 0;
+  constructor(text) {
+    this.text = text;
+  }
+  parseDocument() {
+    const value = this.parseValue();
+    this.skipInsignificant();
+    if (this.position !== this.text.length)
+      throw this.fail("json", "trailing data after the JSON document");
+    return value;
+  }
+  parseValue() {
+    this.skipInsignificant();
+    const char = this.text[this.position];
+    if (char === "{" || char === "[") {
+      if (this.depth >= MAX_CANONICAL_DEPTH)
+        throw this.fail("json", `nesting deeper than ${MAX_CANONICAL_DEPTH}`);
+      this.depth++;
+      const value = char === "{" ? this.parseObject() : this.parseArray();
+      this.depth--;
+      return value;
+    }
+    if (char === '"')
+      return this.parseString().value;
+    if (char === "-" || char >= "0" && char <= "9")
+      return this.parseNumber();
+    for (const [word, literal2] of [["null", null], ["true", true], ["false", false]]) {
+      if (this.text.startsWith(word, this.position)) {
+        this.position += word.length;
+        return literal2;
+      }
+    }
+    throw this.fail("json", "unexpected token");
+  }
+  parseObject() {
+    this.position++;
+    const object2 = {};
+    const keys = [];
+    const seen = new Set;
+    this.skipInsignificant();
+    if (this.text[this.position] === "}") {
+      this.position++;
+      return object2;
+    }
+    for (;; ) {
+      this.skipInsignificant();
+      if (this.text[this.position] !== '"')
+        throw this.fail("json", "object keys must be strings");
+      const key = this.parseString();
+      if (seen.has(key.value))
+        throw this.fail("duplicate-key", `duplicate property name ${JSON.stringify(key.value)}`);
+      seen.add(key.value);
+      keys.push(key.value);
+      this.skipInsignificant();
+      if (this.text[this.position] !== ":")
+        throw this.fail("json", "expected ':' after object key");
+      this.position++;
+      Object.defineProperty(object2, key.value, { value: this.parseValue(), enumerable: true, writable: true, configurable: true });
+      this.skipInsignificant();
+      const next = this.text[this.position];
+      if (next === ",") {
+        this.position++;
+        continue;
+      }
+      if (next === "}") {
+        this.position++;
+        break;
+      }
+      throw this.fail("json", "expected ',' or '}' in object");
+    }
+    for (let i2 = 1;i2 < keys.length; i2++) {
+      if (compareUtf16(keys[i2 - 1], keys[i2]) >= 0) {
+        throw this.fail("order", `object properties out of order: ${JSON.stringify(keys[i2 - 1])} precedes ${JSON.stringify(keys[i2])}`);
+      }
+    }
+    return object2;
+  }
+  parseArray() {
+    this.position++;
+    const array2 = [];
+    this.skipInsignificant();
+    if (this.text[this.position] === "]") {
+      this.position++;
+      return array2;
+    }
+    for (;; ) {
+      array2.push(this.parseValue());
+      this.skipInsignificant();
+      const next = this.text[this.position];
+      if (next === ",") {
+        this.position++;
+        continue;
+      }
+      if (next === "]") {
+        this.position++;
+        break;
+      }
+      throw this.fail("json", "expected ',' or ']' in array");
+    }
+    return array2;
+  }
+  parseString() {
+    const start = this.position;
+    this.position++;
+    let value = "";
+    for (;; ) {
+      if (this.position >= this.text.length)
+        throw this.fail("json", "unterminated string");
+      const char = this.text[this.position];
+      if (char === '"') {
+        this.position++;
+        const raw = this.text.slice(start, this.position);
+        if (escapeCanonicalString(value) !== raw) {
+          throw this.fail("escape", `string is not minimally escaped: ${raw}`);
+        }
+        return { value, raw };
+      }
+      if (char === "\\") {
+        const escape = this.text[this.position + 1];
+        const simple = { '"': '"', "\\": "\\", "/": "/", b: "\b", f: "\f", n: `
+`, r: "\r", t: "\t" };
+        if (escape in simple) {
+          value += simple[escape];
+          this.position += 2;
+          continue;
+        }
+        if (escape === "u") {
+          const hex3 = this.text.slice(this.position + 2, this.position + 6);
+          if (!/^[0-9a-fA-F]{4}$/.test(hex3))
+            throw this.fail("json", "invalid \\u escape");
+          value += String.fromCharCode(parseInt(hex3, 16));
+          this.position += 6;
+          continue;
+        }
+        throw this.fail("json", "invalid escape sequence");
+      }
+      const code = char.codePointAt(0) ?? 0;
+      if (code < 32)
+        throw this.fail("json", "unescaped control character in string");
+      value += char;
+      this.position++;
+    }
+  }
+  parseNumber() {
+    const match = /^-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?/.exec(this.text.slice(this.position));
+    if (!match)
+      throw this.fail("json", "invalid number");
+    const raw = match[0];
+    this.position += raw.length;
+    const value = Number(raw);
+    if (!Number.isFinite(value))
+      throw this.fail("number", `number is not finite: ${raw}`);
+    if (JSON.stringify(value) !== raw)
+      throw this.fail("number", `number is not in canonical form: ${raw}`);
+    return value;
+  }
+  skipInsignificant() {
+    while (this.position < this.text.length && /[\t\n\r ]/.test(this.text[this.position])) {
+      throw this.fail("whitespace", "insignificant whitespace between JSON tokens");
+    }
+  }
+  fail(violation, message) {
+    return new CanonicalJsonError(violation, `${message} (offset ${this.position})`);
+  }
+}
+function requireCanonicalJson(bytes) {
+  let text;
+  try {
+    text = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+  } catch {
+    throw new CanonicalJsonError("encoding", "canonical JSON must be valid UTF-8");
+  }
+  const parsed = new Parser(text).parseDocument();
+  const canonical = canonicalizeJson(parsed);
+  if (canonical.length !== bytes.length || !Buffer3.from(canonical).equals(Buffer3.from(bytes))) {
+    throw new CanonicalJsonError("json", "input is not byte-identical to its canonical form");
+  }
+  return parsed;
+}
+
+// packages/memory-core/src/sync/hpke-sealed-box.ts
+import { Buffer as Buffer4 } from "buffer";
+import { createDecipheriv, createHmac, createPrivateKey, createPublicKey, diffieHellman } from "crypto";
+var SEALED_BOX_OVERHEAD = 48;
+var HKDF_HASH_LENGTH = 32;
+function labeledExtract(suiteId, label, ikm, salt) {
+  const key = salt.length === 0 ? Buffer4.alloc(HKDF_HASH_LENGTH) : Buffer4.from(salt);
+  return createHmac("sha256", key).update(Buffer4.concat([Buffer4.from("HPKE-v1"), suiteId, Buffer4.from(label), Buffer4.from(ikm)])).digest();
+}
+function labeledExpand(suiteId, label, prk, info, length) {
+  if (length > HKDF_HASH_LENGTH)
+    throw new Error("hpke expand length exceeds one SHA-256 block");
+  const lengthBytes = Buffer4.alloc(2);
+  lengthBytes.writeUInt16BE(length);
+  const t0 = Buffer4.concat([lengthBytes, Buffer4.from("HPKE-v1"), suiteId, Buffer4.from(label), Buffer4.from(info), Buffer4.from([1])]);
+  return createHmac("sha256", prk).update(t0).digest().subarray(0, length);
+}
+var KEM_ID = Buffer4.from([0, 32]);
+var KDF_ID = Buffer4.from([0, 1]);
+var AEAD_ID = Buffer4.from([0, 2]);
+function x25519PublicKeyFromRaw(raw) {
+  return createPublicKey({ key: { kty: "OKP", crv: "X25519", x: Buffer4.from(raw).toString("base64url") }, format: "jwk" });
+}
+function openHpkeSealedBox(sealingPrivateRaw, sealingPublicRaw, wrap, info = Buffer4.alloc(0), aad = Buffer4.alloc(0)) {
+  if (wrap.length < SEALED_BOX_OVERHEAD)
+    throw new Error("sealed box is too short");
+  const enc = wrap.subarray(0, 32);
+  const ciphertext = wrap.subarray(32);
+  const privateKey = createPrivateKey({
+    key: {
+      kty: "OKP",
+      crv: "X25519",
+      d: Buffer4.from(sealingPrivateRaw).toString("base64url"),
+      x: Buffer4.from(sealingPublicRaw).toString("base64url")
+    },
+    format: "jwk"
+  });
+  let dh;
+  try {
+    dh = diffieHellman({ privateKey, publicKey: x25519PublicKeyFromRaw(enc) });
+  } catch {
+    throw new Error("sealed box does not open: wrong recipient or corrupted wrap");
+  }
+  if (dh.every((byte) => byte === 0))
+    throw new Error("sealed box does not open: wrong recipient or corrupted wrap");
+  const kem = Buffer4.concat([Buffer4.from("KEM"), KEM_ID]);
+  const suite = Buffer4.concat([Buffer4.from("HPKE"), KEM_ID, KDF_ID, AEAD_ID]);
+  const sharedSecret = labeledExpand(kem, "shared_secret", labeledExtract(kem, "eae_prk", dh, Buffer4.alloc(0)), Buffer4.concat([Buffer4.from(enc), Buffer4.from(sealingPublicRaw)]), 32);
+  const keyScheduleContext = Buffer4.concat([
+    Buffer4.from([0]),
+    labeledExtract(suite, "psk_id_hash", Buffer4.alloc(0), Buffer4.alloc(0)),
+    labeledExtract(suite, "info_hash", Buffer4.from(info), Buffer4.alloc(0))
+  ]);
+  const secret = labeledExtract(suite, "secret", Buffer4.alloc(0), sharedSecret);
+  const key = labeledExpand(suite, "key", secret, keyScheduleContext, 32);
+  const nonce = labeledExpand(suite, "base_nonce", secret, keyScheduleContext, 12);
+  const decipher = createDecipheriv("aes-256-gcm", key, nonce);
+  if (aad.length > 0)
+    decipher.setAAD(Buffer4.from(aad));
+  decipher.setAuthTag(ciphertext.subarray(ciphertext.length - 16));
+  try {
+    return Buffer4.concat([decipher.update(ciphertext.subarray(0, ciphertext.length - 16)), decipher.final()]);
+  } catch {
+    throw new Error("sealed box does not open: wrong recipient or corrupted wrap");
+  }
+}
+
+// packages/memory-core/src/sync/keyring-port.ts
+class DeviceKeyringSignError extends Error {
+  reason;
+  name = "DeviceKeyringSignError";
+  constructor(reason, message) {
+    super(message);
+    this.reason = reason;
+  }
+}
+var SIGNING_DOMAIN_TAGS = {
+  "object-digest": "omo-sync/v1/object-digest",
+  record: "omo-sync/v1/record",
+  snapshot: "omo-sync/v1/snapshot"
+};
+function domainSeparatedMessage(purpose, payload) {
+  return Buffer5.concat([Buffer5.from(SIGNING_DOMAIN_TAGS[purpose], "ascii"), Buffer5.from([0]), Buffer5.from(payload)]);
+}
+var CANONICAL_REASONS = {
+  json: "record-json",
+  "duplicate-key": "record-canonical-duplicate-key",
+  number: "record-canonical-number",
+  order: "record-canonical-order",
+  escape: "record-canonical-escape",
+  whitespace: "record-canonical-whitespace",
+  encoding: "record-canonical-encoding"
+};
+function parseCanonical(bytes, what) {
+  try {
+    return requireCanonicalJson(bytes);
+  } catch (error62) {
+    if (!(error62 instanceof CanonicalJsonError))
+      throw error62;
+    throw new DeviceKeyringSignError(CANONICAL_REASONS[error62.violation], `sign: ${what} preimage is not RFC 8785 canonical JSON: ${error62.message}`);
+  }
+}
+function validateSignRequest(request) {
+  if (typeof request !== "object" || request === null) {
+    throw new DeviceKeyringSignError("unknown-purpose", "sign: request must be a typed sign request");
+  }
+  if (request.purpose === "object-digest") {
+    if (!(request.digest instanceof Uint8Array) || request.digest.length !== 32) {
+      throw new DeviceKeyringSignError("digest-length", "sign: object-digest needs exactly 32 bytes (SHA-256 of the batch object)");
+    }
+    return request.digest;
+  }
+  if (request.purpose === "record") {
+    if (!(request.canonicalJson instanceof Uint8Array)) {
+      throw new DeviceKeyringSignError("record-json", "sign: record needs RFC 8785 canonical JSON bytes");
+    }
+    const parsed = parseCanonical(request.canonicalJson, "record");
+    if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed) || typeof parsed.t !== "string") {
+      throw new DeviceKeyringSignError("record-json", 'sign: record preimage needs a top-level "t" string');
+    }
+    const t2 = parsed.t;
+    if (!t2.startsWith("omo-sync/v1/")) {
+      throw new DeviceKeyringSignError("record-prefix", 'sign: record "t" must start with "omo-sync/v1/"');
+    }
+    if (t2 === SIGNING_DOMAIN_TAGS["object-digest"] || t2 === SIGNING_DOMAIN_TAGS.snapshot) {
+      throw new DeviceKeyringSignError("record-prefix", `sign: record "t" must name a keyring record type, not another purpose's tag`);
+    }
+    return request.canonicalJson;
+  }
+  if (request.purpose === "snapshot") {
+    if (!(request.canonicalJson instanceof Uint8Array)) {
+      throw new DeviceKeyringSignError("record-json", "sign: snapshot needs RFC 8785 canonical JSON bytes");
+    }
+    const parsed = parseCanonical(request.canonicalJson, "snapshot");
+    const t2 = typeof parsed === "object" && parsed !== null ? parsed.t : undefined;
+    if (t2 !== SIGNING_DOMAIN_TAGS.snapshot) {
+      throw new DeviceKeyringSignError("snapshot-prefix", 'sign: snapshot preimage "t" must be exactly "omo-sync/v1/snapshot"');
+    }
+    return request.canonicalJson;
+  }
+  throw new DeviceKeyringSignError("unknown-purpose", `sign: unsupported purpose ${JSON.stringify(request.purpose ?? null)}`);
+}
+var WRAP_INFO = Buffer5.concat([Buffer5.from("omo-sync/v1/wrap", "ascii"), Buffer5.from([0])]);
+var wrapAad = (binding) => {
+  if (!Number.isSafeInteger(binding.epoch) || binding.epoch < 0)
+    throw new Error("unseal: the wrap epoch must be a non-negative integer");
+  return canonicalizeJson({ account: binding.account, epoch: binding.epoch, id: binding.id });
+};
+function generateDeviceKeyMaterial() {
+  const signing = generateKeyPairSync("ed25519");
+  const sealing = generateKeyPairSync("x25519");
+  const signingPublic = signing.publicKey.export({ format: "jwk" }).x;
+  const sealingPublic = sealing.publicKey.export({ format: "jwk" }).x;
+  if (!signingPublic || !sealingPublic)
+    throw new Error("device key generation produced invalid key material");
+  return {
+    signingPrivatePkcs8: signing.privateKey.export({ format: "der", type: "pkcs8" }).toString("base64url"),
+    sealingPrivatePkcs8: sealing.privateKey.export({ format: "der", type: "pkcs8" }).toString("base64url"),
+    publicKeys: { signing: signingPublic, sealing: sealingPublic }
+  };
+}
+function createDeviceKeyring(id, material) {
+  const signingPrivateKey = createPrivateKey2({ key: Buffer5.from(material.signingPrivatePkcs8, "base64url"), format: "der", type: "pkcs8" });
+  const sealingPrivateKey = createPrivateKey2({ key: Buffer5.from(material.sealingPrivatePkcs8, "base64url"), format: "der", type: "pkcs8" });
+  const signingPublic = createPublicKey2(signingPrivateKey).export({ format: "jwk" }).x;
+  const sealingPublic = createPublicKey2(sealingPrivateKey).export({ format: "jwk" }).x;
+  if (!signingPublic || !sealingPublic)
+    throw new Error("invalid device key material");
+  const sealingPrivateJwk = sealingPrivateKey.export({ format: "jwk" });
+  const sealingPrivateRaw = Buffer5.from(sealingPrivateJwk.d ?? "", "base64url");
+  const sealingPublicRaw = Buffer5.from(sealingPublic, "base64url");
+  if (sealingPrivateRaw.length !== 32 || sealingPublicRaw.length !== 32)
+    throw new Error("invalid device key material");
+  const publicKeys = { signing: signingPublic, sealing: sealingPublic };
+  return {
+    principal: () => ({ kind: "device", id }),
+    publicKeys: () => ({ ...publicKeys }),
+    sign: async (request) => {
+      const payload = validateSignRequest(request);
+      return ed25519Sign(null, domainSeparatedMessage(request.purpose, payload), signingPrivateKey);
+    },
+    unseal: async (wrap, binding) => openHpkeSealedBox(sealingPrivateRaw, sealingPublicRaw, wrap, WRAP_INFO, wrapAad(binding))
+  };
+}
+
+// packages/omo-opencode/src/cli/account-keys/keyring.ts
+async function initializeDeviceKeyring(store2) {
+  const existing = await loadDeviceKeyring(store2);
+  if (existing)
+    return existing;
+  const material = generateDeviceKeyMaterial();
+  const record3 = {
+    version: 1,
+    deviceId: randomUUID4(),
+    signing: material.signingPrivatePkcs8,
+    sealing: material.sealingPrivatePkcs8
+  };
+  await store2.write(JSON.stringify(record3));
+  return createDeviceKeyring(record3.deviceId, { signingPrivatePkcs8: record3.signing, sealingPrivatePkcs8: record3.sealing });
+}
+async function loadDeviceKeyring(store2) {
+  const raw = await store2.read();
+  if (raw === null)
+    return null;
+  let record3;
+  try {
+    const parsed = JSON.parse(raw);
+    if (typeof parsed !== "object" || parsed === null || typeof parsed.deviceId !== "string" || parsed.deviceId.length === 0 || typeof parsed.signing !== "string" || typeof parsed.sealing !== "string") {
+      throw new Error("shape");
+    }
+    record3 = parsed;
+    if (Buffer6.from(record3.signing, "base64url").length === 0 || Buffer6.from(record3.sealing, "base64url").length === 0) {
+      throw new Error("length");
+    }
+  } catch {
+    throw new Error("omo account keys: the stored device key record is unreadable. Run `omo account keys init` on a fresh keystore entry.");
+  }
+  return createDeviceKeyring(record3.deviceId, { signingPrivatePkcs8: record3.signing, sealingPrivatePkcs8: record3.sealing });
+}
+
+// packages/omo-opencode/src/cli/account-keys/keystore.ts
 import { execFile as execFile5 } from "child_process";
+import { homedir as homedir27 } from "os";
+import { join as join98 } from "path";
+var DEFAULT_SERVICE = "omo-cli";
+function defaultRun(argv, input2) {
+  const [file3, ...args] = argv;
+  return new Promise((resolve28, reject) => {
+    const child = execFile5(file3 ?? "", args, { maxBuffer: 1024 * 1024 }, (error62, stdout2, stderr) => {
+      const code = error62?.code;
+      if (typeof code === "number") {
+        resolve28({ code, stdout: String(stdout2), stderr: String(stderr) });
+        return;
+      }
+      if (error62) {
+        reject(error62);
+        return;
+      }
+      resolve28({ code: 0, stdout: String(stdout2), stderr: String(stderr) });
+    });
+    child.stdin?.end(input2 ?? "");
+  });
+}
+function createOsKeyStore(name, platform2 = process.platform, run2 = defaultRun, secrets) {
+  const resolved = secrets === undefined ? run2 === defaultRun && typeof Bun !== "undefined" ? Bun.secrets : null : secrets;
+  switch (platform2) {
+    case "darwin":
+      return resolved !== null ? createBunSecretsKeyStore(name, resolved) : createMacOsKeychainKeyStore(name, run2);
+    case "linux":
+      return resolved !== null ? createBunSecretsKeyStore(name, resolved) : createLibsecretKeyStore(name, run2);
+    case "win32":
+      return resolved !== null ? createBunSecretsKeyStore(name, resolved) : createDpapiKeyStore(name, run2);
+    default:
+      return unsupported(platform2);
+  }
+}
+function unsupported(platform2) {
+  throw new Error(`omo account keys: no supported encrypted OS keystore on ${platform2}. ` + "Device keys are only ever stored in the macOS Keychain, the Linux Secret Service (libsecret), or Windows DPAPI (a per-user encrypted blob). " + "Refusing to store private keys in plaintext.");
+}
+async function guarded(run2, fail, argv, input2) {
+  try {
+    return await run2(argv, input2);
+  } catch {
+    throw fail();
+  }
+}
+function createBunSecretsKeyStore(name, secrets) {
+  const key = { service: DEFAULT_SERVICE, name };
+  const unavailable = () => new Error("omo account keys: cannot access the OS credential store. Unlock the login keychain (macOS), the Secret Service keyring (Linux), or DPAPI (Windows), then try again. " + "Private keys are only ever stored through the OS credential facility.");
+  return {
+    async read() {
+      try {
+        return await secrets.get(key);
+      } catch {
+        throw unavailable();
+      }
+    },
+    async write(value) {
+      try {
+        await secrets.set({ ...key, value });
+      } catch {
+        throw unavailable();
+      }
+    }
+  };
+}
+function createMacOsKeychainKeyStore(name, run2) {
+  const account = `omo-device-keys-${name}`;
+  const fail = () => new Error("omo account keys: macOS Keychain is unavailable. Unlock the login keychain (open Keychain Access) and try again. " + "Private keys are only ever stored through the OS credential facility.");
+  return {
+    async read() {
+      const result = await guarded(run2, fail, ["security", "find-generic-password", "-s", DEFAULT_SERVICE, "-a", account, "-w"]);
+      if (result.code !== 0) {
+        if (result.code === 44)
+          return null;
+        throw fail();
+      }
+      return result.stdout.replace(/\n$/, "");
+    },
+    async write(value) {
+      const quoted = `"${value.replace(/\\/g, "\\\\").replace(/"/g, "\\\"")}"`;
+      const script = `add-generic-password -U -s ${DEFAULT_SERVICE} -a ${account} -w ${quoted}
+`;
+      const result = await guarded(run2, fail, ["security", "-i"], script);
+      if (result.code !== 0)
+        throw fail();
+    }
+  };
+}
+function createLibsecretKeyStore(name, run2) {
+  const attributes = ["service", DEFAULT_SERVICE, "account", `omo-device-keys-${name}`];
+  const fail = () => new Error("omo account keys: the Linux Secret Service is unavailable. Install libsecret (secret-tool) and unlock your login keyring, then try again. " + "Private keys are only ever stored through the OS credential facility.");
+  return {
+    async read() {
+      const result = await guarded(run2, fail, ["secret-tool", "lookup", ...attributes]);
+      if (result.code !== 0) {
+        if (result.code === 1 && result.stderr === "")
+          return null;
+        throw fail();
+      }
+      return result.stdout === "" ? null : result.stdout.replace(/\n$/, "");
+    },
+    async write(value) {
+      const result = await guarded(run2, fail, ["secret-tool", "store", "--label=omo device keys", ...attributes], value);
+      if (result.code !== 0)
+        throw fail();
+    }
+  };
+}
+function createDpapiKeyStore(name, run2) {
+  const safeName = name.replace(/[^A-Za-z0-9._-]/g, "-");
+  const directory = join98(process.env.LOCALAPPDATA ?? join98(homedir27(), "AppData", "Local"), "omo");
+  const file3 = join98(directory, `device-keys-${safeName}.bin`);
+  const ps = (literal2) => `'${literal2.replace(/'/g, "''")}'`;
+  const prelude = "Add-Type -AssemblyName System.Security; ";
+  const fail = () => new Error("omo account keys: Windows DPAPI is unavailable. Sign in with your Windows account (DPAPI needs the account credential) and try again. " + "Private keys are only ever stored through DPAPI (a per-user encrypted blob).");
+  return {
+    async read() {
+      const script = prelude + `if (-not [IO.File]::Exists(${ps(file3)})) { exit 3 } ` + `$e = [IO.File]::ReadAllBytes(${ps(file3)}); ` + "$b = [Security.Cryptography.ProtectedData]::Unprotect($e, $null, 'CurrentUser'); " + "[Console]::Out.Write([Text.Encoding]::UTF8.GetString($b))";
+      const result = await guarded(run2, fail, ["powershell", "-NoProfile", "-NonInteractive", "-Command", script]);
+      if (result.code !== 0) {
+        if (result.code === 3)
+          return null;
+        throw fail();
+      }
+      return result.stdout === "" ? null : result.stdout;
+    },
+    async write(value) {
+      const script = prelude + `[IO.Directory]::CreateDirectory(${ps(directory)}) | Out-Null; ` + "$s = [Console]::In.ReadToEnd(); " + "$b = [Text.Encoding]::UTF8.GetBytes($s); " + "$e = [Security.Cryptography.ProtectedData]::Protect($b, $null, 'CurrentUser'); " + `[IO.File]::WriteAllBytes(${ps(file3)}, $e)`;
+      const result = await guarded(run2, fail, ["powershell", "-NoProfile", "-NonInteractive", "-Command", script], value);
+      if (result.code !== 0)
+        throw fail();
+    }
+  };
+}
+
+// packages/omo-opencode/src/cli/account-keys/commands.ts
+var ACCOUNT_KEYS_RECORD_NAME = "device-keys-v1";
+var defaultDependencies = {
+  store: () => createOsKeyStore(ACCOUNT_KEYS_RECORD_NAME),
+  output: (line) => console.log(line)
+};
+function describe4(keyring) {
+  const { signing, sealing } = keyring.publicKeys();
+  return JSON.stringify({ device: keyring.principal().id, signing, sealing });
+}
+async function report(dependencies, action) {
+  try {
+    dependencies.output(await action(dependencies.store()));
+  } catch (error62) {
+    const message = error62 instanceof Error ? error62.message : "omo account keys: the operation failed";
+    console.error(message);
+    process.exitCode = 1;
+  }
+}
+function configureAccountKeysCommands(program2, dependencies = defaultDependencies) {
+  const keys = program2.command("account").description("OmO account and device identity").command("keys").description("Device sync keys kept in the OS keystore");
+  keys.command("init").description("Create this device's sync keys (keeps existing keys)").action(() => report(dependencies, async (store2) => describe4(await initializeDeviceKeyring(store2))));
+  keys.command("status").description("Show this device's public sync keys").action(() => report(dependencies, async (store2) => {
+    const keyring = await loadDeviceKeyring(store2);
+    if (!keyring)
+      throw new Error("omo account keys: no device keys yet. Run `omo account keys init` first.");
+    return describe4(keyring);
+  }));
+}
+
+// packages/omo-opencode/src/cli/service-auth/commands.ts
+init_commander();
+
+// packages/omo-opencode/src/cli/service-auth/browser.ts
+import { execFile as execFile6 } from "child_process";
 var execute = (file3, args, env2) => new Promise((resolve28) => {
-  execFile5(file3, [...args], { env: env2, timeout: 1e4, windowsHide: true }, (error62) => resolve28(error62 === null));
+  execFile6(file3, [...args], { env: env2, timeout: 1e4, windowsHide: true }, (error62) => resolve28(error62 === null));
 });
 async function openSignInBrowser(url2, executeBrowser = execute, platform2 = process.platform, environment2 = process.env) {
   const env2 = {};
@@ -125686,10 +126529,10 @@ function devicePlatform() {
 import { setTimeout as setTimeout2 } from "timers/promises";
 
 // packages/omo-opencode/src/cli/service-auth/device-keys.ts
-import { generateKeyPairSync } from "crypto";
+import { generateKeyPairSync as generateKeyPairSync2 } from "crypto";
 function generateDeviceKeys() {
-  const signing = generateKeyPairSync("ed25519");
-  const sealing = generateKeyPairSync("x25519");
+  const signing = generateKeyPairSync2("ed25519");
+  const sealing = generateKeyPairSync2("x25519");
   const signingKey = signing.publicKey.export({ format: "jwk" }).x;
   const sealingKey = sealing.publicKey.export({ format: "jwk" }).x;
   if (!signingKey || !sealingKey)
@@ -125903,20 +126746,20 @@ async function loginLoopback(session, options) {
 
 // packages/omo-opencode/src/cli/service-auth/session.ts
 import { mkdir as mkdir10 } from "fs/promises";
-import { homedir as homedir27 } from "os";
-import { join as join98 } from "path";
+import { homedir as homedir28 } from "os";
+import { join as join99 } from "path";
 
 // packages/team-core/src/team-state-store/lock-publish.ts
 import { access as access3, open as open2, unlink as unlink2 } from "fs/promises";
 import { dirname as dirname39 } from "path";
 
 // packages/team-core/src/team-state-store/lock-record.ts
-import { randomUUID as randomUUID4 } from "crypto";
+import { randomUUID as randomUUID5 } from "crypto";
 import { readFile as readFile33, stat as stat8 } from "fs/promises";
-var lockOwnerInstanceId = randomUUID4();
+var lockOwnerInstanceId = randomUUID5();
 var heldLockRecords = new Set;
 function buildLockRecord(ownerTag) {
-  return `${ownerTag} ${randomUUID4()}
+  return `${ownerTag} ${randomUUID5()}
 ${process.pid}
 ${Date.now()}
 ${lockOwnerInstanceId}
@@ -126149,8 +126992,8 @@ var DEVICE_REVOKING_REFUSALS = new Set(["account_deleted", "reauth_required"]);
 function createSession(options) {
   const api2 = serviceOrigin(options.api);
   const { store: store2, signal } = options;
-  const directory = join98(options.home ?? homedir27(), ".omo", "session-locks");
-  const lockPath = join98(directory, `${credentialId(api2)}.lock`);
+  const directory = join99(options.home ?? homedir28(), ".omo", "session-locks");
+  const lockPath = join99(directory, `${credentialId(api2)}.lock`);
   async function locked(action) {
     await mkdir10(directory, { recursive: true, mode: 448 });
     signal?.throwIfAborted();
@@ -126336,7 +127179,31 @@ async function run2(action, options) {
     process.removeListener("SIGTERM", cancel2);
   }
 }
-function configureServiceAuthCommands(program2) {
+var SERVICE_ACCOUNTS_OPEN = false;
+var SERVICE_ACCOUNTS_CLOSED_MESSAGE = "OmO accounts aren't available yet.";
+var SERVICE_AUTH_COMMANDS = ["login", "logout", "whoami"];
+var testOpenKey = Symbol.for("omo.test.serviceAccountsOpen");
+function serviceAccountsOpen() {
+  return SERVICE_ACCOUNTS_OPEN || globalThis[testOpenKey] === true;
+}
+function refuseClosedServiceAuth() {
+  console.error(SERVICE_ACCOUNTS_CLOSED_MESSAGE);
+  process.exit(1);
+}
+function configureClosedServiceAuthCommands(program2) {
+  for (const name of SERVICE_AUTH_COMMANDS) {
+    const command = program2.command(name, { hidden: true }).helpOption(false).allowUnknownOption().allowExcessArguments().action(() => {
+      console.error(SERVICE_ACCOUNTS_CLOSED_MESSAGE);
+      process.exitCode = 1;
+    });
+    command.help = refuseClosedServiceAuth;
+  }
+}
+function configureServiceAuthCommands(program2, open3 = serviceAccountsOpen()) {
+  if (!open3) {
+    configureClosedServiceAuthCommands(program2);
+    return;
+  }
   program2.command("login").description("Sign in to OmO using the OS credential store").option("--device", "Use a device code instead of a browser callback").option("--no-browser", "Sign in by device code without opening a browser").option("--api <url>", "OmO API origin (or OMO_SERVICE_API_URL)").option("--accounts <url>", "OmO sign-in page origin (or OMO_SERVICE_ACCOUNTS_URL)").action((options) => run2("login", options));
   for (const action of ["logout", "whoami"]) {
     program2.command(action).description(action === "logout" ? "Remove stored OmO credentials and device keys" : "Show the current OmO device sign-in").option("--api <url>", "OmO API origin (or OMO_SERVICE_API_URL)").action((options) => run2(action, options));
@@ -126369,6 +127236,9 @@ function resolveInstallArgs(options, invocationName = process.env.OMO_INVOCATION
     skipAuth: options.skipAuth ?? false
   };
 }
+
+// packages/omo-opencode/src/cli/runtime-commands.ts
+init_commander();
 
 // packages/omo-opencode/src/cli/boulder/boulder.ts
 import { existsSync as existsSync66 } from "fs";
@@ -126530,11 +127400,11 @@ async function boulder(options) {
 // packages/omo-opencode/src/cli/codex-ulw-loop.ts
 import { spawn as spawn5 } from "child_process";
 import { existsSync as existsSync67, readFileSync as readFileSync45, realpathSync as realpathSync11 } from "fs";
-import { homedir as homedir28 } from "os";
+import { homedir as homedir29 } from "os";
 var ULW_LOOP_DELEGATION_SENTINEL = "OMO_ULW_LOOP_DELEGATED";
 function resolveCodexUlwLoopCommand(input2 = {}) {
   const env2 = input2.env ?? process.env;
-  const homeDir = input2.homeDir ?? homedir28();
+  const homeDir = input2.homeDir ?? homedir29();
   const localComponentBin = resolveLocalUlwLoopBin(env2, homeDir);
   if (localComponentBin !== null)
     return { executable: localComponentBin, argsPrefix: [] };
@@ -126933,7 +127803,7 @@ async function sweepWorktrees(options = {}) {
   for (const repo of repos) {
     reports.push(await sweepRepo(repo, { apply, olderThanDays, excludePrefixes, home, now }));
   }
-  const all = reports.flatMap((report) => report.classifications);
+  const all = reports.flatMap((report2) => report2.classifications);
   return {
     apply,
     olderThanDays,
@@ -127031,14 +127901,17 @@ function reports(result) {
     diagnostics: entry.diagnostics,
     movePlan: entry.preview?.backupMoves ?? [],
     status: entry.status,
+    ...entry.targetBackupPath === undefined ? {} : { targetBackupPath: entry.targetBackupPath },
     ...entry.preview === undefined ? {} : { targetPath: entry.preview.targetPath, transform: entry.preview.transform }
   }));
 }
-function printText(report, output2) {
-  for (const entry of report) {
+function printText(report2, output2) {
+  for (const entry of report2) {
     output2(`status: ${entry.status}`);
     if (entry.targetPath !== undefined)
       output2(`target: ${entry.targetPath}`);
+    if (entry.targetBackupPath !== undefined)
+      output2(`backup: ${entry.targetBackupPath}`);
     if (entry.transform !== undefined)
       output2(`transform: ${JSON.stringify(entry.transform, null, 2)}`);
     if (entry.movePlan.length > 0)
@@ -127058,14 +127931,15 @@ function runConfigMigrate(options = {}) {
     ...homeDir === undefined ? {} : { env: { HOME: homeDir }, homeDir },
     pathOperations: posix12
   });
-  const report = reports(result);
+  const report2 = reports(result);
   const response = {
     dryRun: options.dryRun ?? false,
     error: result.error,
     journalResumed: result.journalResumed,
     migratedFrom: result.migratedFrom,
-    migrations: report,
-    skippedConflictCount: result.skippedConflictCount
+    migrations: report2,
+    skippedConflictCount: result.skippedConflictCount,
+    targetBackupPaths: result.targetBackupPaths
   };
   if (options.json) {
     output2(JSON.stringify(response, null, 2));
@@ -127074,8 +127948,10 @@ function runConfigMigrate(options = {}) {
   } else {
     if (result.journalResumed)
       output2("Recovered pending migration journal.");
-    printText(report, output2);
-    if (report.every((entry) => entry.status === "skipped"))
+    if (result.resumedTargetBackupPath !== undefined)
+      output2(`backup: ${result.resumedTargetBackupPath}`);
+    printText(report2, output2);
+    if (report2.every((entry) => entry.status === "skipped"))
       output2("Nothing to migrate.");
   }
   return result.error === undefined ? 0 : 1;
@@ -127203,6 +128079,7 @@ program2.command("config").description("Manage unified OMO configuration").comma
 configureRuntimeCommands(program2);
 program2.addCommand(createMcpOAuthCommand());
 configureServiceAuthCommands(program2);
+configureAccountKeysCommands(program2);
 function runCli() {
   program2.parse();
 }
