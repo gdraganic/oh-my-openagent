@@ -34,9 +34,10 @@ describe("V2 context facade provider list", () => {
       requests.push({ url, directory: new Headers(init?.headers).get("x-opencode-directory") })
       return new Response(JSON.stringify({
         data: [
-          { providerID: "openai", id: "gpt-5.6-luna" },
-          { providerID: "openai", id: "gpt-5.6-luna-fast" },
-          { providerID: "anthropic", id: "claude-opus-5-5-fast" },
+          // Service tiers share their base model's provider API name (modelID).
+          { providerID: "openai", id: "gpt-5.6-luna", modelID: "gpt-5.6-luna" },
+          { providerID: "openai", id: "gpt-5.6-luna-fast", modelID: "gpt-5.6-luna" },
+          { providerID: "anthropic", id: "claude-opus-5-5-fast", modelID: "claude-opus-5-5" },
         ],
       }))
     }) as typeof fetch
