@@ -1,6 +1,7 @@
 import type { Plugin } from "@opencode/plugin"
 
 import { log } from "../shared/logger"
+import { hasConnectedProvidersCache, updateConnectedProvidersCache } from "../shared/connected-providers-cache"
 import { setVersionCache } from "../shared/opencode-version"
 import { validatePluginConfig } from "../config/validate"
 import { createAdapterState } from "./adapter-state"
@@ -19,6 +20,34 @@ type V1Server = (input: never, options: unknown) => Promise<V1HookMap>
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null
+}
+
+// Agent models are resolved when the config hook runs, against the connected
+// providers cache. V1 builds that cache on the first session.created event,
+// after agents are registered; without it every fallback chain resolves to its
+// first entry, even when that provider is not connected. Build it first.
+const PROVIDER_CACHE_TIMEOUT_MS = 10_000
+
+export async function primeConnectedProvidersCache(
+  client: Parameters<typeof updateConnectedProvidersCache>[0],
+  deps: { hasCache?: () => boolean; update?: typeof updateConnectedProvidersCache; timeoutMs?: number } = {},
+): Promise<void> {
+  if ((deps.hasCache ?? hasConnectedProvidersCache)()) return
+  let timer: ReturnType<typeof setTimeout> | undefined
+  try {
+    await Promise.race([
+      (deps.update ?? updateConnectedProvidersCache)(client),
+      new Promise<never>((_, reject) => {
+        timer = setTimeout(() => reject(new Error("timed out")), deps.timeoutMs ?? PROVIDER_CACHE_TIMEOUT_MS)
+      }),
+    ])
+  } catch (error) {
+    log("[oh-my-openagent] connected providers cache priming failed", {
+      error: error instanceof Error ? error.message : String(error),
+    })
+  } finally {
+    if (timer) clearTimeout(timer)
+  }
 }
 
 export async function setupOpenCodeV2(
@@ -48,6 +77,7 @@ export async function setupOpenCodeV2(
 
   const stopEvents = await registerV1Hooks(ctx, hooks, state, v1Input.client as unknown as PromptAsyncClient)
   const scratch: Record<string, unknown> = {}
+  await primeConnectedProvidersCache(v1Input.client as unknown as Parameters<typeof updateConnectedProvidersCache>[0])
   if (typeof hooks.config === "function") {
     try {
       await hooks.config(scratch)
