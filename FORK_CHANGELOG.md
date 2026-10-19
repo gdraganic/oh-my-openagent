@@ -10,6 +10,17 @@ Releases of [gdraganic/oh-my-openagent](https://github.com/gdraganic/oh-my-opena
 
 To release: add a `## [<version>] - YYYY-MM-DD` section here on `main` (with the `Fork-Patch: v2-support` trailer), then run the **Fork release** workflow with that version.
 
+## [5.1.38-fork.1] - 2026-10-19
+
+Rebased on upstream `dev` of 2026-10-19 (492 commits since fork.1): upstream releases 5.1.36, 5.1.37 and 5.1.38. Upstream highlights for the OpenCode edition: `unspecified-low` tries GLM 5.3 before GPT; Sisyphus prompts name GPT-6.1 Sol and GPT-6 Luna correctly; `runtime_fallback` moves on when a Cursor pool is spent; builds move to Bun 1.4.3 (CVE-2026-48618).
+
+Upstream 5.1.36 also made the plugin load on OpenCode 2 (#10439), but only as a notice: agents, tools and hooks stay inactive and it points to OmO Native. The maintainer confirmed on #9389 that full OpenCode 2 support will not come upstream. This fork keeps its full adapter in place of that entry.
+
+### Changes
+
+- Upstream's notice-only OpenCode 2 entry and its "support is limited" toast are replaced by this fork's adapter.
+- `@opencode/plugin` updated from 2.0.16 to 2.0.32, matching upstream.
+
 ## [5.1.35-fork.1] - 2026-10-17
 
 Rebased on upstream `dev` of 2026-10-17 (769 commits since fork.2): upstream releases 5.1.34 and 5.1.35. Upstream highlights: `oracle`, `momus` and `plan-reviewer` fall back to Argon before the previous pro model; telemetry opt-outs (`OMO_DISABLE_TELEMETRY=1`, `DO_NOT_TRACK`) are checked when events are sent, so turning telemetry off mid-session takes effect. Upstream has paused its own OpenCode V2 work (#9389), so this fork remains the way to run oMo on OpenCode 2.x.
