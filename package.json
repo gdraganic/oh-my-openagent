@@ -1,6 +1,6 @@
 {
   "name": "oh-my-opencode",
-  "version": "5.1.35-fork.1",
+  "version": "5.1.38-fork.1",
   "description": "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
   "main": "./dist/index.js",
   "types": "dist/index.d.ts",
@@ -97,24 +97,24 @@
   },
   "homepage": "https://github.com/code-yeongyu/oh-my-openagent#readme",
   "dependencies": {
-    "@opencode/plugin": "2.0.16",
+    "@opencode/plugin": "2.0.32",
     "@opentui/solid": "^0.5.11",
     "detect-libc": "^2.1.2",
     "zod": "^4.6.5"
   },
   "optionalDependencies": {
-    "oh-my-opencode-darwin-arm64": "5.1.35",
-    "oh-my-opencode-darwin-x64": "5.1.35",
-    "oh-my-opencode-darwin-x64-baseline": "5.1.35",
-    "oh-my-opencode-linux-arm64": "5.1.35",
-    "oh-my-opencode-linux-arm64-musl": "5.1.35",
-    "oh-my-opencode-linux-x64": "5.1.35",
-    "oh-my-opencode-linux-x64-baseline": "5.1.35",
-    "oh-my-opencode-linux-x64-musl": "5.1.35",
-    "oh-my-opencode-linux-x64-musl-baseline": "5.1.35",
-    "oh-my-opencode-windows-arm64": "5.1.35",
-    "oh-my-opencode-windows-x64": "5.1.35",
-    "oh-my-opencode-windows-x64-baseline": "5.1.35"
+    "oh-my-opencode-darwin-arm64": "5.1.38",
+    "oh-my-opencode-darwin-x64": "5.1.38",
+    "oh-my-opencode-darwin-x64-baseline": "5.1.38",
+    "oh-my-opencode-linux-arm64": "5.1.38",
+    "oh-my-opencode-linux-arm64-musl": "5.1.38",
+    "oh-my-opencode-linux-x64": "5.1.38",
+    "oh-my-opencode-linux-x64-baseline": "5.1.38",
+    "oh-my-opencode-linux-x64-musl": "5.1.38",
+    "oh-my-opencode-linux-x64-musl-baseline": "5.1.38",
+    "oh-my-opencode-windows-arm64": "5.1.38",
+    "oh-my-opencode-windows-x64": "5.1.38",
+    "oh-my-opencode-windows-x64-baseline": "5.1.38"
   },
   "overrides": {
     "hono": "^4.13.8",

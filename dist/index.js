@@ -23718,6 +23718,7 @@ var CATEGORY_MODEL_REQUIREMENTS = {
       },
       { providers: ["xiaomi", "opencode-go"], model: "mimo-v2.6-pro", variant: "max" },
       { providers: ["xai", "github-copilot", "opencode-go"], model: "grok-4.7", variant: "xhigh" },
+      { providers: ["zai-coding-plan", "opencode-go"], model: "glm-5.3", variant: "high" },
       { providers: ["openai", "chatgpt-subscription"], model: "gpt-6.1-sol", variant: "medium" },
       {
         providers: ["openai", "chatgpt-subscription", "github-copilot", "opencode"],
@@ -25031,7 +25032,7 @@ function classifyRuntimeFallbackError(error) {
   if (errorName?.includes("providermodelnotfounderror") || errorName?.includes("modelnotfounderror") || errorName?.includes("unknownerror") && /model\s+not\s+found/i.test(message)) {
     return "model_not_found";
   }
-  if (errorName?.includes("quotaexceeded") || errorName?.includes("insufficientquota") || errorName?.includes("billingerror") || errorName?.includes("resourceexhausted") || errorName?.includes("insufficientcredits") || errorName?.includes("usagelimit") || /quota.?exceeded/i.test(message) || /exceeded.*quota/i.test(message) || /quota\b.*\breset/i.test(message) || /usage\s*quota/i.test(message) || /subscription.?(?:quota|limit)/i.test(message) || /insufficient.?(?:quota|balance|funds?|credits?)/i.test(message) || /credits?\s+exhausted/i.test(message) || /\b(?:session|weekly|monthly|daily|hourly|\d+[-\s]hour|plan|call)\s+limit\b/i.test(message) || /\bhit\s+your\b[^.]*\blimit\b/i.test(message) || /\bin\s+arrears\b/i.test(message) || /\brecharge\s+and\s+try\b/i.test(message) || /billing.?(?:hard.?)?limit/i.test(message) || /exhausted\s+your\s+capacity/i.test(message) || /resource.?exhausted/i.test(message) || /out\s+of\s+credits?/i.test(message) || /payment.?required/i.test(message) || /usage\s+limit/i.test(message) || /credit\s+balance.*too\s+low/i.test(message) || /limit\s+exhausted/i.test(message) || /\u4F7F\u7528\u4E0A\u9650/.test(message) || /\u7528\u91CF\u4E0A\u9650/.test(message) || /\u8FBE\u5230.*\u9650\u5236/.test(message) || /\u989D\u5EA6.*\u4E0D\u8DB3/.test(message) || /\u4F59\u989D.*\u4E0D\u8DB3/.test(message) || /\u5DF2\u8017\u5C3D/.test(message) || isLocalizedQuotaExhaustionMessage(message)) {
+  if (errorName?.includes("quotaexceeded") || errorName?.includes("insufficientquota") || errorName?.includes("billingerror") || errorName?.includes("resourceexhausted") || errorName?.includes("insufficientcredits") || errorName?.includes("usagelimit") || /quota.?exceeded/i.test(message) || /exceeded.*quota/i.test(message) || /quota\b.*\breset/i.test(message) || /usage\s*quota/i.test(message) || /subscription.?(?:quota|limit)/i.test(message) || /insufficient.?(?:quota|balance|funds?|credits?)/i.test(message) || /credits?\s+exhausted/i.test(message) || /\b(?:session|weekly|monthly|daily|hourly|\d+[-\s]hour|plan|call)\s+limit\b/i.test(message) || /\bhit\s+your\b[^.]*\blimit\b/i.test(message) || /\bin\s+arrears\b/i.test(message) || /\brecharge\s+and\s+try\b/i.test(message) || /billing.?(?:hard.?)?limit/i.test(message) || /exhausted\s+your\s+capacity/i.test(message) || /resource.?exhausted/i.test(message) || /\bcapacity_limit\b/i.test(message) || /out\s+of\s+credits?/i.test(message) || /payment.?required/i.test(message) || /usage\s+limit/i.test(message) || /credit\s+balance.*too\s+low/i.test(message) || /limit\s+exhausted/i.test(message) || /\u4F7F\u7528\u4E0A\u9650/.test(message) || /\u7528\u91CF\u4E0A\u9650/.test(message) || /\u8FBE\u5230.*\u9650\u5236/.test(message) || /\u989D\u5EA6.*\u4E0D\u8DB3/.test(message) || /\u4F59\u989D.*\u4E0D\u8DB3/.test(message) || /\u5DF2\u8017\u5C3D/.test(message) || isLocalizedQuotaExhaustionMessage(message)) {
     return "quota_exceeded";
   }
   return;
@@ -99607,7 +99608,7 @@ function getCachedVersion(options = {}) {
 // package.json
 var package_default = {
   name: "oh-my-opencode",
-  version: "5.1.35-fork.1",
+  version: "5.1.38-fork.1",
   description: "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
   main: "./dist/index.js",
   types: "dist/index.d.ts",
@@ -99780,14 +99781,14 @@ var package_default = {
   },
   homepage: "https://github.com/code-yeongyu/oh-my-openagent#readme",
   dependencies: {
-    "@opencode/plugin": "2.0.16",
+    "@opencode/plugin": "2.0.32",
     "@opentui/solid": "^0.5.11",
     "detect-libc": "^2.1.2",
     zod: "^4.6.5"
   },
   devDependencies: {
     "@clack/prompts": "^1.8.1",
-    "@code-yeongyu/senpi": "2026.10.16",
+    "@code-yeongyu/senpi": "2026.10.19",
     "@modelcontextprotocol/sdk": "^1.30.0",
     "@oh-my-opencode/agents-md-core": "workspace:*",
     "@oh-my-opencode/ast-grep-mcp": "workspace:*",
@@ -99832,7 +99833,7 @@ var package_default = {
     "@typescript/typescript6": "6.0.2",
     "@xterm/addon-unicode11": "^0.9.0",
     "@xterm/xterm": "^6.0.0",
-    "bun-types": "1.4.2",
+    "bun-types": "1.4.3",
     commander: "^15.0.0",
     diff: "^9.0.0",
     "js-yaml": "^5.4.2",
@@ -99846,18 +99847,18 @@ var package_default = {
     typescript: "^7.0.2"
   },
   optionalDependencies: {
-    "oh-my-opencode-darwin-arm64": "5.1.35",
-    "oh-my-opencode-darwin-x64": "5.1.35",
-    "oh-my-opencode-darwin-x64-baseline": "5.1.35",
-    "oh-my-opencode-linux-arm64": "5.1.35",
-    "oh-my-opencode-linux-arm64-musl": "5.1.35",
-    "oh-my-opencode-linux-x64": "5.1.35",
-    "oh-my-opencode-linux-x64-baseline": "5.1.35",
-    "oh-my-opencode-linux-x64-musl": "5.1.35",
-    "oh-my-opencode-linux-x64-musl-baseline": "5.1.35",
-    "oh-my-opencode-windows-arm64": "5.1.35",
-    "oh-my-opencode-windows-x64": "5.1.35",
-    "oh-my-opencode-windows-x64-baseline": "5.1.35"
+    "oh-my-opencode-darwin-arm64": "5.1.38",
+    "oh-my-opencode-darwin-x64": "5.1.38",
+    "oh-my-opencode-darwin-x64-baseline": "5.1.38",
+    "oh-my-opencode-linux-arm64": "5.1.38",
+    "oh-my-opencode-linux-arm64-musl": "5.1.38",
+    "oh-my-opencode-linux-x64": "5.1.38",
+    "oh-my-opencode-linux-x64-baseline": "5.1.38",
+    "oh-my-opencode-linux-x64-musl": "5.1.38",
+    "oh-my-opencode-linux-x64-musl-baseline": "5.1.38",
+    "oh-my-opencode-windows-arm64": "5.1.38",
+    "oh-my-opencode-windows-x64": "5.1.38",
+    "oh-my-opencode-windows-x64-baseline": "5.1.38"
   },
   overrides: {
     hono: "^4.13.8",
@@ -164841,15 +164842,23 @@ var GPT_PROMPT_IDENTITIES = {
   "gpt-5.6-sol": "GPT-5.6 Sol",
   "gpt-6-astra": "GPT-6 Astra",
   "gpt-6-sol": "GPT-6 Sol",
+  "gpt-6.1-sol": "GPT-6.1 Sol",
+  "gpt-6-luna": "GPT-6 Luna",
   "gpt-family": "a GPT-family model"
+};
+var GPT_6_FAMILY_RE = /gpt-6(?:[.-](\d)|(\d))?-(astra|sol|luna)(?![a-z0-9])/;
+var GPT_6_IDENTITY_KEYS = {
+  astra: "gpt-6-astra",
+  sol: "gpt-6-sol",
+  luna: "gpt-6-luna",
+  "1-sol": "gpt-6.1-sol"
 };
 function getGptPromptIdentityKey(model) {
   const modelID = model?.split("/").at(-1)?.toLowerCase();
-  if (modelID?.includes("gpt-6-astra")) {
-    return "gpt-6-astra";
-  }
-  if (modelID?.includes("gpt-6-sol")) {
-    return "gpt-6-sol";
+  const gpt6 = modelID ? GPT_6_FAMILY_RE.exec(modelID) : null;
+  if (gpt6) {
+    const pointRelease = gpt6[1] ?? gpt6[2];
+    return GPT_6_IDENTITY_KEYS[pointRelease ? `${pointRelease}-${gpt6[3]}` : gpt6[3]] ?? "gpt-family";
   }
   if (modelID?.includes("gpt-5.6-sol") || modelID?.includes("gpt-5-6-sol")) {
     return "gpt-5.6-sol";

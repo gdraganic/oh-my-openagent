@@ -2120,7 +2120,7 @@ var package_default;
 var init_package = __esm(() => {
   package_default = {
     name: "oh-my-opencode",
-    version: "5.1.35-fork.1",
+    version: "5.1.38-fork.1",
     description: "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
     main: "./dist/index.js",
     types: "dist/index.d.ts",
@@ -2293,14 +2293,14 @@ var init_package = __esm(() => {
     },
     homepage: "https://github.com/code-yeongyu/oh-my-openagent#readme",
     dependencies: {
-      "@opencode/plugin": "2.0.16",
+      "@opencode/plugin": "2.0.32",
       "@opentui/solid": "^0.5.11",
       "detect-libc": "^2.1.2",
       zod: "^4.6.5"
     },
     devDependencies: {
       "@clack/prompts": "^1.8.1",
-      "@code-yeongyu/senpi": "2026.10.16",
+      "@code-yeongyu/senpi": "2026.10.19",
       "@modelcontextprotocol/sdk": "^1.30.0",
       "@oh-my-opencode/agents-md-core": "workspace:*",
       "@oh-my-opencode/ast-grep-mcp": "workspace:*",
@@ -2345,7 +2345,7 @@ var init_package = __esm(() => {
       "@typescript/typescript6": "6.0.2",
       "@xterm/addon-unicode11": "^0.9.0",
       "@xterm/xterm": "^6.0.0",
-      "bun-types": "1.4.2",
+      "bun-types": "1.4.3",
       commander: "^15.0.0",
       diff: "^9.0.0",
       "js-yaml": "^5.4.2",
@@ -2359,18 +2359,18 @@ var init_package = __esm(() => {
       typescript: "^7.0.2"
     },
     optionalDependencies: {
-      "oh-my-opencode-darwin-arm64": "5.1.35",
-      "oh-my-opencode-darwin-x64": "5.1.35",
-      "oh-my-opencode-darwin-x64-baseline": "5.1.35",
-      "oh-my-opencode-linux-arm64": "5.1.35",
-      "oh-my-opencode-linux-arm64-musl": "5.1.35",
-      "oh-my-opencode-linux-x64": "5.1.35",
-      "oh-my-opencode-linux-x64-baseline": "5.1.35",
-      "oh-my-opencode-linux-x64-musl": "5.1.35",
-      "oh-my-opencode-linux-x64-musl-baseline": "5.1.35",
-      "oh-my-opencode-windows-arm64": "5.1.35",
-      "oh-my-opencode-windows-x64": "5.1.35",
-      "oh-my-opencode-windows-x64-baseline": "5.1.35"
+      "oh-my-opencode-darwin-arm64": "5.1.38",
+      "oh-my-opencode-darwin-x64": "5.1.38",
+      "oh-my-opencode-darwin-x64-baseline": "5.1.38",
+      "oh-my-opencode-linux-arm64": "5.1.38",
+      "oh-my-opencode-linux-arm64-musl": "5.1.38",
+      "oh-my-opencode-linux-x64": "5.1.38",
+      "oh-my-opencode-linux-x64-baseline": "5.1.38",
+      "oh-my-opencode-linux-x64-musl": "5.1.38",
+      "oh-my-opencode-linux-x64-musl-baseline": "5.1.38",
+      "oh-my-opencode-windows-arm64": "5.1.38",
+      "oh-my-opencode-windows-x64": "5.1.38",
+      "oh-my-opencode-windows-x64-baseline": "5.1.38"
     },
     overrides: {
       hono: "^4.13.8",
@@ -9537,6 +9537,7 @@ var init_category_model_requirements = __esm(() => {
         },
         { providers: ["xiaomi", "opencode-go"], model: "mimo-v2.6-pro", variant: "max" },
         { providers: ["xai", "github-copilot", "opencode-go"], model: "grok-4.7", variant: "xhigh" },
+        { providers: ["zai-coding-plan", "opencode-go"], model: "glm-5.3", variant: "high" },
         { providers: ["openai", "chatgpt-subscription"], model: "gpt-6.1-sol", variant: "medium" },
         {
           providers: ["openai", "chatgpt-subscription", "github-copilot", "opencode"],
@@ -106191,7 +106192,7 @@ var package_default2;
 var init_package2 = __esm(() => {
   package_default2 = {
     name: "@oh-my-opencode/omo-codex",
-    version: "5.1.35",
+    version: "5.1.38",
     type: "module",
     private: true,
     description: "Codex harness adapter for oh-my-openagent. Vendored Codex plugin namespace (omo) + TypeScript installer + telemetry.",
@@ -106226,7 +106227,7 @@ var init_package2 = __esm(() => {
       "@oh-my-opencode/utils": "workspace:*"
     },
     devDependencies: {
-      "bun-types": "1.4.2"
+      "bun-types": "1.4.3"
     }
   };
 });
@@ -123620,7 +123621,7 @@ var package_default3 = {
     "@oh-my-opencode/utils": "workspace:*",
     "@opencode-ai/plugin": "1.18.31",
     "@opencode-ai/sdk": "1.18.31",
-    "@opencode/plugin": "2.0.16",
+    "@opencode/plugin": "2.0.32",
     commander: "^15.0.0",
     "jsonc-parser": "^3.3.1",
     picocolors: "^1.1.1",
