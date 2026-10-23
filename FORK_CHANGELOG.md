@@ -10,6 +10,17 @@ Releases of [gdraganic/oh-my-openagent](https://github.com/gdraganic/oh-my-opena
 
 To release: add a `## [<version>] - YYYY-MM-DD` section here on `main` (with the `Fork-Patch: v2-support` trailer), then run the **Fork release** workflow with that version.
 
+## [5.1.44-fork.1] - 2026-10-24
+
+Rebased on upstream `dev` of 2026-10-24 (1,773 commits since fork.1): upstream releases 5.1.39 to 5.1.44, mostly OmO Native (memory sync, onboarding, engine updates). Relevant to the OpenCode edition:
+
+- `exclude_models` in the config keeps a model out of every agent and category, and `omo doctor --models` shows which model each agent and category resolves to.
+- A delegated task whose category has no model left (limits spent, provider signed out) now continues on the session's model instead of failing.
+- Cancelling a task also stops the tasks it started.
+- Default models are unchanged; upstream moved the model names into one table (`model-core/src/latest-models.ts`).
+
+The fork's OpenCode 2 adapter needed no changes. One new upstream workflow is dropped, as usual.
+
 ## [5.1.38-fork.1] - 2026-10-19
 
 Rebased on upstream `dev` of 2026-10-19 (492 commits since fork.1): upstream releases 5.1.36, 5.1.37 and 5.1.38. Upstream highlights for the OpenCode edition: `unspecified-low` tries GLM 5.3 before GPT; Sisyphus prompts name GPT-6.1 Sol and GPT-6 Luna correctly; `runtime_fallback` moves on when a Cursor pool is spent; builds move to Bun 1.4.3 (CVE-2026-48618).
