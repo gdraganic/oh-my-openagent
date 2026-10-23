@@ -2498,6 +2498,25 @@ var init_agent_names = __esm(() => {
   ]);
 });
 
+// packages/model-core/src/latest-models.ts
+var LATEST_MODEL_BY_FAMILY;
+var init_latest_models = __esm(() => {
+  LATEST_MODEL_BY_FAMILY = {
+    claudeOpus: "claude-opus-5-5",
+    claudeSonnet: "claude-sonnet-5-5",
+    claudeHaiku: "claude-haiku-5-5",
+    claudeFable: "claude-fable-5-1",
+    gptAstra: "gpt-6-astra",
+    gptSol: "gpt-6.1-sol",
+    gptSolFast: "gpt-6.1-sol-fast",
+    gptLunaFast: "gpt-6-luna-fast",
+    glm: "glm-5.3",
+    glmFlash: "glm-5.3-flash",
+    kimi: "kimi-k3",
+    geminiPro: "gemini-4-argon"
+  };
+});
+
 // packages/utils/src/migration/agent-category.ts
 function configureMigrationCategoryDefaults(defaults) {
   categoryDefaults = defaults ?? {};
@@ -3334,17 +3353,18 @@ var init_file_reference_resolver = __esm(() => {
 // packages/model-core/src/agent-model-requirements.ts
 var AGENT_MODEL_REQUIREMENTS;
 var init_agent_model_requirements = __esm(() => {
+  init_latest_models();
   AGENT_MODEL_REQUIREMENTS = {
     sisyphus: {
       fallbackChain: [
         {
           providers: ["anthropic", "github-copilot", "opencode"],
-          model: "claude-opus-5-5",
+          model: LATEST_MODEL_BY_FAMILY.claudeOpus,
           variant: "max"
         },
         {
           providers: ["opencode-go", "kimi-for-coding", "moonshotai", "opencode", "bailian-coding-plan", "moonshotai-cn", "firmware", "ollama-cloud", "aihubmix"],
-          model: "kimi-k3"
+          model: LATEST_MODEL_BY_FAMILY.kimi
         },
         {
           providers: ["openai", "chatgpt-subscription", "github-copilot", "opencode"],
@@ -3378,7 +3398,7 @@ var init_agent_model_requirements = __esm(() => {
         { providers: ["github-copilot"], model: "gpt-5.6-sol", variant: "high" },
         {
           providers: ["google", "google-vertex", "opencode"],
-          model: "gemini-4-argon",
+          model: LATEST_MODEL_BY_FAMILY.geminiPro,
           variant: "high"
         },
         {
@@ -3388,7 +3408,7 @@ var init_agent_model_requirements = __esm(() => {
         },
         {
           providers: ["anthropic", "github-copilot", "opencode"],
-          model: "claude-opus-5-5",
+          model: LATEST_MODEL_BY_FAMILY.claudeOpus,
           variant: "max"
         },
         { providers: ["opencode-go"], model: "glm-5.2" }
@@ -3397,8 +3417,8 @@ var init_agent_model_requirements = __esm(() => {
     librarian: {
       fallbackChain: [
         { providers: ["kimi-for-coding"], model: "kimi-for-coding-highspeed", variant: "off" },
-        { providers: ["openai", "chatgpt-subscription"], model: "gpt-6-luna-fast", variant: "low" },
-        { providers: ["anthropic", "github-copilot"], model: "claude-haiku-5-5", variant: "medium" },
+        { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptLunaFast, variant: "low" },
+        { providers: ["anthropic", "github-copilot"], model: LATEST_MODEL_BY_FAMILY.claudeHaiku, variant: "medium" },
         { providers: ["deepseek"], model: "deepseek-flash", variant: "max" },
         { providers: ["opencode-go", "bailian-coding-plan"], model: "qwen3.7-plus" },
         { providers: ["opencode-go"], model: "minimax-m2.7" }
@@ -3407,8 +3427,8 @@ var init_agent_model_requirements = __esm(() => {
     explore: {
       fallbackChain: [
         { providers: ["kimi-for-coding"], model: "kimi-for-coding-highspeed", variant: "off" },
-        { providers: ["openai", "chatgpt-subscription"], model: "gpt-6-luna-fast", variant: "low" },
-        { providers: ["anthropic", "github-copilot"], model: "claude-haiku-5-5", variant: "medium" },
+        { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptLunaFast, variant: "low" },
+        { providers: ["anthropic", "github-copilot"], model: LATEST_MODEL_BY_FAMILY.claudeHaiku, variant: "medium" },
         { providers: ["deepseek"], model: "deepseek-flash", variant: "max" },
         { providers: ["opencode-go", "bailian-coding-plan"], model: "qwen3.7-plus" },
         { providers: ["opencode-go"], model: "minimax-m2.7" }
@@ -3417,7 +3437,7 @@ var init_agent_model_requirements = __esm(() => {
     "multimodal-looker": {
       fallbackChain: [
         { providers: ["openai", "chatgpt-subscription", "opencode"], model: "gpt-5.6-sol", variant: "low" },
-        { providers: ["opencode-go"], model: "kimi-k3" },
+        { providers: ["opencode-go"], model: LATEST_MODEL_BY_FAMILY.kimi },
         { providers: ["zai-coding-plan"], model: "glm-4.6v" },
         { providers: ["openai", "chatgpt-subscription", "github-copilot", "opencode"], model: "gpt-5-nano" }
       ]
@@ -3426,17 +3446,17 @@ var init_agent_model_requirements = __esm(() => {
       fallbackChain: [
         {
           providers: ["anthropic", "github-copilot", "opencode"],
-          model: "claude-fable-5-1",
+          model: LATEST_MODEL_BY_FAMILY.claudeFable,
           variant: "xhigh"
         },
         {
           providers: ["anthropic", "github-copilot", "opencode"],
-          model: "claude-opus-5-5",
+          model: LATEST_MODEL_BY_FAMILY.claudeOpus,
           variant: "max"
         },
         {
           providers: ["opencode-go", "kimi-for-coding", "moonshotai", "opencode"],
-          model: "kimi-k3",
+          model: LATEST_MODEL_BY_FAMILY.kimi,
           variant: "max"
         }
       ]
@@ -3445,34 +3465,34 @@ var init_agent_model_requirements = __esm(() => {
       fallbackChain: [
         {
           providers: ["anthropic", "github-copilot", "opencode"],
-          model: "claude-fable-5-1",
+          model: LATEST_MODEL_BY_FAMILY.claudeFable,
           variant: "max"
         },
         {
           providers: ["anthropic", "github-copilot", "opencode"],
-          model: "claude-opus-5-5",
+          model: LATEST_MODEL_BY_FAMILY.claudeOpus,
           variant: "max"
         },
         {
           providers: ["opencode-go", "kimi-for-coding", "moonshotai", "opencode"],
-          model: "kimi-k3",
+          model: LATEST_MODEL_BY_FAMILY.kimi,
           variant: "max"
         }
       ]
     },
     momus: {
       fallbackChain: [
-        { providers: ["openai", "chatgpt-subscription"], model: "gpt-6-astra", variant: "xhigh" },
-        { providers: ["github-copilot"], model: "gpt-6-astra", variant: "high" },
-        { providers: ["openai", "chatgpt-subscription", "opencode"], model: "gpt-6-astra", variant: "high" },
+        { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptAstra, variant: "xhigh" },
+        { providers: ["github-copilot"], model: LATEST_MODEL_BY_FAMILY.gptAstra, variant: "high" },
+        { providers: ["openai", "chatgpt-subscription", "opencode"], model: LATEST_MODEL_BY_FAMILY.gptAstra, variant: "high" },
         {
           providers: ["anthropic", "github-copilot", "opencode"],
-          model: "claude-opus-5-5",
+          model: LATEST_MODEL_BY_FAMILY.claudeOpus,
           variant: "max"
         },
         {
           providers: ["google", "google-vertex", "opencode"],
-          model: "gemini-4-argon",
+          model: LATEST_MODEL_BY_FAMILY.geminiPro,
           variant: "high"
         },
         {
@@ -3486,7 +3506,7 @@ var init_agent_model_requirements = __esm(() => {
     atlas: {
       fallbackChain: [
         { providers: ["anthropic", "github-copilot", "opencode"], model: "claude-sonnet-5" },
-        { providers: ["opencode-go"], model: "kimi-k3" },
+        { providers: ["opencode-go"], model: LATEST_MODEL_BY_FAMILY.kimi },
         {
           providers: ["openai", "chatgpt-subscription", "github-copilot", "opencode"],
           model: "gpt-5.6-sol",
@@ -3500,7 +3520,7 @@ var init_agent_model_requirements = __esm(() => {
     "sisyphus-junior": {
       fallbackChain: [
         { providers: ["anthropic", "github-copilot", "opencode"], model: "claude-sonnet-5" },
-        { providers: ["opencode-go"], model: "kimi-k3" },
+        { providers: ["opencode-go"], model: LATEST_MODEL_BY_FAMILY.kimi },
         {
           providers: ["openai", "chatgpt-subscription", "github-copilot", "opencode"],
           model: "gpt-5.6-sol",
@@ -3518,32 +3538,33 @@ var init_agent_model_requirements = __esm(() => {
 // packages/model-core/src/category-model-requirements.ts
 var CATEGORY_MODEL_REQUIREMENTS;
 var init_category_model_requirements = __esm(() => {
+  init_latest_models();
   CATEGORY_MODEL_REQUIREMENTS = {
     "visual-engineering": {
       fallbackChain: [
-        { providers: ["google", "google-vertex", "opencode"], model: "gemini-4-argon", variant: "low" },
+        { providers: ["google", "google-vertex", "opencode"], model: LATEST_MODEL_BY_FAMILY.geminiPro, variant: "low" },
         {
           providers: ["anthropic", "anthropic-api", "github-copilot", "opencode"],
-          model: "claude-fable-5-1",
+          model: LATEST_MODEL_BY_FAMILY.claudeFable,
           variant: "max"
         },
         {
           providers: ["anthropic", "anthropic-api", "github-copilot", "opencode"],
-          model: "claude-opus-5-5",
+          model: LATEST_MODEL_BY_FAMILY.claudeOpus,
           variant: "max"
         },
         {
           providers: ["kimi-for-coding", "moonshotai", "opencode-go", "opencode"],
-          model: "kimi-k3",
+          model: LATEST_MODEL_BY_FAMILY.kimi,
           variant: "max"
         }
       ]
     },
     ultrabrain: {
       fallbackChain: [
-        { providers: ["openai", "chatgpt-subscription"], model: "gpt-6-astra", variant: "max" },
-        { providers: ["github-copilot"], model: "gpt-6-astra", variant: "max" },
-        { providers: ["openai", "chatgpt-subscription", "opencode"], model: "gpt-6-astra", variant: "max" },
+        { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptAstra, variant: "max" },
+        { providers: ["github-copilot"], model: LATEST_MODEL_BY_FAMILY.gptAstra, variant: "max" },
+        { providers: ["openai", "chatgpt-subscription", "opencode"], model: LATEST_MODEL_BY_FAMILY.gptAstra, variant: "max" },
         { providers: ["openai", "chatgpt-subscription"], model: "gpt-5.6-sol", variant: "max" },
         { providers: ["github-copilot"], model: "gpt-5.6-sol", variant: "max" },
         { providers: ["openai", "chatgpt-subscription", "opencode"], model: "gpt-5.6-sol", variant: "max" }
@@ -3551,8 +3572,8 @@ var init_category_model_requirements = __esm(() => {
     },
     "deep-low": {
       fallbackChain: [
-        { providers: ["openai", "chatgpt-subscription"], model: "gpt-6.1-sol", variant: "medium" },
-        { providers: ["openai", "chatgpt-subscription"], model: "gpt-6.1-sol-fast", variant: "medium" },
+        { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptSol, variant: "medium" },
+        { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptSolFast, variant: "medium" },
         {
           providers: ["openai", "chatgpt-subscription", "github-copilot", "opencode"],
           model: "gpt-5.6-sol",
@@ -3565,7 +3586,7 @@ var init_category_model_requirements = __esm(() => {
       fallbackChain: [
         {
           providers: ["openai", "chatgpt-subscription", "github-copilot", "opencode"],
-          model: "gpt-6-astra",
+          model: LATEST_MODEL_BY_FAMILY.gptAstra,
           variant: "high"
         }
       ]
@@ -3574,27 +3595,27 @@ var init_category_model_requirements = __esm(() => {
       fallbackChain: [
         {
           providers: ["anthropic", "anthropic-api", "github-copilot", "opencode"],
-          model: "claude-fable-5-1",
+          model: LATEST_MODEL_BY_FAMILY.claudeFable,
           variant: "max"
         },
         {
           providers: ["anthropic", "anthropic-api", "github-copilot", "opencode"],
-          model: "claude-opus-5-5",
+          model: LATEST_MODEL_BY_FAMILY.claudeOpus,
           variant: "max"
         },
         {
           providers: ["kimi-for-coding", "moonshotai", "opencode-go", "opencode"],
-          model: "kimi-k3",
+          model: LATEST_MODEL_BY_FAMILY.kimi,
           variant: "max"
         }
       ]
     },
     quick: {
       fallbackChain: [
-        { providers: ["openai", "chatgpt-subscription"], model: "gpt-6-luna-fast", variant: "low" },
+        { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptLunaFast, variant: "low" },
         {
           providers: ["anthropic", "anthropic-api", "github-copilot"],
-          model: "claude-haiku-5-5",
+          model: LATEST_MODEL_BY_FAMILY.claudeHaiku,
           variant: "medium"
         },
         { providers: ["deepseek"], model: "deepseek-flash", variant: "off" },
@@ -3606,7 +3627,7 @@ var init_category_model_requirements = __esm(() => {
         { providers: ["opencode-go"], model: "minimax-m3", variant: "max" },
         { providers: ["opencode-go"], model: "minimax-m2.7", variant: "max" },
         { providers: ["xai"], model: "grok-4.20-0309-non-reasoning" },
-        { providers: ["zai-coding-plan"], model: "glm-5.3-flash", variant: "low" },
+        { providers: ["zai-coding-plan"], model: LATEST_MODEL_BY_FAMILY.glmFlash, variant: "low" },
         { providers: ["xiaomi"], model: "mimo-v2.6-flash", variant: "low" }
       ]
     },
@@ -3614,13 +3635,13 @@ var init_category_model_requirements = __esm(() => {
       fallbackChain: [
         {
           providers: ["anthropic", "anthropic-api", "github-copilot", "opencode"],
-          model: "claude-sonnet-5-5",
+          model: LATEST_MODEL_BY_FAMILY.claudeSonnet,
           variant: "medium"
         },
         { providers: ["xiaomi", "opencode-go"], model: "mimo-v2.6-pro", variant: "max" },
         { providers: ["xai", "github-copilot", "opencode-go"], model: "grok-4.7", variant: "xhigh" },
-        { providers: ["zai-coding-plan", "opencode-go"], model: "glm-5.3", variant: "high" },
-        { providers: ["openai", "chatgpt-subscription"], model: "gpt-6.1-sol", variant: "medium" },
+        { providers: ["zai-coding-plan", "opencode-go"], model: LATEST_MODEL_BY_FAMILY.glm, variant: "high" },
+        { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptSol, variant: "medium" },
         {
           providers: ["openai", "chatgpt-subscription", "github-copilot", "opencode"],
           model: "gpt-5.6-sol",
@@ -3644,13 +3665,13 @@ var init_category_model_requirements = __esm(() => {
       fallbackChain: [
         {
           providers: ["anthropic", "anthropic-api", "github-copilot", "opencode"],
-          model: "claude-opus-5-5",
+          model: LATEST_MODEL_BY_FAMILY.claudeOpus,
           variant: "medium"
         },
-        { providers: ["zai-coding-plan", "opencode-go"], model: "glm-5.3", variant: "max" },
+        { providers: ["zai-coding-plan", "opencode-go"], model: LATEST_MODEL_BY_FAMILY.glm, variant: "max" },
         {
           providers: ["kimi-for-coding", "moonshotai", "opencode-go", "opencode"],
-          model: "kimi-k3",
+          model: LATEST_MODEL_BY_FAMILY.kimi,
           variant: "max"
         }
       ]
@@ -3658,10 +3679,10 @@ var init_category_model_requirements = __esm(() => {
     writing: {
       requiresAnyModel: true,
       fallbackChain: [
-        { providers: ["google", "google-vertex", "opencode"], model: "gemini-4-argon", variant: "low" },
+        { providers: ["google", "google-vertex", "opencode"], model: LATEST_MODEL_BY_FAMILY.geminiPro, variant: "low" },
         {
           providers: ["anthropic", "anthropic-api", "github-copilot", "opencode"],
-          model: "claude-opus-5-5",
+          model: LATEST_MODEL_BY_FAMILY.claudeOpus,
           variant: "low"
         },
         {
@@ -4930,6 +4951,7 @@ var MODELS_DEV_SOURCE_URL = "https://models.dev/api.json";
 var init_src2 = __esm(() => {
   init_model_resolver();
   init_model_requirements();
+  init_latest_models();
   init_model_family_detectors();
   init_model_capability_aliases();
   init_model_capability_heuristics();
@@ -5167,16 +5189,17 @@ Approach:
 - This is for tasks requiring exceptional creativity
 </Category_Context>`, GOOGLE_CATEGORIES;
 var init_google_categories = __esm(() => {
+  init_latest_models();
   GOOGLE_CATEGORIES = [
     {
       name: "visual-engineering",
-      config: { model: "google/gemini-4-argon", variant: "low" },
+      config: { model: `google/${LATEST_MODEL_BY_FAMILY.geminiPro}`, variant: "low" },
       description: "Visual design, UI/UX, frontend, styling, animation, and design systems",
       promptAppend: VISUAL_CATEGORY_PROMPT_APPEND
     },
     {
       name: "artistry",
-      config: { model: "anthropic/claude-fable-5-1", variant: "max" },
+      config: { model: `anthropic/${LATEST_MODEL_BY_FAMILY.claudeFable}`, variant: "max" },
       description: "Complex problem-solving with unconventional, creative approaches - beyond standard patterns",
       promptAppend: ARTISTRY_CATEGORY_PROMPT_APPEND
     }
@@ -5210,10 +5233,11 @@ ANTI-AI-SLOP RULES (NON-NEGOTIABLE):
 - Write like a human, not a corporate template.
 </Category_Context>`, KIMI_CATEGORIES;
 var init_kimi_categories = __esm(() => {
+  init_latest_models();
   KIMI_CATEGORIES = [
     {
       name: "writing",
-      config: { model: "google/gemini-4-argon", variant: "low" },
+      config: { model: `google/${LATEST_MODEL_BY_FAMILY.geminiPro}`, variant: "low" },
       description: "Documentation, prose, technical writing",
       promptAppend: WRITING_CATEGORY_PROMPT_APPEND
     }
@@ -5348,21 +5372,23 @@ You are working on tasks that don't fit specific categories but require moderate
 </Category_Context>`, UNSPECIFIED_LOW_CATEGORY_CALLER_GUIDANCE = `<Selection_Gate>Use only when no specialist category fits, effort is moderate, and scope stays within a few files/modules. Prefer any matching specialist category.</Selection_Gate>
 <Caller_Warning>Provide explicit must-do steps, forbidden scope, and concrete success criteria.</Caller_Warning>`, UNSPECIFIED_HIGH_CATEGORY_PROMPT_APPEND = `<Category_Context>
 You are working on tasks that don't fit specific categories but require substantial effort.
-</Category_Context>`, UNSPECIFIED_HIGH_CATEGORY_CALLER_GUIDANCE = `<Selection_Gate>Use only when no specialist category fits and substantial effort spans systems/modules with broad impact. Use unspecified-low for contained moderate work.</Selection_Gate>`, DEEP_LOW_CATEGORY_CALLER_GUIDANCE = `<Selection_Gate>Of the two deep lanes this is the default: the child settles its decisions from what it reads. When unsure, choose deep-low; a misrouted child returns \`ESCALATE: deep-high\` after one cheap attempt, and you re-spawn the same brief as deep-high with its findings.</Selection_Gate>`, DEEP_HIGH_CATEGORY_CALLER_GUIDANCE = `<Selection_Gate>Route here only when you can name the decision evidence cannot settle: a trade-off with no single right answer, a contract change crossing a package or process boundary, a mechanism with no in-repo pattern to copy, or correctness argued from invariants rather than observed in a test. Wide scope with easy decisions is deep-low or unspecified-high; reasoning as the deliverable is ultrabrain.</Selection_Gate>`, DEEP_LOW_GATE_MODELS, DEEP_HIGH_GATE_MODEL = "gpt-6-astra", OPENAI_CATEGORIES;
+</Category_Context>`, UNSPECIFIED_HIGH_CATEGORY_CALLER_GUIDANCE = `<Selection_Gate>Use only when no specialist category fits and substantial effort spans systems/modules with broad impact. Use unspecified-low for contained moderate work.</Selection_Gate>`, DEEP_LOW_CATEGORY_CALLER_GUIDANCE = `<Selection_Gate>Of the two deep lanes this is the default: the child settles its decisions from what it reads. When unsure, choose deep-low; a misrouted child returns \`ESCALATE: deep-high\` after one cheap attempt, and you re-spawn the same brief as deep-high with its findings.</Selection_Gate>`, DEEP_HIGH_CATEGORY_CALLER_GUIDANCE = `<Selection_Gate>Route here only when you can name the decision evidence cannot settle: a trade-off with no single right answer, a contract change crossing a package or process boundary, a mechanism with no in-repo pattern to copy, or correctness argued from invariants rather than observed in a test. Wide scope with easy decisions is deep-low or unspecified-high; reasoning as the deliverable is ultrabrain.</Selection_Gate>`, DEEP_LOW_GATE_MODELS, DEEP_HIGH_GATE_MODEL, OPENAI_CATEGORIES;
 var init_openai_categories = __esm(() => {
   init_types();
-  DEEP_LOW_GATE_MODELS = ["gpt-6.1-sol", "gpt-6.1-sol-fast", "gpt-5.6-sol-fast", "gpt-5.6-sol"];
+  init_latest_models();
+  DEEP_LOW_GATE_MODELS = [LATEST_MODEL_BY_FAMILY.gptSol, LATEST_MODEL_BY_FAMILY.gptSolFast, "gpt-5.6-sol-fast", "gpt-5.6-sol"];
+  DEEP_HIGH_GATE_MODEL = LATEST_MODEL_BY_FAMILY.gptAstra;
   OPENAI_CATEGORIES = [
     {
       name: "ultrabrain",
-      config: { model: "openai/gpt-6-astra", variant: "max" },
+      config: { model: `openai/${LATEST_MODEL_BY_FAMILY.gptAstra}`, variant: "max" },
       description: "Use ONLY for genuinely hard, logic-heavy tasks. Give clear goals only, not step-by-step instructions.",
       promptAppend: ULTRABRAIN_CATEGORY_PROMPT_APPEND,
       resolvePromptAppend: resolveUltrabrainCategoryPromptAppend
     },
     {
       name: "deep-low",
-      config: { model: "openai/gpt-6.1-sol", variant: "medium" },
+      config: { model: `openai/${LATEST_MODEL_BY_FAMILY.gptSol}`, variant: "medium" },
       description: "Default deep lane: one goal, one deliverable, decisions the child can settle from what it reads; preferred over deep-high for 3D graphics, computer/browser use, CAPTCHA, multimodal, backend, logic, and algorithm work. Multiple goals fan out as parallel calls.",
       callerGuidance: DEEP_LOW_CATEGORY_CALLER_GUIDANCE,
       promptAppend: DEEP_LOW_CATEGORY_PROMPT_APPEND,
@@ -5371,7 +5397,7 @@ var init_openai_categories = __esm(() => {
     },
     {
       name: "deep-high",
-      config: { model: "openai/gpt-6-astra", variant: "high" },
+      config: { model: `openai/${LATEST_MODEL_BY_FAMILY.gptAstra}`, variant: "high" },
       description: "Escalation deep lane: a goal whose central decision cannot be settled from evidence alone. Same one-goal, one-deliverable contract as deep-low.",
       callerGuidance: DEEP_HIGH_CATEGORY_CALLER_GUIDANCE,
       promptAppend: DEEP_HIGH_CATEGORY_PROMPT_APPEND,
@@ -5380,21 +5406,21 @@ var init_openai_categories = __esm(() => {
     },
     {
       name: "quick",
-      config: { model: "openai/gpt-6-luna-fast", variant: "low" },
+      config: { model: `openai/${LATEST_MODEL_BY_FAMILY.gptLunaFast}`, variant: "low" },
       description: "Trivial tasks - single file changes, typo fixes, simple modifications",
       callerGuidance: QUICK_CATEGORY_CALLER_GUIDANCE,
       promptAppend: QUICK_CATEGORY_PROMPT_APPEND
     },
     {
       name: "unspecified-low",
-      config: { model: "anthropic/claude-sonnet-5-5", variant: "medium" },
+      config: { model: `anthropic/${LATEST_MODEL_BY_FAMILY.claudeSonnet}`, variant: "medium" },
       description: "Tasks that don't fit other categories, low effort required",
       callerGuidance: UNSPECIFIED_LOW_CATEGORY_CALLER_GUIDANCE,
       promptAppend: UNSPECIFIED_LOW_CATEGORY_PROMPT_APPEND
     },
     {
       name: "unspecified-high",
-      config: { model: "anthropic/claude-opus-5-5", variant: "medium" },
+      config: { model: `anthropic/${LATEST_MODEL_BY_FAMILY.claudeOpus}`, variant: "medium" },
       description: "Tasks that don't fit other categories, high effort required",
       callerGuidance: UNSPECIFIED_HIGH_CATEGORY_CALLER_GUIDANCE,
       promptAppend: UNSPECIFIED_HIGH_CATEGORY_PROMPT_APPEND,
@@ -63683,10 +63709,11 @@ var ANTHROPIC_PREFIX = "anthropic/", CLAUDE_CODE_ALIAS_MAP;
 var init_claude_model_mapper = __esm(() => {
   init_model_format_normalizer();
   init_model_normalization2();
+  init_latest_models();
   CLAUDE_CODE_ALIAS_MAP = new Map([
-    ["sonnet", `${ANTHROPIC_PREFIX}claude-sonnet-4-6`],
-    ["opus", `${ANTHROPIC_PREFIX}claude-opus-5-5`],
-    ["haiku", `${ANTHROPIC_PREFIX}claude-haiku-5-5`]
+    ["sonnet", `${ANTHROPIC_PREFIX}${LATEST_MODEL_BY_FAMILY.claudeSonnet}`],
+    ["opus", `${ANTHROPIC_PREFIX}${LATEST_MODEL_BY_FAMILY.claudeOpus}`],
+    ["haiku", `${ANTHROPIC_PREFIX}${LATEST_MODEL_BY_FAMILY.claudeHaiku}`]
   ]);
 });
 
@@ -83854,17 +83881,23 @@ var init_computer = __esm(() => {
 });
 
 // packages/omo-config-core/src/schema/git-master.ts
-var OmoGitMasterSettingsShape, OmoGitMasterSettingsLayerSchema, OmoGitMasterSettingsSchema;
+var GIT_ENV_ASSIGNMENT_PATTERN, GitEnvPrefixSchema, OmoGitMasterSettingsShape, OmoGitMasterSettingsLayerSchema, OmoGitMasterSettingsSchema;
 var init_git_master = __esm(() => {
   init_zod();
+  GIT_ENV_ASSIGNMENT_PATTERN = /^(?:[A-Za-z_][A-Za-z0-9_]*=[A-Za-z0-9_-]*)(?: [A-Za-z_][A-Za-z0-9_]*=[A-Za-z0-9_-]*)*$/;
+  GitEnvPrefixSchema = string2().refine((value) => value === "" || GIT_ENV_ASSIGNMENT_PATTERN.test(value), {
+    message: 'git_env_prefix must be empty or use shell-safe env assignments like "GIT_MASTER=1"'
+  });
   OmoGitMasterSettingsShape = {
     commit_footer: union([boolean2(), string2()]),
-    include_co_authored_by: boolean2()
+    include_co_authored_by: boolean2(),
+    git_env_prefix: GitEnvPrefixSchema
   };
   OmoGitMasterSettingsLayerSchema = object(OmoGitMasterSettingsShape).partial().strict();
   OmoGitMasterSettingsSchema = OmoGitMasterSettingsLayerSchema.extend({
     commit_footer: union([boolean2(), string2()]).default(false),
-    include_co_authored_by: boolean2().default(false)
+    include_co_authored_by: boolean2().default(true),
+    git_env_prefix: GitEnvPrefixSchema.default("GIT_MASTER=1")
   }).strict();
 });
 
@@ -83879,10 +83912,29 @@ var init_harness = __esm(() => {
   OMO_CONFIG_LEGACY_HARNESS_IDS = Object.keys(OMO_CONFIG_LEGACY_HARNESS_ALIASES);
 });
 
+// packages/omo-config-core/src/schema/memory-agreements.ts
+var OMO_MEMORY_AGREEMENTS_DEFAULTS, OmoMemoryAgreementsSchema, OmoMemoryAgreementsLayerSchema;
+var init_memory_agreements = __esm(() => {
+  init_zod();
+  OMO_MEMORY_AGREEMENTS_DEFAULTS = { enabled: true, needs_human_threshold: 3, max_items: 64 };
+  OmoMemoryAgreementsSchema = object({
+    enabled: boolean2().default(OMO_MEMORY_AGREEMENTS_DEFAULTS.enabled),
+    needs_human_threshold: number2().int().min(1).default(OMO_MEMORY_AGREEMENTS_DEFAULTS.needs_human_threshold),
+    max_items: number2().int().min(8).max(256).default(OMO_MEMORY_AGREEMENTS_DEFAULTS.max_items)
+  }).strict();
+  OmoMemoryAgreementsLayerSchema = object({
+    enabled: boolean2().optional(),
+    needs_human_threshold: number2().int().min(1).optional(),
+    max_items: number2().int().min(8).max(256).optional()
+  }).strict();
+});
+
 // packages/omo-config-core/src/schema/memory.ts
-var OmoMemoryReflectionTriggerSchema, OmoMemoryReflectionSchema, OmoMemorySyncSchema, OmoMemorySearchSchema, OmoMemoryRecallEventCapsSchema, OmoMemoryRecallSchema, OmoMemoryNudgeSchema, OmoMemoryFactsSchema, OmoMemoryDreamSchema, OmoMemoryPeopleSchema, OmoMemorySoulSchema, OmoMemoryWriteNoticeSchema, OmoMemoryReflectionTriggerLayerSchema, OmoMemoryReflectionLayerSchema, OmoMemorySyncLayerSchema, OmoMemorySearchLayerSchema, OmoMemoryRecallEventCapsLayerSchema, OmoMemoryRecallLayerSchema, OmoMemoryNudgeLayerSchema, OmoMemoryFactsLayerSchema, OmoMemoryDreamLayerSchema, OmoMemoryPeopleLayerSchema, OmoMemorySoulLayerSchema, OmoMemoryWriteNoticeLayerSchema, OmoMemoryProjectionSchema, OmoMemoryProjectionLayerSchema, OmoMemoryAgentOverridesSchema, OmoMemorySettingsSchema, OmoMemorySettingsLayerSchema;
+var OmoMemoryReflectionTriggerSchema, OmoMemoryReflectionSchema, OmoMemorySyncSchema, OmoMemorySearchSchema, OmoMemoryRecallEventCapsSchema, OmoMemoryRecallSchema, OmoMemoryProjectScopeSchema, OmoMemoryProjectScopeLayerSchema, OmoMemoryNudgeSchema, OmoMemoryFactsSchema, OmoMemoryDreamSchema, OmoMemoryPeopleSchema, OmoMemorySoulSchema, OmoMemoryWriteNoticeSchema, OmoMemoryReflectionTriggerLayerSchema, OmoMemoryReflectionLayerSchema, OmoMemorySyncLayerSchema, OmoMemorySearchLayerSchema, OmoMemoryRecallEventCapsLayerSchema, OmoMemoryRecallLayerSchema, OmoMemoryNudgeLayerSchema, OmoMemoryFactsLayerSchema, OmoMemoryDreamLayerSchema, OmoMemoryPeopleLayerSchema, OmoMemorySoulLayerSchema, OmoMemoryWriteNoticeLayerSchema, OmoMemoryProjectionSchema, OmoMemoryProjectionLayerSchema, OmoMemoryAgentOverridesSchema, OmoMemoryAutoIdentitySchema, OmoMemorySettingsSchema, OmoMemorySettingsLayerSchema;
 var init_memory = __esm(() => {
   init_zod();
+  init_memory_agreements();
+  init_memory_agreements();
   OmoMemoryReflectionTriggerSchema = object({
     step_count: number2().int().nonnegative().default(25),
     on_compaction: boolean2().default(true)
@@ -83917,6 +83969,14 @@ var init_memory = __esm(() => {
     max_concurrent_wakes: number2().int().positive().default(2),
     tool_budget: number2().int().positive().default(8),
     query_expansion: boolean2().default(false)
+  }).strict();
+  OmoMemoryProjectScopeSchema = object({
+    nudge: boolean2().default(true),
+    recall: boolean2().default(true)
+  }).strict();
+  OmoMemoryProjectScopeLayerSchema = object({
+    nudge: boolean2().optional(),
+    recall: boolean2().optional()
   }).strict();
   OmoMemoryNudgeSchema = object({
     enabled: boolean2().default(true),
@@ -84025,6 +84085,7 @@ var init_memory = __esm(() => {
     facts: OmoMemoryFactsLayerSchema.optional(),
     dream: OmoMemoryDreamLayerSchema.optional(),
     people: OmoMemoryPeopleLayerSchema.optional(),
+    agreements: OmoMemoryAgreementsLayerSchema.optional(),
     soul: OmoMemorySoulLayerSchema.optional(),
     write_notice: OmoMemoryWriteNoticeLayerSchema.optional(),
     sync: OmoMemorySyncLayerSchema.optional(),
@@ -84033,9 +84094,11 @@ var init_memory = __esm(() => {
     projection: OmoMemoryProjectionLayerSchema.optional(),
     compile_warn_tokens: number2().int().positive().optional()
   }).strict();
+  OmoMemoryAutoIdentitySchema = _enum2(["path", "git"]);
   OmoMemorySettingsSchema = object({
     enabled: boolean2().default(true),
     agent: string2().min(1).default("auto"),
+    auto_identity: OmoMemoryAutoIdentitySchema.default("path"),
     reflection: OmoMemoryReflectionSchema.default({
       enabled: true,
       trigger: { step_count: 25, on_compaction: true },
@@ -84055,6 +84118,7 @@ var init_memory = __esm(() => {
       auto_select_max_chars: 150000
     }),
     people: OmoMemoryPeopleSchema.default({ enabled: true, max_entries: 40, max_entry_chars: 200 }),
+    agreements: OmoMemoryAgreementsSchema.default(OMO_MEMORY_AGREEMENTS_DEFAULTS),
     soul: OmoMemorySoulSchema.default({ edit_notice: true }),
     write_notice: OmoMemoryWriteNoticeSchema.default({ enabled: true }),
     sync: OmoMemorySyncSchema.default({ enabled: true }),
@@ -84069,6 +84133,7 @@ var init_memory = __esm(() => {
       tool_budget: 8,
       query_expansion: false
     }),
+    project_scope: OmoMemoryProjectScopeSchema.default({ nudge: true, recall: true }),
     projection: OmoMemoryProjectionSchema.default({ max_entries_per_directory: 40, max_bytes: 24576 }),
     compile_warn_tokens: number2().int().positive().default(30000),
     agents: record(string2(), OmoMemoryAgentOverridesSchema).default({})
@@ -84076,16 +84141,19 @@ var init_memory = __esm(() => {
   OmoMemorySettingsLayerSchema = object({
     enabled: boolean2().optional(),
     agent: string2().min(1).optional(),
+    auto_identity: OmoMemoryAutoIdentitySchema.optional(),
     reflection: OmoMemoryReflectionLayerSchema.optional(),
     nudge: OmoMemoryNudgeLayerSchema.optional(),
     facts: OmoMemoryFactsLayerSchema.optional(),
     dream: OmoMemoryDreamLayerSchema.optional(),
     people: OmoMemoryPeopleLayerSchema.optional(),
+    agreements: OmoMemoryAgreementsLayerSchema.optional(),
     soul: OmoMemorySoulLayerSchema.optional(),
     write_notice: OmoMemoryWriteNoticeLayerSchema.optional(),
     sync: OmoMemorySyncLayerSchema.optional(),
     search: OmoMemorySearchLayerSchema.optional(),
     recall: OmoMemoryRecallLayerSchema.optional(),
+    project_scope: OmoMemoryProjectScopeLayerSchema.optional(),
     projection: OmoMemoryProjectionLayerSchema.optional(),
     compile_warn_tokens: number2().int().positive().optional(),
     agents: record(string2(), OmoMemoryAgentOverridesSchema).optional()
@@ -84124,6 +84192,7 @@ var init_model_profile = __esm(() => {
   init_fallback_models();
   OmoModelProfileInputSchema = object({
     display_name: string2().optional(),
+    caution: string2().optional(),
     family: _enum2(["daily", "geeky"]).optional(),
     tier: _enum2(["normal", "heavy"]).optional(),
     models: array(union([string2(), OmoFallbackModelObjectSchema])).optional()
@@ -84409,15 +84478,28 @@ var init_format_on_mutation = __esm(() => {
   }).strict();
 });
 
-// packages/omo-config-core/src/schema/gateway.ts
-var OmoGatewaySectionSchema;
-var init_gateway = __esm(() => {
+// packages/omo-config-core/src/schema/dori.ts
+var OmoDoriSectionSchema;
+var init_dori = __esm(() => {
   init_zod();
-  OmoGatewaySectionSchema = record(string2(), unknown()).describe("Chat-surface gateway settings, owned and validated by a separately installed gateway package. omo accepts the key and never reads it.");
+  OmoDoriSectionSchema = record(string2(), unknown()).describe("Chat-surface dori settings, owned and validated by a separately installed dori package. omo accepts the key and never reads it.");
+});
+
+// packages/omo-config-core/src/schema/provenance.ts
+var OmoProvenanceSettingsSchema;
+var init_provenance = __esm(() => {
+  init_zod();
+  OmoProvenanceSettingsSchema = object({
+    workspaces: array(object({
+      name: string2().trim().min(1).regex(/\S/),
+      git_owners: array(string2().trim().min(1).regex(/\S/)).optional(),
+      paths: array(string2().trim().min(1).regex(/\S/)).optional()
+    }).strict()).optional()
+  }).strict();
 });
 
 // packages/omo-config-core/src/schema/config.ts
-var OmoOpenCodeHarnessConfigSchema, OmoDisabledSkillsSchema, OmoTypedHarnessConfigSchema, OmoConfigProfileSchema, OmoConfigSchema, OmoConfigLayerSchema;
+var OmoOpenCodeHarnessConfigSchema, OmoDisabledSkillsSchema, OmoExcludedModelsSchema, OmoTypedHarnessConfigSchema, OmoConfigProfileSchema, OmoConfigSchema, OmoConfigLayerSchema;
 var init_config = __esm(() => {
   init_zod();
   init_agent();
@@ -84432,28 +84514,15 @@ var init_config = __esm(() => {
   init_team();
   init_telemetry();
   init_format_on_mutation();
-  init_gateway();
+  init_dori();
+  init_provenance();
   OmoOpenCodeHarnessConfigSchema = record(string2(), unknown());
   OmoDisabledSkillsSchema = array(string2());
+  OmoExcludedModelsSchema = array(string2());
   OmoTypedHarnessConfigSchema = object({
+    provenance: OmoProvenanceSettingsSchema.optional(),
     formatOnMutation: OmoFormatOnMutationLayerSchema.optional(),
-    gateway: OmoGatewaySectionSchema.optional(),
-    categories: OmoCategoriesConfigSchema.optional(),
-    agents: OmoAgentsConfigSchema.optional(),
-    git_master: OmoGitMasterSettingsLayerSchema.optional(),
-    task: OmoTaskSettingsLayerSchema.optional(),
-    teams: OmoTeamsConfigLayerSchema.optional(),
-    models: OmoModelCatalogLayerSchema.optional(),
-    model_profiles: OmoModelProfilesLayerSchema.optional(),
-    model_profile: string2().optional(),
-    memory: OmoMemorySettingsLayerSchema.optional(),
-    telemetry: OmoTelemetrySettingsLayerSchema.optional(),
-    side_panel: OmoSidePanelSettingsLayerSchema.optional(),
-    computer: OmoComputerSettingsLayerSchema.optional(),
-    disabled_skills: OmoDisabledSkillsSchema.optional()
-  }).strict();
-  OmoConfigProfileSchema = object({
-    formatOnMutation: OmoFormatOnMutationLayerSchema.optional(),
+    dori: OmoDoriSectionSchema.optional(),
     categories: OmoCategoriesConfigSchema.optional(),
     agents: OmoAgentsConfigSchema.optional(),
     git_master: OmoGitMasterSettingsLayerSchema.optional(),
@@ -84467,14 +84536,35 @@ var init_config = __esm(() => {
     side_panel: OmoSidePanelSettingsLayerSchema.optional(),
     computer: OmoComputerSettingsLayerSchema.optional(),
     disabled_skills: OmoDisabledSkillsSchema.optional(),
+    exclude_models: OmoExcludedModelsSchema.optional()
+  }).strict();
+  OmoConfigProfileSchema = object({
+    provenance: OmoProvenanceSettingsSchema.optional(),
+    formatOnMutation: OmoFormatOnMutationLayerSchema.optional(),
+    dori: OmoDoriSectionSchema.optional(),
+    categories: OmoCategoriesConfigSchema.optional(),
+    agents: OmoAgentsConfigSchema.optional(),
+    git_master: OmoGitMasterSettingsLayerSchema.optional(),
+    task: OmoTaskSettingsLayerSchema.optional(),
+    teams: OmoTeamsConfigLayerSchema.optional(),
+    models: OmoModelCatalogLayerSchema.optional(),
+    model_profiles: OmoModelProfilesLayerSchema.optional(),
+    model_profile: string2().optional(),
+    memory: OmoMemorySettingsLayerSchema.optional(),
+    telemetry: OmoTelemetrySettingsLayerSchema.optional(),
+    side_panel: OmoSidePanelSettingsLayerSchema.optional(),
+    computer: OmoComputerSettingsLayerSchema.optional(),
+    disabled_skills: OmoDisabledSkillsSchema.optional(),
+    exclude_models: OmoExcludedModelsSchema.optional(),
     "[opencode]": OmoOpenCodeHarnessConfigSchema.optional(),
     "[native]": OmoTypedHarnessConfigSchema.optional(),
     "[senpi]": OmoTypedHarnessConfigSchema.optional(),
     "[codex]": OmoTypedHarnessConfigSchema.optional()
   }).strict();
   OmoConfigSchema = object({
+    provenance: OmoProvenanceSettingsSchema.optional(),
     formatOnMutation: OmoFormatOnMutationSchema.optional(),
-    gateway: OmoGatewaySectionSchema.optional(),
+    dori: OmoDoriSectionSchema.optional(),
     $schema: string2().optional(),
     categories: OmoCategoriesConfigSchema.optional(),
     agents: OmoAgentsConfigSchema.optional(),
@@ -84489,6 +84579,7 @@ var init_config = __esm(() => {
     side_panel: OmoSidePanelSettingsSchema.optional(),
     computer: OmoComputerSettingsSchema.optional(),
     disabled_skills: OmoDisabledSkillsSchema.optional(),
+    exclude_models: OmoExcludedModelsSchema.optional(),
     "[opencode]": OmoOpenCodeHarnessConfigSchema.optional(),
     "[native]": OmoTypedHarnessConfigSchema.optional(),
     "[senpi]": OmoTypedHarnessConfigSchema.optional(),
@@ -84498,8 +84589,9 @@ var init_config = __esm(() => {
     legacy_migrations: record(string2(), unknown()).optional()
   }).strict();
   OmoConfigLayerSchema = object({
+    provenance: OmoProvenanceSettingsSchema.optional(),
     formatOnMutation: OmoFormatOnMutationLayerSchema.optional(),
-    gateway: OmoGatewaySectionSchema.optional(),
+    dori: OmoDoriSectionSchema.optional(),
     $schema: string2().optional(),
     categories: OmoCategoriesConfigSchema.optional(),
     agents: OmoAgentsConfigSchema.optional(),
@@ -84514,6 +84606,7 @@ var init_config = __esm(() => {
     side_panel: OmoSidePanelSettingsLayerSchema.optional(),
     computer: OmoComputerSettingsLayerSchema.optional(),
     disabled_skills: OmoDisabledSkillsSchema.optional(),
+    exclude_models: OmoExcludedModelsSchema.optional(),
     "[opencode]": OmoOpenCodeHarnessConfigSchema.optional(),
     "[native]": OmoTypedHarnessConfigSchema.optional(),
     "[senpi]": OmoTypedHarnessConfigSchema.optional(),
@@ -84634,6 +84727,9 @@ var init_legacy_harness_names = __esm(() => {
   init_harness();
 });
 
+// packages/omo-config-core/src/schema/legacy-dori-section.ts
+var init_legacy_dori_section = () => {};
+
 // packages/omo-config-core/src/schema/index.ts
 var init_schema = __esm(() => {
   init_agent();
@@ -84641,15 +84737,17 @@ var init_schema = __esm(() => {
   init_config();
   init_fallback_models();
   init_format_on_mutation();
-  init_gateway();
+  init_dori();
   init_git_master();
   init_harness();
   init_legacy_category_names();
   init_legacy_harness_names();
+  init_legacy_dori_section();
   init_memory();
   init_model_catalog();
   init_model_profile();
   init_model_ref();
+  init_provenance();
   init_side_panel();
   init_task();
   init_team();
@@ -84716,7 +84814,51 @@ var init_diagnostic_lines = __esm(() => {
 });
 
 // packages/omo-config-core/src/loader/disabled-skills.ts
-var init_disabled_skills = () => {};
+function toRecord(value) {
+  if (value === null || typeof value !== "object" || Array.isArray(value))
+    return;
+  return value;
+}
+function namesAt(record2, key) {
+  const value = record2?.[key];
+  if (!Array.isArray(value))
+    return [];
+  return value.filter((entry) => typeof entry === "string" && entry.trim() !== "");
+}
+function harnessBlockKeys(harness2) {
+  const canonical = canonicalHarnessName(harness2);
+  const legacy = Object.entries(OMO_CONFIG_LEGACY_HARNESS_ALIASES).filter(([, target]) => target === canonical).map(([name]) => harnessBlockKey(name));
+  return [harnessBlockKey(canonical), ...legacy];
+}
+function scopesOf(config3, harness2) {
+  if (harness2 === undefined)
+    return [config3];
+  return [config3, ...harnessBlockKeys(harness2).map((key) => toRecord(config3[key]))];
+}
+function collectExcludedModels(options) {
+  return collectUnionedList("exclude_models", options);
+}
+function collectUnionedList(key, options) {
+  const names = new Set;
+  for (const layer of options.layers) {
+    const config3 = toRecord(layer.config);
+    if (config3 === undefined)
+      continue;
+    const profile = options.profile === undefined ? undefined : toRecord(toRecord(config3["profiles"])?.[options.profile]);
+    const scopes = [
+      ...scopesOf(config3, options.harness),
+      ...profile === undefined ? [] : scopesOf(profile, options.harness)
+    ];
+    for (const scope of scopes) {
+      for (const name of namesAt(scope, key))
+        names.add(name.trim());
+    }
+  }
+  return [...names];
+}
+var init_disabled_skills = __esm(() => {
+  init_schema();
+});
 
 // packages/omo-config-core/src/loader/merge.ts
 function isUnsafeObjectKey2(key) {
@@ -84952,7 +85094,7 @@ function stripUnrecognizedKeys(record2, issues) {
   }
   return { issuePaths, stripped };
 }
-function toRecord(value) {
+function toRecord2(value) {
   if (value === null || typeof value !== "object" || Array.isArray(value))
     return null;
   const record2 = {};
@@ -84963,7 +85105,7 @@ function toRecord(value) {
 }
 function validateConfigLayer(path4, data) {
   const sanitized = sanitizeUnsafeKeys(data);
-  const record2 = toRecord(sanitized.value);
+  const record2 = toRecord2(sanitized.value);
   const unsafeIssuePaths = sanitized.issues.flatMap((issue2) => issue2.keys.map((key) => [...issue2.path, key].join(".")));
   const unsafeDiagnostics = unsafeIssuePaths.length === 0 ? [] : [{ kind: "unknown-keys", message: `Ignored unknown keys in ${path4}: ${unsafeIssuePaths.join(", ")}`, path: path4, issuePaths: unsafeIssuePaths }];
   const validation = OmoConfigLayerSchema.safeParse(sanitized.value);
@@ -85116,7 +85258,7 @@ function resolveOmoProfileName(options = {}) {
   const env = options.env ?? process.env;
   return profileName(options.profile) ?? profileName(env["OMO_PROFILE"]) ?? profileName(env["OCX_PROFILE"]) ?? profileNameFromOpenCodeConfigDir(env["OPENCODE_CONFIG_DIR"]);
 }
-function toRecord2(value) {
+function toRecord3(value) {
   if (value === null || typeof value !== "object" || Array.isArray(value))
     return;
   return Object.fromEntries(Object.entries(value));
@@ -85137,13 +85279,13 @@ function harnessLayer(config3, harness2) {
   const legacyKeys = Object.entries(OMO_CONFIG_LEGACY_HARNESS_ALIASES).filter(([, target]) => target === canonical).map(([legacy]) => harnessBlockKey(legacy));
   let layer = {};
   for (const key of [...legacyKeys, harnessBlockKey(canonical)]) {
-    layer = mergeOmoConfigRecords(layer, toRecord2(config3[key]) ?? {});
+    layer = mergeOmoConfigRecords(layer, toRecord3(config3[key]) ?? {});
   }
   return layer;
 }
 function resolveOmoConfigView(options) {
-  const profiles = toRecord2(options.config["profiles"]);
-  const profile = options.profile === undefined ? undefined : toRecord2(profiles?.[options.profile]);
+  const profiles = toRecord3(options.config["profiles"]);
+  const profile = options.profile === undefined ? undefined : toRecord3(profiles?.[options.profile]);
   const diagnostics = profile === undefined && options.profile !== undefined ? [{
     kind: "profile",
     message: `Activated omo profile "${options.profile}" does not exist; using the base configuration`,
@@ -85284,9 +85426,15 @@ function loadOmoConfig(options = {}) {
   });
   const finalInput = mergeOmoConfigRecords(DEFAULT_RAW_CONFIG, resolved.config);
   const finalConfig = OmoConfigSchema.safeParse(finalInput);
+  const excludeModels = collectExcludedModels({
+    layers,
+    ...options.harness === undefined ? {} : { harness: options.harness },
+    ...resolved.profile === undefined ? {} : { profile: resolved.profile }
+  });
+  const withExcludedModels = (config3) => excludeModels.length === 0 ? config3 : { ...config3, exclude_models: [...excludeModels] };
   if (finalConfig.success) {
     return {
-      config: stripResolutionControlKeys(finalConfig.data),
+      config: withExcludedModels(stripResolutionControlKeys(finalConfig.data)),
       diagnostics: [...diagnostics, ...resolved.diagnostics],
       layers,
       ...resolved.profile === undefined ? {} : { profile: resolved.profile },
@@ -85299,7 +85447,7 @@ function loadOmoConfig(options = {}) {
   });
   if (pruned.ok) {
     return {
-      config: stripResolutionControlKeys(OmoConfigSchema.parse(pruned.config)),
+      config: withExcludedModels(stripResolutionControlKeys(OmoConfigSchema.parse(pruned.config))),
       diagnostics: [...diagnostics, ...resolved.diagnostics, ...invalidValueDiagnostics(MERGED_OMO_CONFIG_PATH, pruned.dropped)],
       layers,
       ...resolved.profile === undefined ? {} : { profile: resolved.profile },
@@ -85318,6 +85466,7 @@ var DEFAULT_RAW_CONFIG;
 var init_loader2 = __esm(() => {
   init_main();
   init_schema();
+  init_disabled_skills();
   init_layer_validation();
   init_merge();
   init_paths();
@@ -86415,13 +86564,13 @@ function isValidGitEnvPrefix(value) {
   if (value === "") {
     return true;
   }
-  return GIT_ENV_ASSIGNMENT_PATTERN.test(value);
+  return GIT_ENV_ASSIGNMENT_PATTERN2.test(value);
 }
-var GIT_ENV_ASSIGNMENT_PATTERN, GIT_ENV_PREFIX_VALIDATION_MESSAGE = 'git_env_prefix must be empty or use shell-safe env assignments like "GIT_MASTER=1"', GitEnvPrefixSchema;
+var GIT_ENV_ASSIGNMENT_PATTERN2, GIT_ENV_PREFIX_VALIDATION_MESSAGE = 'git_env_prefix must be empty or use shell-safe env assignments like "GIT_MASTER=1"', GitEnvPrefixSchema2;
 var init_git_env_prefix = __esm(() => {
   init_zod();
-  GIT_ENV_ASSIGNMENT_PATTERN = /^(?:[A-Za-z_][A-Za-z0-9_]*=[A-Za-z0-9_-]*)(?: [A-Za-z_][A-Za-z0-9_]*=[A-Za-z0-9_-]*)*$/;
-  GitEnvPrefixSchema = exports_external.string().refine(isValidGitEnvPrefix, { message: GIT_ENV_PREFIX_VALIDATION_MESSAGE }).default("GIT_MASTER=1");
+  GIT_ENV_ASSIGNMENT_PATTERN2 = /^(?:[A-Za-z_][A-Za-z0-9_]*=[A-Za-z0-9_-]*)(?: [A-Za-z_][A-Za-z0-9_]*=[A-Za-z0-9_-]*)*$/;
+  GitEnvPrefixSchema2 = exports_external.string().refine(isValidGitEnvPrefix, { message: GIT_ENV_PREFIX_VALIDATION_MESSAGE }).default("GIT_MASTER=1");
 });
 
 // packages/omo-opencode/src/config/schema/git-env-prefix.ts
@@ -86436,8 +86585,8 @@ var init_git_master2 = __esm(() => {
   init_git_env_prefix2();
   GitMasterConfigSchema = exports_external.object({
     commit_footer: exports_external.union([exports_external.boolean(), exports_external.string()]).default(false),
-    include_co_authored_by: exports_external.boolean().default(false),
-    git_env_prefix: GitEnvPrefixSchema
+    include_co_authored_by: exports_external.boolean().default(true),
+    git_env_prefix: GitEnvPrefixSchema2
   });
 });
 
@@ -86841,7 +86990,7 @@ var init_oh_my_opencode_config = __esm(() => {
     babysitting: BabysittingConfigSchema.optional(),
     git_master: GitMasterConfigSchema.default({
       commit_footer: false,
-      include_co_authored_by: false,
+      include_co_authored_by: true,
       git_env_prefix: "GIT_MASTER=1"
     }),
     browser_automation_engine: BrowserAutomationConfigSchema.optional(),
@@ -88810,7 +88959,7 @@ init_shared();
 // package.json
 var package_default = {
   name: "oh-my-opencode",
-  version: "5.1.38-fork.1",
+  version: "5.1.44-fork.1",
   description: "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
   main: "./dist/index.js",
   types: "dist/index.d.ts",
@@ -88950,7 +89099,8 @@ var package_default = {
     postinstall: "node postinstall.mjs",
     prepublishOnly: "bun run clean && bun run build:lsp-tools-mcp && bun run build:lsp-daemon && bun run build",
     "test:model-capabilities": "bun test --timeout 20000 packages/model-core/src/model-capability-aliases.test.ts packages/model-core/src/model-capability-guardrails.test.ts packages/model-core/src/model-capabilities.test.ts packages/omo-opencode/src/cli/doctor/checks/model-resolution.test.ts --bail",
-    typecheck: "tsgo --noEmit && bun run typecheck:script && bun run typecheck:packages",
+    "check:copy": "bun script/check-copy.ts",
+    typecheck: "bun run check:copy && tsgo --noEmit && bun run typecheck:script && bun run typecheck:packages",
     "typecheck:packages": "tsgo --noEmit -p packages/rules-engine/tsconfig.json && tsgo --noEmit -p packages/delegate-core/tsconfig.json && tsgo --noEmit -p packages/mcp-stdio-core/tsconfig.json && tsgo --noEmit -p packages/mcp-client-core/tsconfig.json && tsgo --noEmit -p packages/git-bash-mcp/tsconfig.json && tsgo --noEmit -p packages/ast-grep-mcp/tsconfig.json && tsgo --noEmit -p packages/lsp-core/tsconfig.json && tsgo --noEmit -p packages/utils/tsconfig.json && tsgo --noEmit -p packages/model-core/tsconfig.json && tsgo --noEmit -p packages/omo-config-core/tsconfig.json && tsgo --noEmit -p packages/prompts-core/tsconfig.json && tsgo --noEmit -p packages/comment-checker-core/tsconfig.json && tsgo --noEmit -p packages/hashline-core/tsconfig.json && tsgo --noEmit -p packages/tmux-core/tsconfig.json && tsgo --noEmit -p packages/team-core/tsconfig.json && tsgo --noEmit -p packages/openclaw-core/tsconfig.json && tsgo --noEmit -p packages/boulder-state/tsconfig.json && tsgo --noEmit -p packages/isolation-core/tsconfig.json && tsgo --noEmit -p packages/memory-core/tsconfig.json && tsgo --noEmit -p packages/telemetry-core/tsconfig.json && tsgo --noEmit -p packages/claude-code-compat-core/tsconfig.json && tsgo --noEmit -p packages/skills-loader-core/tsconfig.json && tsgo --noEmit -p packages/agents-md-core/tsconfig.json && tsgo --noEmit -p packages/omo-codex/plugin/shared/tsconfig.json && tsgo --noEmit -p packages/omo-codex/tsconfig.json && tsgo --noEmit -p packages/omo-senpi/tsconfig.json && tsgo --noEmit -p packages/senpi-task/tsconfig.json && tsgo --noEmit -p packages/omo-opencode/tsconfig.json && tsgo --noEmit -p packages/omo-native/tsconfig.json && tsgo --noEmit -p packages/senpi-desktop-protocol/tsconfig.json && tsgo --noEmit -p packages/senpi-desktop-engine/tsconfig.json && tsgo --noEmit -p packages/senpi-desktop-prelude/tsconfig.json && tsgo --noEmit -p packages/senpi-desktop-service/tsconfig.json && tsgo --noEmit -p packages/senpi-desktop-tool/tsconfig.json",
     "typecheck:script": "tsgo --noEmit -p script/tsconfig.json",
     test: "bun test --timeout 20000",
@@ -88961,7 +89111,10 @@ var package_default = {
     "test:windows-codex": "bun run test:codex",
     "build:git-bash-mcp": "bun run --cwd packages/git-bash-mcp build",
     "build:ast-grep-mcp": "bun run --cwd packages/ast-grep-mcp build",
-    "test:desktop": "bun script/check-cargo-pinned-deps.mjs && bun run --cwd packages/senpi-desktop-protocol test && bun run --cwd packages/senpi-desktop-engine test && bun run --cwd packages/senpi-desktop-prelude test && bun run --cwd packages/senpi-desktop-service test && bun run --cwd packages/senpi-desktop-tool test"
+    "test:desktop": "bun script/check-cargo-pinned-deps.mjs && bun run --cwd packages/senpi-desktop-protocol test && bun run --cwd packages/senpi-desktop-engine test && bun run --cwd packages/senpi-desktop-prelude test && bun run --cwd packages/senpi-desktop-service test && bun run --cwd packages/senpi-desktop-tool test",
+    "lint:ratchet": "bun script/lint-ratchet.ts",
+    "lint:ratchet:update": "bun script/lint-ratchet.ts --update",
+    lint: "bun run check:copy && oxlint packages/lsp-tools-mcp packages/lsp-daemon packages/web packages/omo-codex/plugin/components/comment-checker packages/omo-codex/plugin/components/lazycodex-executor-verify packages/omo-codex/plugin/components/lsp packages/omo-codex/plugin/components/rules packages/omo-codex/plugin/components/telemetry packages/omo-codex/plugin/components/ultrawork packages/omo-codex/plugin/components/ulw-execute-continuation packages/omo-codex/plugin/components/ulw-loop"
   },
   keywords: [
     "opencode",
@@ -88990,7 +89143,7 @@ var package_default = {
   },
   devDependencies: {
     "@clack/prompts": "^1.8.1",
-    "@code-yeongyu/senpi": "2026.10.19",
+    "@code-yeongyu/senpi": "2026.10.21-3",
     "@modelcontextprotocol/sdk": "^1.30.0",
     "@oh-my-opencode/agents-md-core": "workspace:*",
     "@oh-my-opencode/ast-grep-mcp": "workspace:*",
@@ -89030,6 +89183,7 @@ var package_default = {
     "@opentui/core": "^0.5.11",
     "@opentui/keymap": "^0.5.11",
     "@types/js-yaml": "^4.0.9",
+    "@types/node": "26.6.2",
     "@types/picomatch": "^4.0.3",
     "@typescript/native-preview": "7.0.0-dev.20260707.2",
     "@typescript/typescript6": "6.0.2",
@@ -89042,6 +89196,8 @@ var package_default = {
     "jsonc-parser": "^3.3.1",
     "node-pty": "^1.1.0",
     omowright: "github:code-yeongyu/omowright#f87ef4d63fe7b56fe117dbab246c8ad88dd8a780",
+    "oxc-parser": "0.148.0",
+    oxlint: "1.89.0",
     picocolors: "^1.1.1",
     picomatch: "^4.0.7",
     "posthog-node": "^5.52.4",
@@ -89049,18 +89205,18 @@ var package_default = {
     typescript: "^7.0.2"
   },
   optionalDependencies: {
-    "oh-my-opencode-darwin-arm64": "5.1.38",
-    "oh-my-opencode-darwin-x64": "5.1.38",
-    "oh-my-opencode-darwin-x64-baseline": "5.1.38",
-    "oh-my-opencode-linux-arm64": "5.1.38",
-    "oh-my-opencode-linux-arm64-musl": "5.1.38",
-    "oh-my-opencode-linux-x64": "5.1.38",
-    "oh-my-opencode-linux-x64-baseline": "5.1.38",
-    "oh-my-opencode-linux-x64-musl": "5.1.38",
-    "oh-my-opencode-linux-x64-musl-baseline": "5.1.38",
-    "oh-my-opencode-windows-arm64": "5.1.38",
-    "oh-my-opencode-windows-x64": "5.1.38",
-    "oh-my-opencode-windows-x64-baseline": "5.1.38"
+    "oh-my-opencode-darwin-arm64": "5.1.44",
+    "oh-my-opencode-darwin-x64": "5.1.44",
+    "oh-my-opencode-darwin-x64-baseline": "5.1.44",
+    "oh-my-opencode-linux-arm64": "5.1.44",
+    "oh-my-opencode-linux-arm64-musl": "5.1.44",
+    "oh-my-opencode-linux-x64": "5.1.44",
+    "oh-my-opencode-linux-x64-baseline": "5.1.44",
+    "oh-my-opencode-linux-x64-musl": "5.1.44",
+    "oh-my-opencode-linux-x64-musl-baseline": "5.1.44",
+    "oh-my-opencode-windows-arm64": "5.1.44",
+    "oh-my-opencode-windows-x64": "5.1.44",
+    "oh-my-opencode-windows-x64-baseline": "5.1.44"
   },
   overrides: {
     hono: "^4.13.8",

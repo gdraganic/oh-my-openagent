@@ -445,8 +445,8 @@ function parseEndpoint(value) {
 }
 
 // src/proxy.ts
-import { existsSync as existsSync14, realpathSync as realpathSync6 } from "node:fs";
-import { basename as basename4, delimiter as delimiter4, dirname as dirname13, isAbsolute as isAbsolute6 } from "node:path";
+import { existsSync as existsSync15, realpathSync as realpathSync6 } from "node:fs";
+import { basename as basename4, delimiter as delimiter4, dirname as dirname14, isAbsolute as isAbsolute6 } from "node:path";
 // ../mcp-stdio-core/src/responses.ts
 function successResponse(id, result) {
   return { jsonrpc: "2.0", id, result };
@@ -1414,6 +1414,13 @@ function validateCwd(cwd) {
     };
   }
 }
+function guardPipeErrors(stream, pipe) {
+  stream.on("error", (error) => {
+    if (stream.listenerCount("error") > 1)
+      return;
+    reportBestEffortCleanupError(`server ${pipe}`, error);
+  });
+}
 function wrap(proc) {
   const exitedPromise = new Promise((resolve2) => {
     proc.once("close", (code) => resolve2(code ?? 0));
@@ -1422,6 +1429,9 @@ function wrap(proc) {
   if (!proc.stdin || !proc.stdout || !proc.stderr) {
     throw new LspProcessSpawnError("Spawned process is missing one of stdin/stdout/stderr pipes");
   }
+  guardPipeErrors(proc.stdin, "stdin");
+  guardPipeErrors(proc.stdout, "stdout");
+  guardPipeErrors(proc.stderr, "stderr");
   return {
     stdin: proc.stdin,
     stdout: proc.stdout,
@@ -4920,7 +4930,7 @@ function formatInstallOptions(serverId, installHint) {
     return ["To install, run:", `  ${installHint}`];
   }
   return [
-    "To install in THIS repository (preferred — no global install needed):",
+    "To install in THIS repository (preferred, no global install needed):",
     `  ${localHint}`,
     "",
     "Or install it globally:",
@@ -4933,7 +4943,7 @@ function formatNotInstalled(result) {
   const decision = loadInstallDecision(server2.id)?.decision;
   const context = lspRequestContext();
   if (decision === "declined") {
-    return `LSP server '${server2.id}' (${extensions}) is NOT INSTALLED; user previously declined installation — proceed without LSP.`;
+    return `LSP server '${server2.id}' (${extensions}) is NOT INSTALLED; user previously declined installation: proceed without LSP.`;
   }
   const header = [
     `LSP server '${server2.id}' for ${extensions} is NOT INSTALLED.`,
@@ -4955,7 +4965,7 @@ function formatNotInstalled(result) {
       ...header,
       ...installOptions,
       "",
-      "ACTION REQUIRED — ASK THE USER whether to install this LSP server.",
+      "ACTION REQUIRED: ASK THE USER whether to install this LSP server.",
       "Install-decision recording is unavailable in this harness; proceed without LSP if the user declines."
     ].join(`
 `);
@@ -4964,7 +4974,7 @@ function formatNotInstalled(result) {
     ...header,
     ...installOptions,
     "",
-    "ACTION REQUIRED — ASK THE USER whether to install this LSP server.",
+    "ACTION REQUIRED: ASK THE USER whether to install this LSP server.",
     "- If the user agrees: run the install command above, then retry this tool.",
     "- If the user declines, OR has NOT explicitly asked for LSP installation:",
     `    call lsp_install_decision { server_id: "${server2.id}", decision: "declined" },`,
@@ -5397,6 +5407,321 @@ function missingDependencyAvailability(error) {
   }
 }
 
+// ../lsp-core/src/lsp/bun-command-output.ts
+import { resolve as resolve10 } from "node:path";
+var TSC_LINE = /^(.+?)\((\d+),(\d+)\): (error|warning|message) (TS\d+): (.*)$/;
+var TSC_SEVERITY = { error: 1, warning: 2, message: 3 };
+function parseBunCheckOutput(stdout, cwd) {
+  const results = [];
+  for (const line of stdout.split(/\r?\n/)) {
+    const match = TSC_LINE.exec(line);
+    if (match) {
+      const [, path, lineNumber, column, severity, code, message] = match;
+      const start = { line: Number(lineNumber) - 1, character: Number(column) - 1 };
+      results.push({
+        file: resolve10(cwd, path ?? ""),
+        diagnostic: {
+          range: { start, end: start },
+          severity: TSC_SEVERITY[severity ?? "error"] ?? 1,
+          code: code ?? "",
+          source: "bun check",
+          message: message ?? ""
+        }
+      });
+      continue;
+    }
+    const previous = results[results.length - 1];
+    if (previous !== undefined && /^\s+\S/.test(line)) {
+      previous.diagnostic.message = `${previous.diagnostic.message}
+${line.trim()}`;
+    }
+  }
+  return results;
+}
+function parseBunLintJson(stdout) {
+  let parsed;
+  try {
+    parsed = JSON.parse(stdout);
+  } catch {
+    return;
+  }
+  if (!Array.isArray(parsed))
+    return;
+  const results = [];
+  for (const entry of parsed) {
+    if (entry === null || typeof entry !== "object")
+      continue;
+    const filePath = entry.filePath;
+    const messages = entry.messages;
+    if (typeof filePath !== "string" || !Array.isArray(messages))
+      continue;
+    for (const raw of messages) {
+      const start = { line: Math.max(0, (raw.line ?? 1) - 1), character: Math.max(0, (raw.column ?? 1) - 1) };
+      const end = {
+        line: raw.endLine === undefined ? start.line : Math.max(0, raw.endLine - 1),
+        character: raw.endColumn === undefined ? start.character : Math.max(0, raw.endColumn - 1)
+      };
+      results.push({
+        file: filePath,
+        diagnostic: {
+          range: { start, end },
+          severity: raw.severity === 2 ? 1 : 2,
+          ...raw.ruleId ? { code: raw.ruleId } : {},
+          source: "bun lint",
+          message: raw.message ?? ""
+        }
+      });
+    }
+  }
+  return results;
+}
+
+// ../lsp-core/src/lsp/bun-project-checks.ts
+import { spawn as spawn2 } from "node:child_process";
+import { existsSync as existsSync13, mkdtempSync, readFileSync as readFileSync8, rmSync as rmSync2, statSync as statSync5, writeFileSync as writeFileSync3 } from "node:fs";
+import { homedir as homedir2, tmpdir } from "node:os";
+import { dirname as dirname12, join as join8, resolve as resolve11 } from "node:path";
+var BUN_LOCKFILES = ["bun.lock", "bun.lockb", "bunfig.toml"];
+var RUNNABLE_EXTENSIONS = [".tsx", ".ts", ".jsx", ".cts", ".cjs", ".js", ".mjs", ".mts"];
+var BIN_SUFFIXES = process.platform === "win32" ? [".exe", ".bunx", ".cmd", ""] : [""];
+var PROBE_TIMEOUT_MS = 1e4;
+var UNFORMATTED_PROBE = `const a=1
+`;
+var probeCache = new Map;
+function findBunProjectRoot(start, home = homedir2()) {
+  const stopAt = resolve11(home);
+  let dir = resolve11(start);
+  for (;; ) {
+    if (dir === stopAt)
+      return;
+    if (BUN_LOCKFILES.some((name) => existsSync13(join8(dir, name))))
+      return dir;
+    if (packageManagerIsBun(join8(dir, "package.json")))
+      return dir;
+    if (existsSync13(join8(dir, ".git")))
+      return;
+    const parent = dirname12(dir);
+    if (parent === dir)
+      return;
+    dir = parent;
+  }
+}
+function packageManagerIsBun(packageJsonPath) {
+  const manifest = readJsonObject(packageJsonPath);
+  const packageManager = manifest?.["packageManager"];
+  return typeof packageManager === "string" && packageManager.startsWith("bun@");
+}
+function readJsonObject(path) {
+  if (!existsSync13(path))
+    return;
+  try {
+    const parsed = JSON.parse(readFileSync8(path, "utf8"));
+    return parsed !== null && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : undefined;
+  } catch {
+    return;
+  }
+}
+function isFile(path) {
+  try {
+    return statSync5(path).isFile();
+  } catch {
+    return false;
+  }
+}
+function isDirectory(path) {
+  try {
+    return statSync5(path).isDirectory();
+  } catch {
+    return false;
+  }
+}
+function projectShadowsBunCommand(command, cwd) {
+  const packageJsonDir = nearestPackageJsonDir(cwd);
+  if (packageJsonDir !== undefined) {
+    const scripts = readJsonObject(join8(packageJsonDir, "package.json"))?.["scripts"];
+    if (scripts !== null && typeof scripts === "object" && typeof scripts[command] === "string") {
+      return true;
+    }
+  }
+  if (command === "check")
+    return false;
+  const base = join8(cwd, command);
+  if (isFile(base) || RUNNABLE_EXTENSIONS.some((extension) => isFile(`${base}${extension}`)))
+    return true;
+  if (isDirectory(base) && (isFile(join8(base, "package.json")) || RUNNABLE_EXTENSIONS.some((extension) => isFile(join8(base, `index${extension}`))))) {
+    return true;
+  }
+  let dir = resolve11(cwd);
+  for (;; ) {
+    if (BIN_SUFFIXES.some((suffix) => existsSync13(join8(dir, "node_modules", ".bin", `${command}${suffix}`))))
+      return true;
+    const parent = dirname12(dir);
+    if (parent === dir)
+      return false;
+    dir = parent;
+  }
+}
+function nearestPackageJsonDir(start) {
+  let dir = resolve11(start);
+  for (;; ) {
+    if (existsSync13(join8(dir, "package.json")))
+      return dir;
+    const parent = dirname12(dir);
+    if (parent === dir)
+      return;
+    dir = parent;
+  }
+}
+function binaryIdentity(bunPath) {
+  try {
+    const stats = statSync5(bunPath);
+    return `${stats.mtimeMs}:${stats.size}`;
+  } catch {
+    return "missing";
+  }
+}
+function bunHasCommand(bunPath, command, timeoutMs = PROBE_TIMEOUT_MS) {
+  const key = `${bunPath}\x00${binaryIdentity(bunPath)}\x00${command}`;
+  const cached = probeCache.get(key);
+  if (cached !== undefined)
+    return cached;
+  const probe2 = probeOnce(bunPath, command, timeoutMs).then((answer) => {
+    if (answer === undefined)
+      probeCache.delete(key);
+    return answer === true;
+  });
+  probeCache.set(key, probe2);
+  return probe2;
+}
+async function probeOnce(bunPath, command, timeoutMs) {
+  const emptyDir = mkdtempSync(join8(tmpdir(), "omo-bun-probe-"));
+  const timeout = AbortSignal.timeout(timeoutMs);
+  try {
+    const help = await runBunCommand(bunPath, [command, "--help"], emptyDir, timeout);
+    if (help.exitCode === null)
+      return;
+    if (help.exitCode !== 0)
+      return false;
+    if (command !== "format")
+      return true;
+    const probeFile = join8(emptyDir, "probe.ts");
+    writeFileSync3(probeFile, UNFORMATTED_PROBE);
+    const write = await runBunCommand(bunPath, ["format", "--write", "probe.ts"], emptyDir, timeout);
+    if (write.exitCode === null)
+      return;
+    return write.exitCode === 0 && readFileSync8(probeFile, "utf8") !== UNFORMATTED_PROBE;
+  } catch {
+    return;
+  } finally {
+    rmSync2(emptyDir, { recursive: true, force: true });
+  }
+}
+async function resolveBunProjectCommand(command, cwd, options = {}) {
+  if (findBunProjectRoot(cwd, options.homeDir) === undefined)
+    return;
+  if (projectShadowsBunCommand(command, cwd))
+    return;
+  const bunPath = (options.resolveBun ?? defaultResolveBun)(cwd);
+  if (!bunPath)
+    return;
+  return await bunHasCommand(bunPath, command) ? bunPath : undefined;
+}
+function defaultResolveBun(cwd) {
+  return resolveServerBinary(["bun"], cwd);
+}
+function runBunCommand(bunPath, args, cwd, signal) {
+  signal?.throwIfAborted();
+  const prepared = createSpawnCommand([bunPath, ...args]);
+  return new Promise((resolvePromise, reject) => {
+    const child = spawn2(prepared.command, prepared.args, {
+      cwd,
+      stdio: ["ignore", "pipe", "pipe"],
+      shell: prepared.shell,
+      windowsHide: true,
+      detached: process.platform !== "win32"
+    });
+    const stdout = [];
+    const stderr = [];
+    const onAbort = () => killProcessTree(child, "SIGKILL");
+    signal?.addEventListener("abort", onAbort, { once: true });
+    child.stdout?.on("data", (chunk) => stdout.push(chunk));
+    child.stderr?.on("data", (chunk) => stderr.push(chunk));
+    child.once("error", (error) => {
+      signal?.removeEventListener("abort", onAbort);
+      reject(error);
+    });
+    child.once("close", (exitCode) => {
+      signal?.removeEventListener("abort", onAbort);
+      if (signal?.aborted) {
+        reject(signal.reason);
+        return;
+      }
+      resolvePromise({
+        exitCode,
+        stdout: Buffer.concat(stdout).toString("utf8"),
+        stderr: Buffer.concat(stderr).toString("utf8")
+      });
+    });
+  });
+}
+
+// ../lsp-core/src/tools/bun-directory-diagnostics.ts
+var TYPESCRIPT_EXTENSIONS = new Set([".ts", ".tsx", ".mts", ".cts"]);
+async function runBunDirectoryDiagnostics(absDir, extension, severity, signal, options = {}) {
+  if (!TYPESCRIPT_EXTENSIONS.has(extension))
+    return;
+  const checkBun = await resolveBunProjectCommand("check", absDir, options);
+  if (checkBun === undefined)
+    return;
+  let typecheck;
+  try {
+    const run = await runBunCommand(checkBun, ["check", "--no-pretty", "."], absDir, signal);
+    typecheck = parseBunCheckOutput(run.stdout, absDir);
+    const failedWithoutDiagnostics = run.exitCode === 1 && typecheck.length === 0;
+    if (run.exitCode !== 0 && run.exitCode !== 1 || failedWithoutDiagnostics)
+      return;
+  } catch (error) {
+    if (signal?.aborted)
+      throw error;
+    return;
+  }
+  const header = [`Directory: ${absDir}`, "Typecheck: bun check (files in this directory and everything they import)"];
+  const projectCommands = ["bun check"];
+  const collected = [...typecheck];
+  const lintBun = await resolveBunProjectCommand("lint", absDir, options);
+  if (lintBun !== undefined) {
+    const lint = await runBunLint(lintBun, absDir, signal);
+    header.push(lint.status);
+    projectCommands.push("bun lint");
+    collected.push(...lint.diagnostics);
+  }
+  const diagnostics = collected.filter(({ diagnostic }) => filterDiagnosticsBySeverity([diagnostic], severity).length > 0);
+  const lines = [...header, `Total diagnostics: ${diagnostics.length}`];
+  const shown = diagnostics.slice(0, DEFAULT_MAX_DIAGNOSTICS);
+  if (shown.length > 0) {
+    lines.push("", ...shown.map(({ file, diagnostic }) => `${file}: ${formatDiagnostic(diagnostic)}`));
+    if (diagnostics.length > shown.length) {
+      lines.push("", `... (${diagnostics.length - shown.length} more diagnostics not shown)`);
+    }
+  }
+  return { output: lines.join(`
+`), diagnostics, projectCommands };
+}
+async function runBunLint(bunPath, absDir, signal) {
+  try {
+    const run = await runBunCommand(bunPath, ["lint", "-f", "json", "."], absDir, signal);
+    const diagnostics = run.exitCode === 0 || run.exitCode === 1 ? parseBunLintJson(run.stdout) : undefined;
+    if (diagnostics !== undefined)
+      return { status: "Lint: bun lint", diagnostics };
+    const reason = run.stderr.trim().split(/\r?\n/)[0] ?? "";
+    return { status: `Lint: bun lint could not lint (exit ${run.exitCode ?? "signal"})${reason ? `: ${reason}` : ""}`, diagnostics: [] };
+  } catch (error) {
+    if (signal?.aborted)
+      throw error;
+    return { status: `Lint: bun lint could not run: ${error instanceof Error ? error.message : String(error)}`, diagnostics: [] };
+  }
+}
+
 // ../lsp-core/src/tools/parameters.ts
 function isRecord7(value) {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -5451,7 +5776,7 @@ function asDiagnosticArray(result) {
     return result;
   return result.items ?? [];
 }
-async function executeLspDiagnostics(params, signal) {
+async function executeLspDiagnostics(params, signal, bunOptions = {}) {
   const filePath = requireString(params, "filePath");
   const severity = severityFilter(params);
   try {
@@ -5471,6 +5796,19 @@ async function executeLspDiagnostics(params, signal) {
           errorKind: "no_files"
         };
         return text(message, details3);
+      }
+      const bun = await runBunDirectoryDiagnostics(absPath, extension, severity, signal, bunOptions);
+      if (bun !== undefined) {
+        const details3 = {
+          filePath,
+          severity,
+          mode: "directory",
+          diagnostics: [...bun.diagnostics],
+          totalDiagnostics: bun.diagnostics.length,
+          truncated: bun.diagnostics.length > DEFAULT_MAX_DIAGNOSTICS,
+          projectCommands: [...bun.projectCommands]
+        };
+        return text(bun.output, details3);
       }
       const output2 = await aggregateDiagnosticsForDirectory(absPath, extension, severity, undefined, signal === undefined ? {} : { signal });
       const details2 = {
@@ -5532,7 +5870,7 @@ async function executeLspDiagnostics(params, signal) {
   }
 }
 // ../lsp-core/src/lsp/format-document.ts
-import { readFileSync as readFileSync8, renameSync as renameSync3, unlinkSync as unlinkSync4, writeFileSync as writeFileSync3 } from "node:fs";
+import { readFileSync as readFileSync9, renameSync as renameSync3, unlinkSync as unlinkSync4, writeFileSync as writeFileSync4 } from "node:fs";
 var DEFAULT_FORMATTING_OPTIONS = {
   tabSize: 4,
   insertSpaces: false,
@@ -5547,7 +5885,7 @@ async function formatDocumentWithClient(client, filePath, options = {}) {
     return { status: "unavailable", reason: "capability_not_advertised" };
   if (edits.length === 0)
     return UNCHANGED;
-  const before = readFileSync8(filePath, "utf-8");
+  const before = readFileSync9(filePath, "utf-8");
   const normalized = normalizeTextEdits(before, edits, 0);
   if (normalized.text === before)
     return UNCHANGED;
@@ -5570,7 +5908,7 @@ function lineDelta(edits) {
 }
 function writeAtomically(filePath, content) {
   const tempPath = `${filePath}.omo-format.tmp`;
-  writeFileSync3(tempPath, content, "utf-8");
+  writeFileSync4(tempPath, content, "utf-8");
   try {
     renameSync3(tempPath, filePath);
   } catch (error) {
@@ -5875,7 +6213,7 @@ var LSP_MCP_TOOLS = [
     name: "diagnostics",
     aliases: ["lsp_diagnostics"],
     title: "LSP Diagnostics",
-    description: "Get errors, warnings, and hints for a source file or directory.",
+    description: "Get errors, warnings, and hints for a source file or directory. In a Bun project, a TypeScript directory is typechecked with `bun check`, plus `bun lint` when the installed Bun has it.",
     inputSchema: objectSchema({
       filePath: { type: "string", description: "File or directory path to check." },
       severity: {
@@ -6061,8 +6399,8 @@ function requestedProtocolVersion(params) {
 
 // src/daemon-client.ts
 import { connect } from "node:net";
-import { homedir as homedir3 } from "node:os";
-import { join as join8 } from "node:path";
+import { homedir as homedir4 } from "node:os";
+import { join as join9 } from "node:path";
 import { setTimeout as delay } from "node:timers/promises";
 
 // src/daemon-request-error.ts
@@ -6141,21 +6479,21 @@ function errorText(error) {
 }
 
 // src/ensure-daemon.ts
-import { spawn as spawn2 } from "node:child_process";
-import { closeSync as closeSync3, existsSync as existsSync13, mkdirSync as mkdirSync4, openSync as openSync3, writeSync as writeSync3 } from "node:fs";
+import { spawn as spawn3 } from "node:child_process";
+import { closeSync as closeSync3, existsSync as existsSync14, mkdirSync as mkdirSync4, openSync as openSync3, writeSync as writeSync3 } from "node:fs";
 import { Socket } from "node:net";
-import { dirname as dirname12, isAbsolute as isAbsolute5 } from "node:path";
+import { dirname as dirname13, isAbsolute as isAbsolute5 } from "node:path";
 import { argv0, execPath } from "node:process";
 
 // src/paths.ts
 import { createHash as createHash2 } from "node:crypto";
 import { createRequire } from "node:module";
-import { homedir as homedir2, tmpdir, userInfo } from "node:os";
+import { homedir as homedir3, tmpdir as tmpdir2, userInfo } from "node:os";
 import * as path from "node:path";
 import { fileURLToPath as fileURLToPath3 } from "node:url";
 
 // src/runtime-contract.ts
-import { statSync as statSync5 } from "node:fs";
+import { statSync as statSync6 } from "node:fs";
 import { isAbsolute as isAbsolute4 } from "node:path";
 var OMO_LSP_DAEMON_DIR = "OMO_LSP_DAEMON_DIR";
 var OMO_LSP_DAEMON_CLI = "OMO_LSP_DAEMON_CLI";
@@ -6205,7 +6543,7 @@ function resolveDaemonRuntime(env, defaults) {
   }
   let cliStats;
   try {
-    cliStats = statSync5(cliOverride);
+    cliStats = statSync6(cliOverride);
   } catch (error) {
     if (!(error instanceof Error))
       throw error;
@@ -6283,8 +6621,8 @@ function daemonPaths(env = process.env, runtimeDefaults = packagedRuntimeDefault
 function defaultDaemonPlatform() {
   return {
     platform: process.platform,
-    homedir: homedir2,
-    tmpdir,
+    homedir: homedir3,
+    tmpdir: tmpdir2,
     getuid: () => typeof process.getuid === "function" ? process.getuid() : undefined,
     username: () => userInfo().username,
     path
@@ -6340,7 +6678,7 @@ function createLineDecoder(onMessage, onParseError) {
 }
 
 // src/ensure-daemon.ts
-var PROBE_TIMEOUT_MS = 2000;
+var PROBE_TIMEOUT_MS2 = 2000;
 var DEFAULT_READY_TIMEOUT_MS = 5000;
 var DEFAULT_POLL_INTERVAL_MS = 100;
 var FAILED_SPAWN_COOLDOWN_MS = 5000;
@@ -6385,14 +6723,14 @@ async function waitUntilReachable(paths, deps, readyTimeoutMs, pollIntervalMs, s
     await awaitWithSignal2(deps.sleep(pollIntervalMs, signal), signal);
   }
 }
-async function probeDaemon(paths, timeoutMs = PROBE_TIMEOUT_MS, signal) {
+async function probeDaemon(paths, timeoutMs = PROBE_TIMEOUT_MS2, signal) {
   const token = readAuthToken(paths);
   if (!token)
     return false;
   return await pingDaemon(paths, token, timeoutMs, signal) !== null;
 }
-function pingDaemon(paths, token, timeoutMs = PROBE_TIMEOUT_MS, signal) {
-  return new Promise((resolve10) => {
+function pingDaemon(paths, token, timeoutMs = PROBE_TIMEOUT_MS2, signal) {
+  return new Promise((resolve12) => {
     const socket = new Socket;
     let settled = false;
     let timer;
@@ -6404,7 +6742,7 @@ function pingDaemon(paths, token, timeoutMs = PROBE_TIMEOUT_MS, signal) {
         clearTimeout(timer);
       signal?.removeEventListener("abort", onAbort);
       socket.destroy();
-      resolve10(value);
+      resolve12(value);
     };
     const onAbort = () => finish(null);
     const decoder = createLineDecoder((message) => {
@@ -6428,10 +6766,10 @@ function pingDaemon(paths, token, timeoutMs = PROBE_TIMEOUT_MS, signal) {
   });
 }
 function spawnDaemonProcess(paths, deps = {}) {
-  mkdirSync4(dirname12(paths.log), { recursive: true });
+  mkdirSync4(dirname13(paths.log), { recursive: true });
   const logFd = openSync3(paths.log, "a");
   try {
-    const spawnDaemonChild = deps.spawn ?? spawn2;
+    const spawnDaemonChild = deps.spawn ?? spawn3;
     const executable = deps.resolveExecutable?.() ?? resolveDaemonNodeExecutable();
     const child = spawnDaemonChild(executable, [paths.cliPath, "daemon"], {
       detached: true,
@@ -6451,7 +6789,7 @@ function spawnDaemonProcess(paths, deps = {}) {
     throw error;
   }
 }
-function resolveDaemonNodeExecutable(cachedExecPath = execPath, originalArgv0 = argv0, pathExists = existsSync13) {
+function resolveDaemonNodeExecutable(cachedExecPath = execPath, originalArgv0 = argv0, pathExists = existsSync14) {
   if (pathExists(cachedExecPath))
     return cachedExecPath;
   if (isAbsolute5(originalArgv0) && pathExists(originalArgv0))
@@ -6460,14 +6798,14 @@ function resolveDaemonNodeExecutable(cachedExecPath = execPath, originalArgv0 = 
 }
 function defaultEnsureDaemonDeps() {
   return {
-    probe: (paths, signal) => probeDaemon(paths, PROBE_TIMEOUT_MS, signal),
+    probe: (paths, signal) => probeDaemon(paths, PROBE_TIMEOUT_MS2, signal),
     spawnDaemon: (paths) => spawnDaemonProcess(paths),
     sleep: (ms, signal) => sleepWithSignal(ms, signal),
     now: () => Date.now()
   };
 }
 function sleepWithSignal(ms, signal) {
-  return new Promise((resolve10) => {
+  return new Promise((resolve12) => {
     let settled = false;
     const finish = () => {
       if (settled)
@@ -6475,7 +6813,7 @@ function sleepWithSignal(ms, signal) {
       settled = true;
       clearTimeout(timer);
       signal?.removeEventListener("abort", finish);
-      resolve10();
+      resolve12();
     };
     const timer = setTimeout(finish, ms);
     if (signal?.aborted) {
@@ -6490,7 +6828,7 @@ function awaitWithSignal2(promise, signal) {
     return promise;
   if (signal.aborted)
     return Promise.reject(abortError3(signal));
-  return new Promise((resolve10, reject) => {
+  return new Promise((resolve12, reject) => {
     let settled = false;
     const finish = (run) => {
       if (settled)
@@ -6501,7 +6839,7 @@ function awaitWithSignal2(promise, signal) {
     };
     const onAbort = () => finish(() => reject(abortError3(signal)));
     signal.addEventListener("abort", onAbort, { once: true });
-    promise.then((value) => finish(() => resolve10(value)), (error) => finish(() => reject(error)));
+    promise.then((value) => finish(() => resolve12(value)), (error) => finish(() => reject(error)));
   });
 }
 function throwIfAborted(signal) {
@@ -6686,12 +7024,12 @@ function callFormatViaDaemon(filePath, options) {
 }
 function currentRequestContext(env = process.env) {
   const cwd = process.cwd();
-  const home = env["HOME"] ?? homedir3();
+  const home = env["HOME"] ?? homedir4();
   return parseLspRequestContext({
     cwd,
-    projectConfigPaths: [join8(cwd, ".codex", "lsp-client.json")],
-    userConfigPath: join8(home, ".codex", "lsp-client.json"),
-    installDecisionsPath: join8(home, ".codex", "lsp-install-decisions.json"),
+    projectConfigPaths: [join9(cwd, ".codex", "lsp-client.json")],
+    userConfigPath: join9(home, ".codex", "lsp-client.json"),
+    installDecisionsPath: join9(home, ".codex", "lsp-install-decisions.json"),
     capabilities: { installDecisionTool: true }
   });
 }
@@ -6706,7 +7044,7 @@ function withContext(args, context) {
 function ensureDaemonAvailable(paths, ensure, signal) {
   if (!signal)
     return ensure(paths);
-  return new Promise((resolve10, reject) => {
+  return new Promise((resolve12, reject) => {
     let settled = false;
     const finish = (run) => {
       if (settled)
@@ -6721,11 +7059,11 @@ function ensureDaemonAvailable(paths, ensure, signal) {
       return;
     }
     signal.addEventListener("abort", onAbort, { once: true });
-    Promise.resolve().then(() => ensure(paths, signal)).then(() => finish(() => resolve10()), (error) => finish(() => reject(signal.aborted ? new DaemonRequestCancelledError(false) : error)));
+    Promise.resolve().then(() => ensure(paths, signal)).then(() => finish(() => resolve12()), (error) => finish(() => reject(signal.aborted ? new DaemonRequestCancelledError(false) : error)));
   });
 }
 function sendToolCall(paths, token, name, args, options) {
-  return new Promise((resolve10, reject) => {
+  return new Promise((resolve12, reject) => {
     const socket = connect(paths.socket);
     const requestId = allocateProxyRequestId();
     let settled = false;
@@ -6778,7 +7116,7 @@ function sendToolCall(paths, token, name, args, options) {
       }
       const result = toToolResult(message, requestId);
       if (result)
-        finish(() => resolve10(result));
+        finish(() => resolve12(result));
       else
         finish(() => reject(new DaemonRequestError("invalid daemon response", requestWritten)));
     });
@@ -6946,18 +7284,18 @@ function canonicalizePathList(value) {
   return value.split(delimiter4).map((entry) => canonicalizePath(entry) ?? entry).join(delimiter4);
 }
 function canonicalizePath(value) {
-  if (value === undefined || !isAbsolute6(value) || !existsSync14(value))
+  if (value === undefined || !isAbsolute6(value) || !existsSync15(value))
     return value;
   return realpathSync6(value);
 }
 function projectRootFromOpenCodeConfigPath(path2) {
   if (basename4(path2) !== "lsp.json" && basename4(path2) !== "lsp-client.json")
     return;
-  const configDir = dirname13(path2);
+  const configDir = dirname14(path2);
   const configDirName = basename4(configDir);
   if (configDirName !== ".opencode" && configDirName !== ".omo")
     return;
-  return dirname13(configDir);
+  return dirname14(configDir);
 }
 
 // src/daemon-server.ts
@@ -6967,7 +7305,7 @@ import { createServer as createServer2 } from "node:net";
 // src/version-reap.ts
 import { execFile } from "node:child_process";
 import { readdir, readFile, rm } from "node:fs/promises";
-import { basename as basename5, dirname as dirname14, join as join9 } from "node:path";
+import { basename as basename5, dirname as dirname15, join as join10 } from "node:path";
 var TERM_GRACE_MS = 5000;
 var KILL_GRACE_MS = 1000;
 var VERSION_ENTRY_PATTERN = /^v([A-Za-z0-9][A-Za-z0-9._+-]{0,127})$/;
@@ -6988,7 +7326,7 @@ async function attestDaemonCliProcess(pid, platform, deps = {}) {
   return isNodeCliDaemonCommand(command.trim());
 }
 async function reapStaleDaemonVersions(ownPaths, deps = {}) {
-  const baseDir = dirname14(ownPaths.dir);
+  const baseDir = dirname15(ownPaths.dir);
   const platform = deps.platform ?? process.platform;
   const isAlive = deps.isAlive ?? isProcessAlive;
   const attest = deps.attest ?? ((pid) => attestDaemonCliProcess(pid, platform));
@@ -7007,7 +7345,7 @@ async function reapStaleDaemonVersions(ownPaths, deps = {}) {
     const version = parseVersionEntry(entry.name);
     if (version === null || !entry.isDirectory())
       continue;
-    const versionDir = join9(baseDir, entry.name);
+    const versionDir = join10(baseDir, entry.name);
     const siblingPaths = daemonPaths({ [OMO_LSP_DAEMON_DIR]: baseDir }, { cliPath: ownPaths.cliPath, version });
     results.push(await reapOneVersion({
       version,
@@ -7031,7 +7369,7 @@ async function reapOneVersion(context) {
   const { version, versionDir } = context;
   const owner = context.readOwner(context.siblingPaths);
   if (!owner) {
-    const lockPid = readLockPid(join9(versionDir, "daemon.lock"));
+    const lockPid = readLockPid(join10(versionDir, "daemon.lock"));
     if (lockPid !== null && context.isAlive(lockPid)) {
       context.log(`reap: sparing v${version}: owner metadata missing but daemon.lock is held by live pid ${lockPid}`);
       return { version, status: "spared", reason: `owner metadata missing but lock held by live pid ${lockPid}` };
@@ -7109,13 +7447,13 @@ function defaultReadProcFile(path2) {
   return readFile(path2);
 }
 function defaultExecuteForStdout(file, args) {
-  return new Promise((resolve10) => {
+  return new Promise((resolve12) => {
     execFile(file, [...args], { encoding: "utf8", maxBuffer: 1024 * 1024, timeout: 1000, windowsHide: true }, (error, stdout) => {
       if (error !== null) {
-        resolve10(null);
+        resolve12(null);
         return;
       }
-      resolve10(stdout);
+      resolve12(stdout);
     });
   });
 }
@@ -7134,7 +7472,7 @@ async function defaultWaitForExit(pid, timeoutMs) {
       return true;
     if (Date.now() >= deadline)
       return false;
-    await new Promise((resolve10) => setTimeout(resolve10, 100));
+    await new Promise((resolve12) => setTimeout(resolve12, 100));
   }
 }
 function defaultLog(message) {
@@ -7241,17 +7579,17 @@ async function assertSelfProbe(paths, token, owner) {
     throw new DaemonStartupDeferredError("self_probe_failed");
 }
 function listen(server2, socketPath) {
-  return new Promise((resolve10, reject) => {
+  return new Promise((resolve12, reject) => {
     const onError = (error) => reject(error);
     server2.once("error", onError);
     server2.listen(socketPath, () => {
       server2.removeListener("error", onError);
-      resolve10();
+      resolve12();
     });
   });
 }
 function closeServer(server2) {
-  return new Promise((resolve10) => server2.close(() => resolve10()));
+  return new Promise((resolve12) => server2.close(() => resolve12()));
 }
 function installSignalHandlers(close) {
   const handler = () => {

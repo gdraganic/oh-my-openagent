@@ -2011,7 +2011,7 @@ async function checkpointUlwLoop(repoRoot, args, scope, dependencies) {
     if (aggregateCompletion !== undefined)
       plan.aggregateCompletion = aggregateCompletion;
     if (aggregateCompletion !== undefined)
-      nextActions = [...nextActions, 'aggregate complete — now update_goal({status:"complete"})'];
+      nextActions = [...nextActions, 'aggregate complete: now update_goal({status:"complete"})'];
     plan.updatedAt = now;
     const ledgerEntry = buildLedger(now, args, goal, qualityGate, codexGoal, aggregateCompletion);
     const entries = [ledgerEntry];
@@ -2241,7 +2241,7 @@ function buildText(mode, plan, goal, createGoal, isFinal, surface) {
     `Mode: ${mode}`,
     `Plan: ${plan.goalsPath}`,
     `Ledger: ${plan.ledgerPath}`,
-    `Goal: ${goal.id} — ${goal.title}`,
+    `Goal: ${goal.id} - ${goal.title}`,
     "",
     ...activeGoalLines(goal),
     "",
@@ -2295,13 +2295,13 @@ function successCriteriaLines(criteria) {
 function formatCriterionLine(criterion) {
   const remainingWork = criterion.status === "pending" ? " remaining work:" : "";
   const marker = isEssentialCriterion(criterion) ? "essential" : "non-essential";
-  return `-${remainingWork} [${criterion.id}] [${marker}] (${criterion.userModel}) ${criterion.scenario} — expect: ${criterion.expectedEvidence} — status: ${criterion.status}`;
+  return `-${remainingWork} [${criterion.id}] [${marker}] (${criterion.userModel}) ${criterion.scenario} - expect: ${criterion.expectedEvidence} - status: ${criterion.status}`;
 }
 function evidenceLayoutLines(plan) {
   if (plan.evidenceLayoutVersion !== 2)
     return [];
   return [
-    "- Evidence layout v2: write every artifact for the active goal (QA matrix, review reports, receipts) under the current attempt directory — read currentAttemptDir from `omo-agent-toolkit ulw-loop status --json` (.omo/evidence/ulw/<session>/<goalId>/a<attempt>). The final checkpoint rejects quality-gate artifacts outside that directory."
+    "- Evidence layout v2: write every artifact for the active goal (QA matrix, review reports, receipts) under the current attempt directory. Read currentAttemptDir from `omo-agent-toolkit ulw-loop status --json` (.omo/evidence/ulw/<session>/<goalId>/a<attempt>). The final checkpoint rejects quality-gate artifacts outside that directory."
   ];
 }
 function finalSection(plan, goal, isFinal, aggregate, surface) {
@@ -2314,7 +2314,7 @@ function finalSection(plan, goal, isFinal, aggregate, surface) {
   const blockerCommand = `omo-agent-toolkit ulw-loop record-review-blockers${option} --goal-id ${goal.id} --title "Resolve final code-review blockers" --objective "<blocker-resolution objective>" --evidence "<review findings>" --codex-goal-json "<active get_goal JSON or path>"`;
   const checkpointCommand = `omo-agent-toolkit ulw-loop checkpoint${option} --goal-id ${goal.id} --status complete --evidence "<targeted verification/manualQa/gateReview evidence>" --codex-goal-json "<fresh complete get_goal JSON or path>" --quality-gate-json "<quality gate JSON or path>"`;
   return joinLines([
-    "Final story — self-review and manual QA are the default; use the quality gate before update_goal:",
+    "Final story: self-review and manual QA are the default; use the quality gate before update_goal:",
     "- Run targeted verification for changed behavior.",
     "- Confirm every manualQa artifact path exists and has non-zero size.",
     `- Run manual QA yourself and write its artifact under currentAttemptDir. Only if the user explicitly demands strict, rigorous, or high-accuracy review, spawn ${roles.gateReview}, optionally also ${roles.codeReview} and ${roles.manualQa}; otherwise set manualQa.by and gateReview.by to "main-session".`,
@@ -2331,7 +2331,7 @@ function senpiFinalSection(plan, goal, aggregate) {
   const option = sessionOption(plan);
   const checkpointCommand = `omo-agent-toolkit ulw-loop checkpoint${option} --goal-id ${goal.id} --status complete --evidence "<manualQa/gateReview evidence>" --codex-goal-json "<fresh complete get_goal JSON or path>" --quality-gate-json "$(omo-agent-toolkit ulw-loop checkpoint${option} --print-template)"`;
   return joinLines([
-    "Final story — run the single-reviewer quality gate before update_goal:",
+    "Final story: run the single-reviewer quality gate before update_goal:",
     '- Run manual QA yourself and write the non-empty artifact under currentAttemptDir; set manualQa.by to "main-session".',
     '- Spawn exactly one gate reviewer with task(category: "deep-high").',
     "- If that task fails with any model_unavailable failure, retry with category:deep-low, then category:unspecified-high, then category:unspecified-low.",
@@ -4837,7 +4837,7 @@ function renderResumeDirective(plan, goal3, sessionId) {
   const normalized = normalizeUlwLoopSessionId(sessionId);
   const option = normalized !== null && plan.goalsPath.includes(`/${normalized}/`) ? ` --session-id ${normalized}` : "";
   return [
-    `The ulw-loop run in this session still has unfinished goals (next: ${goal3.id} — ${goal3.title}).`,
+    `The ulw-loop run in this session still has unfinished goals (next: ${goal3.id} - ${goal3.title}).`,
     "The turn ended before the loop completed. Resume it now:",
     `1. Run \`omo-agent-toolkit ulw-loop status${option} --json\` to reload the plan, the active goal, and currentAttemptDir.`,
     "2. Continue the active goal's remaining success criteria, recording evidence with record-evidence.",
