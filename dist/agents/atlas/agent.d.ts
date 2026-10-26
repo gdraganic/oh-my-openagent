@@ -7,7 +7,8 @@
  * 1. Claude Opus 4.7       → opus-4-7.md   (literal-following + explicit fan-out push)
  * 2. GPT family            → gpt.md        (shared GPT-family calibration)
  * 3. Gemini family         → gemini.md
- * 4. Kimi K3              → kimi-k3.md    (K3-native; checked first among Kimi)
+ * 4. Kimi K3.1            → kimi-k3-1.md  (own copy of kimi-k3.md; checked before K3)
+ * 4b. Kimi K3             → kimi-k3.md    (K3-native; checked first among the rest of Kimi)
  * 5. Kimi K2.7             → kimi-k2-7.md  (restrained, outcome-first; checked before generic kimi)
  * 6. Kimi K2.x family      → kimi.md       (Claude-family base + K2.6 thinking-mode calibration)
  * 7. GLM family            → glm.md        (GLM 5.2 calibration)
@@ -18,7 +19,7 @@ import type { AgentMode, AgentPromptMetadata } from "../types";
 import type { AvailableAgent, AvailableSkill } from "../dynamic-agent-prompt-builder";
 import type { CategoryConfig } from "../../config/schema";
 declare const MODE: AgentMode;
-export type AtlasPromptSource = "default" | "gpt" | "gemini" | "kimi" | "kimi-k3" | "kimi-k2-7" | "opus-4-7" | "glm";
+export type AtlasPromptSource = "default" | "gpt" | "gemini" | "kimi" | "kimi-k3" | "kimi-k3-1" | "kimi-k2-7" | "opus-4-7" | "glm";
 export declare function getAtlasPromptSource(model?: string): AtlasPromptSource;
 export interface OrchestratorContext {
     model?: string;

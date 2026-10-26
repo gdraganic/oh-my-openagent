@@ -4,6 +4,7 @@ export type OmoOpenCodeConfigView = {
     /** Where the view sits in its file (`[opencode].`, `profiles.<P>.`), so a diagnostic names the full key. */
     readonly keyPrefix: string;
     readonly path: string;
+    readonly scope?: "project" | "user";
 };
 export type OmoOpenCodeConfigChain = {
     readonly diagnostics: readonly (OmoConfigDiagnostic | OmoModelReferenceDiagnostic)[];

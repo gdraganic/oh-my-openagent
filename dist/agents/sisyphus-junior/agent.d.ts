@@ -21,7 +21,7 @@ export declare const SISYPHUS_JUNIOR_DEFAULTS: {
     readonly model: "anthropic/claude-sonnet-5";
     readonly temperature: 0.1;
 };
-export type SisyphusJuniorPromptSource = "default" | "kimi-k2" | "kimi-k2-7" | "kimi-k3" | "gpt" | "gpt-5-5" | "gpt-5-4" | "gemini" | "glm-5-2";
+export type SisyphusJuniorPromptSource = "default" | "kimi-k2" | "kimi-k2-7" | "kimi-k3" | "kimi-k3-1" | "gpt" | "gpt-5-5" | "gpt-5-4" | "gemini" | "glm-5-2";
 export declare function getSisyphusJuniorPromptSource(model?: string): SisyphusJuniorPromptSource;
 /**
  * Builds the appropriate Sisyphus-Junior prompt based on model.

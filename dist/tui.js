@@ -2350,6 +2350,20 @@ var init_logger = __esm(() => {
   DEFAULT_MAX_LOG_FILE_SIZE_BYTES = 50 * 1024 * 1024;
 });
 
+// packages/utils/src/logging/product-identity.ts
+function createProductIdentity(input) {
+  return {
+    pluginName: input.pluginName,
+    legacyPluginName: input.legacyPluginName,
+    publishedPackageName: input.publishedPackageName,
+    acceptedPackageNames: input.acceptedPackageNames ?? [input.publishedPackageName, input.pluginName],
+    configBasename: input.configBasename,
+    legacyConfigBasename: input.legacyConfigBasename,
+    logFileName: input.logFileName,
+    cacheDirName: input.cacheDirName
+  };
+}
+
 // packages/utils/src/logging/index.ts
 var init_logging = __esm(() => {
   init_logger();
@@ -2404,8 +2418,17 @@ var init_ast_grep = __esm(() => {
 // packages/utils/src/classify-path-environment.ts
 var init_classify_path_environment = () => {};
 
+// packages/utils/src/command-executor/home-directory.ts
+import { homedir } from "os";
+function getHomeDirectory() {
+  return process.env.HOME || process.env.USERPROFILE || homedir();
+}
+var init_home_directory = () => {};
+
 // packages/utils/src/command-executor.ts
-var init_command_executor = () => {};
+var init_command_executor = __esm(() => {
+  init_home_directory();
+});
 
 // packages/utils/src/git-worktree/index.ts
 var init_git_worktree = () => {};
@@ -3350,9 +3373,61 @@ var init_file_reference_resolver = __esm(() => {
   init_logger2();
 });
 
+// packages/model-core/src/fable-55-launch.ts
+function isFable55Model(model) {
+  const modelId = model.split("/").pop() ?? model;
+  return modelId.replaceAll(".", "-") === FABLE_55_LAUNCH.id;
+}
+function selectLaunchRungs(rungs, gate, onRejected) {
+  return rungs.filter((rung) => {
+    if (!isFable55Model(rung.model))
+      return true;
+    if (!gate.released)
+      return false;
+    if (rung.variant !== undefined && gate.accepted.includes(rung.variant))
+      return true;
+    onRejected({ model: rung.model, variant: rung.variant });
+    return false;
+  });
+}
+function recordLaunchRungRejection(rejection) {
+  launchRungRejectionLog.push(rejection);
+  console.warn(`[fable-55-launch] dropped a Fable 5.5 rung with effort "${rejection.variant ?? "(none)"}": not in FABLE_55_EFFORTS.accepted`);
+}
+function launchRungs(rungs) {
+  return selectLaunchRungs(rungs, { released: FABLE_55_RELEASED, accepted: FABLE_55_EFFORTS.accepted }, recordLaunchRungRejection);
+}
+function launchDefaultModelId() {
+  return FABLE_55_RELEASED ? FABLE_55_LAUNCH.id : FABLE_55_PREDECESSOR;
+}
+var FABLE_55_LAUNCH, FABLE_55_RELEASED = false, FABLE_55_EFFORTS, launchRungRejectionLog, FABLE_55_PREDECESSOR;
+var init_fable_55_launch = __esm(() => {
+  init_latest_models();
+  FABLE_55_LAUNCH = {
+    id: "claude-fable-5-5",
+    family: "claude-fable",
+    reasoning: undefined,
+    temperature: undefined,
+    toolCall: undefined,
+    modalities: undefined,
+    limit: {
+      context: undefined,
+      input: undefined,
+      output: undefined
+    }
+  };
+  FABLE_55_EFFORTS = {
+    measured: false,
+    accepted: ["xhigh", "max"]
+  };
+  launchRungRejectionLog = [];
+  FABLE_55_PREDECESSOR = LATEST_MODEL_BY_FAMILY.claudeFable;
+});
+
 // packages/model-core/src/agent-model-requirements.ts
 var AGENT_MODEL_REQUIREMENTS;
 var init_agent_model_requirements = __esm(() => {
+  init_fable_55_launch();
   init_latest_models();
   AGENT_MODEL_REQUIREMENTS = {
     sisyphus: {
@@ -3443,7 +3518,12 @@ var init_agent_model_requirements = __esm(() => {
       ]
     },
     prometheus: {
-      fallbackChain: [
+      fallbackChain: launchRungs([
+        {
+          providers: ["anthropic", "github-copilot", "opencode"],
+          model: FABLE_55_LAUNCH.id,
+          variant: "xhigh"
+        },
         {
           providers: ["anthropic", "github-copilot", "opencode"],
           model: LATEST_MODEL_BY_FAMILY.claudeFable,
@@ -3459,10 +3539,15 @@ var init_agent_model_requirements = __esm(() => {
           model: LATEST_MODEL_BY_FAMILY.kimi,
           variant: "max"
         }
-      ]
+      ])
     },
     metis: {
-      fallbackChain: [
+      fallbackChain: launchRungs([
+        {
+          providers: ["anthropic", "github-copilot", "opencode"],
+          model: FABLE_55_LAUNCH.id,
+          variant: "max"
+        },
         {
           providers: ["anthropic", "github-copilot", "opencode"],
           model: LATEST_MODEL_BY_FAMILY.claudeFable,
@@ -3478,7 +3563,7 @@ var init_agent_model_requirements = __esm(() => {
           model: LATEST_MODEL_BY_FAMILY.kimi,
           variant: "max"
         }
-      ]
+      ])
     },
     momus: {
       fallbackChain: [
@@ -3538,11 +3623,17 @@ var init_agent_model_requirements = __esm(() => {
 // packages/model-core/src/category-model-requirements.ts
 var CATEGORY_MODEL_REQUIREMENTS;
 var init_category_model_requirements = __esm(() => {
+  init_fable_55_launch();
   init_latest_models();
   CATEGORY_MODEL_REQUIREMENTS = {
     "visual-engineering": {
-      fallbackChain: [
+      fallbackChain: launchRungs([
         { providers: ["google", "google-vertex", "opencode"], model: LATEST_MODEL_BY_FAMILY.geminiPro, variant: "low" },
+        {
+          providers: ["anthropic", "anthropic-api", "github-copilot", "opencode"],
+          model: FABLE_55_LAUNCH.id,
+          variant: "max"
+        },
         {
           providers: ["anthropic", "anthropic-api", "github-copilot", "opencode"],
           model: LATEST_MODEL_BY_FAMILY.claudeFable,
@@ -3558,7 +3649,7 @@ var init_category_model_requirements = __esm(() => {
           model: LATEST_MODEL_BY_FAMILY.kimi,
           variant: "max"
         }
-      ]
+      ])
     },
     ultrabrain: {
       fallbackChain: [
@@ -3592,7 +3683,12 @@ var init_category_model_requirements = __esm(() => {
       ]
     },
     artistry: {
-      fallbackChain: [
+      fallbackChain: launchRungs([
+        {
+          providers: ["anthropic", "anthropic-api", "github-copilot", "opencode"],
+          model: FABLE_55_LAUNCH.id,
+          variant: "max"
+        },
         {
           providers: ["anthropic", "anthropic-api", "github-copilot", "opencode"],
           model: LATEST_MODEL_BY_FAMILY.claudeFable,
@@ -3608,7 +3704,7 @@ var init_category_model_requirements = __esm(() => {
           model: LATEST_MODEL_BY_FAMILY.kimi,
           variant: "max"
         }
-      ]
+      ])
     },
     quick: {
       fallbackChain: [
@@ -4067,7 +4163,9 @@ var init_runtime_fallback_model = () => {};
 // packages/model-core/src/model-capabilities/supplemental-entries.ts
 var SUPPLEMENTAL_MODEL_CAPABILITIES;
 var init_supplemental_entries = __esm(() => {
+  init_fable_55_launch();
   SUPPLEMENTAL_MODEL_CAPABILITIES = {
+    [FABLE_55_LAUNCH.id]: FABLE_55_LAUNCH,
     "kimi-k3": {
       id: "kimi-k3",
       family: "kimi",
@@ -4517,16 +4615,25 @@ var init_supplemental_entries = __esm(() => {
 });
 
 // packages/model-core/src/model-capabilities/bundled-snapshot.ts
+function fillGaps(generated, placeholder) {
+  const merged = { ...placeholder };
+  for (const [key, value] of Object.entries(generated)) {
+    if (value === undefined)
+      continue;
+    const base = merged[key];
+    merged[key] = value !== null && typeof value === "object" && !Array.isArray(value) && base !== null && typeof base === "object" ? { ...base, ...Object.fromEntries(Object.entries(value).filter(([, v]) => v !== undefined)) } : value;
+  }
+  return merged;
+}
 function getBundledModelCapabilitiesSnapshot(snapshotJson) {
-  return {
-    ...snapshotJson,
-    models: {
-      ...snapshotJson.models,
-      ...SUPPLEMENTAL_MODEL_CAPABILITIES
-    }
-  };
+  const models = { ...snapshotJson.models, ...SUPPLEMENTAL_MODEL_CAPABILITIES };
+  const generatedLaunchRow = snapshotJson.models[FABLE_55_LAUNCH.id];
+  if (generatedLaunchRow)
+    models[FABLE_55_LAUNCH.id] = fillGaps(generatedLaunchRow, FABLE_55_LAUNCH);
+  return { ...snapshotJson, models };
 }
 var init_bundled_snapshot = __esm(() => {
+  init_fable_55_launch();
   init_supplemental_entries();
 });
 
@@ -4953,6 +5060,7 @@ var init_src2 = __esm(() => {
   init_model_requirements();
   init_latest_models();
   init_model_family_detectors();
+  init_fable_55_launch();
   init_model_capability_aliases();
   init_model_capability_heuristics();
   init_model_capability_guardrails();
@@ -5190,6 +5298,7 @@ Approach:
 </Category_Context>`, GOOGLE_CATEGORIES;
 var init_google_categories = __esm(() => {
   init_latest_models();
+  init_src2();
   GOOGLE_CATEGORIES = [
     {
       name: "visual-engineering",
@@ -5199,7 +5308,7 @@ var init_google_categories = __esm(() => {
     },
     {
       name: "artistry",
-      config: { model: `anthropic/${LATEST_MODEL_BY_FAMILY.claudeFable}`, variant: "max" },
+      config: { model: `anthropic/${launchDefaultModelId()}`, variant: "max" },
       description: "Complex problem-solving with unconventional, creative approaches - beyond standard patterns",
       promptAppend: ARTISTRY_CATEGORY_PROMPT_APPEND
     }
@@ -5470,7 +5579,7 @@ var init_migration2 = __esm(() => {
 
 // packages/omo-opencode/src/shared/opencode-config-dir.ts
 import { existsSync as existsSync2, realpathSync } from "fs";
-import { homedir as homedir2 } from "os";
+import { homedir as homedir3 } from "os";
 import { join as join3, posix, resolve, win32 } from "path";
 function isDevBuild(version) {
   if (!version)
@@ -5481,14 +5590,14 @@ function getTauriConfigDir(identifier) {
   const platform = process.platform;
   switch (platform) {
     case "darwin":
-      return join3(homedir2(), "Library", "Application Support", identifier);
+      return join3(homedir3(), "Library", "Application Support", identifier);
     case "win32": {
-      const appData = process.env.APPDATA || join3(homedir2(), "AppData", "Roaming");
+      const appData = process.env.APPDATA || join3(homedir3(), "AppData", "Roaming");
       return win32.join(appData, identifier);
     }
     case "linux":
     default: {
-      const xdgConfig = process.env.XDG_CONFIG_HOME || join3(homedir2(), ".config");
+      const xdgConfig = process.env.XDG_CONFIG_HOME || join3(homedir3(), ".config");
       return join3(xdgConfig, identifier);
     }
   }
@@ -5532,7 +5641,7 @@ function getWslLinuxHomeDir(windowsConfigRoot) {
 function getCliDefaultConfigDir() {
   const envXdgConfig = process.env.XDG_CONFIG_HOME?.trim();
   const shouldIgnoreWindowsXdg = envXdgConfig !== undefined && envXdgConfig.length > 0 && isWslEnvironment() && isWindowsUserConfigRoot(envXdgConfig);
-  const xdgConfig = shouldIgnoreWindowsXdg ? posix.join(getWslLinuxHomeDir(envXdgConfig) ?? "/home", ".config") : envXdgConfig || join3(homedir2(), ".config");
+  const xdgConfig = shouldIgnoreWindowsXdg ? posix.join(getWslLinuxHomeDir(envXdgConfig) ?? "/home", ".config") : envXdgConfig || join3(homedir3(), ".config");
   const configDir = isWslEnvironment() ? posix.join(xdgConfig, "opencode") : join3(xdgConfig, "opencode");
   return resolveConfigPath(configDir);
 }
@@ -83945,6 +84054,7 @@ var init_memory = __esm(() => {
     merge: _enum2(["auto", "integration"]).default("auto"),
     category: string2().min(1).default("quick"),
     timeout_minutes: number2().int().positive().default(15),
+    max_concurrent_runs: number2().int().positive().default(1),
     sandbox: _enum2(["auto", "required", "off"]).default("auto")
   }).strict();
   OmoMemorySyncSchema = object({
@@ -84016,6 +84126,7 @@ var init_memory = __esm(() => {
     merge: _enum2(["auto", "integration"]).optional(),
     category: string2().min(1).optional(),
     timeout_minutes: number2().int().positive().optional(),
+    max_concurrent_runs: number2().int().positive().optional(),
     sandbox: _enum2(["auto", "required", "off"]).optional()
   }).strict();
   OmoMemorySyncLayerSchema = object({
@@ -84080,7 +84191,7 @@ var init_memory = __esm(() => {
   OmoMemoryAgentOverridesSchema = object({
     enabled: boolean2().optional(),
     agent: string2().min(1).optional(),
-    reflection: OmoMemoryReflectionLayerSchema.optional(),
+    reflection: OmoMemoryReflectionLayerSchema.omit({ max_concurrent_runs: true }).optional(),
     nudge: OmoMemoryNudgeLayerSchema.optional(),
     facts: OmoMemoryFactsLayerSchema.optional(),
     dream: OmoMemoryDreamLayerSchema.optional(),
@@ -84105,6 +84216,7 @@ var init_memory = __esm(() => {
       merge: "auto",
       category: "quick",
       timeout_minutes: 15,
+      max_concurrent_runs: 1,
       sandbox: "auto"
     }),
     nudge: OmoMemoryNudgeSchema.default({ enabled: true, every_user_turns: 10 }),
@@ -84451,7 +84563,8 @@ var OmoTelemetrySettingsShape, OmoTelemetrySettingsLayerSchema, OmoTelemetrySett
 var init_telemetry = __esm(() => {
   init_zod();
   OmoTelemetrySettingsShape = {
-    enabled: boolean2()
+    enabled: boolean2(),
+    rawTurnSampleRate: number2().min(0).max(1)
   };
   OmoTelemetrySettingsLayerSchema = object(OmoTelemetrySettingsShape).partial().strict();
   OmoTelemetrySettingsSchema = OmoTelemetrySettingsLayerSchema.extend({
@@ -84476,13 +84589,6 @@ var init_format_on_mutation = __esm(() => {
     maxFileBytes: number2().int().positive().default(1048576),
     timeoutMs: number2().int().positive().default(3000)
   }).strict();
-});
-
-// packages/omo-config-core/src/schema/dori.ts
-var OmoDoriSectionSchema;
-var init_dori = __esm(() => {
-  init_zod();
-  OmoDoriSectionSchema = record(string2(), unknown()).describe("Chat-surface dori settings, owned and validated by a separately installed dori package. omo accepts the key and never reads it.");
 });
 
 // packages/omo-config-core/src/schema/provenance.ts
@@ -84514,7 +84620,6 @@ var init_config = __esm(() => {
   init_team();
   init_telemetry();
   init_format_on_mutation();
-  init_dori();
   init_provenance();
   OmoOpenCodeHarnessConfigSchema = record(string2(), unknown());
   OmoDisabledSkillsSchema = array(string2());
@@ -84522,7 +84627,6 @@ var init_config = __esm(() => {
   OmoTypedHarnessConfigSchema = object({
     provenance: OmoProvenanceSettingsSchema.optional(),
     formatOnMutation: OmoFormatOnMutationLayerSchema.optional(),
-    dori: OmoDoriSectionSchema.optional(),
     categories: OmoCategoriesConfigSchema.optional(),
     agents: OmoAgentsConfigSchema.optional(),
     git_master: OmoGitMasterSettingsLayerSchema.optional(),
@@ -84541,7 +84645,6 @@ var init_config = __esm(() => {
   OmoConfigProfileSchema = object({
     provenance: OmoProvenanceSettingsSchema.optional(),
     formatOnMutation: OmoFormatOnMutationLayerSchema.optional(),
-    dori: OmoDoriSectionSchema.optional(),
     categories: OmoCategoriesConfigSchema.optional(),
     agents: OmoAgentsConfigSchema.optional(),
     git_master: OmoGitMasterSettingsLayerSchema.optional(),
@@ -84564,7 +84667,6 @@ var init_config = __esm(() => {
   OmoConfigSchema = object({
     provenance: OmoProvenanceSettingsSchema.optional(),
     formatOnMutation: OmoFormatOnMutationSchema.optional(),
-    dori: OmoDoriSectionSchema.optional(),
     $schema: string2().optional(),
     categories: OmoCategoriesConfigSchema.optional(),
     agents: OmoAgentsConfigSchema.optional(),
@@ -84591,7 +84693,6 @@ var init_config = __esm(() => {
   OmoConfigLayerSchema = object({
     provenance: OmoProvenanceSettingsSchema.optional(),
     formatOnMutation: OmoFormatOnMutationLayerSchema.optional(),
-    dori: OmoDoriSectionSchema.optional(),
     $schema: string2().optional(),
     categories: OmoCategoriesConfigSchema.optional(),
     agents: OmoAgentsConfigSchema.optional(),
@@ -84727,9 +84828,6 @@ var init_legacy_harness_names = __esm(() => {
   init_harness();
 });
 
-// packages/omo-config-core/src/schema/legacy-dori-section.ts
-var init_legacy_dori_section = () => {};
-
 // packages/omo-config-core/src/schema/index.ts
 var init_schema = __esm(() => {
   init_agent();
@@ -84737,12 +84835,10 @@ var init_schema = __esm(() => {
   init_config();
   init_fallback_models();
   init_format_on_mutation();
-  init_dori();
   init_git_master();
   init_harness();
   init_legacy_category_names();
   init_legacy_harness_names();
-  init_legacy_dori_section();
   init_memory();
   init_model_catalog();
   init_model_profile();
@@ -85013,6 +85109,7 @@ function pruneInvalidConfigPaths(config3, issues, validate2, maxPasses = MAX_PRU
 var MAX_PRUNE_PASSES = 32;
 
 // packages/omo-config-core/src/loader/layer-validation.ts
+import { createHash } from "crypto";
 function validationDiagnostic(path4, issues) {
   const issuePaths = issues.map((issue2) => issue2.path.map((segment) => String(segment)).join("."));
   return {
@@ -85036,6 +85133,9 @@ function unrecognizedKeyIssues(issues) {
 function isRecord11(value) {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
+function isRetiredSection(key) {
+  return RETIRED_SECTION_DIGESTS.has(createHash("sha256").update(key.toLowerCase()).digest("hex"));
+}
 function sanitizeUnsafeKeys(value, path4 = []) {
   if (Array.isArray(value)) {
     const issues2 = [];
@@ -85054,6 +85154,9 @@ function sanitizeUnsafeKeys(value, path4 = []) {
   }
   const sanitized = {};
   for (const [key, entry] of Object.entries(value)) {
+    const isConfigContainer = path4.length === 0 || path4.length === 1 && HARNESS_BLOCKS.has(path4[0] ?? "") || path4.length === 2 && path4[0] === "profiles" || path4.length === 3 && path4[0] === "profiles" && HARNESS_BLOCKS.has(path4[2] ?? "");
+    if (isConfigContainer && isRetiredSection(key))
+      continue;
     if (isUnsafeObjectKey2(key)) {
       issues.push({ keys: [key], path: path4 });
       continue;
@@ -85140,13 +85243,18 @@ function validateConfigLayer(path4, data) {
     return rejected;
   return { loaded: true, diagnostics: [...diagnostics, ...invalidValueDiagnostics(path4, pruned.dropped)], value: pruned.config };
 }
-var validateLayerRecord = (record2) => {
+var RETIRED_SECTION_DIGESTS, HARNESS_BLOCKS, validateLayerRecord = (record2) => {
   const parsed = OmoConfigLayerSchema.safeParse(record2);
   return parsed.success ? { success: true } : { success: false, issues: parsed.error.issues };
 };
 var init_layer_validation = __esm(() => {
   init_schema();
   init_merge();
+  RETIRED_SECTION_DIGESTS = new Set([
+    "447f75a8ebdbdb79a57f0b8cebbfba183820cf54a8119ac01449b30499e5ef0e",
+    "4ea5ee68fea05586106890ded5733820bb77d919cda27bc4b8139b7cd33b8889"
+  ]);
+  HARNESS_BLOCKS = new Set(["[opencode]", "[native]", "[senpi]", "[codex]"]);
 });
 
 // packages/omo-config-core/src/internal/posix-path.ts
@@ -85859,6 +85967,323 @@ var init_shared = __esm(() => {
   init_legacy_workspace_migration();
   init_replace_tool_args();
 });
+// packages/skills-loader-core/src/shared/skill-path-resolver.ts
+var init_skill_path_resolver3 = __esm(() => {
+  init_skill_path_resolver();
+});
+// packages/shared-skills/index.mjs
+import { existsSync as existsSync8 } from "fs";
+import { fileURLToPath as fileURLToPath2 } from "url";
+function sharedSkillsRootPath() {
+  const candidates = SKILLS_PROBE_SPECIFIERS.map((specifier) => fileURLToPath2(new URL(specifier, import.meta.url)));
+  return candidates.find((candidate) => existsSync8(candidate)) ?? candidates[0];
+}
+var SKILLS_PROBE_SPECIFIERS;
+var init_shared_skills = __esm(() => {
+  SKILLS_PROBE_SPECIFIERS = ["./skills/", "../skills/", "../../skills/"];
+});
+
+// packages/skills-loader-core/src/shared/claude-config-dir.ts
+import { join as join13 } from "path";
+function getClaudeConfigDir() {
+  const envConfigDir = process.env.CLAUDE_CONFIG_DIR;
+  if (envConfigDir) {
+    return envConfigDir;
+  }
+  return join13(getHomeDirectory(), ".claude");
+}
+var init_claude_config_dir2 = __esm(() => {
+  init_src();
+});
+
+// packages/skills-loader-core/src/shared/plugin-identity.ts
+var PRODUCT_IDENTITY, PLUGIN_NAME2, LEGACY_PLUGIN_NAME2, PUBLISHED_PACKAGE_NAME2, CONFIG_BASENAME, LEGACY_CONFIG_BASENAME, LOG_FILENAME3, CACHE_DIR_NAME2;
+var init_plugin_identity2 = __esm(() => {
+  init_src();
+  PRODUCT_IDENTITY = createProductIdentity({
+    pluginName: "oh-my-openagent",
+    legacyPluginName: "oh-my-opencode",
+    publishedPackageName: "oh-my-opencode",
+    configBasename: "oh-my-openagent",
+    legacyConfigBasename: "oh-my-opencode",
+    logFileName: "oh-my-opencode.log",
+    cacheDirName: "oh-my-opencode"
+  });
+  PLUGIN_NAME2 = PRODUCT_IDENTITY.pluginName;
+  LEGACY_PLUGIN_NAME2 = PRODUCT_IDENTITY.legacyPluginName;
+  PUBLISHED_PACKAGE_NAME2 = PRODUCT_IDENTITY.publishedPackageName;
+  CONFIG_BASENAME = PRODUCT_IDENTITY.configBasename;
+  LEGACY_CONFIG_BASENAME = PRODUCT_IDENTITY.legacyConfigBasename;
+  LOG_FILENAME3 = PRODUCT_IDENTITY.logFileName;
+  CACHE_DIR_NAME2 = PRODUCT_IDENTITY.cacheDirName;
+});
+
+// packages/skills-loader-core/src/shared/opencode-config-dir.ts
+import { existsSync as existsSync9, realpathSync as realpathSync5 } from "fs";
+import { homedir as homedir5 } from "os";
+import { join as join14, posix as posix3, resolve as resolve5, win32 as win322 } from "path";
+function isDevBuild2(version2) {
+  if (!version2)
+    return false;
+  return version2.includes("-dev") || version2.includes(".dev");
+}
+function getTauriConfigDir2(identifier) {
+  const platform = process.platform;
+  switch (platform) {
+    case "darwin":
+      return join14(homedir5(), "Library", "Application Support", identifier);
+    case "win32": {
+      const appData = process.env.APPDATA || join14(homedir5(), "AppData", "Roaming");
+      return win322.join(appData, identifier);
+    }
+    case "linux":
+    default: {
+      const xdgConfig = process.env.XDG_CONFIG_HOME || join14(homedir5(), ".config");
+      return join14(xdgConfig, identifier);
+    }
+  }
+}
+function resolveConfigPath2(pathValue) {
+  if (isWslEnvironment2() && pathValue.startsWith("/")) {
+    return posix3.normalize(pathValue);
+  }
+  const resolvedPath = resolve5(pathValue);
+  if (!existsSync9(resolvedPath))
+    return resolvedPath;
+  try {
+    return realpathSync5(resolvedPath);
+  } catch (error62) {
+    if (error62 instanceof Error) {
+      return resolvedPath;
+    }
+    return resolvedPath;
+  }
+}
+function isWslEnvironment2() {
+  return process.platform === "linux" && (Boolean(process.env.WSL_DISTRO_NAME?.trim()) || Boolean(process.env.WSL_INTEROP?.trim()));
+}
+function isWindowsUserConfigRoot2(pathValue) {
+  const normalizedPath = pathValue.replaceAll("\\", "/").toLowerCase();
+  return /^[a-z]:\/users\//.test(normalizedPath) || /^\/mnt\/[a-z]\/users\//.test(normalizedPath);
+}
+function getWindowsUserFromConfigRoot2(pathValue) {
+  const normalizedPath = pathValue.replaceAll("\\", "/");
+  const match = /^(?:[a-z]:|\/mnt\/[a-z])\/Users\/([^/]+)/i.exec(normalizedPath);
+  return match?.[1] ?? null;
+}
+function getWslLinuxHomeDir2(windowsConfigRoot) {
+  const envHome = process.env.HOME?.trim();
+  if (envHome && envHome.startsWith("/") && !isWindowsUserConfigRoot2(envHome)) {
+    return envHome;
+  }
+  const user = process.env.USER?.trim() || process.env.LOGNAME?.trim() || process.env.SUDO_USER?.trim() || (windowsConfigRoot ? getWindowsUserFromConfigRoot2(windowsConfigRoot) : undefined);
+  return user ? posix3.join("/home", user) : null;
+}
+function getCliDefaultConfigDir2() {
+  const envXdgConfig = process.env.XDG_CONFIG_HOME?.trim();
+  const shouldIgnoreWindowsXdg = envXdgConfig !== undefined && envXdgConfig.length > 0 && isWslEnvironment2() && isWindowsUserConfigRoot2(envXdgConfig);
+  const xdgConfig = shouldIgnoreWindowsXdg ? posix3.join(getWslLinuxHomeDir2(envXdgConfig) ?? "/home", ".config") : envXdgConfig || join14(homedir5(), ".config");
+  const configDir = isWslEnvironment2() ? posix3.join(xdgConfig, "opencode") : join14(xdgConfig, "opencode");
+  return resolveConfigPath2(configDir);
+}
+function getCliCustomConfigDir2() {
+  const envConfigDir = process.env.OPENCODE_CONFIG_DIR?.trim();
+  if (!envConfigDir) {
+    return null;
+  }
+  return resolveConfigPath2(envConfigDir);
+}
+function getCliConfigDir2() {
+  return getCliCustomConfigDir2() ?? getCliDefaultConfigDir2();
+}
+function getOpenCodeConfigDirs2(options) {
+  if (options.binary !== "opencode") {
+    return [getOpenCodeConfigDir2(options)];
+  }
+  const customConfigDir = getCliCustomConfigDir2();
+  return Array.from(new Set([
+    ...customConfigDir ? [customConfigDir] : [],
+    getCliDefaultConfigDir2()
+  ]));
+}
+function getOpenCodeConfigDir2(options) {
+  const { binary, version: version2, checkExisting = true } = options;
+  if (binary === "opencode") {
+    return getCliConfigDir2();
+  }
+  const identifier = isDevBuild2(version2) ? TAURI_APP_IDENTIFIER_DEV2 : TAURI_APP_IDENTIFIER2;
+  const tauriDirBase = getTauriConfigDir2(identifier);
+  const tauriDir = process.platform === "win32" ? win322.isAbsolute(tauriDirBase) ? win322.normalize(tauriDirBase) : win322.resolve(tauriDirBase) : resolveConfigPath2(tauriDirBase);
+  if (checkExisting) {
+    const legacyDir = getCliConfigDir2();
+    const legacyConfig = join14(legacyDir, "opencode.json");
+    const legacyConfigC = join14(legacyDir, "opencode.jsonc");
+    if (existsSync9(legacyConfig) || existsSync9(legacyConfigC)) {
+      return legacyDir;
+    }
+  }
+  return tauriDir;
+}
+var TAURI_APP_IDENTIFIER2 = "ai.opencode.desktop", TAURI_APP_IDENTIFIER_DEV2 = "ai.opencode.desktop.dev";
+var init_opencode_config_dir2 = __esm(() => {
+  init_plugin_identity2();
+});
+
+// packages/skills-loader-core/src/shared/opencode-command-dirs.ts
+var init_opencode_command_dirs2 = __esm(() => {
+  init_opencode_config_dir2();
+});
+// packages/skills-loader-core/src/shared/jsonc-parser.ts
+var init_jsonc_parser3 = () => {};
+
+// packages/skills-loader-core/src/shared/project-discovery-dirs.ts
+import { execFileSync } from "child_process";
+import { existsSync as existsSync10, realpathSync as realpathSync6 } from "fs";
+import { dirname as dirname5, join as join15, resolve as resolve6, win32 as win323 } from "path";
+function normalizePath(path6) {
+  const resolvedPath = process.platform !== "win32" && win323.isAbsolute(path6) ? path6 : resolve6(path6);
+  if (!existsSync10(resolvedPath)) {
+    return resolvedPath;
+  }
+  try {
+    return realpathSync6.native(resolvedPath);
+  } catch (error62) {
+    if (!(error62 instanceof Error)) {
+      throw error62;
+    }
+    try {
+      return realpathSync6(resolvedPath);
+    } catch (fallbackError) {
+      if (!(fallbackError instanceof Error)) {
+        throw fallbackError;
+      }
+      return resolvedPath;
+    }
+  }
+}
+function pathKey(path6) {
+  const normalized = path6.replace(/\\/g, "/");
+  return process.platform === "win32" ? normalized.toLowerCase() : normalized;
+}
+function detectWorktreePath(directory) {
+  const resolvedDirectory = resolve6(directory);
+  const cacheKey = pathKey(normalizePath(resolvedDirectory));
+  if (worktreePathCache2.has(cacheKey)) {
+    return worktreePathCache2.get(cacheKey);
+  }
+  let ancestor = normalizePath(resolvedDirectory);
+  while (true) {
+    if (existsSync10(join15(ancestor, ".git"))) {
+      worktreePathCache2.set(cacheKey, ancestor);
+      return ancestor;
+    }
+    const parent = dirname5(ancestor);
+    if (parent === ancestor)
+      break;
+    ancestor = parent;
+  }
+  try {
+    const worktreePath = execFileSync("git", ["rev-parse", "--show-toplevel"], {
+      cwd: resolvedDirectory,
+      encoding: "utf-8",
+      timeout: 5000,
+      stdio: ["pipe", "pipe", "pipe"]
+    }).trim();
+    const normalizedWorktreePath = normalizePath(worktreePath);
+    worktreePathCache2.set(cacheKey, normalizedWorktreePath);
+    return normalizedWorktreePath;
+  } catch (error62) {
+    if (!(error62 instanceof Error)) {
+      throw error62;
+    }
+    worktreePathCache2.set(cacheKey, undefined);
+    return;
+  }
+}
+var worktreePathCache2;
+var init_project_discovery_dirs2 = __esm(() => {
+  init_jsonc_parser3();
+  init_plugin_identity2();
+  worktreePathCache2 = new Map;
+});
+
+// packages/skills-loader-core/src/shared/internal-initiator-marker.ts
+var init_internal_initiator_marker3 = __esm(() => {
+  init_internal_initiator_marker();
+});
+
+// packages/skills-loader-core/src/shared/index.ts
+var init_shared2 = __esm(() => {
+  init_claude_config_dir2();
+  init_opencode_command_dirs2();
+  init_opencode_config_dir2();
+  init_project_discovery_dirs2();
+  init_skill_path_resolver3();
+  init_internal_initiator_marker3();
+});
+
+// packages/skills-loader-core/src/features/opencode-skill-loader/skill-provenance.ts
+import { basename as basename3, dirname as dirname6, join as join16, resolve as resolve7, sep } from "path";
+import { homedir as homedir6 } from "os";
+function knownUserSkillRoots() {
+  const home = homedir6();
+  return [
+    join16(getClaudeConfigDir(), "skills"),
+    join16(home, ".agents", "skills"),
+    join16(home, ".omo", "agent", "skills"),
+    join16(home, ".senpi", "agent", "skills"),
+    sharedSkillsRootPath(),
+    ...getOpenCodeConfigDirs2({ binary: "opencode" }).flatMap((dir) => [
+      join16(dir, "skills"),
+      join16(dir, "skill")
+    ])
+  ];
+}
+var observers;
+var init_skill_provenance = __esm(() => {
+  init_shared_skills();
+  init_shared2();
+  observers = new Set;
+});
+
+// packages/skills-loader-core/src/features/opencode-skill-loader/checked-skill-read.ts
+var init_checked_skill_read = __esm(() => {
+  init_skill_provenance();
+});
+
+// packages/skills-loader-core/src/features/opencode-skill-loader/skill-mcp-config.ts
+var init_skill_mcp_config = __esm(() => {
+  init_js_yaml();
+  init_checked_skill_read();
+  init_skill_provenance();
+});
+
+// packages/skills-loader-core/src/features/opencode-skill-loader/loaded-skill-from-path.ts
+var init_loaded_skill_from_path = __esm(() => {
+  init_skill_path_resolver3();
+  init_skill_mcp_config();
+  init_checked_skill_read();
+  init_skill_provenance();
+});
+
+// packages/skills-loader-core/src/features/opencode-skill-loader/skill-directory-loader.ts
+var init_skill_directory_loader = __esm(() => {
+  init_loaded_skill_from_path();
+  init_skill_provenance();
+});
+
+// packages/skills-loader-core/src/features/opencode-skill-loader/config-source-discovery.ts
+function setSkillSourceProvenance(config3, provenance2) {
+  sourceOrigins.set(config3, provenance2);
+}
+var sourceOrigins;
+var init_config_source_discovery = __esm(() => {
+  init_skill_directory_loader();
+  init_loaded_skill_from_path();
+  init_project_discovery_dirs2();
+  init_skill_provenance();
+  sourceOrigins = new WeakMap;
+});
 
 // packages/omo-opencode/src/shared/disabled-providers.ts
 function getModelProvider(model) {
@@ -85978,7 +86403,7 @@ function appendViews(views, layers, select, keyPrefix) {
   for (const layer of layers) {
     const config3 = select(layer.config);
     if (Object.keys(config3).length > 0)
-      views.push({ config: config3, keyPrefix, path: layer.source.path });
+      views.push({ config: config3, keyPrefix, path: layer.source.path, scope: layer.source.scope });
   }
 }
 function recordFields(value, fields) {
@@ -87071,7 +87496,7 @@ __export(exports_validate, {
   _setDeprecationWarningSinkForTesting: () => _setDeprecationWarningSinkForTesting,
   _resetDeprecationWarningSinkForTesting: () => _resetDeprecationWarningSinkForTesting
 });
-import { relative } from "path";
+import { dirname as dirname7, isAbsolute, join as join17, relative } from "path";
 function shortPath(configPath) {
   const candidate = relative(process.cwd(), configPath);
   return candidate.length > 0 ? candidate : configPath;
@@ -87213,6 +87638,28 @@ function validatePluginConfig(directory, environment2 = process.env) {
   const userConfig = parseConfig(prunePluginView({ config: chain.protectedUserView, homeDir, keyPrefix: "", path: "" }).config);
   const config4 = applyDisabledProviders(materializeAgentModelChains(protectUserFields(mergeViews(views), userConfig)));
   warnLegacyUlwExecuteKey(chain.views);
+  if (config4.skills) {
+    const owner = chain.views.findLast((view) => Object.hasOwn(view.config, "skills"));
+    const userRoots = [...knownUserSkillRoots()];
+    for (const view of chain.views.filter((candidate) => candidate.scope === "user")) {
+      const settings = OhMyOpenCodeConfigSchema.safeParse({ skills: view.config.skills });
+      const skills2 = settings.success ? settings.data.skills : undefined;
+      if (!skills2 || Array.isArray(skills2))
+        continue;
+      for (const source of skills2.sources ?? []) {
+        const path6 = typeof source === "string" ? source : source.path;
+        if (/^https?:\/\//.test(path6))
+          continue;
+        userRoots.push(path6.startsWith("~/") ? join17(homeDir ?? "", path6.slice(2)) : isAbsolute(path6) ? path6 : join17(dirname7(view.path), path6));
+      }
+    }
+    setSkillSourceProvenance(config4.skills, {
+      kind: owner?.scope === "user" ? "user" : "project-auto",
+      selectedRoot: owner ? dirname7(owner.path) : directory,
+      projectRoot: detectWorktreePath(directory) ?? directory,
+      userRoots
+    });
+  }
   return {
     valid: messages.length === 0,
     messages,
@@ -87223,6 +87670,9 @@ function validatePluginConfig(directory, environment2 = process.env) {
 }
 var START_WORK_DEPRECATION_MESSAGE = 'config key "start_work" is deprecated, rename to "ulw_execute" - will be removed next release', deprecationWarningSink;
 var init_validate = __esm(() => {
+  init_config_source_discovery();
+  init_skill_provenance();
+  init_project_discovery_dirs2();
   init_src4();
   init_disabled_providers();
   init_logger2();
@@ -88959,7 +89409,7 @@ init_shared();
 // package.json
 var package_default = {
   name: "oh-my-opencode",
-  version: "5.1.44-fork.1",
+  version: "5.1.48-fork.1",
   description: "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
   main: "./dist/index.js",
   types: "dist/index.d.ts",
@@ -89081,6 +89531,8 @@ var package_default = {
     "build:senpi-plugin": "bun run build:lsp-daemon && bun run build:ast-grep-mcp && bun run build:senpi-plugin:stage",
     "build:senpi-plugin:native": "node packages/omo-senpi/plugin/scripts/stage-lsp-daemon-runtime.mjs && node packages/omo-senpi/plugin/scripts/stage-ast-grep-mcp-runtime.mjs && node packages/omo-senpi/plugin/scripts/stage-x-search-skill.mjs && node packages/omo-senpi/plugin/scripts/build-extension.mjs && node packages/omo-senpi/plugin/scripts/build-daemon-launch-spec.mjs && node packages/omo-senpi/plugin/scripts/sync-skills.mjs && node packages/omo-senpi/plugin/scripts/embed-directive.mjs --check && node packages/omo-senpi/plugin/scripts/build-install.mjs",
     "build:senpi-plugin:stage": "bun run build:materialize-frontend && node packages/omo-senpi/plugin/scripts/stage-lsp-daemon-runtime.mjs && node packages/omo-senpi/plugin/scripts/stage-ast-grep-mcp-runtime.mjs && node packages/omo-senpi/plugin/scripts/stage-x-search-skill.mjs && node packages/omo-senpi/plugin/scripts/build-extension.mjs && node packages/omo-senpi/plugin/scripts/build-daemon-launch-spec.mjs && node packages/omo-senpi/plugin/scripts/sync-skills.mjs && node packages/omo-senpi/plugin/scripts/embed-directive.mjs --check && node packages/omo-senpi/plugin/scripts/build-install.mjs",
+    "bundle-inputs": "node packages/omo-senpi/plugin/scripts/bundle-inputs.mjs",
+    "bundle-inputs:check": "node packages/omo-senpi/plugin/scripts/bundle-inputs.mjs --check",
     "build:materialize-frontend": "node packages/omo-codex/plugin/scripts/materialize-shared-upstreams.mjs --strict",
     "build:shared-skills-assets": "bun run build:materialize-frontend && rm -rf dist/skills && cp -R packages/shared-skills/skills dist/skills",
     "build:lsp-tools-mcp": "npm --prefix packages/lsp-tools-mcp ci && npm --prefix packages/lsp-tools-mcp run build",
@@ -89143,7 +89595,7 @@ var package_default = {
   },
   devDependencies: {
     "@clack/prompts": "^1.8.1",
-    "@code-yeongyu/senpi": "2026.10.21-3",
+    "@code-yeongyu/senpi": "2026.10.25-2",
     "@modelcontextprotocol/sdk": "^1.30.0",
     "@oh-my-opencode/agents-md-core": "workspace:*",
     "@oh-my-opencode/ast-grep-mcp": "workspace:*",
@@ -89189,7 +89641,7 @@ var package_default = {
     "@typescript/typescript6": "6.0.2",
     "@xterm/addon-unicode11": "^0.9.0",
     "@xterm/xterm": "^6.0.0",
-    "bun-types": "1.4.3",
+    "bun-types": "1.4.4",
     commander: "^15.0.0",
     diff: "^9.0.0",
     "js-yaml": "^5.4.2",
@@ -89205,18 +89657,18 @@ var package_default = {
     typescript: "^7.0.2"
   },
   optionalDependencies: {
-    "oh-my-opencode-darwin-arm64": "5.1.44",
-    "oh-my-opencode-darwin-x64": "5.1.44",
-    "oh-my-opencode-darwin-x64-baseline": "5.1.44",
-    "oh-my-opencode-linux-arm64": "5.1.44",
-    "oh-my-opencode-linux-arm64-musl": "5.1.44",
-    "oh-my-opencode-linux-x64": "5.1.44",
-    "oh-my-opencode-linux-x64-baseline": "5.1.44",
-    "oh-my-opencode-linux-x64-musl": "5.1.44",
-    "oh-my-opencode-linux-x64-musl-baseline": "5.1.44",
-    "oh-my-opencode-windows-arm64": "5.1.44",
-    "oh-my-opencode-windows-x64": "5.1.44",
-    "oh-my-opencode-windows-x64-baseline": "5.1.44"
+    "oh-my-opencode-darwin-arm64": "5.1.48",
+    "oh-my-opencode-darwin-x64": "5.1.48",
+    "oh-my-opencode-darwin-x64-baseline": "5.1.48",
+    "oh-my-opencode-linux-arm64": "5.1.48",
+    "oh-my-opencode-linux-arm64-musl": "5.1.48",
+    "oh-my-opencode-linux-x64": "5.1.48",
+    "oh-my-opencode-linux-x64-baseline": "5.1.48",
+    "oh-my-opencode-linux-x64-musl": "5.1.48",
+    "oh-my-opencode-linux-x64-musl-baseline": "5.1.48",
+    "oh-my-opencode-windows-arm64": "5.1.48",
+    "oh-my-opencode-windows-x64": "5.1.48",
+    "oh-my-opencode-windows-x64-baseline": "5.1.48"
   },
   overrides: {
     hono: "^4.13.8",
@@ -89623,12 +90075,12 @@ import { mkdirSync as mkdirSync7, readFileSync as readFileSync6 } from "fs";
 init_write_file_atomically();
 
 // packages/omo-opencode/src/features/tui-sidebar/mirror-path.ts
-import { createHash } from "crypto";
+import { createHash as createHash2 } from "crypto";
 import { realpathSync as realpathSync4 } from "fs";
-import { homedir as homedir3 } from "os";
+import { homedir as homedir4 } from "os";
 import { join as join11, resolve as resolve4 } from "path";
 function mirrorStorageDir() {
-  return join11(process.env.XDG_DATA_HOME ?? join11(homedir3(), ".local", "share"), "opencode", "storage", "oh-my-openagent", MIRROR_DIR_NAME);
+  return join11(process.env.XDG_DATA_HOME ?? join11(homedir4(), ".local", "share"), "opencode", "storage", "oh-my-openagent", MIRROR_DIR_NAME);
 }
 function canonicalProjectDir(projectDir) {
   try {
@@ -89641,7 +90093,7 @@ function canonicalProjectDir(projectDir) {
   }
 }
 function mirrorFilePath(projectDir) {
-  const projectHash = createHash("sha1").update(canonicalProjectDir(projectDir)).digest("hex").slice(0, 16);
+  const projectHash = createHash2("sha1").update(canonicalProjectDir(projectDir)).digest("hex").slice(0, 16);
   return join11(mirrorStorageDir(), `${projectHash}.json`);
 }
 

@@ -6,6 +6,16 @@
 
 export const SCHEMA_VERSION = 1
 
+/** The severity vocabulary in rank order; every DEFECT_CODES entry uses one of these. */
+export const SEVERITIES = Object.freeze(["blocker", "major", "minor"])
+
+/** Defect counts per severity, then total. */
+export function countDefects(defects) {
+	const counts = Object.fromEntries(SEVERITIES.map((severity) => [severity, 0]))
+	for (const defect of defects) counts[defect.severity] += 1
+	return { ...counts, total: defects.length }
+}
+
 function deepFreeze(value) {
 	if (value === null || typeof value !== "object") return value
 	for (const key of Object.keys(value)) deepFreeze(value[key])
@@ -21,7 +31,7 @@ export const DEFECT_CODES = deepFreeze({
 	en_dash_in_prose: { severity: "minor", integrity: false, hint: "Use a hyphen for compounds; keep the en dash only between numbers." },
 	heading_too_long: { severity: "minor", integrity: false, hint: "Shorten the heading to one line (26 Korean characters or 12 English words)." },
 	heading_generic: { severity: "minor", integrity: false, hint: "Make the heading carry the section's claim instead of a generic label." },
-	unsourced_number: { severity: "major", integrity: false, hint: "Tag the number MEASURED / ASSUMED / DERIVED or cite its source in the same paragraph." },
+	unsourced_number: { severity: "major", integrity: false, hint: "Tag the number MEASURED / ASSUMED / DERIVED or cite its source in the same paragraph; under Sources only citation-field numbers and names (a hash, #12, GPT-4, Q3, 10-Q) are exempt, so quote a reference title that carries a code or a figure, or wrap it in <cite>: an unquoted one is checked, and 10-K / 8-K stay numerals because K is a multiplier. A slashed N/M reads as a month/day, so a fraction or a score (2/3, 7/12) under Sources is not checked (#11386): write it as a percent or tag it." },
 	chart_without_figure: { severity: "major", integrity: false, hint: "Wrap the image or chart in a figure container with a caption." },
 	chart_svg_no_text: { severity: "major", integrity: false, hint: "Give the chart a title, axis labels, units, and value labels as SVG text." },
 	chart_svg_missing_labels: { severity: "minor", integrity: false, hint: "Add the missing title, axis ticks, or unit label to the chart." },
@@ -48,16 +58,18 @@ export const DEFECT_CODES = deepFreeze({
 	pointer_label_mismatch: { severity: "blocker", integrity: true, hint: "The placeholder's label is not the row's label; check the id, then the label." },
 	quote_anchor_unresolved: { severity: "blocker", integrity: true, hint: "A from or to anchor is missing or occurs more than once in the quote; pick unique anchor words." },
 	unit_duplicated: { severity: "blocker", integrity: true, hint: "The unit after the placeholder repeats the row's unit; use :value or remove the unit." },
-	polish_diff_fail: { severity: "blocker", integrity: true, hint: "The polish pass changed numbers, tickers, or table rows; revert to the pre-polish artifact and apply the language fixes only." },
+	polish_diff_fail: { severity: "blocker", integrity: true, hint: "The polish pass changed numbers, tickers, table rows, claim ids, markup, or hidden content; revert to the pre-polish artifact and apply the language fixes only." },
 	fidelity_interview_incomplete: { severity: "blocker", integrity: true, hint: "A fidelity field is pending or missing in brief.md; answer the open question or record its default, then rerun." },
 	derived_not_allowed: { severity: "blocker", integrity: true, hint: "The brief allows no derived or assumed numbers; cite a source row directly or change the brief with the requester." },
 	source_outside_floor: { severity: "blocker", integrity: true, hint: "The row's source is outside the source floor the brief records; use a source the brief allows or remove the fact." },
+	brief_changed: { severity: "blocker", integrity: true, hint: "The edition's fill map was not written under the current ## Fidelity block (it changed after fill, or the map predates the binding); re-run fact fill, then fact verify." },
 	snapshot_hash_mismatch: { severity: "blocker", integrity: true, hint: "The source snapshot changed after it was pinned; re-snapshot the source and re-register its rows." },
 	chart_value_untraceable: { severity: "blocker", integrity: true, hint: "A chart value, tick, or data file does not match its ledger-backed data source; re-render the chart from the exported data." },
 	quote_unbound: { severity: "blocker", integrity: true, hint: "A direct quotation has no ledger quote row; register it with fact quote and insert it through its placeholder." },
 	edition_unverified: { severity: "blocker", integrity: true, hint: "The delivered file has no matching fact verify record; run fact verify on that edition and record it with --verified-by." },
 	untraceable_number: { severity: "major", integrity: false, hint: "Replace the typed number with a {{F<n>}} placeholder backed by a ledger row, or register it as assumed with a rationale." },
-	unsupported_verification: { severity: "major", integrity: false, hint: "The sentence claims a tool check that no recorded command output backs; link the recorded output row or remove the claim." },
+	unsupported_verification: { severity: "major", integrity: false, hint: "A sentence marked verified (data-claim-kind=\"verified\") cites a row that is not recorded command output; cite the recorded output row or drop the verified mark." },
+	claim_kind_mismatch: { severity: "major", integrity: false, hint: "An element marked with a claim kind (data-claim-kind) cites a row that kind does not accept, or the kind is unknown; cite a row of that kind or fix the mark (references/fidelity-claim-kinds.md)." },
 	conflicting_readings: { severity: "major", integrity: false, hint: "Two ledger rows with different periods or qualifiers are cited as one fact; split the sentence or retire one row." },
 	hedge_dropped: { severity: "major", integrity: false, hint: "Restore the qualifier the source uses (estimated, about, not yet)." },
 	direction_flipped: { severity: "major", integrity: false, hint: "The source states the opposite direction; rewrite from the quote." },
@@ -65,7 +77,8 @@ export const DEFECT_CODES = deepFreeze({
 	qualifier_dropped: { severity: "major", integrity: false, hint: "The source bounds this value (up to, at least, about); restore the qualifier or use :q." },
 	unbound_sentence: { severity: "major", integrity: false, hint: "Bind the sentence to a fact, a quote, a citation, or a claim-graph node with data-claim." },
 	meaning_drift_confirmed: { severity: "major", integrity: false, hint: "Two independent readers found the same drift; rewrite from the quote or dispute with a reason." },
-	polish_edit_rejected: { severity: "major", integrity: false, hint: "The edit changed a number, a hedge, a qualifier, a link, or a claim id; re-propose the language fix only." },
+	meaning_unverified: { severity: "major", integrity: false, hint: "No meaning reader judged this pair, or no strong reader judged a force_strong pair; run the missing reader on pairs.json and rerun fact meaning-check." },
+	polish_edit_rejected: { severity: "major", integrity: false, hint: "The edit changed a number, a hedge, a qualifier, a link, or a claim id, or contained <, > or &; re-propose the language fix only, narrowed to the words around any entity or tag." },
 	polish_hedging_decreased: { severity: "major", integrity: false, hint: "The polish pass removed qualifiers; restore them." },
 	polish_text_churn: { severity: "major", integrity: false, hint: "More than half the text changed during polish; the pass composed instead of proofreading." },
 	snapshot_mismatch: { severity: "major", integrity: false, hint: "The operands come from different collection windows; use rows from one window or state the windows separately." },
@@ -73,6 +86,7 @@ export const DEFECT_CODES = deepFreeze({
 	quote_stale_version: { severity: "major", integrity: false, hint: "The quoted source revision differs from the revision the report targets; re-snapshot the target revision or date the quote." },
 	quote_fuzzy_match: { severity: "minor", integrity: false, hint: "The source text is OCR-noisy; confirm the snapshot and prefer the raw document." },
 	name_outside_quote: { severity: "minor", integrity: false, hint: "A name in the sentence is not in the cited quote; add the source or remove the name." },
+	verification_claim_unmarked: { severity: "minor", integrity: false, hint: "The sentence reads as a check we ran but carries no verified mark; mark it {{V:F<n>:label}} on a recorded command-output row, or reword it." },
 	scope_widened_warn: { severity: "minor", integrity: false, hint: "The sentence uses a broader scope word than the quote; confirm the scope or narrow it." },
 	particle_unverified: { severity: "minor", integrity: false, hint: "The particle after this value could not be checked; read it aloud and fix it by hand if wrong." },
 	fallback_without_entity: { severity: "minor", integrity: false, hint: "The replacement quote has no entity for attribution; set one on the row." },
@@ -86,11 +100,11 @@ export const DEFECT_CODES = deepFreeze({
 export const FIDELITY_CODES = Object.freeze([
 	"unresolved_placeholder", "value_mismatch", "unit_mismatch", "quote_not_verbatim", "claim_status_invalid",
 	"incompatible_operands", "pointer_label_mismatch", "quote_anchor_unresolved", "unit_duplicated", "polish_diff_fail",
-	"fidelity_interview_incomplete", "derived_not_allowed", "source_outside_floor", "snapshot_hash_mismatch",
-	"chart_value_untraceable", "quote_unbound", "edition_unverified", "untraceable_number", "unsupported_verification",
+	"fidelity_interview_incomplete", "derived_not_allowed", "source_outside_floor", "brief_changed", "snapshot_hash_mismatch",
+	"chart_value_untraceable", "quote_unbound", "edition_unverified", "untraceable_number", "unsupported_verification", "claim_kind_mismatch",
 	"conflicting_readings", "hedge_dropped", "direction_flipped", "causality_added", "qualifier_dropped", "unbound_sentence",
-	"meaning_drift_confirmed", "polish_edit_rejected", "polish_hedging_decreased", "polish_text_churn", "snapshot_mismatch",
-	"join_integrity_fail", "quote_stale_version", "quote_fuzzy_match", "name_outside_quote", "scope_widened_warn",
+	"meaning_drift_confirmed", "meaning_unverified", "polish_edit_rejected", "polish_hedging_decreased", "polish_text_churn", "snapshot_mismatch",
+	"join_integrity_fail", "quote_stale_version", "quote_fuzzy_match", "name_outside_quote", "verification_claim_unmarked", "scope_widened_warn",
 	"particle_unverified", "fallback_without_entity", "meaning_drift_warn", "polish_edit_unlocated", "polish_link_changed",
 	"polish_name_changed",
 ])
@@ -121,16 +135,7 @@ export const GATE_STATUSES = Object.freeze(["pass", "fail", "not_run"])
 export const LINEAGE_MODES = Object.freeze(["inline", "section"])
 export const ANSWERED_BY = Object.freeze(["user", "default", "request", "pending"])
 export const REPAIR_DEFAULTS = Object.freeze({ maxAttempts: 3, plateauLimit: 2, wallClockMs: 15 * 60 * 1000 })
-export const DESIGN_SPEC_SECTIONS = Object.freeze([
-	"Extracted from",
-	"Tokens",
-	"Typography",
-	"Layout",
-	"Structure",
-	"Figures",
-	"Citations",
-	"Open questions",
-])
+export const DESIGN_SPEC_SECTIONS = Object.freeze(["Extracted from", "Tokens", "Typography", "Layout", "Structure", "Figures", "Citations", "Open questions"])
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/
 
@@ -184,6 +189,14 @@ export function validateOutcomeManifest(manifest) {
 	if (isObject(manifest.gates)) {
 		for (const gate of GATE_NAMES) check(errors, GATE_STATUSES.includes(manifest.gates[gate]), `gates.${gate} must be one of ${GATE_STATUSES.join(", ")}`)
 	} else errors.push("gates must be an object")
+	if (manifest.gateHistory !== undefined) {
+		if (!Array.isArray(manifest.gateHistory)) errors.push("gateHistory must be an array")
+		else for (const entry of manifest.gateHistory) {
+			check(errors, isObject(entry) && GATE_NAMES.includes(entry.gate) && GATE_STATUSES.includes(entry.status)
+				&& typeof entry.at === "string" && ISO_DATE.test(entry.at)
+				&& (entry.reason === undefined || typeof entry.reason === "string"), "gateHistory entries must have a known gate, status, timestamp, and optional reason")
+		}
+	}
 	if (Array.isArray(manifest.residualDefects)) manifest.residualDefects.forEach((defect, index) => validateDefect(defect, `residualDefects[${index}]`, errors))
 	else errors.push("residualDefects must be an array")
 	check(errors, manifest.repair === null || isObject(manifest.repair), "repair must be null or an object")

@@ -6574,6 +6574,7 @@ function coerceToolArguments(value) {
 // ../lsp-core/src/mcp.ts
 var SERVER_NAME = "lsp";
 var SERVER_VERSION = "0.1.0";
+var PROTOCOL_VERSIONS = ["2025-06-18", "2025-03-26", "2024-11-05"];
 async function handleLspMcpRequest(input, options = {}) {
   if (!isPlainRecord(input)) {
     return errorResponse(null, -32600, "Invalid Request");
@@ -6630,9 +6631,8 @@ function describeTool(tool) {
   };
 }
 function requestedProtocolVersion(params) {
-  if (!isPlainRecord(params) || typeof params["protocolVersion"] !== "string")
-    return "2024-11-05";
-  return params["protocolVersion"];
+  const requested = isPlainRecord(params) ? params["protocolVersion"] : undefined;
+  return typeof requested === "string" && PROTOCOL_VERSIONS.includes(requested) ? requested : "2025-06-18";
 }
 
 // src/request-routing.ts
