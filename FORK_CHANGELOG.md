@@ -10,6 +10,19 @@ Releases of [gdraganic/oh-my-openagent](https://github.com/gdraganic/oh-my-opena
 
 To release: add a `## [<version>] - YYYY-MM-DD` section here on `main` (with the `Fork-Patch: v2-support` trailer), then run the **Fork release** workflow with that version.
 
+## [5.1.48-fork.1] - 2026-10-27
+
+Rebased on upstream `dev` of 2026-10-27 (1,142 commits since fork.1): upstream releases 5.1.45 to 5.1.48, mostly OmO Native. Relevant to the OpenCode edition:
+
+- `session_read`, `session_search` and `session_info` page through the message API: reading the end of a 23,000-message session takes 42 ms and 68 MB instead of 40 s and 1.8 GB.
+- A project's skills can no longer link outside the project, and their MCP servers no longer receive your whole environment.
+- Nested delegated tasks and team members keep the original session tree, so `max_depth` is enforced across nesting.
+- Tasks honour a `-fast` model alias that the provider config pairs with a model.
+- Skill MCP tool errors are reported as errors, and MCP catalogs include every page.
+- Upstream prepared Claude Fable 5.5 as the next default for Prometheus, Metis, visual-engineering and artistry, but keeps it switched off until Anthropic lists it; default models are unchanged for now.
+
+The fork's browser-provider patch was reapplied on upstream's restructured skill loader. One upstream workflow added since fork.1 is dropped, as usual.
+
 ## [5.1.44-fork.1] - 2026-10-24
 
 Rebased on upstream `dev` of 2026-10-24 (1,773 commits since fork.1): upstream releases 5.1.39 to 5.1.44, mostly OmO Native (memory sync, onboarding, engine updates). Relevant to the OpenCode edition:
