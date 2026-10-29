@@ -473,13 +473,9 @@ function getTelemetryHost(env = process.env, defaultHost = DEFAULT_POSTHOG_HOST)
 }
 
 // ../../telemetry-core/src/machine-id.ts
-import { createHash } from "node:crypto";
 import os2 from "node:os";
 function getDefaultTelemetryOsProvider() {
   return os2;
-}
-function getTelemetryDistinctId(machineIdPrefix, osProvider = getDefaultTelemetryOsProvider()) {
-  return createHash("sha256").update(`${machineIdPrefix}${osProvider.hostname()}`).digest("hex");
 }
 
 // ../../telemetry-core/src/injected-client.ts
@@ -596,11 +592,15 @@ function getSharedProperties(input) {
     total_memory_gb: Math.round(osProvider.totalmem() / 1024 / 1024 / 1024),
     locale: Intl.DateTimeFormat().resolvedOptions().locale,
     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    shell: process.env.SHELL,
+    shell: getShellName(process.env.SHELL),
     ci: Boolean(process.env.CI),
     terminal: process.env.TERM_PROGRAM,
     ...input.product.additionalProperties
   };
+}
+function getShellName(shellPath) {
+  const name = shellPath?.split(/[\\/]/).pop()?.replace(/\.exe$/i, "");
+  return name ? name : undefined;
 }
 function getSafeCpuInfo(osProvider, input) {
   try {
@@ -9998,26 +9998,72 @@ function createDefaultPostHogTransport(apiKey, options) {
   return new PostHogTelemetryTransport(apiKey, options);
 }
 
+// ../../telemetry-core/src/install-id.ts
+import { createHash, randomBytes } from "node:crypto";
+import { mkdirSync as mkdirSync5, readFileSync as readFileSync3, writeFileSync as writeFileSync2 } from "node:fs";
+import { dirname as dirname3, join as join4 } from "node:path";
+var TELEMETRY_INSTALL_ID_FILE_NAME = "install-id";
+var INSTALL_ID_PATTERN = /^[0-9a-f]{64}$/;
+var fallbackInstallIds = new Map;
+function getTelemetryInstallDistinctId(stateDir) {
+  return createHash("sha256").update(readOrCreateInstallId(join4(stateDir, TELEMETRY_INSTALL_ID_FILE_NAME))).digest("hex");
+}
+function readOrCreateInstallId(path2) {
+  const persisted = readInstallId(path2);
+  if (persisted !== undefined)
+    return persisted;
+  const installId = randomBytes(32).toString("hex");
+  try {
+    mkdirSync5(dirname3(path2), { recursive: true });
+    writeFileSync2(path2, `${installId}
+`, { flag: "wx", mode: 384 });
+    fallbackInstallIds.delete(path2);
+    return installId;
+  } catch {
+    const concurrentlyCreated = readInstallId(path2);
+    if (concurrentlyCreated !== undefined)
+      return concurrentlyCreated;
+    try {
+      writeFileSync2(path2, `${installId}
+`, { flag: "w", mode: 384 });
+      fallbackInstallIds.delete(path2);
+      return installId;
+    } catch {}
+    const fallback = fallbackInstallIds.get(path2);
+    if (fallback !== undefined)
+      return fallback;
+    fallbackInstallIds.set(path2, installId);
+    return installId;
+  }
+}
+function readInstallId(path2) {
+  try {
+    const value = readFileSync3(path2, "utf8").trim();
+    return INSTALL_ID_PATTERN.test(value) ? value : undefined;
+  } catch {
+    return;
+  }
+}
+
 // ../../telemetry-core/src/posthog-client.ts
 function createTelemetryClient2(input) {
   return createTelemetryClient({ ...input, transportFactory: input.transportFactory ?? createDefaultPostHogTransport });
 }
 
 // components/telemetry/src/product-identity.ts
-import { readFileSync as readFileSync3 } from "node:fs";
+import { readFileSync as readFileSync4 } from "node:fs";
 var PRODUCT_NAME = "omo-codex";
 var PACKAGE_NAME = "@oh-my-opencode/omo-codex";
 var CACHE_DIR_NAME = "omo-codex";
 var EVENT_NAME = "omo_codex_daily_active";
 var PRODUCT_ENV_PREFIX = "OMO_CODEX";
-var MACHINE_ID_PREFIX = "omo-codex:";
 function isComponentPackageManifest(value) {
   return value !== null && typeof value === "object" && !Array.isArray(value);
 }
 function readComponentVersionFromManifest() {
   try {
     const manifestUrl = new URL("../package.json", import.meta.url);
-    const manifestText = readFileSync3(manifestUrl, "utf-8");
+    const manifestText = readFileSync4(manifestUrl, "utf-8");
     const parsed = JSON.parse(manifestText);
     if (isComponentPackageManifest(parsed) && typeof parsed.version === "string") {
       return parsed.version;
@@ -10040,7 +10086,6 @@ function createComponentTelemetryProductConfig(additionalProperties) {
     defaultApiKey: DEFAULT_POSTHOG_API_KEY,
     defaultHost: DEFAULT_POSTHOG_HOST,
     eventName: EVENT_NAME,
-    machineIdPrefix: MACHINE_ID_PREFIX,
     packageName: PACKAGE_NAME,
     packageVersion: getComponentVersion(),
     platform: "omo-codex",
@@ -10119,14 +10164,14 @@ function createPluginPostHogClient(options = {}) {
   }
   const activityStateProvider = resolveActivityStateProvider(options);
   return {
-    trackActive: (distinctId, reason) => {
+    trackActive: (reason) => {
       const activityState = activityStateProvider();
       if (!activityState.captureDaily) {
         return;
       }
       client.trackActive({
         dayUTC: activityState.dayUTC,
-        distinctId,
+        distinctId: getTelemetryInstallDistinctId(options.stateDir ?? getComponentTelemetryStateDir()),
         reason
       });
     },
@@ -10137,9 +10182,6 @@ function createPluginPostHogClient(options = {}) {
 }
 async function createPluginPostHog() {
   return createPluginPostHogClient();
-}
-function getPostHogDistinctId() {
-  return getTelemetryDistinctId(MACHINE_ID_PREFIX, getDefaultTelemetryOsProvider());
 }
 
 // components/telemetry/src/codex-hook.ts
@@ -10154,7 +10196,6 @@ function writeHookDiagnostic(event, error, errorKind) {
 }
 async function runSessionStartHook(_input, options = {}) {
   const createClient = options.createClient ?? createPluginPostHog;
-  const getDistinctId = options.getDistinctId ?? getPostHogDistinctId;
   let client;
   try {
     client = await createClient();
@@ -10163,7 +10204,7 @@ async function runSessionStartHook(_input, options = {}) {
     return "";
   }
   try {
-    client.trackActive(getDistinctId(), SESSION_START_REASON);
+    client.trackActive(SESSION_START_REASON);
   } catch (error) {
     writeHookDiagnostic("telemetry_capture_failed", error, error instanceof Error ? "error" : "non_error");
     await safeShutdown(client);

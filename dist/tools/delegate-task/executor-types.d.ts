@@ -20,6 +20,7 @@ export interface ExecutorContext {
         title: string;
     }) => Promise<void>;
     syncPollTimeoutMs?: number;
+    taskCleanupDelayMs?: number;
 }
 export interface ParentContext {
     sessionID: string;

@@ -66,10 +66,16 @@ export declare const deviceListSchema: z.ZodObject<{
 }, z.core.$strip>;
 export type ListedDevice = z.infer<typeof deviceListSchema>["devices"][number];
 export type ChooseDevice = (devices: readonly ListedDevice[]) => Promise<string | null>;
+declare const REFUSAL_CODES: readonly ["unauthorized", "account_deleted", "reauth_required", "invalid_grant", "device_revoked", "entitlement_required", "authorization_pending", "slow_down", "access_denied", "expired_token", "rate_limited", "internal", "unavailable", "forbidden", "invalid_request", "not_found"];
+export type RefusalCode = (typeof REFUSAL_CODES)[number] | "unknown";
+/** What a refused request asks of the person; the message keys on this, never on the server's text. */
+export type RefusalGuidance = "sign_in_again" | "wait" | "service_trouble" | "update_omo" | "account_deleted" | "account_refused";
+export declare function refusalGuidance(code: RefusalCode, status: number): RefusalGuidance;
+export declare function refusalMessage(guidance: RefusalGuidance): string;
 export declare class ApiRefusal extends SignInError {
     #private;
     readonly status: number;
-    readonly code: string;
+    readonly code: RefusalCode;
     constructor(code: string, status: number, detail?: z.infer<typeof limitSchema>, retryAfter?: string | null);
     get detail(): {
         reason: "device_limit";

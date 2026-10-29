@@ -15,6 +15,12 @@ export declare function createSession(options: {
     signal: AbortSignal | undefined;
     ready(): Promise<void>;
     save(value: Credentials): Promise<void>;
+    /** The marker an explicit `omo logout` left, or null; only an empty store makes it meaningful. */
+    signedOutMarker: () => Promise<{
+        device: string | null;
+        at: string;
+    } | null>;
+    clearSignedOutMarker: () => Promise<void>;
     update<T>(action: (current: Credentials | null) => Promise<T>): Promise<T>;
     logout(): Promise<boolean>;
     accessToken(): Promise<string>;
