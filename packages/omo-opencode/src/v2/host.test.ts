@@ -654,7 +654,7 @@ describe("OpenCode V2 adapter", () => {
     const fake = createFakeContext()
     Object.assign(fake.ctx.location, { directory })
     const seen: string[] = []
-    await setupOpenCodeV2(fake.ctx, {
+    const cleanup = await setupOpenCodeV2(fake.ctx, {
       agentDirectory: directory,
       server: async () => ({
         "tool.execute.after": async (input: { tool: string }, output: { output: string }) => {
@@ -671,6 +671,7 @@ describe("OpenCode V2 adapter", () => {
     await after?.fn(edited as never)
     expect(edited.result.content).toEqual("hello!" as never)
     expect(seen).toEqual(["## Skill: git-master", "hello"])
+    await cleanup?.()
   })
 
   test("tool metadata reaches OpenCode as plain JSON, without undefined fields", async () => {
@@ -678,7 +679,7 @@ describe("OpenCode V2 adapter", () => {
     directories.push(directory)
     const fake = createFakeContext()
     Object.assign(fake.ctx.location, { directory })
-    await setupOpenCodeV2(fake.ctx, {
+    const cleanup = await setupOpenCodeV2(fake.ctx, {
       agentDirectory: directory,
       server: async () => ({
         tool: {
@@ -705,6 +706,7 @@ describe("OpenCode V2 adapter", () => {
     await after?.fn(event as never)
     expect(event.result.metadata).toEqual({ backgroundTaskId: "bg_1", sessionID: "ses_1", model: { providerID: "zai" } })
     expect(Object.keys((event.result.metadata as { model: object }).model)).toEqual(["providerID"])
+    await cleanup?.()
   })
 
   test("todowrite answers with the saved list and its count for clients to render", async () => {
@@ -712,7 +714,7 @@ describe("OpenCode V2 adapter", () => {
     directories.push(directory)
     const fake = createFakeContext()
     Object.assign(fake.ctx.location, { directory })
-    await setupOpenCodeV2(fake.ctx, { agentDirectory: directory, server: async () => ({ tool: {} }) })
+    const cleanup = await setupOpenCodeV2(fake.ctx, { agentDirectory: directory, server: async () => ({ tool: {} }) })
     const todowrite = fake.tools.find((tool) => tool.name === "todowrite")
     const result = await todowrite?.execute(
       { todos: [{ content: "ship it", status: "in_progress", priority: "high" }, { content: "test it", status: "pending" }] },
@@ -726,6 +728,7 @@ describe("OpenCode V2 adapter", () => {
     const todoread = fake.tools.find((tool) => tool.name === "todoread")
     const read = await todoread?.execute({}, { sessionID: "ses_list", id: "call_2", signal: new AbortController().signal })
     expect(JSON.parse(read?.content ?? "null")).toHaveLength(2)
+    await cleanup?.()
   })
 
   test("todowrite arguments come back from session.todo", async () => {
