@@ -10,6 +10,21 @@ Releases of [gdraganic/oh-my-openagent](https://github.com/gdraganic/oh-my-opena
 
 To release: add a `## [<version>] - YYYY-MM-DD` section here on `main` (with the `Fork-Patch: v2-support` trailer), then run the **Fork release** workflow with that version.
 
+## [5.1.51-fork.1] - 2026-10-29
+
+Rebased on upstream `dev` of 2026-10-29 (643 commits since fork.1), which contains upstream release 5.1.51 (5.1.49 and 5.1.50 were never published). Relevant to the OpenCode edition:
+
+- Prometheus's plan-only write guard confines writes to real planning paths and rechecks every target, closing ways a patch could edit files outside the plan.
+- Momus review verdicts are saved as numbered files next to the plan (`.omo/plans/<plan>.reviews/NNN-okay.md` / `NNN-reject.md`), so plan reviews survive restarts.
+- Sisyphus, Sisyphus-Junior, Hephaestus and Atlas treat a permission denial or a user refusal as final instead of retrying the same action another way.
+- Continuing a deleted subagent session fails fast; sync subagent sessions honour the cleanup delay.
+- `omo run` gives its server a per-run password and keeps passwords out of tmux command lines.
+- The skill tool no longer repeats skill descriptions OpenCode already lists.
+- Model-profile notices no longer reach the model as conversation text.
+- Default models are unchanged; Claude Fable 5.5 is still switched off until Anthropic lists it.
+
+Fork fix: three V2 host tests now stop the adapter they start, which upstream's new temp-directory leak check requires. One new upstream workflow is dropped, as usual.
+
 ## [5.1.48-fork.1] - 2026-10-27
 
 Rebased on upstream `dev` of 2026-10-27 (1,142 commits since fork.1): upstream releases 5.1.45 to 5.1.48, mostly OmO Native. Relevant to the OpenCode edition:
