@@ -10,6 +10,19 @@ Releases of [gdraganic/oh-my-openagent](https://github.com/gdraganic/oh-my-opena
 
 To release: add a `## [<version>] - YYYY-MM-DD` section here on `main` (with the `Fork-Patch: v2-support` trailer), then run the **Fork release** workflow with that version.
 
+## [5.1.59-fork.1] - 2026-11-03
+
+Rebased on upstream `dev` of 2026-11-03 (1,341 commits since fork.1): upstream releases 5.1.52 to 5.1.59. Relevant to the OpenCode edition:
+
+- Agent prompts now come from the same shared builders OmO Native uses (`@code-yeongyu/senpi/prompt-presets`), so each model in the catalog gets its model-specific Sisyphus, Hephaestus, Atlas and Sisyphus-Junior prompt. The old per-model prompt files are gone. The shared builders are bundled into the plugin; nothing extra is installed.
+- Kimi K3.1 Pro replaces Kimi K3 in every chain (Kimi Code, Moonshot, OpenCode Go). No effect with OpenAI and Anthropic only.
+- Delegated child sessions keep their spawn ancestry; the `quick` category model writes live job widgets.
+- Skill MCP OAuth validates authorization-server issuers.
+- A TypeScript LSP session runs two processes instead of four (about half the memory).
+- Default models are otherwise unchanged; Claude Fable 5.5 is still switched off until Anthropic lists it.
+
+Verified on OpenCode 2.2.1.
+
 ## [5.1.51-fork.1] - 2026-10-29
 
 Rebased on upstream `dev` of 2026-10-29 (643 commits since fork.1), which contains upstream release 5.1.51 (5.1.49 and 5.1.50 were never published). Relevant to the OpenCode edition:
