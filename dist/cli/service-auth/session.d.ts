@@ -10,9 +10,11 @@ export declare function createSession(options: {
     readonly store: CredentialStore;
     readonly home?: string;
     readonly signal?: AbortSignal;
+    readonly now?: () => number;
 }): {
     request: (path: string, init: RequestInit) => Promise<unknown>;
     signal: AbortSignal | undefined;
+    transaction: <T>(action: () => Promise<T>) => Promise<T>;
     ready(): Promise<void>;
     save(value: Credentials): Promise<void>;
     /** The marker an explicit `omo logout` left, or null; only an empty store makes it meaningful. */
@@ -21,9 +23,14 @@ export declare function createSession(options: {
         at: string;
     } | null>;
     clearSignedOutMarker: () => Promise<void>;
-    update<T>(action: (current: Credentials | null) => Promise<T>): Promise<T>;
+    update<T>(action: (current: Credentials | null) => Promise<T>, options?: {
+        readonly replaceInvalid?: boolean;
+    }): Promise<T>;
+    forget(): Promise<void>;
+    accessSnapshot: () => Promise<Credentials | null>;
     logout(): Promise<boolean>;
-    accessToken(): Promise<string>;
+    /** `expect` rejects a stored credential that is no longer the caller's captured identity before any refresh. */
+    accessToken(expect?: (current: Credentials) => boolean): Promise<string>;
     removeForLimit(error: unknown, choose: ChooseDevice): Promise<boolean>;
 };
 export type Session = ReturnType<typeof createSession>;

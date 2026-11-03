@@ -2535,7 +2535,8 @@ var init_latest_models = __esm(() => {
     gptLunaFast: "gpt-6-luna-fast",
     glm: "glm-5.3",
     glmFlash: "glm-5.3-flash",
-    kimi: "kimi-k3",
+    kimi: "kimi-k3.1-pro",
+    kimiK3: "kimi-k3",
     geminiPro: "gemini-4-argon"
   };
 });
@@ -3438,13 +3439,17 @@ var init_agent_model_requirements = __esm(() => {
           variant: "max"
         },
         {
-          providers: ["opencode-go", "kimi-for-coding", "moonshotai", "opencode", "bailian-coding-plan", "moonshotai-cn", "firmware", "ollama-cloud", "aihubmix"],
+          providers: ["opencode-go", "kimi-for-coding", "moonshotai", "moonshotai-cn"],
           model: LATEST_MODEL_BY_FAMILY.kimi
+        },
+        {
+          providers: ["opencode", "bailian-coding-plan", "firmware", "ollama-cloud", "aihubmix"],
+          model: LATEST_MODEL_BY_FAMILY.kimiK3
         },
         {
           providers: ["openai", "chatgpt-subscription", "github-copilot", "opencode"],
           model: "gpt-5.6-sol",
-          variant: "medium"
+          variant: "high"
         },
         { providers: ["zai-coding-plan", "opencode", "bailian-coding-plan"], model: "glm-5.2" },
         { providers: ["opencode"], model: "big-pickle" }
@@ -3456,12 +3461,12 @@ var init_agent_model_requirements = __esm(() => {
         {
           providers: ["openai", "chatgpt-subscription", "github-copilot", "opencode"],
           model: "gpt-6-sol",
-          variant: "medium"
+          variant: "high"
         },
         {
           providers: ["openai", "chatgpt-subscription", "github-copilot", "opencode"],
           model: "gpt-5.6-sol",
-          variant: "medium"
+          variant: "high"
         }
       ],
       requiresProvider: ["openai", "chatgpt-subscription", "github-copilot", "opencode"],
@@ -3469,7 +3474,7 @@ var init_agent_model_requirements = __esm(() => {
     },
     oracle: {
       fallbackChain: [
-        { providers: ["openai", "chatgpt-subscription", "opencode"], model: "gpt-5.6-sol", variant: "xhigh" },
+        { providers: ["openai", "chatgpt-subscription", "opencode"], model: "gpt-5.6-sol", variant: "high" },
         { providers: ["github-copilot"], model: "gpt-5.6-sol", variant: "high" },
         {
           providers: ["google", "google-vertex", "opencode"],
@@ -3493,7 +3498,7 @@ var init_agent_model_requirements = __esm(() => {
       fallbackChain: [
         { providers: ["kimi-for-coding"], model: "kimi-for-coding-highspeed", variant: "off" },
         { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptLunaFast, variant: "low" },
-        { providers: ["anthropic", "github-copilot"], model: LATEST_MODEL_BY_FAMILY.claudeHaiku, variant: "medium" },
+        { providers: ["anthropic", "github-copilot"], model: LATEST_MODEL_BY_FAMILY.claudeHaiku, variant: "high" },
         { providers: ["deepseek"], model: "deepseek-flash", variant: "max" },
         { providers: ["opencode-go", "bailian-coding-plan"], model: "qwen3.7-plus" },
         { providers: ["opencode-go"], model: "minimax-m2.7" }
@@ -3503,7 +3508,7 @@ var init_agent_model_requirements = __esm(() => {
       fallbackChain: [
         { providers: ["kimi-for-coding"], model: "kimi-for-coding-highspeed", variant: "off" },
         { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptLunaFast, variant: "low" },
-        { providers: ["anthropic", "github-copilot"], model: LATEST_MODEL_BY_FAMILY.claudeHaiku, variant: "medium" },
+        { providers: ["anthropic", "github-copilot"], model: LATEST_MODEL_BY_FAMILY.claudeHaiku, variant: "high" },
         { providers: ["deepseek"], model: "deepseek-flash", variant: "max" },
         { providers: ["opencode-go", "bailian-coding-plan"], model: "qwen3.7-plus" },
         { providers: ["opencode-go"], model: "minimax-m2.7" }
@@ -3522,12 +3527,12 @@ var init_agent_model_requirements = __esm(() => {
         {
           providers: ["anthropic", "github-copilot", "opencode"],
           model: FABLE_55_LAUNCH.id,
-          variant: "xhigh"
+          variant: "high"
         },
         {
           providers: ["anthropic", "github-copilot", "opencode"],
           model: LATEST_MODEL_BY_FAMILY.claudeFable,
-          variant: "xhigh"
+          variant: "high"
         },
         {
           providers: ["anthropic", "github-copilot", "opencode"],
@@ -3535,10 +3540,11 @@ var init_agent_model_requirements = __esm(() => {
           variant: "max"
         },
         {
-          providers: ["opencode-go", "kimi-for-coding", "moonshotai", "opencode"],
+          providers: ["opencode-go", "kimi-for-coding", "moonshotai"],
           model: LATEST_MODEL_BY_FAMILY.kimi,
           variant: "max"
-        }
+        },
+        { providers: ["opencode"], model: LATEST_MODEL_BY_FAMILY.kimiK3, variant: "max" }
       ])
     },
     metis: {
@@ -3559,15 +3565,16 @@ var init_agent_model_requirements = __esm(() => {
           variant: "max"
         },
         {
-          providers: ["opencode-go", "kimi-for-coding", "moonshotai", "opencode"],
+          providers: ["opencode-go", "kimi-for-coding", "moonshotai"],
           model: LATEST_MODEL_BY_FAMILY.kimi,
           variant: "max"
-        }
+        },
+        { providers: ["opencode"], model: LATEST_MODEL_BY_FAMILY.kimiK3, variant: "max" }
       ])
     },
     momus: {
       fallbackChain: [
-        { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptAstra, variant: "xhigh" },
+        { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptAstra, variant: "high" },
         { providers: ["github-copilot"], model: LATEST_MODEL_BY_FAMILY.gptAstra, variant: "high" },
         { providers: ["openai", "chatgpt-subscription", "opencode"], model: LATEST_MODEL_BY_FAMILY.gptAstra, variant: "high" },
         {
@@ -3595,7 +3602,7 @@ var init_agent_model_requirements = __esm(() => {
         {
           providers: ["openai", "chatgpt-subscription", "github-copilot", "opencode"],
           model: "gpt-5.6-sol",
-          variant: "medium"
+          variant: "high"
         },
         { providers: ["opencode-go"], model: "minimax-m3" },
         { providers: ["minimax-coding-plan", "minimax-cn-coding-plan"], model: "MiniMax-M3" },
@@ -3609,7 +3616,7 @@ var init_agent_model_requirements = __esm(() => {
         {
           providers: ["openai", "chatgpt-subscription", "github-copilot", "opencode"],
           model: "gpt-5.6-sol",
-          variant: "medium"
+          variant: "high"
         },
         { providers: ["opencode-go"], model: "minimax-m3" },
         { providers: ["minimax-coding-plan", "minimax-cn-coding-plan"], model: "MiniMax-M3" },
@@ -3645,10 +3652,11 @@ var init_category_model_requirements = __esm(() => {
           variant: "max"
         },
         {
-          providers: ["kimi-for-coding", "moonshotai", "opencode-go", "opencode"],
+          providers: ["kimi-for-coding", "moonshotai", "opencode-go"],
           model: LATEST_MODEL_BY_FAMILY.kimi,
           variant: "max"
-        }
+        },
+        { providers: ["opencode"], model: LATEST_MODEL_BY_FAMILY.kimiK3, variant: "max" }
       ])
     },
     ultrabrain: {
@@ -3663,14 +3671,14 @@ var init_category_model_requirements = __esm(() => {
     },
     "deep-low": {
       fallbackChain: [
-        { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptSol, variant: "medium" },
-        { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptSolFast, variant: "medium" },
+        { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptSol, variant: "high" },
+        { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptSolFast, variant: "high" },
         {
           providers: ["openai", "chatgpt-subscription", "github-copilot", "opencode"],
           model: "gpt-5.6-sol",
-          variant: "medium"
+          variant: "high"
         },
-        { providers: ["openai", "chatgpt-subscription"], model: "gpt-5.6-sol-fast", variant: "medium" }
+        { providers: ["openai", "chatgpt-subscription"], model: "gpt-5.6-sol-fast", variant: "high" }
       ]
     },
     "deep-high": {
@@ -3700,10 +3708,11 @@ var init_category_model_requirements = __esm(() => {
           variant: "max"
         },
         {
-          providers: ["kimi-for-coding", "moonshotai", "opencode-go", "opencode"],
+          providers: ["kimi-for-coding", "moonshotai", "opencode-go"],
           model: LATEST_MODEL_BY_FAMILY.kimi,
           variant: "max"
-        }
+        },
+        { providers: ["opencode"], model: LATEST_MODEL_BY_FAMILY.kimiK3, variant: "max" }
       ])
     },
     quick: {
@@ -3712,7 +3721,7 @@ var init_category_model_requirements = __esm(() => {
         {
           providers: ["anthropic", "anthropic-api", "github-copilot"],
           model: LATEST_MODEL_BY_FAMILY.claudeHaiku,
-          variant: "medium"
+          variant: "high"
         },
         { providers: ["deepseek"], model: "deepseek-flash", variant: "off" },
         {
@@ -3732,16 +3741,16 @@ var init_category_model_requirements = __esm(() => {
         {
           providers: ["anthropic", "anthropic-api", "github-copilot", "opencode"],
           model: LATEST_MODEL_BY_FAMILY.claudeSonnet,
-          variant: "medium"
+          variant: "high"
         },
         { providers: ["xiaomi", "opencode-go"], model: "mimo-v2.6-pro", variant: "max" },
-        { providers: ["xai", "github-copilot", "opencode-go"], model: "grok-4.7", variant: "xhigh" },
+        { providers: ["xai", "github-copilot", "opencode-go"], model: "grok-4.7", variant: "high" },
         { providers: ["zai-coding-plan", "opencode-go"], model: LATEST_MODEL_BY_FAMILY.glm, variant: "high" },
-        { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptSol, variant: "medium" },
+        { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptSol, variant: "high" },
         {
           providers: ["openai", "chatgpt-subscription", "github-copilot", "opencode"],
           model: "gpt-5.6-sol",
-          variant: "medium"
+          variant: "high"
         },
         {
           providers: ["anthropic", "anthropic-api", "github-copilot", "opencode"],
@@ -3762,14 +3771,15 @@ var init_category_model_requirements = __esm(() => {
         {
           providers: ["anthropic", "anthropic-api", "github-copilot", "opencode"],
           model: LATEST_MODEL_BY_FAMILY.claudeOpus,
-          variant: "medium"
+          variant: "high"
         },
         { providers: ["zai-coding-plan", "opencode-go"], model: LATEST_MODEL_BY_FAMILY.glm, variant: "max" },
         {
-          providers: ["kimi-for-coding", "moonshotai", "opencode-go", "opencode"],
+          providers: ["kimi-for-coding", "moonshotai", "opencode-go"],
           model: LATEST_MODEL_BY_FAMILY.kimi,
           variant: "max"
-        }
+        },
+        { providers: ["opencode"], model: LATEST_MODEL_BY_FAMILY.kimiK3, variant: "max" }
       ]
     },
     writing: {
@@ -4179,6 +4189,36 @@ var init_supplemental_entries = __esm(() => {
       limit: {
         context: 262144,
         output: 262144
+      }
+    },
+    "kimi-k3.1-pro": {
+      id: "kimi-k3.1-pro",
+      family: "kimi",
+      reasoning: true,
+      temperature: true,
+      toolCall: true,
+      modalities: {
+        input: ["text", "image", "video"],
+        output: ["text"]
+      },
+      limit: {
+        context: 1048576,
+        output: 1048576
+      }
+    },
+    "kimi-k3.1-pro-highspeed": {
+      id: "kimi-k3.1-pro-highspeed",
+      family: "kimi",
+      reasoning: true,
+      temperature: true,
+      toolCall: true,
+      modalities: {
+        input: ["text", "image", "video"],
+        output: ["text"]
+      },
+      limit: {
+        context: 1048576,
+        output: 1048576
       }
     },
     "kimi-k2.6": {
@@ -5497,7 +5537,7 @@ var init_openai_categories = __esm(() => {
     },
     {
       name: "deep-low",
-      config: { model: `openai/${LATEST_MODEL_BY_FAMILY.gptSol}`, variant: "medium" },
+      config: { model: `openai/${LATEST_MODEL_BY_FAMILY.gptSol}`, variant: "high" },
       description: "Default deep lane: one goal, one deliverable, decisions the child can settle from what it reads; preferred over deep-high for 3D graphics, computer/browser use, CAPTCHA, multimodal, backend, logic, and algorithm work. Multiple goals fan out as parallel calls.",
       callerGuidance: DEEP_LOW_CATEGORY_CALLER_GUIDANCE,
       promptAppend: DEEP_LOW_CATEGORY_PROMPT_APPEND,
@@ -5522,14 +5562,14 @@ var init_openai_categories = __esm(() => {
     },
     {
       name: "unspecified-low",
-      config: { model: `anthropic/${LATEST_MODEL_BY_FAMILY.claudeSonnet}`, variant: "medium" },
+      config: { model: `anthropic/${LATEST_MODEL_BY_FAMILY.claudeSonnet}`, variant: "high" },
       description: "Tasks that don't fit other categories, low effort required",
       callerGuidance: UNSPECIFIED_LOW_CATEGORY_CALLER_GUIDANCE,
       promptAppend: UNSPECIFIED_LOW_CATEGORY_PROMPT_APPEND
     },
     {
       name: "unspecified-high",
-      config: { model: `anthropic/${LATEST_MODEL_BY_FAMILY.claudeOpus}`, variant: "medium" },
+      config: { model: `anthropic/${LATEST_MODEL_BY_FAMILY.claudeOpus}`, variant: "high" },
       description: "Tasks that don't fit other categories, high effort required",
       callerGuidance: UNSPECIFIED_HIGH_CATEGORY_CALLER_GUIDANCE,
       promptAppend: UNSPECIFIED_HIGH_CATEGORY_PROMPT_APPEND,
@@ -5927,6 +5967,33 @@ function createJsonFileCacheStore(options) {
       });
     }
   }
+  function writeIfChanged(value) {
+    ensureCacheDir();
+    const cacheFile = getCacheFilePath();
+    const serialized = options.serialize?.(value) ?? JSON.stringify(value, null, 2);
+    try {
+      const existing = existsSync4(cacheFile) ? readFileSync2(cacheFile, "utf-8") : undefined;
+      const unchanged = existing !== undefined && (existing === serialized || options.comparable !== undefined && JSON.stringify(options.comparable(JSON.parse(existing))) === JSON.stringify(options.comparable(value)));
+      if (unchanged) {
+        memoryValue = value;
+        writtenInCurrentProcess = true;
+        log2(`[${options.logPrefix}] ${options.cacheLabel} unchanged; skipped write`, options.describe(value));
+        return false;
+      }
+    } catch {}
+    try {
+      writeFileSync2(cacheFile, serialized);
+      memoryValue = value;
+      writtenInCurrentProcess = true;
+      log2(`[${options.logPrefix}] ${options.cacheLabel} written`, options.describe(value));
+      return true;
+    } catch (error) {
+      log2(`[${options.logPrefix}] Error writing ${toLogLabel(options.cacheLabel)}`, {
+        error: String(error)
+      });
+      return false;
+    }
+  }
   function resetMemory() {
     memoryValue = undefined;
     writtenInCurrentProcess = false;
@@ -5935,6 +6002,7 @@ function createJsonFileCacheStore(options) {
     read,
     has,
     write,
+    writeIfChanged,
     resetMemory
   };
 }
@@ -60983,7 +61051,8 @@ function createModelCapabilitiesCacheStore(getCacheDir2 = getOmoOpenCodeCacheDir
       generatedAt: snapshot.generatedAt
     }),
     serialize: (snapshot) => `${JSON.stringify(snapshot, null, 2)}
-`
+`,
+    comparable: ({ generatedAt: _generatedAt, ...catalog }) => catalog
   });
   function readModelCapabilitiesCache() {
     return snapshotCacheStore.read();
@@ -60996,7 +61065,7 @@ function createModelCapabilitiesCacheStore(getCacheDir2 = getOmoOpenCodeCacheDir
   }
   async function refreshModelCapabilitiesCache(args = {}) {
     const snapshot = await fetchModelCapabilitiesSnapshot(args);
-    writeModelCapabilitiesCache(snapshot);
+    snapshotCacheStore.writeIfChanged(snapshot);
     return snapshot;
   }
   return {
@@ -83919,6 +83988,7 @@ var init_agent = __esm(() => {
     prompt: string2().optional(),
     model: string2().optional(),
     models: array(OmoAgentModelEntrySchema).optional(),
+    models_distribution: _enum2(["sequential", "round_robin"]).optional(),
     reasoning: OmoReasoningSchema.optional(),
     variant: string2().optional(),
     reasoningEffort: OmoReasoningEffortSchema.optional(),
@@ -83942,6 +84012,10 @@ var init_agent = __esm(() => {
 function isRecord6(value) {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
+function withoutRetiredCategoryKeys(entry) {
+  const { provider_lock: _retired, ...rest } = entry;
+  return rest;
+}
 var OmoCategoryConfigObjectSchema, OmoCategoryConfigSchema, OmoCategoriesConfigSchema;
 var init_category = __esm(() => {
   init_zod();
@@ -83951,6 +84025,7 @@ var init_category = __esm(() => {
     description: string2().optional(),
     model: string2().optional(),
     models: array(union([string2(), OmoFallbackModelObjectSchema])).optional(),
+    models_distribution: _enum2(["sequential", "round_robin"]).optional(),
     reasoning: OmoReasoningSchema.optional(),
     temperature: number2().min(0).max(2).optional(),
     top_p: number2().min(0).max(1).optional(),
@@ -83969,7 +84044,7 @@ var init_category = __esm(() => {
     disable: boolean2().optional(),
     warn_unavailable: boolean2().optional()
   }).strict();
-  OmoCategoryConfigSchema = preprocess((value) => isRecord6(value) ? normalizeLegacyModelFields(value) : value, OmoCategoryConfigObjectSchema);
+  OmoCategoryConfigSchema = preprocess((value) => isRecord6(value) ? withoutRetiredCategoryKeys(normalizeLegacyModelFields(value)) : value, OmoCategoryConfigObjectSchema);
   OmoCategoriesConfigSchema = record(string2(), OmoCategoryConfigSchema);
 });
 
@@ -84189,8 +84264,8 @@ var init_memory = __esm(() => {
     enabled: boolean2().optional()
   }).strict();
   OmoMemoryProjectionSchema = object({
-    max_entries_per_directory: number2().int().min(0).default(40),
-    max_bytes: number2().int().min(0).default(24576)
+    max_entries_per_directory: number2().int().min(0).default(0),
+    max_bytes: number2().int().min(0).default(40960)
   }).strict();
   OmoMemoryProjectionLayerSchema = object({
     max_entries_per_directory: number2().int().min(0).optional(),
@@ -84254,7 +84329,7 @@ var init_memory = __esm(() => {
       query_expansion: false
     }),
     project_scope: OmoMemoryProjectScopeSchema.default({ nudge: true, recall: true }),
-    projection: OmoMemoryProjectionSchema.default({ max_entries_per_directory: 40, max_bytes: 24576 }),
+    projection: OmoMemoryProjectionSchema.default({ max_entries_per_directory: 0, max_bytes: 40960 }),
     compile_warn_tokens: number2().int().positive().default(30000),
     agents: record(string2(), OmoMemoryAgentOverridesSchema).default({})
   }).strict();
@@ -84300,6 +84375,21 @@ var init_model_catalog = __esm(() => {
   OmoModelCatalogEntryLayerInputSchema = OmoModelCatalogEntryInputSchema.partial();
   OmoModelCatalogEntryLayerSchema = preprocess((value) => isRecord7(value) ? normalizeLegacyModelFields(value) : value, OmoModelCatalogEntryLayerInputSchema);
   OmoModelCatalogLayerSchema = record(string2(), OmoModelCatalogEntryLayerSchema);
+});
+
+// packages/omo-config-core/src/schema/model-pad.ts
+var OmoModelPadLabelsSchema, OmoModelPadSchema;
+var init_model_pad = __esm(() => {
+  init_zod();
+  OmoModelPadLabelsSchema = object({
+    daily: string2().optional(),
+    geeky: string2().optional(),
+    normal: string2().optional(),
+    heavy: string2().optional()
+  }).strict();
+  OmoModelPadSchema = object({
+    labels: OmoModelPadLabelsSchema.optional()
+  }).strict();
 });
 
 // packages/omo-config-core/src/schema/model-profile.ts
@@ -84622,6 +84712,7 @@ var init_config = __esm(() => {
   init_git_master();
   init_memory();
   init_model_catalog();
+  init_model_pad();
   init_model_profile();
   init_side_panel();
   init_task();
@@ -84643,6 +84734,7 @@ var init_config = __esm(() => {
     models: OmoModelCatalogLayerSchema.optional(),
     model_profiles: OmoModelProfilesLayerSchema.optional(),
     model_profile: string2().optional(),
+    model_pad: OmoModelPadSchema.optional(),
     memory: OmoMemorySettingsLayerSchema.optional(),
     telemetry: OmoTelemetrySettingsLayerSchema.optional(),
     side_panel: OmoSidePanelSettingsLayerSchema.optional(),
@@ -84661,6 +84753,7 @@ var init_config = __esm(() => {
     models: OmoModelCatalogLayerSchema.optional(),
     model_profiles: OmoModelProfilesLayerSchema.optional(),
     model_profile: string2().optional(),
+    model_pad: OmoModelPadSchema.optional(),
     memory: OmoMemorySettingsLayerSchema.optional(),
     telemetry: OmoTelemetrySettingsLayerSchema.optional(),
     side_panel: OmoSidePanelSettingsLayerSchema.optional(),
@@ -84684,6 +84777,7 @@ var init_config = __esm(() => {
     models: OmoModelCatalogSchema.optional(),
     model_profiles: OmoModelProfilesSchema.optional(),
     model_profile: string2().optional(),
+    model_pad: OmoModelPadSchema.optional(),
     memory: OmoMemorySettingsSchema.optional(),
     telemetry: OmoTelemetrySettingsSchema.optional(),
     side_panel: OmoSidePanelSettingsSchema.optional(),
@@ -84710,6 +84804,7 @@ var init_config = __esm(() => {
     models: OmoModelCatalogLayerSchema.optional(),
     model_profiles: OmoModelProfilesLayerSchema.optional(),
     model_profile: string2().optional(),
+    model_pad: OmoModelPadSchema.optional(),
     memory: OmoMemorySettingsLayerSchema.optional(),
     telemetry: OmoTelemetrySettingsLayerSchema.optional(),
     side_panel: OmoSidePanelSettingsLayerSchema.optional(),
@@ -84849,6 +84944,7 @@ var init_schema = __esm(() => {
   init_legacy_harness_names();
   init_memory();
   init_model_catalog();
+  init_model_pad();
   init_model_profile();
   init_model_ref();
   init_provenance();
@@ -85767,9 +85863,13 @@ function resolveModelReferences(view) {
 }
 var init_model_reference_resolution = () => {};
 
+// packages/omo-config-core/src/models/models-distribution.ts
+var init_models_distribution = () => {};
+
 // packages/omo-config-core/src/models/index.ts
 var init_models = __esm(() => {
   init_model_reference_resolution();
+  init_models_distribution();
 });
 
 // packages/omo-config-core/src/writer/types.ts
@@ -86426,11 +86526,11 @@ function recordFields(value, fields) {
 }
 function modelInput(view) {
   const agents = isPlainRecord(view.agents) ? Object.fromEntries(Object.entries(view.agents).flatMap(([name, definition]) => {
-    const fields = recordFields(definition, ["description", "prompt", "model", "models", "variant", "reasoningEffort", "tools", "temperature", "disable"]);
+    const fields = recordFields(definition, ["description", "prompt", "model", "models", "models_distribution", "variant", "reasoningEffort", "tools", "temperature", "disable"]);
     return fields === undefined ? [] : [[name, fields]];
   })) : undefined;
   const categories = isPlainRecord(view.categories) ? Object.fromEntries(Object.entries(view.categories).flatMap(([name, definition]) => {
-    const fields = recordFields(definition, ["description", "model", "fallback_models", "variant", "temperature", "top_p", "maxTokens", "thinking", "reasoningEffort", "textVerbosity", "tools", "prompt_append", "max_prompt_tokens", "is_unstable_agent", "disable"]);
+    const fields = recordFields(definition, ["description", "model", "models", "models_distribution", "fallback_models", "variant", "temperature", "top_p", "maxTokens", "thinking", "reasoningEffort", "textVerbosity", "tools", "prompt_append", "max_prompt_tokens", "is_unstable_agent", "disable"]);
     return fields === undefined ? [] : [[name, fields]];
   })) : undefined;
   return {
@@ -86721,6 +86821,7 @@ var init_agent_overrides = __esm(() => {
   AgentOverrideConfigSchema = exports_external.object({
     model: exports_external.string().optional(),
     models: exports_external.array(exports_external.union([exports_external.string(), FallbackModelObjectSchema])).optional(),
+    models_distribution: exports_external.enum(["sequential", "round_robin"]).optional(),
     fallback_models: FallbackModelsSchema.optional(),
     reasoning: OmoReasoningSchema.optional(),
     variant: exports_external.string().optional(),
@@ -86839,6 +86940,7 @@ var init_categories = __esm(() => {
     description: exports_external.string().optional(),
     model: exports_external.string().optional(),
     models: exports_external.array(exports_external.union([exports_external.string(), FallbackModelObjectSchema])).optional(),
+    models_distribution: exports_external.enum(["sequential", "round_robin"]).optional(),
     fallback_models: FallbackModelsSchema.optional(),
     reasoning: OmoReasoningSchema.optional(),
     variant: exports_external.string().optional(),
@@ -87588,7 +87690,8 @@ function materializeAgentModelChains(config4) {
     return [name, {
       ...rest,
       ...primarySettings,
-      fallback_models: fallbacks
+      fallback_models: fallbacks,
+      ...agent2.models_distribution === "round_robin" ? { models: agent2.models } : {}
     }];
   }));
   return changed ? { ...config4, agents } : config4;
@@ -89418,7 +89521,7 @@ init_shared();
 // package.json
 var package_default = {
   name: "oh-my-opencode",
-  version: "5.1.51-fork.1",
+  version: "5.1.59-fork.1",
   description: "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
   main: "./dist/index.js",
   types: "dist/index.d.ts",
@@ -89442,6 +89545,7 @@ var package_default = {
     "packages/openclaw-core",
     "packages/boulder-state",
     "packages/memory-core",
+    "packages/device-service-core",
     "packages/isolation-core",
     "packages/telemetry-core",
     "packages/claude-code-compat-core",
@@ -89562,14 +89666,15 @@ var package_default = {
     prepublishOnly: "bun run clean && bun run build:lsp-tools-mcp && bun run build:lsp-daemon && bun run build",
     "test:model-capabilities": "bun test --timeout 20000 packages/model-core/src/model-capability-aliases.test.ts packages/model-core/src/model-capability-guardrails.test.ts packages/model-core/src/model-capabilities.test.ts packages/omo-opencode/src/cli/doctor/checks/model-resolution.test.ts --bail",
     "check:copy": "bun script/check-copy.ts",
-    typecheck: "bun run check:copy && tsgo --noEmit && bun run typecheck:script && bun run typecheck:packages",
-    "typecheck:packages": "tsgo --noEmit -p packages/rules-engine/tsconfig.json && tsgo --noEmit -p packages/delegate-core/tsconfig.json && tsgo --noEmit -p packages/mcp-stdio-core/tsconfig.json && tsgo --noEmit -p packages/mcp-client-core/tsconfig.json && tsgo --noEmit -p packages/git-bash-mcp/tsconfig.json && tsgo --noEmit -p packages/ast-grep-mcp/tsconfig.json && tsgo --noEmit -p packages/lsp-core/tsconfig.json && tsgo --noEmit -p packages/utils/tsconfig.json && tsgo --noEmit -p packages/model-core/tsconfig.json && tsgo --noEmit -p packages/omo-config-core/tsconfig.json && tsgo --noEmit -p packages/prompts-core/tsconfig.json && tsgo --noEmit -p packages/comment-checker-core/tsconfig.json && tsgo --noEmit -p packages/hashline-core/tsconfig.json && tsgo --noEmit -p packages/tmux-core/tsconfig.json && tsgo --noEmit -p packages/team-core/tsconfig.json && tsgo --noEmit -p packages/openclaw-core/tsconfig.json && tsgo --noEmit -p packages/boulder-state/tsconfig.json && tsgo --noEmit -p packages/isolation-core/tsconfig.json && tsgo --noEmit -p packages/memory-core/tsconfig.json && tsgo --noEmit -p packages/telemetry-core/tsconfig.json && tsgo --noEmit -p packages/claude-code-compat-core/tsconfig.json && tsgo --noEmit -p packages/skills-loader-core/tsconfig.json && tsgo --noEmit -p packages/agents-md-core/tsconfig.json && tsgo --noEmit -p packages/omo-codex/plugin/shared/tsconfig.json && tsgo --noEmit -p packages/omo-codex/tsconfig.json && tsgo --noEmit -p packages/omo-senpi/tsconfig.json && tsgo --noEmit -p packages/senpi-task/tsconfig.json && tsgo --noEmit -p packages/omo-opencode/tsconfig.json && tsgo --noEmit -p packages/omo-native/tsconfig.json && tsgo --noEmit -p packages/senpi-desktop-protocol/tsconfig.json && tsgo --noEmit -p packages/senpi-desktop-engine/tsconfig.json && tsgo --noEmit -p packages/senpi-desktop-prelude/tsconfig.json && tsgo --noEmit -p packages/senpi-desktop-service/tsconfig.json && tsgo --noEmit -p packages/senpi-desktop-tool/tsconfig.json",
-    "typecheck:script": "tsgo --noEmit -p script/tsconfig.json",
+    typecheck: "bun run check:copy && bun check --no-script --all -p tsconfig.json && bun run typecheck:script && bun run typecheck:packages && bun run typecheck:skill-scripts",
+    "typecheck:skill-scripts": "bun check --no-script --all -p packages/shared-skills/skills/frontend/scripts/detect/tsconfig.json",
+    "typecheck:packages": "bun check --no-script --all -p packages/rules-engine/tsconfig.json && bun check --no-script --all -p packages/delegate-core/tsconfig.json && bun check --no-script --all -p packages/mcp-stdio-core/tsconfig.json && bun check --no-script --all -p packages/mcp-client-core/tsconfig.json && bun check --no-script --all -p packages/git-bash-mcp/tsconfig.json && bun check --no-script --all -p packages/ast-grep-mcp/tsconfig.json && bun check --no-script --all -p packages/lsp-core/tsconfig.json && bun check --no-script --all -p packages/utils/tsconfig.json && bun check --no-script --all -p packages/device-service-core/tsconfig.json && bun check --no-script --all -p packages/model-core/tsconfig.json && bun check --no-script --all -p packages/omo-config-core/tsconfig.json && bun check --no-script --all -p packages/prompts-core/tsconfig.json && bun check --no-script --all -p packages/comment-checker-core/tsconfig.json && bun check --no-script --all -p packages/hashline-core/tsconfig.json && bun check --no-script --all -p packages/tmux-core/tsconfig.json && bun check --no-script --all -p packages/team-core/tsconfig.json && bun check --no-script --all -p packages/openclaw-core/tsconfig.json && bun check --no-script --all -p packages/boulder-state/tsconfig.json && bun check --no-script --all -p packages/isolation-core/tsconfig.json && bun check --no-script --all -p packages/memory-core/tsconfig.json && bun check --no-script --all -p packages/telemetry-core/tsconfig.json && bun check --no-script --all -p packages/claude-code-compat-core/tsconfig.json && bun check --no-script --all -p packages/skills-loader-core/tsconfig.json && bun check --no-script --all -p packages/agents-md-core/tsconfig.json && bun check --no-script --all -p packages/omo-codex/plugin/shared/tsconfig.json && bun check --no-script --all -p packages/omo-codex/tsconfig.json && bun check --no-script --all -p packages/omo-senpi/tsconfig.json && bun check --no-script --all -p packages/senpi-task/tsconfig.json && bun check --no-script --all -p packages/omo-opencode/tsconfig.json && bun check --no-script --all -p packages/omo-native/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-protocol/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-engine/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-prelude/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-service/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-tool/tsconfig.json",
+    "typecheck:script": "bun check --no-script --all -p script/tsconfig.json",
     test: "bun test --timeout 20000",
     "changelog:section": "bun script/changelog-section.ts",
     "test:codex": "bun run build:codex-install && bun run build:git-bash-mcp && bun run build:lsp-tools-mcp && bun run build:lsp-daemon && npm --prefix packages/lsp-tools-mcp test && npm --prefix packages/omo-codex/plugin ci && npm --prefix packages/omo-codex/plugin/components/ulw-loop test && bun run --cwd packages/omo-codex/plugin build && node scripts/check-third-party-notices.mjs --ship && bun test --timeout 20000 packages/omo-opencode/src/cli/cli-installer.platform.test.ts packages/omo-codex/src/install/codex-cache.test.ts packages/omo-codex/src/install/codex-cleanup.test.ts packages/omo-codex/src/install/codex-config-agent-cleanup.test.ts packages/omo-codex/src/install/codex-config-autonomous-features.test.ts packages/omo-codex/src/install/codex-config-reasoning.test.ts packages/omo-codex/src/install/codex-config-toml.test.ts packages/omo-codex/src/install/codex-project-local-cleanup.test.ts packages/omo-codex/src/install/install-codex-project-local-cleanup.test.ts packages/omo-codex/src/install/install-codex.test.ts packages/omo-codex/src/install/install-codex-packaged.test.ts packages/omo-codex/src/install/link-cached-plugin-agents.test.ts packages/omo-codex/src/**/*.test.ts packages/utils/src/jsonc-parser.test.ts packages/utils/src/frontmatter.test.ts packages/hashline-core/src/hash-computation.test.ts packages/hashline-core/src/smoke-untested-modules.test.ts packages/rules-engine/src/index.test.ts packages/rules-engine/src/security-boundary.test.ts packages/agents-md-core/src/injector.test.ts packages/omo-codex/plugin/components/lsp/test/package-smoke.test.ts && node --test packages/omo-codex/plugin/test/*.test.mjs packages/omo-codex/scripts/install-cache-copy.test.mjs packages/omo-codex/scripts/install-cli-args.test.mjs packages/omo-codex/scripts/install-delegated-command.test.mjs packages/omo-codex/scripts/install-config-autonomous-features.test.mjs packages/omo-codex/scripts/install-config-autonomous.test.mjs packages/omo-codex/scripts/install-config-reasoning.test.mjs packages/omo-codex/scripts/install-config.test.mjs packages/omo-codex/scripts/install-hook-targets.test.mjs packages/omo-codex/scripts/install-project-local-cleanup.test.mjs packages/omo-codex/scripts/install-lazycodex-version-stamp.test.mjs packages/omo-codex/scripts/install-local-entrypoint.test.mjs packages/omo-codex/scripts/install-local-git-bash-preflight.test.mjs packages/omo-codex/scripts/install-local.test.mjs packages/omo-codex/scripts/install-marketplace-cache.test.mjs packages/omo-codex/scripts/install-mcp-context7-runtime.test.mjs packages/omo-codex/scripts/install-mcp-runtime.test.mjs packages/omo-codex/scripts/install-packaged-local.test.mjs packages/omo-codex/scripts/install-generated-bundle.test.mjs packages/omo-codex/scripts/install-agent-links.test.mjs packages/omo-codex/scripts/install-bin-links.test.mjs",
     "test:fast": "bun run script/test-fast.ts",
-    "test:senpi": "bun run build:senpi-plugin && tsgo --noEmit -p packages/omo-senpi/tsconfig.json && bun test --timeout 20000 packages/omo-senpi && bun test ./.agents/skills/senpi-qa/scripts/resolve-evidence-dir.test.mjs",
+    "test:senpi": "bun run build:senpi-plugin && bun check --no-script --all -p packages/omo-senpi/tsconfig.json && bun test --timeout 20000 packages/omo-senpi && bun test ./.agents/skills/senpi-qa/scripts/resolve-evidence-dir.test.mjs",
     "test:windows-codex": "bun run test:codex",
     "build:git-bash-mcp": "bun run --cwd packages/git-bash-mcp build",
     "build:ast-grep-mcp": "bun run --cwd packages/ast-grep-mcp build",
@@ -89606,7 +89711,7 @@ var package_default = {
   },
   devDependencies: {
     "@clack/prompts": "^1.8.1",
-    "@code-yeongyu/senpi": "2026.10.27-1",
+    "@code-yeongyu/senpi": "2026.11.2-3",
     "@modelcontextprotocol/sdk": "^1.30.0",
     "@oh-my-opencode/agents-md-core": "workspace:*",
     "@oh-my-opencode/ast-grep-mcp": "workspace:*",
@@ -89614,6 +89719,7 @@ var package_default = {
     "@oh-my-opencode/claude-code-compat-core": "workspace:*",
     "@oh-my-opencode/comment-checker-core": "workspace:*",
     "@oh-my-opencode/delegate-core": "workspace:*",
+    "@oh-my-opencode/device-service-core": "workspace:*",
     "@oh-my-opencode/git-bash-mcp": "workspace:*",
     "@oh-my-opencode/hashline-core": "workspace:*",
     "@oh-my-opencode/isolation-core": "workspace:*",
@@ -89659,7 +89765,7 @@ var package_default = {
     "jsonc-parser": "^3.3.1",
     knip: "6.43.0",
     "node-pty": "^1.1.0",
-    omowright: "github:code-yeongyu/omowright#f87ef4d63fe7b56fe117dbab246c8ad88dd8a780",
+    omowright: "github:code-yeongyu/omowright#73c4898ca492e6e12e3f13948be7151806457a43",
     "oxc-parser": "0.148.0",
     oxlint: "1.89.0",
     picocolors: "^1.1.1",
@@ -89669,18 +89775,18 @@ var package_default = {
     typescript: "^7.0.2"
   },
   optionalDependencies: {
-    "oh-my-opencode-darwin-arm64": "5.1.49",
-    "oh-my-opencode-darwin-x64": "5.1.49",
-    "oh-my-opencode-darwin-x64-baseline": "5.1.49",
-    "oh-my-opencode-linux-arm64": "5.1.49",
-    "oh-my-opencode-linux-arm64-musl": "5.1.49",
-    "oh-my-opencode-linux-x64": "5.1.49",
-    "oh-my-opencode-linux-x64-baseline": "5.1.49",
-    "oh-my-opencode-linux-x64-musl": "5.1.49",
-    "oh-my-opencode-linux-x64-musl-baseline": "5.1.49",
-    "oh-my-opencode-windows-arm64": "5.1.49",
-    "oh-my-opencode-windows-x64": "5.1.49",
-    "oh-my-opencode-windows-x64-baseline": "5.1.49"
+    "oh-my-opencode-darwin-arm64": "5.1.59",
+    "oh-my-opencode-darwin-x64": "5.1.59",
+    "oh-my-opencode-darwin-x64-baseline": "5.1.59",
+    "oh-my-opencode-linux-arm64": "5.1.59",
+    "oh-my-opencode-linux-arm64-musl": "5.1.59",
+    "oh-my-opencode-linux-x64": "5.1.59",
+    "oh-my-opencode-linux-x64-baseline": "5.1.59",
+    "oh-my-opencode-linux-x64-musl": "5.1.59",
+    "oh-my-opencode-linux-x64-musl-baseline": "5.1.59",
+    "oh-my-opencode-windows-arm64": "5.1.59",
+    "oh-my-opencode-windows-x64": "5.1.59",
+    "oh-my-opencode-windows-x64-baseline": "5.1.59"
   },
   overrides: {
     hono: "^4.13.8",
@@ -89738,8 +89844,8 @@ var NUDGE_INTERVALS_MS = [3, 7, 14].map((days) => days * 24 * 60 * 60 * 1000);
 var NUDGE_SNOOZE_MS = 7 * 24 * 60 * 60 * 1000;
 var NUDGE_CORRUPT_RECOVERY_MS = 3 * 24 * 60 * 60 * 1000;
 // packages/omo-opencode/src/hooks/native-edition-nudge/hook.ts
-import { join as join10 } from "path";
 init_logger2();
+import { join as join10 } from "path";
 
 // packages/omo-opencode/src/hooks/auto-update-checker/constants.ts
 import * as path4 from "path";
@@ -89832,8 +89938,6 @@ function createNudgeStateStore(stateDir) {
 }
 
 // packages/omo-opencode/src/hooks/native-edition-nudge/hook.ts
-var NATIVE_NUDGE_TOAST_MESSAGE = `Same agent, one binary, nothing else to keep updated.
-Install: ${NATIVE_EDITION_INSTALL_COMMAND}`;
 function nativeEditionStateDir() {
   return join10(getUserConfigDir(), "oh-my-openagent");
 }

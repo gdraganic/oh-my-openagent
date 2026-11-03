@@ -14,6 +14,8 @@ export type SecretApi = {
 };
 export type SealedStore<T> = {
     readonly read: () => Promise<T | null>;
+    /** A read started now that never joins a coalesced read begun earlier; credential transactions use it under the lock. */
+    readonly readAuthoritative: () => Promise<T | null>;
     readonly write: (value: T) => Promise<void>;
     readonly clear: () => Promise<void>;
 };
@@ -25,6 +27,10 @@ export declare class KeychainLockedError extends CredentialStoreError {
 export declare class SecretServiceUnavailableError extends CredentialStoreError {
 }
 export declare class InvalidCredentialState extends SignInError {
+}
+/** The stored credential is no longer the identity and generation a caller captured. */
+export declare class CredentialIdentityChanged extends Error {
+    constructor();
 }
 /** The OS store has not answered a read in time: it is waiting on a person (a keychain approval dialog, #11262). */
 export declare class KeychainApprovalPendingError extends CredentialStoreError {
@@ -52,6 +58,7 @@ export declare function createCredentialStore(api: string, options?: {
     readonly lockProbe?: SecretServiceLockProbe;
     readonly notice?: (message: string) => void;
     readonly wait?: CredentialReadWait;
+    readonly home?: string;
 }): CredentialStore;
-export declare function createSealedStore<T>(api: string, namespace: "omo-cli" | "omo-cli-v2" | "omo-cli-revocations-v2", schema: z.ZodType<T>, secrets?: SecretApi | null, platform?: NodeJS.Platform, lockProbe?: SecretServiceLockProbe, notice?: (message: string) => void, wait?: CredentialReadWait): SealedStore<T>;
+export declare function createSealedStore<T>(api: string, namespace: "omo-cli" | "omo-cli-v2" | "omo-cli-revocations-v2", schema: z.ZodType<T>, secrets?: SecretApi | null, platform?: NodeJS.Platform, lockProbe?: SecretServiceLockProbe, notice?: (message: string) => void, wait?: CredentialReadWait, amendWrite?: (previous: T | null, next: T) => T): SealedStore<T>;
 export {};

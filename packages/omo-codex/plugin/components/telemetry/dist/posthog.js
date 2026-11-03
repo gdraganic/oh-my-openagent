@@ -474,6 +474,34 @@ function getDefaultTelemetryOsProvider() {
   return os2;
 }
 
+// ../../../../telemetry-core/src/terminal-program.ts
+var KNOWN_TERMINAL_PROGRAMS = [
+  "Apple_Terminal",
+  "iTerm.app",
+  "vscode",
+  "cursor",
+  "windsurf",
+  "zed",
+  "WezTerm",
+  "ghostty",
+  "tmux",
+  "Hyper",
+  "WarpTerminal",
+  "kitty",
+  "alacritty",
+  "Tabby",
+  "rio",
+  "mintty"
+];
+function isKnownTerminalProgram(value) {
+  return KNOWN_TERMINAL_PROGRAMS.some((known) => known === value);
+}
+function toTelemetryTerminalProgram(termProgram) {
+  if (termProgram === undefined || termProgram === "")
+    return;
+  return isKnownTerminalProgram(termProgram) ? termProgram : "other";
+}
+
 // ../../../../telemetry-core/src/injected-client.ts
 var NO_OP_CLIENT = {
   enabled: false,
@@ -590,7 +618,7 @@ function getSharedProperties(input) {
     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     shell: getShellName(process.env.SHELL),
     ci: Boolean(process.env.CI),
-    terminal: process.env.TERM_PROGRAM,
+    terminal: toTelemetryTerminalProgram(process.env.TERM_PROGRAM),
     ...input.product.additionalProperties
   };
 }

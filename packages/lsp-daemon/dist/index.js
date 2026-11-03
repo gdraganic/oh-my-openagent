@@ -4358,7 +4358,7 @@ function createIdleTimer(idleTimeoutMs, log, onTimeout) {
   };
 }
 // ../lsp-core/src/lsp/client-wrapper.ts
-import { existsSync as existsSync11, realpathSync as realpathSync5, statSync as statSync4 } from "node:fs";
+import { existsSync as existsSync11, realpathSync as realpathSync6, statSync as statSync4 } from "node:fs";
 import { basename as basename3, dirname as dirname10, join as join5, resolve as resolve8 } from "node:path";
 
 // ../lsp-core/src/lsp/outside-context-workspace.ts
@@ -4472,10 +4472,15 @@ var LSP_LOCAL_INSTALL_HINTS = {
   ty: "uv add --dev ty",
   "ruby-lsp": "bundle add ruby-lsp --group development"
 };
+var TYPESCRIPT_SERVER_INITIALIZATION = {
+  tsserver: { useSyntaxServer: "never" },
+  disableAutomaticTypingAcquisition: true
+};
 var BUILTIN_SERVERS = {
   typescript: {
     command: ["typescript-language-server", "--stdio"],
-    extensions: [".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs", ".mts", ".cts"]
+    extensions: [".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs", ".mts", ".cts"],
+    initialization: TYPESCRIPT_SERVER_INITIALIZATION
   },
   deno: { command: ["deno", "lsp"], extensions: [".ts", ".tsx", ".js", ".jsx", ".mjs"] },
   vue: { command: ["vue-language-server", "--stdio"], extensions: [".vue"] },
@@ -4693,7 +4698,8 @@ function getMergedServers() {
       command: config.command,
       extensions: config.extensions,
       priority: -100,
-      source: "builtin"
+      source: "builtin",
+      ...config.initialization === undefined ? {} : { initialization: config.initialization }
     });
   }
   return servers.sort((a, b) => {
@@ -4720,8 +4726,9 @@ function createServerFromEntry(id, entry, source) {
       priority: entry.priority ?? 0,
       source
     });
-    if (entry.initialization !== undefined) {
-      server3.initialization = entry.initialization;
+    const initialization2 = mergeInitialization(builtin.initialization, entry.initialization);
+    if (initialization2 !== undefined) {
+      server3.initialization = initialization2;
     }
     return server3;
   }
@@ -4746,7 +4753,19 @@ function createServerFromEntry(id, entry, source) {
     source
   });
   applyOptionalServerFields(server2, entry);
+  const builtinInitialization = entry.command === undefined ? builtin.initialization : undefined;
+  const initialization = mergeInitialization(builtinInitialization, entry.initialization);
+  if (initialization !== undefined) {
+    server2.initialization = initialization;
+  }
   return server2;
+}
+function mergeInitialization(builtin, entry) {
+  if (builtin === undefined)
+    return entry;
+  if (entry === undefined)
+    return builtin;
+  return { ...builtin, ...entry };
 }
 function createServer(input) {
   const server2 = {
@@ -4816,6 +4835,49 @@ function getDisabledServerIds() {
     }
   }
   return disabled;
+}
+
+// ../lsp-core/src/lsp/host-js-runtime.ts
+import { closeSync as closeSync3, openSync as openSync3, readSync, realpathSync as realpathSync5 } from "node:fs";
+var HOST_RUNTIME_SERVER_IDS = new Set(["typescript"]);
+var JS_ENTRY = /\.[cm]?js$/;
+var NODE_SHEBANG = /^#![^\n]*\bnode\b/;
+function currentHostJsRuntime() {
+  return { bunExecPath: process.versions["bun"] === undefined ? undefined : process.execPath };
+}
+function withHostJsRuntime(serverId, command, host = currentHostJsRuntime()) {
+  if (host.bunExecPath === undefined || !HOST_RUNTIME_SERVER_IDS.has(serverId))
+    return command;
+  const [binary, ...args] = command;
+  if (binary === undefined)
+    return command;
+  const script = nodeScriptPath(binary);
+  return script === undefined ? command : [host.bunExecPath, script, ...args];
+}
+function nodeScriptPath(binary) {
+  let real;
+  try {
+    real = realpathSync5(binary);
+  } catch {
+    return;
+  }
+  if (JS_ENTRY.test(real))
+    return real;
+  try {
+    return NODE_SHEBANG.test(readHead(real)) ? real : undefined;
+  } catch {
+    return;
+  }
+}
+function readHead(path2) {
+  const fd = openSync3(path2, "r");
+  try {
+    const buffer = Buffer.alloc(128);
+    const bytes = readSync(fd, buffer, 0, buffer.length, 0);
+    return buffer.toString("utf8", 0, bytes);
+  } finally {
+    closeSync3(fd);
+  }
 }
 
 // ../lsp-core/src/lsp/server-installation.ts
@@ -4957,6 +5019,10 @@ function isServerInstalled(command, workingDirectory, options = {}) {
 function withResolvedCommand(command, binaryPath) {
   return [binaryPath, ...command.slice(1)];
 }
+function usesBuiltinCommand(id, command) {
+  const builtin = BUILTIN_SERVERS[id]?.command;
+  return builtin !== undefined && builtin.length === command.length && builtin.every((part, index) => part === command[index]);
+}
 function findServerForExtension(ext) {
   const servers = getMergedServers();
   const workingDirectory = contextCwd();
@@ -4967,7 +5033,7 @@ function findServerForExtension(ext) {
     if (binaryPath !== null) {
       const resolvedServer = {
         id: server2.id,
-        command: withResolvedCommand(server2.command, binaryPath),
+        command: usesBuiltinCommand(server2.id, server2.command) ? withHostJsRuntime(server2.id, withResolvedCommand(server2.command, binaryPath)) : withResolvedCommand(server2.command, binaryPath),
         extensions: server2.extensions,
         priority: server2.priority
       };
@@ -5108,7 +5174,7 @@ function rebaseThroughCanonicalAncestor(path2, cwd) {
   const suffix = [];
   while (true) {
     if (existsSync11(current)) {
-      const canonical = realpathSync5(current);
+      const canonical = realpathSync6(current);
       if (isPathInside(cwd, canonical))
         return suffix.length === 0 ? canonical : join5(canonical, ...suffix);
     }
@@ -5122,7 +5188,7 @@ function rebaseThroughCanonicalAncestor(path2, cwd) {
 function existingDirectoryInsideContext(directory, cwd) {
   if (!existsSync11(directory))
     return;
-  const canonical = realpathSync5(directory);
+  const canonical = realpathSync6(directory);
   if (!statSync4(canonical).isDirectory())
     return;
   return isPathInside(cwd, canonical) ? canonical : undefined;
@@ -6912,7 +6978,7 @@ function isRetryableTool(name) {
   return name !== "rename" && name !== "lsp_rename";
 }
 // src/proxy.ts
-import { existsSync as existsSync14, realpathSync as realpathSync6 } from "node:fs";
+import { existsSync as existsSync14, realpathSync as realpathSync7 } from "node:fs";
 import { basename as basename4, delimiter as delimiter4, dirname as dirname12, isAbsolute as isAbsolute6 } from "node:path";
 var DEFAULT_STARTUP_TIMEOUT_MS = 1e4;
 async function runMcpStdioProxy(options = {}) {
@@ -7038,7 +7104,7 @@ function canonicalizePathList(value) {
 function canonicalizePath(value) {
   if (value === undefined || !isAbsolute6(value) || !existsSync14(value))
     return value;
-  return realpathSync6(value);
+  return realpathSync7(value);
 }
 function projectRootFromOpenCodeConfigPath(path2) {
   if (basename4(path2) !== "lsp.json" && basename4(path2) !== "lsp-client.json")
