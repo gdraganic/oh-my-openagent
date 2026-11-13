@@ -10,6 +10,21 @@ Releases of [gdraganic/oh-my-openagent](https://github.com/gdraganic/oh-my-opena
 
 To release: add a `## [<version>] - YYYY-MM-DD` section here on `main` (with the `Fork-Patch: v2-support` trailer), then run the **Fork release** workflow with that version.
 
+## [5.1.69-fork.1] - 2026-11-13
+
+Rebased on upstream `dev` of 2026-11-13 (2,914 commits since fork.1): upstream releases 5.1.60 to 5.1.69, mostly OmO Native (cross-device threads, memory, engine updates). Relevant to the OpenCode edition:
+
+- **Claude Fable 5.2 is the current Fable.** Prometheus, Metis, `artistry` and `visual-engineering` (after Gemini Argon) run `claude-fable-5-2` at the same effort, with Fable 5.1 as the next step.
+- With `runtime_fallback` on, a subagent whose model takes more than 90 s to start answering is no longer aborted.
+- Skills and prompts no longer reference skills, files or agents that do not exist.
+- Upstream reformatted much of the plugin source; the fork's patches (goal turn cap, browser `external` provider, session-metadata agent lookup, build externals) were reapplied on the new formatting.
+
+Fork fix: the goal hook tests now remove their temp directories, which upstream's leak check requires. Upstream workflows added since fork.1 are dropped, as usual.
+
+Note: on a cold model cache (fresh install, or after deleting `~/.cache/oh-my-opencode/provider-models.json`) the first start resolves Fable 5.1, because OpenCode's plugin model registry does not list Fable 5.2 yet and the server's own model list is not reachable during plugin startup. The cache is refreshed on the first session; restart once more to move to Fable 5.2.
+
+Verified on OpenCode 2.2.6.
+
 ## [5.1.59-fork.1] - 2026-11-03
 
 Rebased on upstream `dev` of 2026-11-03 (1,341 commits since fork.1): upstream releases 5.1.52 to 5.1.59. Relevant to the OpenCode edition:
