@@ -1,5 +1,5 @@
-import { describe, expect, test } from "bun:test"
-import { mkdtempSync } from "node:fs"
+import { afterEach, describe, expect, test } from "bun:test"
+import { mkdtempSync, rmSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 import type { PluginInput } from "@opencode-ai/plugin"
@@ -8,9 +8,21 @@ import { createGoalController } from "./controller"
 import { registerGoalSync, wakeGoal } from "./sync-bridge"
 import { releaseAllPromptAsyncReservationsForTesting, releasePromptAsyncReservation } from "../shared/prompt-async-gate"
 
+const tempDirectories: string[] = []
+
+function tempDirectory(prefix: string): string {
+  const directory = mkdtempSync(join(tmpdir(), prefix))
+  tempDirectories.push(directory)
+  return directory
+}
+
+afterEach(() => {
+  for (const directory of tempDirectories.splice(0)) rmSync(directory, { recursive: true, force: true })
+})
+
 function makePluginInput(): PluginInput {
   return {
-    directory: mkdtempSync(join(tmpdir(), "goal-hook-")),
+    directory: tempDirectory("goal-hook-"),
     client: {
       session: {
         messages: {
@@ -90,7 +102,7 @@ describe("goal continuation loop", () => {
   function loopInput(messages: unknown[] = []) {
     const sent: Sent[] = []
     const ctx = {
-      directory: mkdtempSync(join(tmpdir(), "goal-loop-")),
+      directory: tempDirectory("goal-loop-"),
       client: {
         session: {
           messages: async () => ({ data: messages }),
