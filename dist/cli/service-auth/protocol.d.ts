@@ -90,10 +90,10 @@ export type ListedDevice = z.infer<typeof deviceListSchema>["devices"][number];
 /** The one unrevoked device the calling token authenticates, or null when the list does not name exactly one. */
 export declare function currentServiceDevice(body: unknown): string | null;
 export type ChooseDevice = (devices: readonly ListedDevice[]) => Promise<string | null>;
-declare const REFUSAL_CODES: readonly ["unauthorized", "account_deleted", "reauth_required", "invalid_grant", "device_revoked", "entitlement_required", "authorization_pending", "slow_down", "access_denied", "expired_token", "rate_limited", "internal", "unavailable", "forbidden", "invalid_request", "not_found", "client_upgrade_required", "writer_floor_mismatch", "service_upgrade_required", "refresh_recovery_expired"];
+declare const REFUSAL_CODES: readonly ["unauthorized", "account_deleted", "reauth_required", "invalid_grant", "device_revoked", "entitlement_required", "authorization_pending", "slow_down", "access_denied", "expired_token", "rate_limited", "internal", "unavailable", "forbidden", "invalid_request", "not_found", "client_upgrade_required", "writer_floor_mismatch", "service_upgrade_required", "refresh_recovery_expired", "machine_exists"];
 export type RefusalCode = (typeof REFUSAL_CODES)[number] | "unknown";
 /** What a refused request asks of the person; the message keys on this, never on the server's text. */
-export type RefusalGuidance = "sign_in_again" | "wait" | "service_trouble" | "update_omo" | "account_deleted" | "account_refused";
+export type RefusalGuidance = "sign_in_again" | "wait" | "service_trouble" | "update_omo" | "account_deleted" | "account_refused" | "machine_exists";
 export declare function refusalGuidance(code: RefusalCode, status: number): RefusalGuidance;
 export declare function refusalMessage(guidance: RefusalGuidance): string;
 export declare class ApiRefusal extends SignInError {

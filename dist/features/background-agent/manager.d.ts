@@ -179,6 +179,7 @@ export declare class BackgroundManager {
     handleEvent(event: Event): void;
     private interruptTaskFromAsyncPromptFailure;
     private handleSessionErrorEvent;
+    private recoverDeclinedSessionError;
     private tryFallbackRetry;
     markForNotification(task: BackgroundTask): void;
     getPendingNotifications(sessionID: string): BackgroundTask[];

@@ -2120,7 +2120,7 @@ var package_default;
 var init_package = __esm(() => {
   package_default = {
     name: "oh-my-opencode",
-    version: "5.1.59-fork.1",
+    version: "5.1.69-fork.1",
     description: "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
     main: "./dist/index.js",
     types: "dist/index.d.ts",
@@ -2158,7 +2158,15 @@ var init_package = __esm(() => {
       "packages/senpi-desktop-engine",
       "packages/senpi-desktop-prelude",
       "packages/senpi-desktop-service",
+      "packages/senpi-desktop-sdk",
       "packages/senpi-desktop-tool",
+      "packages/omo-computer-protocol",
+      "packages/omo-computer-sdk",
+      "packages/omo-computer-engine",
+      "packages/omo-computer-hand",
+      "packages/omo-computer-carriers",
+      "packages/omo-computer-tool",
+      "packages/omo-computer-prelude",
       "packages/omo-opencode",
       "packages/omo-native"
     ],
@@ -2267,7 +2275,7 @@ var init_package = __esm(() => {
       "check:copy": "bun script/check-copy.ts",
       typecheck: "bun run check:copy && bun check --no-script --all -p tsconfig.json && bun run typecheck:script && bun run typecheck:packages && bun run typecheck:skill-scripts",
       "typecheck:skill-scripts": "bun check --no-script --all -p packages/shared-skills/skills/frontend/scripts/detect/tsconfig.json",
-      "typecheck:packages": "bun check --no-script --all -p packages/rules-engine/tsconfig.json && bun check --no-script --all -p packages/delegate-core/tsconfig.json && bun check --no-script --all -p packages/mcp-stdio-core/tsconfig.json && bun check --no-script --all -p packages/mcp-client-core/tsconfig.json && bun check --no-script --all -p packages/git-bash-mcp/tsconfig.json && bun check --no-script --all -p packages/ast-grep-mcp/tsconfig.json && bun check --no-script --all -p packages/lsp-core/tsconfig.json && bun check --no-script --all -p packages/utils/tsconfig.json && bun check --no-script --all -p packages/device-service-core/tsconfig.json && bun check --no-script --all -p packages/model-core/tsconfig.json && bun check --no-script --all -p packages/omo-config-core/tsconfig.json && bun check --no-script --all -p packages/prompts-core/tsconfig.json && bun check --no-script --all -p packages/comment-checker-core/tsconfig.json && bun check --no-script --all -p packages/hashline-core/tsconfig.json && bun check --no-script --all -p packages/tmux-core/tsconfig.json && bun check --no-script --all -p packages/team-core/tsconfig.json && bun check --no-script --all -p packages/openclaw-core/tsconfig.json && bun check --no-script --all -p packages/boulder-state/tsconfig.json && bun check --no-script --all -p packages/isolation-core/tsconfig.json && bun check --no-script --all -p packages/memory-core/tsconfig.json && bun check --no-script --all -p packages/telemetry-core/tsconfig.json && bun check --no-script --all -p packages/claude-code-compat-core/tsconfig.json && bun check --no-script --all -p packages/skills-loader-core/tsconfig.json && bun check --no-script --all -p packages/agents-md-core/tsconfig.json && bun check --no-script --all -p packages/omo-codex/plugin/shared/tsconfig.json && bun check --no-script --all -p packages/omo-codex/tsconfig.json && bun check --no-script --all -p packages/omo-senpi/tsconfig.json && bun check --no-script --all -p packages/senpi-task/tsconfig.json && bun check --no-script --all -p packages/omo-opencode/tsconfig.json && bun check --no-script --all -p packages/omo-native/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-protocol/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-engine/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-prelude/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-service/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-tool/tsconfig.json",
+      "typecheck:packages": "bun check --no-script --all -p packages/rules-engine/tsconfig.json && bun check --no-script --all -p packages/delegate-core/tsconfig.json && bun check --no-script --all -p packages/mcp-stdio-core/tsconfig.json && bun check --no-script --all -p packages/mcp-client-core/tsconfig.json && bun check --no-script --all -p packages/git-bash-mcp/tsconfig.json && bun check --no-script --all -p packages/ast-grep-mcp/tsconfig.json && bun check --no-script --all -p packages/lsp-core/tsconfig.json && bun check --no-script --all -p packages/utils/tsconfig.json && bun check --no-script --all -p packages/device-service-core/tsconfig.json && bun check --no-script --all -p packages/model-core/tsconfig.json && bun check --no-script --all -p packages/omo-config-core/tsconfig.json && bun check --no-script --all -p packages/prompts-core/tsconfig.json && bun check --no-script --all -p packages/comment-checker-core/tsconfig.json && bun check --no-script --all -p packages/hashline-core/tsconfig.json && bun check --no-script --all -p packages/tmux-core/tsconfig.json && bun check --no-script --all -p packages/team-core/tsconfig.json && bun check --no-script --all -p packages/openclaw-core/tsconfig.json && bun check --no-script --all -p packages/boulder-state/tsconfig.json && bun check --no-script --all -p packages/isolation-core/tsconfig.json && bun check --no-script --all -p packages/memory-core/tsconfig.json && bun check --no-script --all -p packages/telemetry-core/tsconfig.json && bun check --no-script --all -p packages/claude-code-compat-core/tsconfig.json && bun check --no-script --all -p packages/skills-loader-core/tsconfig.json && bun check --no-script --all -p packages/agents-md-core/tsconfig.json && bun check --no-script --all -p packages/omo-codex/plugin/shared/tsconfig.json && bun check --no-script --all -p packages/omo-codex/tsconfig.json && bun check --no-script --all -p packages/omo-senpi/tsconfig.json && bun check --no-script --all -p packages/senpi-task/tsconfig.json && bun check --no-script --all -p packages/omo-opencode/tsconfig.json && bun check --no-script --all -p packages/omo-native/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-protocol/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-engine/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-prelude/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-sdk/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-service/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-tool/tsconfig.json && bun check --no-script --all -p packages/omo-computer-protocol/tsconfig.json && bun check --no-script --all -p packages/omo-computer-sdk/tsconfig.json && bun check --no-script --all -p packages/omo-computer-engine/tsconfig.json && bun check --no-script --all -p packages/omo-computer-hand/tsconfig.json && bun check --no-script --all -p packages/omo-computer-carriers/tsconfig.json && bun check --no-script --all -p packages/omo-computer-tool/tsconfig.json && bun check --no-script --all -p packages/omo-computer-prelude/tsconfig.json",
       "typecheck:script": "bun check --no-script --all -p script/tsconfig.json",
       test: "bun test --timeout 20000",
       "changelog:section": "bun script/changelog-section.ts",
@@ -2277,11 +2285,14 @@ var init_package = __esm(() => {
       "test:windows-codex": "bun run test:codex",
       "build:git-bash-mcp": "bun run --cwd packages/git-bash-mcp build",
       "build:ast-grep-mcp": "bun run --cwd packages/ast-grep-mcp build",
-      "test:desktop": "bun script/check-cargo-pinned-deps.mjs && bun run --cwd packages/senpi-desktop-protocol test && bun run --cwd packages/senpi-desktop-engine test && bun run --cwd packages/senpi-desktop-prelude test && bun run --cwd packages/senpi-desktop-service test && bun run --cwd packages/senpi-desktop-tool test",
+      "test:desktop": "bun script/check-cargo-pinned-deps.mjs && node --test scripts/desktop-package-boundaries.test.mjs && bun run --cwd packages/senpi-desktop-protocol test && bun run --cwd packages/senpi-desktop-engine test && bun run --cwd packages/senpi-desktop-prelude test && bun run --cwd packages/senpi-desktop-sdk test && bun run --cwd packages/senpi-desktop-service test && bun run --cwd packages/senpi-desktop-tool test",
+      "test:computer": "bun script/check-cargo-pinned-deps.mjs && bun run --cwd packages/omo-computer-protocol test && bun run --cwd packages/omo-computer-sdk test && bun run --cwd packages/omo-computer-engine test && bun run --cwd packages/omo-computer-hand test && bun run --cwd packages/omo-computer-carriers test && bun run --cwd packages/omo-computer-tool test && bun run --cwd packages/omo-computer-prelude test",
+      fmt: "bun fmt --no-script",
+      "fmt:check": "bun fmt --no-script --check",
       "lint:ratchet": "bun script/lint-ratchet.ts",
       "knip:check": "knip --no-progress --no-config-hints",
       "lint:ratchet:update": "bun script/lint-ratchet.ts --update",
-      lint: "bun run check:copy && oxlint packages/lsp-tools-mcp packages/lsp-daemon packages/web packages/omo-codex/plugin/components/comment-checker packages/omo-codex/plugin/components/lazycodex-executor-verify packages/omo-codex/plugin/components/lsp packages/omo-codex/plugin/components/rules packages/omo-codex/plugin/components/telemetry packages/omo-codex/plugin/components/ultrawork packages/omo-codex/plugin/components/ulw-execute-continuation packages/omo-codex/plugin/components/ulw-loop"
+      lint: "bun run check:copy && bun run fmt:check && oxlint packages/lsp-tools-mcp packages/lsp-daemon packages/web packages/omo-codex/plugin/components/comment-checker packages/omo-codex/plugin/components/lazycodex-executor-verify packages/omo-codex/plugin/components/lsp packages/omo-codex/plugin/components/rules packages/omo-codex/plugin/components/telemetry packages/omo-codex/plugin/components/ultrawork packages/omo-codex/plugin/components/ulw-execute-continuation packages/omo-codex/plugin/components/ulw-loop"
     },
     keywords: [
       "opencode",
@@ -2306,11 +2317,11 @@ var init_package = __esm(() => {
       "@opencode/plugin": "2.0.32",
       "@opentui/solid": "^0.5.11",
       "detect-libc": "^2.1.2",
-      zod: "^4.6.5"
+      zod: "^4.6.6"
     },
     devDependencies: {
       "@clack/prompts": "^1.8.1",
-      "@code-yeongyu/senpi": "2026.11.2-3",
+      "@code-yeongyu/senpi": "2026.11.12",
       "@modelcontextprotocol/sdk": "^1.30.0",
       "@oh-my-opencode/agents-md-core": "workspace:*",
       "@oh-my-opencode/ast-grep-mcp": "workspace:*",
@@ -2328,6 +2339,13 @@ var init_package = __esm(() => {
       "@oh-my-opencode/memory-core": "workspace:*",
       "@oh-my-opencode/model-core": "workspace:*",
       "@oh-my-opencode/omo-codex": "workspace:*",
+      "@oh-my-opencode/omo-computer-carriers": "workspace:*",
+      "@oh-my-opencode/omo-computer-engine": "workspace:*",
+      "@oh-my-opencode/omo-computer-hand": "workspace:*",
+      "@oh-my-opencode/omo-computer-prelude": "workspace:*",
+      "@oh-my-opencode/omo-computer-protocol": "workspace:*",
+      "@oh-my-opencode/omo-computer-sdk": "workspace:*",
+      "@oh-my-opencode/omo-computer-tool": "workspace:*",
       "@oh-my-opencode/omo-config-core": "workspace:*",
       "@oh-my-opencode/omo-opencode": "workspace:*",
       "@oh-my-opencode/omo-senpi": "workspace:*",
@@ -2337,6 +2355,7 @@ var init_package = __esm(() => {
       "@oh-my-opencode/senpi-desktop-engine": "workspace:*",
       "@oh-my-opencode/senpi-desktop-prelude": "workspace:*",
       "@oh-my-opencode/senpi-desktop-protocol": "workspace:*",
+      "@oh-my-opencode/senpi-desktop-sdk": "workspace:*",
       "@oh-my-opencode/senpi-desktop-service": "workspace:*",
       "@oh-my-opencode/senpi-desktop-tool": "workspace:*",
       "@oh-my-opencode/senpi-task": "workspace:*",
@@ -2364,7 +2383,7 @@ var init_package = __esm(() => {
       "jsonc-parser": "^3.3.1",
       knip: "6.43.0",
       "node-pty": "^1.1.0",
-      omowright: "github:code-yeongyu/omowright#73c4898ca492e6e12e3f13948be7151806457a43",
+      omowright: "^0.3.0",
       "oxc-parser": "0.148.0",
       oxlint: "1.89.0",
       picocolors: "^1.1.1",
@@ -2374,18 +2393,18 @@ var init_package = __esm(() => {
       typescript: "^7.0.2"
     },
     optionalDependencies: {
-      "oh-my-opencode-darwin-arm64": "5.1.59",
-      "oh-my-opencode-darwin-x64": "5.1.59",
-      "oh-my-opencode-darwin-x64-baseline": "5.1.59",
-      "oh-my-opencode-linux-arm64": "5.1.59",
-      "oh-my-opencode-linux-arm64-musl": "5.1.59",
-      "oh-my-opencode-linux-x64": "5.1.59",
-      "oh-my-opencode-linux-x64-baseline": "5.1.59",
-      "oh-my-opencode-linux-x64-musl": "5.1.59",
-      "oh-my-opencode-linux-x64-musl-baseline": "5.1.59",
-      "oh-my-opencode-windows-arm64": "5.1.59",
-      "oh-my-opencode-windows-x64": "5.1.59",
-      "oh-my-opencode-windows-x64-baseline": "5.1.59"
+      "oh-my-opencode-darwin-arm64": "5.1.69",
+      "oh-my-opencode-darwin-x64": "5.1.69",
+      "oh-my-opencode-darwin-x64-baseline": "5.1.69",
+      "oh-my-opencode-linux-arm64": "5.1.69",
+      "oh-my-opencode-linux-arm64-musl": "5.1.69",
+      "oh-my-opencode-linux-x64": "5.1.69",
+      "oh-my-opencode-linux-x64-baseline": "5.1.69",
+      "oh-my-opencode-linux-x64-musl": "5.1.69",
+      "oh-my-opencode-linux-x64-musl-baseline": "5.1.69",
+      "oh-my-opencode-windows-arm64": "5.1.69",
+      "oh-my-opencode-windows-x64": "5.1.69",
+      "oh-my-opencode-windows-x64-baseline": "5.1.69"
     },
     overrides: {
       hono: "^4.13.8",
@@ -5393,7 +5412,10 @@ function parseGlobValue(rawValue, lines, currentIndex) {
   }
   const value = parseString(rawValue);
   if (value.includes(","))
-    return { value: value.split(",").map((item) => item.trim()).filter(Boolean), consumed: 1 };
+    return {
+      value: value.split(",").map((item) => item.trim()).filter(Boolean),
+      consumed: 1
+    };
   return { value, consumed: 1 };
 }
 function parseMultilineArray(lines, currentIndex) {
@@ -7091,12 +7113,7 @@ function writeFileAtomically(filePath, content, options = {}) {
 }
 var TOLERATED_FSYNC_CODES;
 var init_atomic_write = __esm(() => {
-  TOLERATED_FSYNC_CODES = new Set([
-    "EPERM",
-    "EACCES",
-    "ENOTSUP",
-    "EINVAL"
-  ]);
+  TOLERATED_FSYNC_CODES = new Set(["EPERM", "EACCES", "ENOTSUP", "EINVAL"]);
 });
 
 // packages/utils/src/runtime/spawn.ts
@@ -7329,7 +7346,34 @@ var init_which = __esm(() => {
 });
 
 // packages/utils/src/runtime/file.ts
-var init_file = () => {};
+import { access, readFile, unlink, writeFile } from "fs/promises";
+function createNodeFile(path3) {
+  return {
+    text() {
+      return readFile(path3, "utf8");
+    },
+    async arrayBuffer() {
+      const buffer = await readFile(path3);
+      return buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
+    },
+    exists() {
+      return access(path3).then(() => true, () => false);
+    },
+    delete() {
+      return unlink(path3);
+    }
+  };
+}
+function bunFile(path3) {
+  const bun = runtime3.Bun;
+  if (bun)
+    return bun.file(path3);
+  return createNodeFile(path3);
+}
+var runtime3;
+var init_file = __esm(() => {
+  runtime3 = globalThis;
+});
 
 // packages/utils/src/runtime/git-bash.ts
 import { execFileSync } from "child_process";
@@ -7480,7 +7524,7 @@ function createLogger(options) {
   function scheduleFlush() {
     if (flushTimer)
       return;
-    flushTimer = setTimeout(() => {
+    flushTimer = scheduleTimeout(() => {
       flushTimer = null;
       flush();
     }, flushIntervalMs);
@@ -7507,7 +7551,7 @@ function createLogger(options) {
   function _setLoggerForTesting(overrides) {
     buffer = [];
     if (flushTimer) {
-      clearTimeout(flushTimer);
+      cancelTimeout(flushTimer);
       flushTimer = null;
     }
     if (overrides.filePath !== undefined)
@@ -7523,13 +7567,13 @@ function createLogger(options) {
     maxLogFileBackups = maxLogFileBackupsDefault;
     buffer = [];
     if (flushTimer) {
-      clearTimeout(flushTimer);
+      cancelTimeout(flushTimer);
       flushTimer = null;
     }
   }
   function _flushForTesting() {
     if (flushTimer) {
-      clearTimeout(flushTimer);
+      cancelTimeout(flushTimer);
       flushTimer = null;
     }
     flush();
@@ -7542,8 +7586,10 @@ function createLogger(options) {
     _flushForTesting
   };
 }
-var DEFAULT_MAX_LOG_FILE_SIZE_BYTES, DEFAULT_MAX_LOG_FILE_BACKUPS = 2, DEFAULT_LOG_FLUSH_INTERVAL_MS = 500, DEFAULT_LOG_BUFFER_SIZE_LIMIT = 50;
+var scheduleTimeout, cancelTimeout, DEFAULT_MAX_LOG_FILE_SIZE_BYTES, DEFAULT_MAX_LOG_FILE_BACKUPS = 2, DEFAULT_LOG_FLUSH_INTERVAL_MS = 500, DEFAULT_LOG_BUFFER_SIZE_LIMIT = 50;
 var init_logger = __esm(() => {
+  scheduleTimeout = globalThis.setTimeout;
+  cancelTimeout = globalThis.clearTimeout;
   DEFAULT_MAX_LOG_FILE_SIZE_BYTES = 50 * 1024 * 1024;
 });
 
@@ -7646,10 +7692,16 @@ function invocationsForPlatform(scriptPath, platform) {
   if (platform !== "win32")
     return [{ command: "bash", args: [scriptPath] }];
   const args = ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", scriptPath];
-  return [{ command: "pwsh", args }, { command: "powershell.exe", args }];
+  return [
+    { command: "pwsh", args },
+    { command: "powershell.exe", args }
+  ];
 }
 async function runInvocation(input) {
-  const child = input.spawnProcess(input.invocation.command, input.invocation.args, { cwd: input.skillDir, env: input.env });
+  const child = input.spawnProcess(input.invocation.command, input.invocation.args, {
+    cwd: input.skillDir,
+    env: input.env
+  });
   let timedOut = false;
   let terminateDeadline;
   let terminateDeadlineGrace;
@@ -7698,7 +7750,10 @@ async function runAstGrepSkillInstall(options) {
       if (outcome.kind === "exit") {
         if (outcome.code === 0)
           return { kind: "succeeded" };
-        return { kind: "failed", reason: `${invocation.command} exited ${outcome.code ?? outcome.signal ?? "without status"}` };
+        return {
+          kind: "failed",
+          reason: `${invocation.command} exited ${outcome.code ?? outcome.signal ?? "without status"}`
+        };
       }
       if (platform === "win32" && outcome.missingExecutable && invocation.command === "pwsh")
         continue;
@@ -8041,7 +8096,7 @@ var init_latest_models = __esm(() => {
     claudeOpus: "claude-opus-5-5",
     claudeSonnet: "claude-sonnet-5-5",
     claudeHaiku: "claude-haiku-5-5",
-    claudeFable: "claude-fable-5-1",
+    claudeFable: "claude-fable-5-2",
     gptAstra: "gpt-6-astra",
     gptSol: "gpt-6.1-sol",
     gptSolFast: "gpt-6.1-sol-fast",
@@ -8939,10 +8994,7 @@ function canonicalizePromptInputForDedupe(key, value, seen = new WeakSet, depth 
   try {
     const canonicalEntries = [];
     for (const entryKey of Object.keys(value).sort()) {
-      canonicalEntries.push([
-        entryKey,
-        canonicalizePromptInputForDedupe(entryKey, value[entryKey], seen, depth + 1)
-      ]);
+      canonicalEntries.push([entryKey, canonicalizePromptInputForDedupe(entryKey, value[entryKey], seen, depth + 1)]);
     }
     return Object.fromEntries(canonicalEntries);
   } finally {
@@ -9033,13 +9085,7 @@ async function dispatchWithPathCompatibility(dispatch, input) {
   }
 }
 async function dispatchInternalPrompt(args) {
-  const {
-    client,
-    sessionID,
-    input,
-    source,
-    settleMs = DEFAULT_SESSION_IDLE_SETTLE_MS
-  } = args;
+  const { client, sessionID, input, source, settleMs = DEFAULT_SESSION_IDLE_SETTLE_MS } = args;
   const dedupeKey = args.dedupeKey ?? createSemanticPromptDedupeKey(input);
   const queueRetryMs = args.queueRetryMs ?? DEFAULT_PROMPT_QUEUE_RETRY_MS;
   const postDispatchHoldMs = args.postDispatchHoldMs ?? DEFAULT_PROMPT_ASYNC_POST_DISPATCH_HOLD_MS;
@@ -9307,61 +9353,9 @@ var init_file_reference_resolver = __esm(() => {
   init_logger2();
 });
 
-// packages/model-core/src/fable-55-launch.ts
-function isFable55Model(model) {
-  const modelId = model.split("/").pop() ?? model;
-  return modelId.replaceAll(".", "-") === FABLE_55_LAUNCH.id;
-}
-function selectLaunchRungs(rungs, gate, onRejected) {
-  return rungs.filter((rung) => {
-    if (!isFable55Model(rung.model))
-      return true;
-    if (!gate.released)
-      return false;
-    if (rung.variant !== undefined && gate.accepted.includes(rung.variant))
-      return true;
-    onRejected({ model: rung.model, variant: rung.variant });
-    return false;
-  });
-}
-function recordLaunchRungRejection(rejection) {
-  launchRungRejectionLog.push(rejection);
-  console.warn(`[fable-55-launch] dropped a Fable 5.5 rung with effort "${rejection.variant ?? "(none)"}": not in FABLE_55_EFFORTS.accepted`);
-}
-function launchRungs(rungs) {
-  return selectLaunchRungs(rungs, { released: FABLE_55_RELEASED, accepted: FABLE_55_EFFORTS.accepted }, recordLaunchRungRejection);
-}
-function launchDefaultModelId() {
-  return FABLE_55_RELEASED ? FABLE_55_LAUNCH.id : FABLE_55_PREDECESSOR;
-}
-var FABLE_55_LAUNCH, FABLE_55_RELEASED = false, FABLE_55_EFFORTS, launchRungRejectionLog, FABLE_55_PREDECESSOR;
-var init_fable_55_launch = __esm(() => {
-  init_latest_models();
-  FABLE_55_LAUNCH = {
-    id: "claude-fable-5-5",
-    family: "claude-fable",
-    reasoning: undefined,
-    temperature: undefined,
-    toolCall: undefined,
-    modalities: undefined,
-    limit: {
-      context: undefined,
-      input: undefined,
-      output: undefined
-    }
-  };
-  FABLE_55_EFFORTS = {
-    measured: false,
-    accepted: ["xhigh", "max"]
-  };
-  launchRungRejectionLog = [];
-  FABLE_55_PREDECESSOR = LATEST_MODEL_BY_FAMILY.claudeFable;
-});
-
 // packages/model-core/src/agent-model-requirements.ts
 var AGENT_MODEL_REQUIREMENTS;
 var init_agent_model_requirements = __esm(() => {
-  init_fable_55_launch();
   init_latest_models();
   AGENT_MODEL_REQUIREMENTS = {
     sisyphus: {
@@ -9382,7 +9376,7 @@ var init_agent_model_requirements = __esm(() => {
         {
           providers: ["openai", "chatgpt-subscription", "github-copilot", "opencode"],
           model: "gpt-5.6-sol",
-          variant: "high"
+          variant: "medium"
         },
         { providers: ["zai-coding-plan", "opencode", "bailian-coding-plan"], model: "glm-5.2" },
         { providers: ["opencode"], model: "big-pickle" }
@@ -9394,12 +9388,12 @@ var init_agent_model_requirements = __esm(() => {
         {
           providers: ["openai", "chatgpt-subscription", "github-copilot", "opencode"],
           model: "gpt-6-sol",
-          variant: "high"
+          variant: "medium"
         },
         {
           providers: ["openai", "chatgpt-subscription", "github-copilot", "opencode"],
           model: "gpt-5.6-sol",
-          variant: "high"
+          variant: "medium"
         }
       ],
       requiresProvider: ["openai", "chatgpt-subscription", "github-copilot", "opencode"],
@@ -9407,7 +9401,7 @@ var init_agent_model_requirements = __esm(() => {
     },
     oracle: {
       fallbackChain: [
-        { providers: ["openai", "chatgpt-subscription", "opencode"], model: "gpt-5.6-sol", variant: "high" },
+        { providers: ["openai", "chatgpt-subscription", "opencode"], model: "gpt-5.6-sol", variant: "xhigh" },
         { providers: ["github-copilot"], model: "gpt-5.6-sol", variant: "high" },
         {
           providers: ["google", "google-vertex", "opencode"],
@@ -9431,7 +9425,7 @@ var init_agent_model_requirements = __esm(() => {
       fallbackChain: [
         { providers: ["kimi-for-coding"], model: "kimi-for-coding-highspeed", variant: "off" },
         { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptLunaFast, variant: "low" },
-        { providers: ["anthropic", "github-copilot"], model: LATEST_MODEL_BY_FAMILY.claudeHaiku, variant: "high" },
+        { providers: ["anthropic", "github-copilot"], model: LATEST_MODEL_BY_FAMILY.claudeHaiku, variant: "medium" },
         { providers: ["deepseek"], model: "deepseek-flash", variant: "max" },
         { providers: ["opencode-go", "bailian-coding-plan"], model: "qwen3.7-plus" },
         { providers: ["opencode-go"], model: "minimax-m2.7" }
@@ -9441,7 +9435,7 @@ var init_agent_model_requirements = __esm(() => {
       fallbackChain: [
         { providers: ["kimi-for-coding"], model: "kimi-for-coding-highspeed", variant: "off" },
         { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptLunaFast, variant: "low" },
-        { providers: ["anthropic", "github-copilot"], model: LATEST_MODEL_BY_FAMILY.claudeHaiku, variant: "high" },
+        { providers: ["anthropic", "github-copilot"], model: LATEST_MODEL_BY_FAMILY.claudeHaiku, variant: "medium" },
         { providers: ["deepseek"], model: "deepseek-flash", variant: "max" },
         { providers: ["opencode-go", "bailian-coding-plan"], model: "qwen3.7-plus" },
         { providers: ["opencode-go"], model: "minimax-m2.7" }
@@ -9456,16 +9450,16 @@ var init_agent_model_requirements = __esm(() => {
       ]
     },
     prometheus: {
-      fallbackChain: launchRungs([
-        {
-          providers: ["anthropic", "github-copilot", "opencode"],
-          model: FABLE_55_LAUNCH.id,
-          variant: "high"
-        },
+      fallbackChain: [
         {
           providers: ["anthropic", "github-copilot", "opencode"],
           model: LATEST_MODEL_BY_FAMILY.claudeFable,
-          variant: "high"
+          variant: "xhigh"
+        },
+        {
+          providers: ["anthropic", "github-copilot", "opencode"],
+          model: "claude-fable-5-1",
+          variant: "xhigh"
         },
         {
           providers: ["anthropic", "github-copilot", "opencode"],
@@ -9478,18 +9472,18 @@ var init_agent_model_requirements = __esm(() => {
           variant: "max"
         },
         { providers: ["opencode"], model: LATEST_MODEL_BY_FAMILY.kimiK3, variant: "max" }
-      ])
+      ]
     },
     metis: {
-      fallbackChain: launchRungs([
+      fallbackChain: [
         {
           providers: ["anthropic", "github-copilot", "opencode"],
-          model: FABLE_55_LAUNCH.id,
+          model: LATEST_MODEL_BY_FAMILY.claudeFable,
           variant: "max"
         },
         {
           providers: ["anthropic", "github-copilot", "opencode"],
-          model: LATEST_MODEL_BY_FAMILY.claudeFable,
+          model: "claude-fable-5-1",
           variant: "max"
         },
         {
@@ -9503,13 +9497,17 @@ var init_agent_model_requirements = __esm(() => {
           variant: "max"
         },
         { providers: ["opencode"], model: LATEST_MODEL_BY_FAMILY.kimiK3, variant: "max" }
-      ])
+      ]
     },
     momus: {
       fallbackChain: [
-        { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptAstra, variant: "high" },
+        { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptAstra, variant: "xhigh" },
         { providers: ["github-copilot"], model: LATEST_MODEL_BY_FAMILY.gptAstra, variant: "high" },
-        { providers: ["openai", "chatgpt-subscription", "opencode"], model: LATEST_MODEL_BY_FAMILY.gptAstra, variant: "high" },
+        {
+          providers: ["openai", "chatgpt-subscription", "opencode"],
+          model: LATEST_MODEL_BY_FAMILY.gptAstra,
+          variant: "high"
+        },
         {
           providers: ["anthropic", "github-copilot", "opencode"],
           model: LATEST_MODEL_BY_FAMILY.claudeOpus,
@@ -9535,7 +9533,7 @@ var init_agent_model_requirements = __esm(() => {
         {
           providers: ["openai", "chatgpt-subscription", "github-copilot", "opencode"],
           model: "gpt-5.6-sol",
-          variant: "high"
+          variant: "medium"
         },
         { providers: ["opencode-go"], model: "minimax-m3" },
         { providers: ["minimax-coding-plan", "minimax-cn-coding-plan"], model: "MiniMax-M3" },
@@ -9549,7 +9547,7 @@ var init_agent_model_requirements = __esm(() => {
         {
           providers: ["openai", "chatgpt-subscription", "github-copilot", "opencode"],
           model: "gpt-5.6-sol",
-          variant: "high"
+          variant: "medium"
         },
         { providers: ["opencode-go"], model: "minimax-m3" },
         { providers: ["minimax-coding-plan", "minimax-cn-coding-plan"], model: "MiniMax-M3" },
@@ -9563,20 +9561,19 @@ var init_agent_model_requirements = __esm(() => {
 // packages/model-core/src/category-model-requirements.ts
 var CATEGORY_MODEL_REQUIREMENTS;
 var init_category_model_requirements = __esm(() => {
-  init_fable_55_launch();
   init_latest_models();
   CATEGORY_MODEL_REQUIREMENTS = {
     "visual-engineering": {
-      fallbackChain: launchRungs([
+      fallbackChain: [
         { providers: ["google", "google-vertex", "opencode"], model: LATEST_MODEL_BY_FAMILY.geminiPro, variant: "low" },
         {
           providers: ["anthropic", "anthropic-api", "github-copilot", "opencode"],
-          model: FABLE_55_LAUNCH.id,
+          model: LATEST_MODEL_BY_FAMILY.claudeFable,
           variant: "max"
         },
         {
           providers: ["anthropic", "anthropic-api", "github-copilot", "opencode"],
-          model: LATEST_MODEL_BY_FAMILY.claudeFable,
+          model: "claude-fable-5-1",
           variant: "max"
         },
         {
@@ -9590,13 +9587,17 @@ var init_category_model_requirements = __esm(() => {
           variant: "max"
         },
         { providers: ["opencode"], model: LATEST_MODEL_BY_FAMILY.kimiK3, variant: "max" }
-      ])
+      ]
     },
     ultrabrain: {
       fallbackChain: [
         { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptAstra, variant: "max" },
         { providers: ["github-copilot"], model: LATEST_MODEL_BY_FAMILY.gptAstra, variant: "max" },
-        { providers: ["openai", "chatgpt-subscription", "opencode"], model: LATEST_MODEL_BY_FAMILY.gptAstra, variant: "max" },
+        {
+          providers: ["openai", "chatgpt-subscription", "opencode"],
+          model: LATEST_MODEL_BY_FAMILY.gptAstra,
+          variant: "max"
+        },
         { providers: ["openai", "chatgpt-subscription"], model: "gpt-5.6-sol", variant: "max" },
         { providers: ["github-copilot"], model: "gpt-5.6-sol", variant: "max" },
         { providers: ["openai", "chatgpt-subscription", "opencode"], model: "gpt-5.6-sol", variant: "max" }
@@ -9604,14 +9605,14 @@ var init_category_model_requirements = __esm(() => {
     },
     "deep-low": {
       fallbackChain: [
-        { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptSol, variant: "high" },
-        { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptSolFast, variant: "high" },
+        { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptSol, variant: "medium" },
+        { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptSolFast, variant: "medium" },
         {
           providers: ["openai", "chatgpt-subscription", "github-copilot", "opencode"],
           model: "gpt-5.6-sol",
-          variant: "high"
+          variant: "medium"
         },
-        { providers: ["openai", "chatgpt-subscription"], model: "gpt-5.6-sol-fast", variant: "high" }
+        { providers: ["openai", "chatgpt-subscription"], model: "gpt-5.6-sol-fast", variant: "medium" }
       ]
     },
     "deep-high": {
@@ -9624,15 +9625,15 @@ var init_category_model_requirements = __esm(() => {
       ]
     },
     artistry: {
-      fallbackChain: launchRungs([
+      fallbackChain: [
         {
           providers: ["anthropic", "anthropic-api", "github-copilot", "opencode"],
-          model: FABLE_55_LAUNCH.id,
+          model: LATEST_MODEL_BY_FAMILY.claudeFable,
           variant: "max"
         },
         {
           providers: ["anthropic", "anthropic-api", "github-copilot", "opencode"],
-          model: LATEST_MODEL_BY_FAMILY.claudeFable,
+          model: "claude-fable-5-1",
           variant: "max"
         },
         {
@@ -9646,7 +9647,7 @@ var init_category_model_requirements = __esm(() => {
           variant: "max"
         },
         { providers: ["opencode"], model: LATEST_MODEL_BY_FAMILY.kimiK3, variant: "max" }
-      ])
+      ]
     },
     quick: {
       fallbackChain: [
@@ -9654,7 +9655,7 @@ var init_category_model_requirements = __esm(() => {
         {
           providers: ["anthropic", "anthropic-api", "github-copilot"],
           model: LATEST_MODEL_BY_FAMILY.claudeHaiku,
-          variant: "high"
+          variant: "medium"
         },
         { providers: ["deepseek"], model: "deepseek-flash", variant: "off" },
         {
@@ -9674,16 +9675,16 @@ var init_category_model_requirements = __esm(() => {
         {
           providers: ["anthropic", "anthropic-api", "github-copilot", "opencode"],
           model: LATEST_MODEL_BY_FAMILY.claudeSonnet,
-          variant: "high"
+          variant: "medium"
         },
         { providers: ["xiaomi", "opencode-go"], model: "mimo-v2.6-pro", variant: "max" },
-        { providers: ["xai", "github-copilot", "opencode-go"], model: "grok-4.7", variant: "high" },
+        { providers: ["xai", "github-copilot", "opencode-go"], model: "grok-4.7", variant: "xhigh" },
         { providers: ["zai-coding-plan", "opencode-go"], model: LATEST_MODEL_BY_FAMILY.glm, variant: "high" },
-        { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptSol, variant: "high" },
+        { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptSol, variant: "medium" },
         {
           providers: ["openai", "chatgpt-subscription", "github-copilot", "opencode"],
           model: "gpt-5.6-sol",
-          variant: "high"
+          variant: "medium"
         },
         {
           providers: ["anthropic", "anthropic-api", "github-copilot", "opencode"],
@@ -9704,7 +9705,7 @@ var init_category_model_requirements = __esm(() => {
         {
           providers: ["anthropic", "anthropic-api", "github-copilot", "opencode"],
           model: LATEST_MODEL_BY_FAMILY.claudeOpus,
-          variant: "high"
+          variant: "medium"
         },
         { providers: ["zai-coding-plan", "opencode-go"], model: LATEST_MODEL_BY_FAMILY.glm, variant: "max" },
         {
@@ -10332,9 +10333,7 @@ var init_runtime_fallback_model = () => {};
 // packages/model-core/src/model-capabilities/supplemental-entries.ts
 var SUPPLEMENTAL_MODEL_CAPABILITIES;
 var init_supplemental_entries = __esm(() => {
-  init_fable_55_launch();
   SUPPLEMENTAL_MODEL_CAPABILITIES = {
-    [FABLE_55_LAUNCH.id]: FABLE_55_LAUNCH,
     "kimi-k3": {
       id: "kimi-k3",
       family: "kimi",
@@ -10397,6 +10396,21 @@ var init_supplemental_entries = __esm(() => {
     },
     "claude-fable-5-1": {
       id: "claude-fable-5-1",
+      family: "claude-fable",
+      reasoning: true,
+      temperature: false,
+      toolCall: true,
+      modalities: {
+        input: ["text", "image", "pdf"],
+        output: ["text"]
+      },
+      limit: {
+        context: 1e6,
+        output: 128000
+      }
+    },
+    "claude-fable-5-2": {
+      id: "claude-fable-5-2",
       family: "claude-fable",
       reasoning: true,
       temperature: false,
@@ -10814,25 +10828,16 @@ var init_supplemental_entries = __esm(() => {
 });
 
 // packages/model-core/src/model-capabilities/bundled-snapshot.ts
-function fillGaps(generated, placeholder) {
-  const merged = { ...placeholder };
-  for (const [key, value] of Object.entries(generated)) {
-    if (value === undefined)
-      continue;
-    const base = merged[key];
-    merged[key] = value !== null && typeof value === "object" && !Array.isArray(value) && base !== null && typeof base === "object" ? { ...base, ...Object.fromEntries(Object.entries(value).filter(([, v]) => v !== undefined)) } : value;
-  }
-  return merged;
-}
 function getBundledModelCapabilitiesSnapshot(snapshotJson) {
-  const models = { ...snapshotJson.models, ...SUPPLEMENTAL_MODEL_CAPABILITIES };
-  const generatedLaunchRow = snapshotJson.models[FABLE_55_LAUNCH.id];
-  if (generatedLaunchRow)
-    models[FABLE_55_LAUNCH.id] = fillGaps(generatedLaunchRow, FABLE_55_LAUNCH);
-  return { ...snapshotJson, models };
+  return {
+    ...snapshotJson,
+    models: {
+      ...snapshotJson.models,
+      ...SUPPLEMENTAL_MODEL_CAPABILITIES
+    }
+  };
 }
 var init_bundled_snapshot = __esm(() => {
-  init_fable_55_launch();
   init_supplemental_entries();
 });
 
@@ -11260,7 +11265,6 @@ var init_src2 = __esm(() => {
   init_model_requirements();
   init_latest_models();
   init_model_family_detectors();
-  init_fable_55_launch();
   init_model_capability_aliases();
   init_model_capability_heuristics();
   init_model_capability_guardrails();
@@ -11588,7 +11592,6 @@ Approach:
 </Category_Context>`, GOOGLE_CATEGORIES;
 var init_google_categories = __esm(() => {
   init_latest_models();
-  init_src2();
   GOOGLE_CATEGORIES = [
     {
       name: "visual-engineering",
@@ -11598,7 +11601,7 @@ var init_google_categories = __esm(() => {
     },
     {
       name: "artistry",
-      config: { model: `anthropic/${launchDefaultModelId()}`, variant: "max" },
+      config: { model: `anthropic/${LATEST_MODEL_BY_FAMILY.claudeFable}`, variant: "max" },
       description: "Complex problem-solving with unconventional, creative approaches - beyond standard patterns",
       promptAppend: ARTISTRY_CATEGORY_PROMPT_APPEND
     }
@@ -11775,7 +11778,12 @@ You are working on tasks that don't fit specific categories but require substant
 var init_openai_categories = __esm(() => {
   init_types();
   init_latest_models();
-  DEEP_LOW_GATE_MODELS = [LATEST_MODEL_BY_FAMILY.gptSol, LATEST_MODEL_BY_FAMILY.gptSolFast, "gpt-5.6-sol-fast", "gpt-5.6-sol"];
+  DEEP_LOW_GATE_MODELS = [
+    LATEST_MODEL_BY_FAMILY.gptSol,
+    LATEST_MODEL_BY_FAMILY.gptSolFast,
+    "gpt-5.6-sol-fast",
+    "gpt-5.6-sol"
+  ];
   DEEP_HIGH_GATE_MODEL = LATEST_MODEL_BY_FAMILY.gptAstra;
   OPENAI_CATEGORIES = [
     {
@@ -11787,7 +11795,7 @@ var init_openai_categories = __esm(() => {
     },
     {
       name: "deep-low",
-      config: { model: `openai/${LATEST_MODEL_BY_FAMILY.gptSol}`, variant: "high" },
+      config: { model: `openai/${LATEST_MODEL_BY_FAMILY.gptSol}`, variant: "medium" },
       description: "Default deep lane: one goal, one deliverable, decisions the child can settle from what it reads; preferred over deep-high for 3D graphics, computer/browser use, CAPTCHA, multimodal, backend, logic, and algorithm work. Multiple goals fan out as parallel calls.",
       callerGuidance: DEEP_LOW_CATEGORY_CALLER_GUIDANCE,
       promptAppend: DEEP_LOW_CATEGORY_PROMPT_APPEND,
@@ -11812,14 +11820,14 @@ var init_openai_categories = __esm(() => {
     },
     {
       name: "unspecified-low",
-      config: { model: `anthropic/${LATEST_MODEL_BY_FAMILY.claudeSonnet}`, variant: "high" },
+      config: { model: `anthropic/${LATEST_MODEL_BY_FAMILY.claudeSonnet}`, variant: "medium" },
       description: "Tasks that don't fit other categories, low effort required",
       callerGuidance: UNSPECIFIED_LOW_CATEGORY_CALLER_GUIDANCE,
       promptAppend: UNSPECIFIED_LOW_CATEGORY_PROMPT_APPEND
     },
     {
       name: "unspecified-high",
-      config: { model: `anthropic/${LATEST_MODEL_BY_FAMILY.claudeOpus}`, variant: "high" },
+      config: { model: `anthropic/${LATEST_MODEL_BY_FAMILY.claudeOpus}`, variant: "medium" },
       description: "Tasks that don't fit other categories, high effort required",
       callerGuidance: UNSPECIFIED_HIGH_CATEGORY_CALLER_GUIDANCE,
       promptAppend: UNSPECIFIED_HIGH_CATEGORY_PROMPT_APPEND,
@@ -11837,16 +11845,15 @@ var init_builtin_categories = __esm(() => {
   init_google_categories();
   init_kimi_categories();
   init_openai_categories();
-  BUILTIN_CATEGORIES = [
-    ...GOOGLE_CATEGORIES,
-    ...OPENAI_CATEGORIES,
-    ...KIMI_CATEGORIES
-  ];
+  BUILTIN_CATEGORIES = [...GOOGLE_CATEGORIES, ...OPENAI_CATEGORIES, ...KIMI_CATEGORIES];
   DEFAULT_CATEGORIES = buildCategoryRecord((definition) => definition.config);
   CATEGORY_PROMPT_APPENDS = buildCategoryRecord((definition) => definition.promptAppend);
   CATEGORY_DESCRIPTIONS = buildCategoryRecord((definition) => definition.description);
   CATEGORY_CALLER_GUIDANCE = buildCategoryRecord((definition) => definition.callerGuidance);
-  CATEGORY_PROMPT_APPEND_RESOLVERS = Object.fromEntries(BUILTIN_CATEGORIES.filter((definition) => definition.resolvePromptAppend !== undefined).map((definition) => [definition.name, definition.resolvePromptAppend]));
+  CATEGORY_PROMPT_APPEND_RESOLVERS = Object.fromEntries(BUILTIN_CATEGORIES.filter((definition) => definition.resolvePromptAppend !== undefined).map((definition) => [
+    definition.name,
+    definition.resolvePromptAppend
+  ]));
   BUILTIN_CATEGORY_REQUIRES_MODEL = Object.fromEntries(BUILTIN_CATEGORIES.filter((definition) => definition.requiresModel !== undefined).map((definition) => [
     definition.name,
     typeof definition.requiresModel === "string" ? [definition.requiresModel] : definition.requiresModel
@@ -11975,7 +11982,16 @@ var TAURI_APP_IDENTIFIER = "ai.opencode.desktop", TAURI_APP_IDENTIFIER_DEV = "ai
 var init_opencode_config_dir = () => {};
 
 // packages/omo-opencode/src/shared/opencode-plugin-sandbox.ts
-import { existsSync as existsSync6, mkdirSync as mkdirSync3, readdirSync, readFileSync, realpathSync as realpathSync3, renameSync as renameSync3, rmSync as rmSync2, writeFileSync as writeFileSync2 } from "fs";
+import {
+  existsSync as existsSync6,
+  mkdirSync as mkdirSync3,
+  readdirSync,
+  readFileSync,
+  realpathSync as realpathSync3,
+  renameSync as renameSync3,
+  rmSync as rmSync2,
+  writeFileSync as writeFileSync2
+} from "fs";
 import { basename, dirname as dirname2, join as join7, resolve as resolve2 } from "path";
 function getPluginSandboxRoot(cacheDir) {
   return join7(cacheDir, SANDBOX_PARENT_DIR);
@@ -12277,7 +12293,9 @@ var init_zip_extractor = __esm(() => {
 });
 
 // packages/omo-opencode/src/shared/bun-file-shim.ts
-var init_bun_file_shim = () => {};
+var init_bun_file_shim = __esm(() => {
+  init_runtime();
+});
 
 // packages/omo-opencode/src/shared/binary-downloader.ts
 import { chmodSync, existsSync as existsSync9, mkdirSync as mkdirSync4, unlinkSync as unlinkSync3 } from "fs";
@@ -12354,12 +12372,7 @@ var init_tolerant_fsync = __esm(() => {
   init_classify_path_environment2();
   init_fsync_skip_tracker();
   init_logger2();
-  TOLERATED_FSYNC_CODES2 = new Set([
-    "EPERM",
-    "EACCES",
-    "ENOTSUP",
-    "EINVAL"
-  ]);
+  TOLERATED_FSYNC_CODES2 = new Set(["EPERM", "EACCES", "ENOTSUP", "EINVAL"]);
 });
 
 // packages/omo-opencode/src/shared/write-file-atomically.ts
@@ -70218,10 +70231,7 @@ async function probe(registration) {
     const timeoutId = setTimeout(() => controller.abort(), PROBE_ABORT_MS);
     let response;
     try {
-      response = await Promise.race([
-        getFetch()(probeUrl, { headers, signal: controller.signal }),
-        timeoutPromise
-      ]);
+      response = await Promise.race([getFetch()(probeUrl, { headers, signal: controller.signal }), timeoutPromise]);
     } finally {
       clearTimeout(timeoutId);
     }
@@ -70786,7 +70796,7 @@ var init_log_legacy_plugin_startup_warning = __esm(() => {
   init_plugin_identity();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/core/util.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/core/util.js
 var exports_util = {};
 __export(exports_util, {
   unwrapMessage: () => unwrapMessage,
@@ -70796,6 +70806,7 @@ __export(exports_util, {
   toZod: () => toZod,
   stringifyPrimitive: () => stringifyPrimitive,
   slugify: () => slugify,
+  sizeCaps: () => sizeCaps,
   shallowClone: () => shallowClone,
   safeExtend: () => safeExtend,
   required: () => required,
@@ -71289,6 +71300,18 @@ function prefixIssues(path7, issues) {
 function unwrapMessage(message) {
   return typeof message === "string" ? message : message?.message;
 }
+function sizeCaps(defChecks) {
+  const caps = [];
+  for (const ch of defChecks ?? []) {
+    const d = ch._zod.def;
+    if (!/_(length|size)$|_equals$/.test(d.check))
+      break;
+    const max = d.maximum ?? d.length ?? d.size;
+    if (max >= 0)
+      caps.push([max, ch]);
+  }
+  return caps;
+}
 function attachSchema(issues, start, inst) {
   var _a;
   for (let i = start;i < issues.length; i++) {
@@ -71622,7 +71645,7 @@ var init_util = __esm(() => {
   };
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/core/core.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/core/core.js
 function newError(Definition) {
   const E = _E;
   if (E) {
@@ -71747,7 +71770,7 @@ var init_core = __esm(() => {
   globalConfig = globalThis.__zod_globalConfig;
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/core/errors.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/core/errors.js
 function _getMessage() {
   const internals = this._zod;
   internals.message ?? (internals.message = JSON.stringify(internals.def, jsonStringifyReplacer, 2));
@@ -71944,7 +71967,7 @@ var init_errors = __esm(() => {
   });
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/core/parse.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/core/parse.js
 function finalizeParams(callee, params) {
   return { callee: params?.callee ?? callee, Err: params?.Err };
 }
@@ -72096,7 +72119,7 @@ var init_parse = __esm(() => {
   safeDecodeAsync = /* @__PURE__ */ _safeDecodeAsync($ZodRealError);
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/core/regexes.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/core/regexes.js
 var exports_regexes = {};
 __export(exports_regexes, {
   xid: () => xid,
@@ -72267,7 +72290,7 @@ var init_regexes = __esm(() => {
   sha512_base64url = /* @__PURE__ */ fixedBase64url(86);
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/core/checks.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/core/checks.js
 function handleCheckPropertyResult(result, payload, property) {
   if (result.issues.length) {
     payload.issues.push(...prefixIssues(property, result.issues));
@@ -72745,7 +72768,7 @@ var init_checks = __esm(() => {
   });
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/core/doc.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/core/doc.js
 class Doc {
   constructor(args = [], closed = {}) {
     this.content = [];
@@ -72787,17 +72810,17 @@ ${content.join(`
   }
 }
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/core/versions.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/core/versions.js
 var version;
 var init_versions = __esm(() => {
   version = {
     major: 4,
     minor: 6,
-    patch: 5
+    patch: 7
   };
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/core/schemas.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/core/schemas.js
 async function validateAsync2(inst, value) {
   const ctx = { async: true };
   return toStandardResult(await inst._zod.run({ value, issues: [] }, ctx), ctx);
@@ -72952,6 +72975,28 @@ function isValidJWT(token, algorithm = null) {
   } catch {
     return false;
   }
+}
+function capSize(inst, size) {
+  const caps = sizeCaps(inst._zod.def.checks);
+  if (!caps.length)
+    return;
+  const cap = Math.min(...caps.map((c) => c[0]));
+  const parse4 = inst._zod.parse;
+  inst._zod.parse = (payload, ctx) => {
+    const n = size(payload.value);
+    if (n > cap && !ctx?.skipChecks && ctx?.direction !== "backward") {
+      for (const [max, ch] of sizeCaps(inst._zod.def.checks)) {
+        if (n > max && ch._zod.def.when(payload)) {
+          const start = payload.issues.length;
+          ch._zod.check(payload);
+          payload.issues[start].continue = false;
+          attachSchema(payload.issues, start, inst);
+          return payload;
+        }
+      }
+    }
+    return parse4(payload, ctx);
+  };
 }
 function handleArrayResult(result, final, index) {
   if (result.issues.length) {
@@ -73448,7 +73493,7 @@ function handleRefineResult(result, payload, input, inst) {
     payload.issues.push(issue(_iss));
   }
 }
-var $ZodType, toStandardResult = (r, ctx) => r.issues.length ? { issues: r.issues.map((iss) => finalizeIssue(iss, ctx, config())) } : { value: r.value }, $ZodString, $ZodStringFormat, $ZodGUID, $ZodUUID, $ZodEmail, URL_BAD_FORMAT = 1, URL_UNPARSEABLE = 2, asciiTabOrNewline, $ZodURL, $ZodEmoji, $ZodNanoID, $ZodCUID, $ZodCUID2, $ZodULID, $ZodXID, $ZodKSUID, $ZodISODateTime, $ZodISODate, $ZodISOTime, $ZodISODuration, $ZodIPv4, ipv6Alphabet, $ZodIPv6, $ZodMAC, $ZodCIDRv4, $ZodCIDRv6, base64Charset, $ZodBase64, base64urlCharset, $ZodBase64URL, $ZodE164, CC_SANITIZE, $ZodCreditCard, $ZodIBAN, $ZodJWT, $ZodCustomStringFormat, $ZodNumber, $ZodNumberFormat, $ZodBoolean, $ZodBigInt, $ZodBigIntFormat, $ZodSymbol, $ZodUndefined, $ZodNull, $ZodAny, $ZodUnknown, $ZodNever, $ZodVoid, $ZodDate, $ZodArray, NO_SYMBOL_KEYS, $ZodObject, $ZodObjectJIT, $ZodUnion, $ZodXor, $ZodDiscriminatedUnion, $ZodIntersection, $ZodTuple, $ZodRecord, $ZodMap, $ZodSet, $ZodEnum, $ZodLiteral, $ZodFile, $ZodTransform, $ZodOptional, $ZodExactOptional, $ZodNullable, $ZodDefault, $ZodPrefault, $ZodNonOptional, $ZodSuccess, $ZodCatch, $ZodNaN, $ZodPipe, $ZodCodec, $ZodPreprocess, $ZodReadonly, $ZodTemplateLiteral, $ZodFunction, $ZodPromise, $ZodLazy, $ZodCustom;
+var $ZodType, toStandardResult = (r, ctx) => r.issues.length ? { issues: r.issues.map((iss) => finalizeIssue(iss, ctx, config())) } : { value: r.value }, $ZodString, $ZodStringFormat, $ZodGUID, $ZodUUID, $ZodEmail, URL_BAD_FORMAT = 1, URL_UNPARSEABLE = 2, asciiTabOrNewline, $ZodURL, $ZodEmoji, $ZodNanoID, $ZodCUID, $ZodCUID2, $ZodULID, $ZodXID, $ZodKSUID, $ZodISODateTime, $ZodISODate, $ZodISOTime, $ZodISODuration, $ZodIPv4, ipv6Alphabet, $ZodIPv6, $ZodMAC, $ZodCIDRv4, $ZodCIDRv6, base64Charset, $ZodBase64, base64urlCharset, $ZodBase64URL, $ZodE164, CC_SANITIZE, $ZodCreditCard, $ZodIBAN, $ZodJWT, $ZodCustomStringFormat, $ZodNumber, $ZodNumberFormat, $ZodBoolean, $ZodBigInt, $ZodBigIntFormat, $ZodSymbol, $ZodUndefined, $ZodNull, $ZodAny, $ZodUnknown, $ZodNever, $ZodVoid, $ZodDate, arraySize = (input) => Array.isArray(input) ? input.length : -1, mapSize = (input) => input instanceof Map ? input.size : -1, setSize = (input) => input instanceof Set ? input.size : -1, $ZodArray, NO_SYMBOL_KEYS, $ZodObject, $ZodObjectJIT, $ZodUnion, $ZodXor, $ZodDiscriminatedUnion, $ZodIntersection, $ZodTuple, $ZodRecord, $ZodMap, $ZodSet, $ZodEnum, $ZodLiteral, $ZodFile, $ZodTransform, $ZodOptional, $ZodExactOptional, $ZodNullable, $ZodDefault, $ZodPrefault, $ZodNonOptional, $ZodSuccess, $ZodCatch, $ZodNaN, $ZodPipe, $ZodCodec, $ZodPreprocess, $ZodReadonly, $ZodTemplateLiteral, $ZodFunction, $ZodPromise, $ZodLazy, $ZodCustom;
 var init_schemas = __esm(() => {
   init_checks();
   init_core();
@@ -74081,6 +74126,7 @@ var init_schemas = __esm(() => {
       }
       return payload;
     };
+    capSize(inst, arraySize);
   });
   NO_SYMBOL_KEYS = [];
   $ZodObject = /* @__PURE__ */ $constructor("$ZodObject", (inst, def) => {
@@ -74719,6 +74765,7 @@ var init_schemas = __esm(() => {
         return Promise.all(proms).then(() => payload);
       return payload;
     };
+    capSize(inst, mapSize);
   });
   $ZodSet = /* @__PURE__ */ $constructor("$ZodSet", (inst, def) => {
     $ZodType.init(inst, def);
@@ -74755,6 +74802,7 @@ var init_schemas = __esm(() => {
         return Promise.all(proms).then(() => payload);
       return payload;
     };
+    capSize(inst, setSize);
   });
   $ZodEnum = /* @__PURE__ */ $constructor("$ZodEnum", (inst, def) => {
     $ZodType.init(inst, def);
@@ -75206,7 +75254,7 @@ var init_schemas = __esm(() => {
   });
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/core/memoizer.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/core/memoizer.js
 function isRef(value) {
   return value !== null && typeof value === "object";
 }
@@ -75478,7 +75526,7 @@ var init_memoizer = __esm(() => {
   };
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/ar.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/ar.js
 function ar_default() {
   return {
     localeError: error()
@@ -75593,7 +75641,7 @@ var init_ar = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/az.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/az.js
 function az_default() {
   return {
     localeError: error2()
@@ -75707,7 +75755,7 @@ var init_az = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/be.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/be.js
 function getBelarusianPlural(count, one, few, many) {
   const absCount = Math.abs(count);
   const lastDigit = absCount % 10;
@@ -75879,7 +75927,7 @@ var init_be = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/bg.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/bg.js
 function bg_default() {
   return {
     localeError: error4()
@@ -76008,7 +76056,7 @@ var init_bg = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/bn.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/bn.js
 function bn_default() {
   return {
     localeError: error5()
@@ -76125,7 +76173,7 @@ var init_bn = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/ca.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/ca.js
 function ca_default() {
   return {
     localeError: error6()
@@ -76241,7 +76289,7 @@ var init_ca = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/ckb.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/ckb.js
 function ckb_default() {
   return {
     localeError: error7()
@@ -76377,7 +76425,7 @@ var init_ckb = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/cs.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/cs.js
 function cs_default() {
   return {
     localeError: error8()
@@ -76497,7 +76545,7 @@ var init_cs = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/da.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/da.js
 function da_default() {
   return {
     localeError: error9()
@@ -76621,7 +76669,7 @@ var init_da = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/de.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/de.js
 function de_default() {
   return {
     localeError: error10()
@@ -76738,7 +76786,7 @@ var init_de = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/el.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/el.js
 function el_default() {
   return {
     localeError: error11()
@@ -76854,7 +76902,7 @@ var init_el = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/en.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/en.js
 function en_default() {
   return {
     localeError: error12()
@@ -76980,7 +77028,7 @@ var init_en = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/eo.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/eo.js
 function eo_default() {
   return {
     localeError: error13()
@@ -77098,7 +77146,7 @@ var init_eo = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/es.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/es.js
 function es_default() {
   return {
     localeError: error14()
@@ -77238,7 +77286,7 @@ var init_es = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/fa.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/fa.js
 function fa_default() {
   return {
     localeError: error15()
@@ -77361,7 +77409,7 @@ var init_fa = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/fi.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/fi.js
 function fi_default() {
   return {
     localeError: error16()
@@ -77482,7 +77530,7 @@ var init_fi = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/fr.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/fr.js
 function fr_default() {
   return {
     localeError: error17()
@@ -77615,7 +77663,7 @@ var init_fr = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/fr-CA.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/fr-CA.js
 function fr_CA_default() {
   return {
     localeError: error18()
@@ -77731,7 +77779,7 @@ var init_fr_CA = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/gu.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/gu.js
 function gu_default() {
   return {
     localeError: error19()
@@ -77848,7 +77896,7 @@ var init_gu = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/he.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/he.js
 function he_default() {
   return {
     localeError: error20()
@@ -78052,7 +78100,7 @@ var init_he = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/hi.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/hi.js
 function hi_default() {
   return {
     localeError: error21()
@@ -78167,7 +78215,7 @@ var init_hi = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/hr.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/hr.js
 function hr_default() {
   return {
     localeError: error22()
@@ -78297,7 +78345,7 @@ var init_hr = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/hu.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/hu.js
 function hu_default() {
   return {
     localeError: error23()
@@ -78414,7 +78462,7 @@ var init_hu = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/hy.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/hy.js
 function getArmenianPlural(count, one, many) {
   return Math.abs(count) === 1 ? one : many;
 }
@@ -78576,7 +78624,7 @@ var init_hy = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/id.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/id.js
 function id_default() {
   return {
     localeError: error25()
@@ -78691,7 +78739,7 @@ var init_id = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/is.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/is.js
 function is_default() {
   return {
     localeError: error26()
@@ -78809,7 +78857,7 @@ var init_is = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/it.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/it.js
 function it_default() {
   return {
     localeError: error27()
@@ -78926,7 +78974,7 @@ var init_it = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/ja.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/ja.js
 function ja_default() {
   return {
     localeError: error28()
@@ -79042,7 +79090,7 @@ var init_ja = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/ka.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/ka.js
 function ka_default() {
   return {
     localeError: error29()
@@ -79163,7 +79211,7 @@ var init_ka = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/km.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/km.js
 function km_default() {
   return {
     localeError: error30()
@@ -79282,7 +79330,7 @@ var init_km = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/kh.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/kh.js
 function kh_default() {
   return km_default();
 }
@@ -79290,7 +79338,7 @@ var init_kh = __esm(() => {
   init_km();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/kn.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/kn.js
 function kn_default() {
   return {
     localeError: error31()
@@ -79407,7 +79455,7 @@ var init_kn = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/ko.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/ko.js
 function ko_default() {
   return {
     localeError: error32()
@@ -79527,7 +79575,7 @@ var init_ko = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/lt.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/lt.js
 function getUnitTypeFromNumber(number2) {
   const abs = Math.abs(number2);
   const last = abs % 10;
@@ -79737,7 +79785,7 @@ var init_lt = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/mk.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/mk.js
 function mk_default() {
   return {
     localeError: error34()
@@ -79855,7 +79903,7 @@ var init_mk = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/ms.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/ms.js
 function ms_default() {
   return {
     localeError: error35()
@@ -79971,7 +80019,7 @@ var init_ms = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/ne.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/ne.js
 function ne_default() {
   return {
     localeError: error36()
@@ -80086,7 +80134,7 @@ var init_ne = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/nl.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/nl.js
 function nl_default() {
   return {
     localeError: error37()
@@ -80205,7 +80253,7 @@ var init_nl = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/nn.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/nn.js
 function nn_default() {
   return {
     localeError: error38()
@@ -80322,7 +80370,7 @@ var init_nn = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/no.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/no.js
 function no_default() {
   return {
     localeError: error39()
@@ -80439,7 +80487,7 @@ var init_no = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/ota.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/ota.js
 function ota_default() {
   return {
     localeError: error40()
@@ -80557,7 +80605,7 @@ var init_ota = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/ps.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/ps.js
 function ps_default() {
   return {
     localeError: error41()
@@ -80680,7 +80728,7 @@ var init_ps = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/pl.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/pl.js
 function pl_default() {
   return {
     localeError: error42()
@@ -80798,7 +80846,7 @@ var init_pl = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/pt.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/pt.js
 function pt_default() {
   return {
     localeError: error43()
@@ -80944,7 +80992,7 @@ var init_pt = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/pt-BR.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/pt-BR.js
 function pt_BR_default() {
   return {
     localeError: error44()
@@ -81091,7 +81139,7 @@ var init_pt_BR = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/ro.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/ro.js
 function ro_default() {
   return {
     localeError: error45()
@@ -81217,7 +81265,7 @@ var init_ro = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/ru.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/ru.js
 function getRussianPlural(count, one, few, many) {
   const absCount = Math.abs(count);
   const lastDigit = absCount % 10;
@@ -81389,7 +81437,7 @@ var init_ru = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/sk.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/sk.js
 function sk_default() {
   return {
     localeError: error47()
@@ -81509,7 +81557,7 @@ var init_sk = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/sl.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/sl.js
 function sl_default() {
   return {
     localeError: error48()
@@ -81627,7 +81675,7 @@ var init_sl = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/sv.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/sv.js
 function sv_default() {
   return {
     localeError: error49()
@@ -81746,7 +81794,7 @@ var init_sv = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/ta.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/ta.js
 function ta_default() {
   return {
     localeError: error50()
@@ -81865,7 +81913,7 @@ var init_ta = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/tg.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/tg.js
 function tg_default() {
   return {
     localeError: error51()
@@ -81985,7 +82033,7 @@ var init_tg = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/th.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/th.js
 function th_default() {
   return {
     localeError: error52()
@@ -82104,7 +82152,7 @@ var init_th = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/tk.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/tk.js
 function tk_default() {
   return {
     localeError: error53()
@@ -82215,7 +82263,7 @@ var init_tk = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/tr.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/tr.js
 function tr_default() {
   return {
     localeError: error54()
@@ -82329,7 +82377,7 @@ var init_tr = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/uk.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/uk.js
 function uk_default() {
   return {
     localeError: error55()
@@ -82446,7 +82494,7 @@ var init_uk = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/ua.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/ua.js
 function ua_default() {
   return uk_default();
 }
@@ -82454,7 +82502,7 @@ var init_ua = __esm(() => {
   init_uk();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/ur.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/ur.js
 function ur_default() {
   return {
     localeError: error56()
@@ -82573,7 +82621,7 @@ var init_ur = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/uz.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/uz.js
 function uz_default() {
   return {
     localeError: error57()
@@ -82690,7 +82738,7 @@ var init_uz = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/vi.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/vi.js
 function vi_default() {
   return {
     localeError: error58()
@@ -82807,7 +82855,7 @@ var init_vi = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/zh-CN.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/zh-CN.js
 function zh_CN_default() {
   return {
     localeError: error59()
@@ -82925,7 +82973,7 @@ var init_zh_CN = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/zh-TW.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/zh-TW.js
 function zh_TW_default() {
   return {
     localeError: error60()
@@ -83041,7 +83089,7 @@ var init_zh_TW = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/yo.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/yo.js
 function yo_default() {
   return {
     localeError: error61()
@@ -83157,7 +83205,7 @@ var init_yo = __esm(() => {
   init_util();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/index.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/index.js
 var exports_locales = {};
 __export(exports_locales, {
   zhTW: () => zh_TW_default,
@@ -83290,7 +83338,7 @@ var init_locales = __esm(() => {
   init_yo();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/core/registries.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/core/registries.js
 class $ZodRegistry {
   constructor() {
     this._map = new WeakMap;
@@ -83342,7 +83390,7 @@ var init_registries = __esm(() => {
   globalRegistry = globalThis.__zod_globalRegistry;
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/core/compile.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/core/compile.js
 function compileValidator(schema, parser) {
   try {
     return compileFn(schema, { assertOnly: true });
@@ -84328,9 +84376,15 @@ function generateNullableCheck(doc, ctx, schema, accessor, buildsValue = true) {
   doc.write(`}`);
   return outputVar;
 }
+function generateSizeGate(doc, schema, size) {
+  for (const [max, check] of sizeCaps(schema._zod.def.checks)) {
+    doc.write(`if (${size} > ${numericOperand(max, check._zod.def.check)}) return INVALID;`);
+  }
+}
 function generateArrayCheck(doc, ctx, schema, accessor, buildsValue = true) {
   const def = schema._zod.def;
   doc.write(`if (!Array.isArray(${accessor})) return INVALID;`);
+  generateSizeGate(doc, schema, `${accessor}.length`);
   const outputVar = buildsValue ? newVar(ctx) : null;
   const iVar = newVar(ctx);
   const elemVar = newVar(ctx);
@@ -84730,6 +84784,7 @@ function literalPropertyKey(ctx, key) {
 function generateMapCheck(doc, ctx, schema, accessor) {
   const def = schema._zod.def;
   doc.write(`if (!(${accessor} instanceof Map)) return INVALID;`);
+  generateSizeGate(doc, schema, `${accessor}.size`);
   const outputVar = newVar(ctx);
   const kVar = newVar(ctx);
   const valVar = newVar(ctx);
@@ -84746,6 +84801,7 @@ function generateMapCheck(doc, ctx, schema, accessor) {
 function generateSetCheck(doc, ctx, schema, accessor) {
   const def = schema._zod.def;
   doc.write(`if (!(${accessor} instanceof Set)) return INVALID;`);
+  generateSizeGate(doc, schema, `${accessor}.size`);
   const outputVar = newVar(ctx);
   const valVar = newVar(ctx);
   doc.write(`const ${outputVar} = new Set();`);
@@ -84947,7 +85003,7 @@ var init_compile = __esm(() => {
   ]);
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/core/api.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/core/api.js
 function snapshotChecks(def) {
   if (def.checks)
     def.checks = [...def.checks];
@@ -85892,7 +85948,7 @@ var init_api = __esm(() => {
   };
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/core/to-json-schema.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/core/to-json-schema.js
 function assignProps(target, ...sources) {
   for (const source of sources) {
     for (const key of Reflect.ownKeys(source)) {
@@ -86419,7 +86475,7 @@ var init_to_json_schema = __esm(() => {
   UNION_KEYS = ["oneOf", "anyOf"];
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/core/json-schema-processors.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/core/json-schema-processors.js
 function aggregateChecks(schema) {
   const agg = {};
   const def = schema._zod.def;
@@ -87120,7 +87176,7 @@ var init_json_schema_processors = __esm(() => {
   };
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/core/json-schema-generator.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/core/json-schema-generator.js
 class JSONSchemaGenerator {
   get metadataRegistry() {
     return this.ctx.metadataRegistry;
@@ -87186,11 +87242,11 @@ var init_json_schema_generator = __esm(() => {
   init_to_json_schema();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/core/json-schema.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/core/json-schema.js
 var exports_json_schema = {};
 var init_json_schema = () => {};
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/core/index.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/core/index.js
 var exports_core2 = {};
 __export(exports_core2, {
   withParser: () => withParser,
@@ -87527,7 +87583,7 @@ var init_core2 = __esm(() => {
   init_to_json_schema();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/classic/checks.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/classic/checks.js
 var exports_checks2 = {};
 __export(exports_checks2, {
   uppercase: () => _uppercase,
@@ -87565,7 +87621,7 @@ var init_checks2 = __esm(() => {
   init_core2();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/classic/errors.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/classic/errors.js
 function _lazyMethod(proto, key, make) {
   Object.defineProperty(proto, key, {
     configurable: true,
@@ -87616,7 +87672,7 @@ var init_errors2 = __esm(() => {
   });
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/classic/parse.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/classic/parse.js
 var parse5, parseAsync2, safeParse2, safeParseAsync2, encode2, decode2, encodeAsync2, decodeAsync2, safeEncode2, safeDecode2, safeEncodeAsync2, safeDecodeAsync2;
 var init_parse2 = __esm(() => {
   init_core2();
@@ -87636,7 +87692,7 @@ var init_parse2 = __esm(() => {
   safeDecodeAsync2 = /* @__PURE__ */ _safeDecodeAsync(ZodRealError);
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/classic/schemas.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/classic/schemas.js
 var exports_schemas2 = {};
 __export(exports_schemas2, {
   xor: () => xor,
@@ -89268,7 +89324,7 @@ var init_schemas2 = __esm(() => {
   });
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/classic/compat.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/classic/compat.js
 function setErrorMap(map2) {
   config({
     customError: map2
@@ -89296,7 +89352,7 @@ var init_compat = __esm(() => {
   (function(ZodFirstPartyTypeKind2) {})(ZodFirstPartyTypeKind || (ZodFirstPartyTypeKind = {}));
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/classic/iso.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/classic/iso.js
 var exports_iso = {};
 __export(exports_iso, {
   time: () => time2,
@@ -89326,7 +89382,7 @@ var init_iso = __esm(() => {
   init_schemas2();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/classic/from-json-schema.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/classic/from-json-schema.js
 function detectVersion(schema, defaultTarget) {
   const $schema = schema.$schema;
   if ($schema === "https://json-schema.org/draft/2020-12/schema") {
@@ -90055,7 +90111,7 @@ var init_from_json_schema = __esm(() => {
   fullTime = /^(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|[+-](?:[01]\d|2[0-3]):[0-5]\d)$/;
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/core/visit.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/core/visit.js
 function visit2(schema, fnOrHandlers) {
   const fn = typeof fnOrHandlers === "function" ? fnOrHandlers : (node2, rewritten) => {
     const h = fnOrHandlers[node2._zod.def.type];
@@ -90212,7 +90268,7 @@ var init_visit = __esm(() => {
   RESOLVING = Symbol("z.visit/resolving");
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/classic/deep-partial.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/classic/deep-partial.js
 function deepPartial(schema) {
   return visit2(schema, {
     object: (s) => s.partial(),
@@ -90227,7 +90283,7 @@ var init_deep_partial = __esm(() => {
   init_schemas2();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/classic/in-out.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/classic/in-out.js
 function withChecks(side, checks2) {
   if (!checks2?.length)
     return side;
@@ -90259,7 +90315,7 @@ var init_in_out = __esm(() => {
   init_schemas2();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/classic/coerce.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/classic/coerce.js
 var exports_coerce = {};
 __export(exports_coerce, {
   string: () => string3,
@@ -90288,7 +90344,7 @@ var init_coerce = __esm(() => {
   init_schemas2();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/classic/external.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/classic/external.js
 var exports_external = {};
 __export(exports_external, {
   xor: () => xor,
@@ -90568,7 +90624,7 @@ var init_external = __esm(() => {
   init_compat();
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/index.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/index.js
 var init_zod = __esm(() => {
   init_external();
   init_external();
@@ -90620,10 +90676,7 @@ var init_model_ref = __esm(() => {
   init_zod();
   init_reasoning_vocabulary();
   REASONING_LEVELS_OR_AUTO = [...REASONING_LEVELS2, "auto"];
-  OmoReasoningSchema = union([
-    _enum2(REASONING_LEVELS_OR_AUTO),
-    string2()
-  ]);
+  OmoReasoningSchema = union([_enum2(REASONING_LEVELS_OR_AUTO), string2()]);
   OmoModelRefObjectSchema = object({
     model: string2(),
     reasoning: OmoReasoningSchema.optional(),
@@ -90740,10 +90793,7 @@ var init_agent = __esm(() => {
   init_model_ref();
   OmoAgentModelEntrySchema = union([string2(), OmoFallbackModelObjectSchema]);
   PermissionValueSchema = _enum2(["ask", "allow", "deny"]);
-  BashPermissionSchema = union([
-    PermissionValueSchema,
-    record(string2(), PermissionValueSchema)
-  ]);
+  BashPermissionSchema = union([PermissionValueSchema, record(string2(), PermissionValueSchema)]);
   OmoAgentPermissionSchema = object({
     edit: PermissionValueSchema.optional(),
     bash: BashPermissionSchema.optional(),
@@ -90836,7 +90886,11 @@ var init_computer = __esm(() => {
     audit_log: object({ enabled: boolean2() }).partial().strict(),
     screenshot_gc: object({ enabled: boolean2(), stale_ms: nonNegativeInteger, scan_interval_ms: nonNegativeInteger }).partial().strict(),
     engine_path: string2().min(1),
-    cua_adapter: boolean2()
+    cua_adapter: boolean2(),
+    run_sandbox: _enum2(["vm", "quickjs"]).describe("Where `run` code executes (default: vm; reserved: every run uses vm until the QuickJS cell lands)"),
+    intervention: _enum2(["continue", "pause"]).describe("What a background action does while the user uses the target app (default: continue)"),
+    macos_key_priming: _enum2(["on", "off"]).describe("macOS background keys first make the target window key (default: off)"),
+    trace: boolean2().describe("Per-request timing traces (default: false)")
   }).partial().strict().describe("Experimental computer use in OmO Native: screenshots, windows, accessibility trees and native mouse and keyboard input. Every key is optional; defaults depend on the host.");
   OmoComputerSettingsSchema = OmoComputerSettingsLayerSchema;
 });
@@ -90891,7 +90945,7 @@ var init_memory_agreements = __esm(() => {
 });
 
 // packages/omo-config-core/src/schema/memory.ts
-var OmoMemoryReflectionTriggerSchema, OmoMemoryReflectionSchema, OmoMemorySyncSchema, OmoMemorySearchSchema, OmoMemoryRecallEventCapsSchema, OmoMemoryRecallSchema, OmoMemoryProjectScopeSchema, OmoMemoryProjectScopeLayerSchema, OmoMemoryNudgeSchema, OmoMemoryFactsSchema, OmoMemoryDreamSchema, OmoMemoryPeopleSchema, OmoMemorySoulSchema, OmoMemoryWriteNoticeSchema, OmoMemoryReflectionTriggerLayerSchema, OmoMemoryReflectionLayerSchema, OmoMemorySyncLayerSchema, OmoMemorySearchLayerSchema, OmoMemoryRecallEventCapsLayerSchema, OmoMemoryRecallLayerSchema, OmoMemoryNudgeLayerSchema, OmoMemoryFactsLayerSchema, OmoMemoryDreamLayerSchema, OmoMemoryPeopleLayerSchema, OmoMemorySoulLayerSchema, OmoMemoryWriteNoticeLayerSchema, OmoMemoryProjectionSchema, OmoMemoryProjectionLayerSchema, OmoMemoryAgentOverridesSchema, OmoMemoryAutoIdentitySchema, OmoMemorySettingsSchema, OmoMemorySettingsLayerSchema;
+var OmoMemoryReflectionTriggerSchema, OmoMemoryReflectionSchema, OmoMemorySyncSchema, OmoMemorySearchSchema, OmoMemoryRecallEventCapsSchema, OmoMemoryRecallSchema, OmoMemoryProjectScopeSchema, OmoMemoryProjectScopeLayerSchema, OmoMemoryNudgeSchema, OmoMemoryFactsSchema, OmoMemoryDreamSchema, OmoMemoryPeopleSchema, OmoMemorySoulSchema, OmoMemoryWriteNoticeSchema, OmoMemoryReflectionTriggerLayerSchema, OmoMemoryReflectionLayerSchema, OmoMemorySyncLayerSchema, OmoMemorySearchLayerSchema, OmoMemoryRecallEventCapsLayerSchema, OmoMemoryRecallLayerSchema, OmoMemoryNudgeLayerSchema, OmoMemoryFactsLayerSchema, OmoMemoryDreamLayerSchema, OmoMemoryPeopleLayerSchema, OmoMemorySoulLayerSchema, OmoMemoryWriteNoticeLayerSchema, OmoMemoryProjectionSchema, OmoMemoryProjectionLayerSchema, OmoMemoryRuntimeSchema, OmoMemoryRuntimeLayerSchema, OmoMemoryAgentOverridesSchema, OmoMemoryAutoIdentitySchema, OmoMemorySettingsSchema, OmoMemorySettingsLayerSchema;
 var init_memory = __esm(() => {
   init_zod();
   init_memory_agreements();
@@ -90926,7 +90980,12 @@ var init_memory = __esm(() => {
     enabled: boolean2().default(true),
     max_items: number2().int().min(1).max(5).default(2),
     category: string2().min(1).default("quick"),
-    event_caps: OmoMemoryRecallEventCapsSchema.default({ tool_args: 400, result_head: 600, assistant: 1500, prompt: 4000 }),
+    event_caps: OmoMemoryRecallEventCapsSchema.default({
+      tool_args: 400,
+      result_head: 600,
+      assistant: 1500,
+      prompt: 4000
+    }),
     sidecar_max_tokens: number2().int().positive().default(48000),
     max_concurrent_wakes: number2().int().positive().default(2),
     tool_budget: number2().int().positive().default(8),
@@ -91040,6 +91099,22 @@ var init_memory = __esm(() => {
     max_entries_per_directory: number2().int().min(0).optional(),
     max_bytes: number2().int().min(0).optional()
   }).strict();
+  OmoMemoryRuntimeSchema = object({
+    retention_days: number2().int().min(1).default(7),
+    abandoned_journal_days: number2().int().min(1).default(14),
+    completions_days: number2().int().min(1).default(30),
+    pass_budget_ms: number2().int().min(1).default(60000),
+    discard_unreflected_journals: boolean2().default(false),
+    max_bytes: number2().int().min(0).default(2 * 1024 * 1024 * 1024)
+  }).strict();
+  OmoMemoryRuntimeLayerSchema = object({
+    retention_days: number2().int().min(1).optional(),
+    abandoned_journal_days: number2().int().min(1).optional(),
+    completions_days: number2().int().min(1).optional(),
+    pass_budget_ms: number2().int().min(1).optional(),
+    discard_unreflected_journals: boolean2().optional(),
+    max_bytes: number2().int().min(0).optional()
+  }).strict();
   OmoMemoryAgentOverridesSchema = object({
     enabled: boolean2().optional(),
     agent: string2().min(1).optional(),
@@ -91055,6 +91130,7 @@ var init_memory = __esm(() => {
     search: OmoMemorySearchLayerSchema.optional(),
     recall: OmoMemoryRecallLayerSchema.optional(),
     projection: OmoMemoryProjectionLayerSchema.optional(),
+    runtime: OmoMemoryRuntimeLayerSchema.optional(),
     compile_warn_tokens: number2().int().positive().optional()
   }).strict();
   OmoMemoryAutoIdentitySchema = _enum2(["path", "git"]);
@@ -91099,6 +91175,14 @@ var init_memory = __esm(() => {
     }),
     project_scope: OmoMemoryProjectScopeSchema.default({ nudge: true, recall: true }),
     projection: OmoMemoryProjectionSchema.default({ max_entries_per_directory: 0, max_bytes: 40960 }),
+    runtime: OmoMemoryRuntimeSchema.default({
+      retention_days: 7,
+      abandoned_journal_days: 14,
+      completions_days: 30,
+      pass_budget_ms: 60000,
+      discard_unreflected_journals: false,
+      max_bytes: 2 * 1024 * 1024 * 1024
+    }),
     compile_warn_tokens: number2().int().positive().default(30000),
     agents: record(string2(), OmoMemoryAgentOverridesSchema).default({})
   }).strict();
@@ -91119,6 +91203,7 @@ var init_memory = __esm(() => {
     recall: OmoMemoryRecallLayerSchema.optional(),
     project_scope: OmoMemoryProjectScopeLayerSchema.optional(),
     projection: OmoMemoryProjectionLayerSchema.optional(),
+    runtime: OmoMemoryRuntimeLayerSchema.optional(),
     compile_warn_tokens: number2().int().positive().optional(),
     agents: record(string2(), OmoMemoryAgentOverridesSchema).optional()
   }).strict();
@@ -91439,6 +91524,19 @@ var init_telemetry = __esm(() => {
   }).strict();
 });
 
+// packages/omo-config-core/src/schema/device-service.ts
+var OmoDeviceServiceSettingsShape, OmoDeviceServiceSettingsLayerSchema, OmoDeviceServiceSettingsSchema;
+var init_device_service = __esm(() => {
+  init_zod();
+  OmoDeviceServiceSettingsShape = {
+    enabled: boolean2()
+  };
+  OmoDeviceServiceSettingsLayerSchema = object(OmoDeviceServiceSettingsShape).partial().strict();
+  OmoDeviceServiceSettingsSchema = OmoDeviceServiceSettingsLayerSchema.extend({
+    enabled: boolean2().default(true)
+  }).strict();
+});
+
 // packages/omo-config-core/src/schema/format-on-mutation.ts
 var mode, languages, OmoFormatOnMutationLayerSchema, OmoFormatOnMutationSchema;
 var init_format_on_mutation = __esm(() => {
@@ -91487,6 +91585,7 @@ var init_config = __esm(() => {
   init_task();
   init_team();
   init_telemetry();
+  init_device_service();
   init_format_on_mutation();
   init_provenance();
   OmoOpenCodeHarnessConfigSchema = record(string2(), unknown());
@@ -91506,6 +91605,7 @@ var init_config = __esm(() => {
     model_pad: OmoModelPadSchema.optional(),
     memory: OmoMemorySettingsLayerSchema.optional(),
     telemetry: OmoTelemetrySettingsLayerSchema.optional(),
+    device_service: OmoDeviceServiceSettingsLayerSchema.optional(),
     side_panel: OmoSidePanelSettingsLayerSchema.optional(),
     computer: OmoComputerSettingsLayerSchema.optional(),
     disabled_skills: OmoDisabledSkillsSchema.optional(),
@@ -91525,6 +91625,7 @@ var init_config = __esm(() => {
     model_pad: OmoModelPadSchema.optional(),
     memory: OmoMemorySettingsLayerSchema.optional(),
     telemetry: OmoTelemetrySettingsLayerSchema.optional(),
+    device_service: OmoDeviceServiceSettingsLayerSchema.optional(),
     side_panel: OmoSidePanelSettingsLayerSchema.optional(),
     computer: OmoComputerSettingsLayerSchema.optional(),
     disabled_skills: OmoDisabledSkillsSchema.optional(),
@@ -91549,6 +91650,7 @@ var init_config = __esm(() => {
     model_pad: OmoModelPadSchema.optional(),
     memory: OmoMemorySettingsSchema.optional(),
     telemetry: OmoTelemetrySettingsSchema.optional(),
+    device_service: OmoDeviceServiceSettingsSchema.optional(),
     side_panel: OmoSidePanelSettingsSchema.optional(),
     computer: OmoComputerSettingsSchema.optional(),
     disabled_skills: OmoDisabledSkillsSchema.optional(),
@@ -91576,6 +91678,7 @@ var init_config = __esm(() => {
     model_pad: OmoModelPadSchema.optional(),
     memory: OmoMemorySettingsLayerSchema.optional(),
     telemetry: OmoTelemetrySettingsLayerSchema.optional(),
+    device_service: OmoDeviceServiceSettingsLayerSchema.optional(),
     side_panel: OmoSidePanelSettingsLayerSchema.optional(),
     computer: OmoComputerSettingsLayerSchema.optional(),
     disabled_skills: OmoDisabledSkillsSchema.optional(),
@@ -91727,6 +91830,7 @@ var init_schema = __esm(() => {
   init_task();
   init_team();
   init_telemetry();
+  init_device_service();
   init_computer();
 });
 
@@ -92089,7 +92193,14 @@ function validateConfigLayer(path7, data) {
   const sanitized = sanitizeUnsafeKeys(data);
   const record2 = toRecord2(sanitized.value);
   const unsafeIssuePaths = sanitized.issues.flatMap((issue2) => issue2.keys.map((key) => [...issue2.path, key].join(".")));
-  const unsafeDiagnostics = unsafeIssuePaths.length === 0 ? [] : [{ kind: "unknown-keys", message: `Ignored unknown keys in ${path7}: ${unsafeIssuePaths.join(", ")}`, path: path7, issuePaths: unsafeIssuePaths }];
+  const unsafeDiagnostics = unsafeIssuePaths.length === 0 ? [] : [
+    {
+      kind: "unknown-keys",
+      message: `Ignored unknown keys in ${path7}: ${unsafeIssuePaths.join(", ")}`,
+      path: path7,
+      issuePaths: unsafeIssuePaths
+    }
+  ];
   const validation = OmoConfigLayerSchema.safeParse(sanitized.value);
   if (validation.success) {
     if (record2 !== null)
@@ -92109,7 +92220,12 @@ function validateConfigLayer(path7, data) {
   if (unknownIssues.length > 0) {
     const { issuePaths, stripped } = stripUnrecognizedKeys(record2, unknownIssues);
     if (issuePaths.length > 0) {
-      diagnostics.push({ kind: "unknown-keys", message: `Ignored unknown keys in ${path7}: ${issuePaths.join(", ")}`, path: path7, issuePaths });
+      diagnostics.push({
+        kind: "unknown-keys",
+        message: `Ignored unknown keys in ${path7}: ${issuePaths.join(", ")}`,
+        path: path7,
+        issuePaths
+      });
     }
     const strippedValidation = validateLayerRecord(stripped);
     if (strippedValidation.success)
@@ -92120,7 +92236,11 @@ function validateConfigLayer(path7, data) {
   const pruned = pruneInvalidConfigPaths(candidate2, issues, validateLayerRecord);
   if (!pruned.ok)
     return rejected;
-  return { loaded: true, diagnostics: [...diagnostics, ...invalidValueDiagnostics(path7, pruned.dropped)], value: pruned.config };
+  return {
+    loaded: true,
+    diagnostics: [...diagnostics, ...invalidValueDiagnostics(path7, pruned.dropped)],
+    value: pruned.config
+  };
 }
 var RETIRED_SECTION_DIGESTS, HARNESS_BLOCKS, validateLayerRecord = (record2) => {
   const parsed = OmoConfigLayerSchema.safeParse(record2);
@@ -92276,11 +92396,13 @@ function harnessLayer(config3, harness2) {
 function resolveOmoConfigView(options) {
   const profiles = toRecord3(options.config["profiles"]);
   const profile = options.profile === undefined ? undefined : toRecord3(profiles?.[options.profile]);
-  const diagnostics = profile === undefined && options.profile !== undefined ? [{
-    kind: "profile",
-    message: `Activated omo profile "${options.profile}" does not exist; using the base configuration`,
-    path: `profiles.${options.profile}`
-  }] : [];
+  const diagnostics = profile === undefined && options.profile !== undefined ? [
+    {
+      kind: "profile",
+      message: `Activated omo profile "${options.profile}" does not exist; using the base configuration`,
+      path: `profiles.${options.profile}`
+    }
+  ] : [];
   const layers = [
     withoutControlKeys(options.config),
     harnessLayer(options.config, options.harness),
@@ -92347,11 +92469,13 @@ function readConfigSource(path7, scope, fileSystem) {
   const parsed = parseJsoncSafe2(content);
   if (parsed.errors.length > 0) {
     return {
-      diagnostics: [{
-        kind: "parse",
-        message: `JSONC parse error in ${path7}: ${parsed.errors.map((error62) => error62.message).join(", ")}`,
-        path: path7
-      }],
+      diagnostics: [
+        {
+          kind: "parse",
+          message: `JSONC parse error in ${path7}: ${parsed.errors.map((error62) => error62.message).join(", ")}`,
+          path: path7
+        }
+      ],
       source: { exists: true, loaded: false, path: path7, scope }
     };
   }
@@ -92438,7 +92562,11 @@ function loadOmoConfig(options = {}) {
   if (pruned.ok) {
     return {
       config: withExcludedModels(stripResolutionControlKeys(OmoConfigSchema.parse(pruned.config))),
-      diagnostics: [...diagnostics, ...resolved.diagnostics, ...invalidValueDiagnostics(MERGED_OMO_CONFIG_PATH, pruned.dropped)],
+      diagnostics: [
+        ...diagnostics,
+        ...resolved.diagnostics,
+        ...invalidValueDiagnostics(MERGED_OMO_CONFIG_PATH, pruned.dropped)
+      ],
       layers,
       ...resolved.profile === undefined ? {} : { profile: resolved.profile },
       sources
@@ -92446,7 +92574,11 @@ function loadOmoConfig(options = {}) {
   }
   return {
     config: stripResolutionControlKeys(OmoConfigSchema.parse(DEFAULT_RAW_CONFIG)),
-    diagnostics: [...diagnostics, ...resolved.diagnostics, validationDiagnostic(MERGED_OMO_CONFIG_PATH, finalConfig.error.issues)],
+    diagnostics: [
+      ...diagnostics,
+      ...resolved.diagnostics,
+      validationDiagnostic(MERGED_OMO_CONFIG_PATH, finalConfig.error.issues)
+    ],
     layers,
     ...resolved.profile === undefined ? {} : { profile: resolved.profile },
     sources
@@ -92576,20 +92708,24 @@ function resolveModelProfile(definition, catalog, cycleNames) {
 function profileShadowDiagnostics(view) {
   if (view.model_profiles === undefined || view.models === undefined)
     return [];
-  return Object.keys(view.model_profiles).flatMap((name) => view.models?.[name] === undefined ? [] : [{
-    kind: "validation",
-    message: `Model profile "${name}" shadows a model catalog entry of the same name`,
-    path: `model_profiles.${name}`
-  }]);
+  return Object.keys(view.model_profiles).flatMap((name) => view.models?.[name] === undefined ? [] : [
+    {
+      kind: "validation",
+      message: `Model profile "${name}" shadows a model catalog entry of the same name`,
+      path: `model_profiles.${name}`
+    }
+  ]);
 }
 function profileSpliceDiagnostics(section, definitions, profileNames) {
   if (definitions === undefined || profileNames.size === 0)
     return [];
-  return Object.entries(definitions).flatMap(([name, definition]) => (definition.models ?? []).flatMap((entry, index) => typeof entry !== "string" || !profileNames.has(entry) ? [] : [{
-    kind: "validation",
-    message: `"${entry}" is a model profile; splicing a profile into a category chain is not supported yet`,
-    path: `${section}.${name}.models.${index}`
-  }]));
+  return Object.entries(definitions).flatMap(([name, definition]) => (definition.models ?? []).flatMap((entry, index) => typeof entry !== "string" || !profileNames.has(entry) ? [] : [
+    {
+      kind: "validation",
+      message: `"${entry}" is a model profile; splicing a profile into a category chain is not supported yet`,
+      path: `${section}.${name}.models.${index}`
+    }
+  ]));
 }
 function modelProfileDiagnostics(view) {
   const profileNames = new Set(Object.keys(view.model_profiles ?? {}));
@@ -93370,7 +93506,11 @@ function prepareTargetWrite(input2) {
     { path: ["_migrations"], value: marker }
   ];
   return {
-    diagnostics: uniqueDiagnostics([...merged.diagnostics, ...targetCleanup.diagnostics, ...additionsCleanup.diagnostics]),
+    diagnostics: uniqueDiagnostics([
+      ...merged.diagnostics,
+      ...targetCleanup.diagnostics,
+      ...additionsCleanup.diagnostics
+    ]),
     document,
     edits
   };
@@ -93843,7 +93983,12 @@ function executePlan(input2) {
   }
   const loaded = replaceTarget ? [{ path: plan.targetPath, value: target }] : loadSources(existingSources, fileSystem);
   const transformed = transformResult(plan.transform(loaded));
-  const prepared = replaceTarget ? prepareTargetReplacement({ document: transformed.document, migrationId: plan.id, target, targetPath: plan.targetPath }) : prepareTargetWrite({ additions: transformed.document, migrationId: plan.id, target, targetPath: plan.targetPath });
+  const prepared = replaceTarget ? prepareTargetReplacement({
+    document: transformed.document,
+    migrationId: plan.id,
+    target,
+    targetPath: plan.targetPath
+  }) : prepareTargetWrite({ additions: transformed.document, migrationId: plan.id, target, targetPath: plan.targetPath });
   const diagnostics = [...transformed.diagnostics, ...prepared.diagnostics];
   const moves = backupMoves(existingSources, plan.id, fileSystem, protectedPaths);
   const preview = { backupMoves: moves, targetPath: plan.targetPath, transform: transformed.document };
@@ -93868,7 +94013,14 @@ function executePlan(input2) {
   writeMigrationJournal(journal, fileSystem, env, input2.process, input2.clock);
   input2.onBoundary?.("journal-written");
   input2.renewLock();
-  writePreparedTarget({ ...targetBackupPath === undefined ? {} : { backupPath: targetBackupPath }, env, fileSystem, prepared, targetPath: plan.targetPath, writeTarget: input2.writeTarget });
+  writePreparedTarget({
+    ...targetBackupPath === undefined ? {} : { backupPath: targetBackupPath },
+    env,
+    fileSystem,
+    prepared,
+    targetPath: plan.targetPath,
+    writeTarget: input2.writeTarget
+  });
   input2.onBoundary?.("target-written");
   const targetRecorded = { ...journal, targetWritten: true };
   writeMigrationJournal(targetRecorded, fileSystem, env, input2.process, input2.clock);
@@ -93884,17 +94036,35 @@ function executePlan(input2) {
     input2.onBoundary?.("source-recorded");
   }
   removeMigrationJournal(fileSystem, env);
-  return { diagnostics, journalResumed, preview, status: "migrated", ...targetBackupPath === undefined ? {} : { targetBackupPath } };
+  return {
+    diagnostics,
+    journalResumed,
+    preview,
+    status: "migrated",
+    ...targetBackupPath === undefined ? {} : { targetBackupPath }
+  };
 }
 function runMigrations(options) {
   const clock = options.clock ?? DEFAULT_MIGRATION_CLOCK;
   const home = globalThis.process.env["HOME"];
   const userProfile = globalThis.process.env["USERPROFILE"];
-  const env = options.env ?? { ...home === undefined ? {} : { HOME: home }, ...userProfile === undefined ? {} : { USERPROFILE: userProfile } };
+  const env = options.env ?? {
+    ...home === undefined ? {} : { HOME: home },
+    ...userProfile === undefined ? {} : { USERPROFILE: userProfile }
+  };
   const fileSystem = options.fileSystem ?? DEFAULT_MIGRATION_FILE_SYSTEM;
-  const process3 = { isAlive: options.isProcessAlive ?? DEFAULT_MIGRATION_PROCESS.isAlive, pid: options.pid ?? DEFAULT_MIGRATION_PROCESS.pid };
+  const process3 = {
+    isAlive: options.isProcessAlive ?? DEFAULT_MIGRATION_PROCESS.isAlive,
+    pid: options.pid ?? DEFAULT_MIGRATION_PROCESS.pid
+  };
   const writeTarget = options.writeTarget ?? writeOmoMigrationTarget;
-  const lock = acquireMigrationLock({ clock, env, fileSystem, ...options.leaseDurationMs === undefined ? {} : { leaseDurationMs: options.leaseDurationMs }, process: process3 });
+  const lock = acquireMigrationLock({
+    clock,
+    env,
+    fileSystem,
+    ...options.leaseDurationMs === undefined ? {} : { leaseDurationMs: options.leaseDurationMs },
+    process: process3
+  });
   if (lock === null)
     return { journalResumed: false, results: [], status: "locked" };
   try {
@@ -93915,7 +94085,12 @@ function runMigrations(options) {
     }));
     if (options.dryRun !== true)
       options.afterMigrations?.(results);
-    return { journalResumed, ...resumed.targetBackupPath === undefined ? {} : { resumedTargetBackupPath: resumed.targetBackupPath }, results, status: "completed" };
+    return {
+      journalResumed,
+      ...resumed.targetBackupPath === undefined ? {} : { resumedTargetBackupPath: resumed.targetBackupPath },
+      results,
+      status: "completed"
+    };
   } finally {
     lock.release();
   }
@@ -94211,7 +94386,10 @@ function parseOpenCodeConfigFileWithError(path7) {
     }
     const content = readFileSync8(path7, "utf-8");
     if (isEmptyOrWhitespace(content)) {
-      return { config: null, error: `Config file contains only whitespace: ${path7}. Delete it or add valid JSON content.` };
+      return {
+        config: null,
+        error: `Config file contains only whitespace: ${path7}. Delete it or add valid JSON content.`
+      };
     }
     const config3 = parseJsonc(content);
     if (config3 == null) {
@@ -94547,7 +94725,7 @@ var init_openai_only_model_catalog = __esm(() => {
     librarian: { model: `openai/${LATEST_MODEL_BY_FAMILY.gptLunaFast}`, variant: "low" }
   };
   OPENAI_ONLY_CATEGORY_OVERRIDES = {
-    artistry: { model: "openai/gpt-5.6-sol", variant: "high" },
+    artistry: { model: "openai/gpt-5.6-sol", variant: "xhigh" },
     quick: { model: `openai/${LATEST_MODEL_BY_FAMILY.gptLunaFast}` },
     "visual-engineering": { model: "openai/gpt-5.6-sol", variant: "high" }
   };
@@ -94759,7 +94937,7 @@ function generateModelConfig(config3) {
       if (avail.native.openai) {
         agentConfig = { model: `openai/${LATEST_MODEL_BY_FAMILY.gptLunaFast}`, variant: "low" };
       } else if (avail.native.claude) {
-        agentConfig = { model: `anthropic/${LATEST_MODEL_BY_FAMILY.claudeHaiku}`, variant: "high" };
+        agentConfig = { model: `anthropic/${LATEST_MODEL_BY_FAMILY.claudeHaiku}`, variant: "medium" };
       } else if (avail.opencodeZen) {
         agentConfig = { model: "opencode/gpt-5-nano" };
       } else if (avail.opencodeGo) {
@@ -95022,7 +95200,12 @@ function addConfigAndSidecar(sources, seen, source, options) {
   const configKey = pathKey(configPath, options);
   if (!seen.has(configKey) && discoveryFileSystem(options).existsSync(source.configPath)) {
     seen.add(configKey);
-    sources.push({ ...source, configPath, kind: source.projectRoot === undefined ? source.profile === undefined ? "user-config" : "profile-config" : "project-config", path: configPath });
+    sources.push({
+      ...source,
+      configPath,
+      kind: source.projectRoot === undefined ? source.profile === undefined ? "user-config" : "profile-config" : "project-config",
+      path: configPath
+    });
   }
   const sidecarPath = `${source.configPath}.migrations.json`;
   const sidecarKey = pathKey(sidecarPath, options);
@@ -95330,12 +95513,7 @@ var init_transform_opencode = __esm(() => {
   init_deep_diff();
   init_legacy_history();
   init_record_values();
-  MIGRATED_OPENCODE_FIELDS = new Set([
-    "disabled_providers",
-    "model_fallback",
-    "models",
-    "sisyphus_agent"
-  ]);
+  MIGRATED_OPENCODE_FIELDS = new Set(["disabled_providers", "model_fallback", "models", "sisyphus_agent"]);
 });
 
 // packages/omo-opencode/src/config-migration/reasoning-unification.ts
@@ -95732,10 +95910,7 @@ function createLegacyConfigMigrationPlans(options) {
       targetPath: pathOperations.join(projectRoot, ".omo", "omo.jsonc")
     });
   }
-  const openCodeInputs = [
-    ...userInput === undefined ? [] : [userInput],
-    ...projectInputs
-  ];
+  const openCodeInputs = [...userInput === undefined ? [] : [userInput], ...projectInputs];
   const plans = mergeOpenCodeInputs(openCodeInputs, options).map((input2) => openCodePlan(input2, options, timestamp));
   const legacyPlans = configJsoncGroup.id !== CONFIG_JSONC_MIGRATION_ID || configJsoncGroup.sources.length === 0 ? plans : [
     ...plans,
@@ -95801,7 +95976,9 @@ function homeDirectory(options) {
   return options.homeDir ?? environment2["HOME"] ?? environment2["USERPROFILE"] ?? "";
 }
 function uniqueSources(results) {
-  return [...new Set(results.flatMap((result) => result.status === "migrated" ? result.preview?.backupMoves.map((move) => move.from) ?? [] : []))].sort();
+  return [
+    ...new Set(results.flatMap((result) => result.status === "migrated" ? result.preview?.backupMoves.map((move) => move.from) ?? [] : []))
+  ].sort();
 }
 function skippedConflictCount(results) {
   return results.flatMap((result) => result.diagnostics).filter((diagnostic) => diagnostic.startsWith("skipped:")).length;
@@ -106677,9 +106854,12 @@ class PostHogTelemetryTransport {
     await this.#client.flush();
   }
   async shutdown() {
-    await Promise.all([this.#client.shutdown(), this.#immediate?.then((sender) => sender.shutdown(), () => {
-      return;
-    })]);
+    await Promise.all([
+      this.#client.shutdown(),
+      this.#immediate?.then((sender) => sender.shutdown(), () => {
+        return;
+      })
+    ]);
   }
 }
 function createDefaultPostHogTransport(apiKey, options) {
@@ -106743,7 +106923,10 @@ var init_install_id = __esm(() => {
 
 // packages/telemetry-core/src/posthog-client.ts
 function createTelemetryClient2(input2) {
-  return createTelemetryClient({ ...input2, transportFactory: input2.transportFactory ?? createDefaultPostHogTransport });
+  return createTelemetryClient({
+    ...input2,
+    transportFactory: input2.transportFactory ?? createDefaultPostHogTransport
+  });
 }
 var init_posthog_client = __esm(() => {
   init_injected_client();
@@ -106780,7 +106963,7 @@ var package_default2;
 var init_package2 = __esm(() => {
   package_default2 = {
     name: "@oh-my-opencode/omo-codex",
-    version: "5.1.59",
+    version: "5.1.69",
     type: "module",
     private: true,
     description: "Codex harness adapter for oh-my-openagent. Vendored Codex plugin namespace (omo) + TypeScript installer + telemetry.",
@@ -107479,7 +107662,7 @@ var init_check_for_update = __esm(() => {
 });
 
 // packages/omo-opencode/src/hooks/auto-update-checker/checker/sync-package-json.ts
-import * as crypto from "crypto";
+import * as crypto2 from "crypto";
 import * as fs8 from "fs";
 import * as path11 from "path";
 function safeUnlink(filePath) {
@@ -107503,7 +107686,7 @@ function getPackageNameFromIntent(pluginInfo) {
   return ACCEPTED_PACKAGE_NAMES2.find((packageName) => pluginInfo.entry === packageName || pluginInfo.entry.startsWith(`${packageName}@`)) ?? PACKAGE_NAME3;
 }
 function writeCachePackageJson(cachePackageJsonPath, pkgJson) {
-  const tmpPath = `${cachePackageJsonPath}.${crypto.randomUUID()}`;
+  const tmpPath = `${cachePackageJsonPath}.${crypto2.randomUUID()}`;
   try {
     fs8.mkdirSync(path11.dirname(cachePackageJsonPath), { recursive: true });
     fs8.writeFileSync(tmpPath, JSON.stringify(pkgJson, null, 2));
@@ -107553,7 +107736,9 @@ function syncCachePackageJsonToIntent(pluginInfo) {
     return { synced: false, error: "parse_error", message: "Failed to parse cache package.json (malformed JSON)" };
   }
   if (!pkgJson || !pkgJson.dependencies?.[packageName]) {
-    log2("[auto-update-checker] Plugin missing from cache package.json dependencies, adding dependency", { intentVersion });
+    log2("[auto-update-checker] Plugin missing from cache package.json dependencies, adding dependency", {
+      intentVersion
+    });
     const nextPkgJson = {
       ...pkgJson ?? {},
       dependencies: {
@@ -108210,12 +108395,7 @@ var init_startup_toasts = __esm(() => {
 
 // packages/omo-opencode/src/hooks/auto-update-checker/hook.ts
 function createAutoUpdateCheckerHook(ctx, options = {}, deps = defaultDeps5) {
-  const {
-    showStartupToast = true,
-    isSisyphusEnabled = false,
-    autoUpdate = true,
-    modelCapabilities
-  } = options;
+  const { showStartupToast = true, isSisyphusEnabled = false, autoUpdate = true, modelCapabilities } = options;
   const isCliRunMode = process.env.OPENCODE_CLI_RUN_MODE === "true";
   deps.trackLoadedPluginSandbox?.();
   const getToastMessage = (isUpdate, latestVersion) => {
@@ -108680,7 +108860,7 @@ import { existsSync as existsSync28 } from "fs";
 import { homedir as homedir7 } from "os";
 
 // packages/omo-codex/src/install/codex-cache-bins.ts
-import { chmod, lstat as lstat4, mkdir, readFile as readFile3, readdir as readdir2, readlink as readlink3, rm as rm3, stat as stat2, symlink, writeFile } from "fs/promises";
+import { chmod, lstat as lstat4, mkdir, readFile as readFile4, readdir as readdir2, readlink as readlink3, rm as rm3, stat as stat2, symlink, writeFile as writeFile2 } from "fs/promises";
 import { basename as basename4, isAbsolute as isAbsolute2, join as join27, relative, resolve as resolve6, sep } from "path";
 
 // packages/omo-codex/src/install/codex-cache-command-shim.ts
@@ -108724,7 +108904,7 @@ function windowsCommandShim(targetPath) {
 }
 
 // packages/omo-codex/src/install/codex-cache-dangling-bins.ts
-import { lstat as lstat2, readFile, readdir, readlink, rm, stat } from "fs/promises";
+import { lstat as lstat2, readFile as readFile2, readdir, readlink, rm, stat } from "fs/promises";
 import { dirname as dirname10, isAbsolute, join as join24, resolve as resolve5 } from "path";
 
 // packages/omo-codex/src/install/codex-cache-fs.ts
@@ -108786,7 +108966,7 @@ async function removeDanglingGeneratedCommandShim(linkPath) {
     const linkStat = await lstat2(linkPath);
     if (!linkStat.isFile())
       return;
-    const content = await readFile(linkPath, "utf8");
+    const content = await readFile2(linkPath, "utf8");
     if (!content.includes(COMMAND_SHIM_MARKER))
       return;
     const target = extractCommandShimTarget(content);
@@ -108834,7 +109014,7 @@ function hasOmoCodexPluginPrefix(parts, endExclusive) {
 }
 
 // packages/omo-codex/src/install/codex-cache-legacy-bins.ts
-import { lstat as lstat3, readFile as readFile2, readlink as readlink2, rm as rm2 } from "fs/promises";
+import { lstat as lstat3, readFile as readFile3, readlink as readlink2, rm as rm2 } from "fs/promises";
 import { join as join25 } from "path";
 var LEGACY_CODEX_COMPONENT_BINS = [
   { name: "omo", component: "ulw-loop" },
@@ -108869,7 +109049,7 @@ async function removeLegacyCodexComponentBin(linkPath, component, platform) {
     }
     if (!stat2.isFile())
       return;
-    const content = await readFile2(linkPath, "utf8");
+    const content = await readFile3(linkPath, "utf8");
     if (content.includes(COMMAND_SHIM_MARKER))
       await rm2(linkPath, { force: true });
   } catch (error62) {
@@ -109106,7 +109286,7 @@ async function collectPackageBins(directory, root, links) {
   }
 }
 async function appendPackageBinLinks(packageJsonPath, packageRoot, root, links) {
-  const packageJson = JSON.parse(await readFile3(packageJsonPath, "utf8"));
+  const packageJson = JSON.parse(await readFile4(packageJsonPath, "utf8"));
   if (!isPlainRecord4(packageJson))
     return;
   const packageName = packageJson.name;
@@ -109158,13 +109338,13 @@ async function replaceSymlink(linkPath, targetPath) {
 async function replaceCommandShim(linkPath, targetPath) {
   if (await existingNonShim(linkPath))
     throw new Error(`${linkPath} already exists and is not a command shim`);
-  await writeFile(linkPath, windowsCommandShim(targetPath));
+  await writeFile2(linkPath, windowsCommandShim(targetPath));
 }
 async function replaceRuntimeWrapper(linkPath, content) {
   if (await existingNonRuntimeWrapper(linkPath))
     throw new Error(`${linkPath} already exists and is not a generated OMO runtime wrapper`);
   await rm3(linkPath, { force: true });
-  await writeFile(linkPath, content);
+  await writeFile2(linkPath, content);
 }
 async function removeGeneratedRuntimeWrapper(path7) {
   try {
@@ -109182,7 +109362,7 @@ async function removeGeneratedRuntimeWrapper(path7) {
 }
 async function readGeneratedWrapperContent(path7) {
   try {
-    return await readFile3(path7, "utf8");
+    return await readFile4(path7, "utf8");
   } catch (error62) {
     if (isNodeErrorWithCode(error62) && (error62.code === "ENOENT" || error62.code === "EISDIR"))
       return "";
@@ -109196,7 +109376,7 @@ async function existingNonRuntimeWrapper(path7) {
       return false;
     if (!stat3.isFile())
       return true;
-    const content = await readFile3(path7, "utf8");
+    const content = await readFile4(path7, "utf8");
     return !content.includes(RUNTIME_WRAPPER_MARKER);
   } catch (error62) {
     if (isNodeErrorWithCode(error62) && error62.code === "ENOENT")
@@ -109209,7 +109389,7 @@ async function existingNonShim(path7) {
     const stat3 = await lstat4(path7);
     if (!stat3.isFile())
       return true;
-    const content = await readFile3(path7, "utf8");
+    const content = await readFile4(path7, "utf8");
     if (content.includes(COMMAND_SHIM_MARKER))
       return false;
     throw new Error(`${path7} already exists and is not a generated command shim`);
@@ -109233,11 +109413,11 @@ async function existingNonSymlink(path7) {
   }
 }
 // packages/omo-codex/src/install/codex-cache-install.ts
-import { cp as cp3, mkdir as mkdir3, readFile as readFile8, readdir as readdir5, rename as rename2, rm as rm5 } from "fs/promises";
+import { cp as cp3, mkdir as mkdir3, readFile as readFile9, readdir as readdir5, rename as rename2, rm as rm5 } from "fs/promises";
 import { basename as basename5, dirname as dirname13, join as join34, sep as sep6 } from "path";
 
 // packages/omo-codex/src/install/codex-cache-bundled-mcps.ts
-import { cp, mkdir as mkdir2, readFile as readFile4, stat as stat3 } from "fs/promises";
+import { cp, mkdir as mkdir2, readFile as readFile5, stat as stat3 } from "fs/promises";
 import { dirname as dirname11, join as join28, resolve as resolve7 } from "path";
 var BUNDLED_MCP_RUNTIMES = [
   {
@@ -109257,29 +109437,29 @@ var BUNDLED_MCP_RUNTIMES = [
 ];
 async function copyBundledMcpRuntimeDists(input2) {
   const sourceArgs = await readSourceMcpArgs(join28(input2.sourceRoot, ".mcp.json"));
-  for (const runtime4 of BUNDLED_MCP_RUNTIMES) {
-    if (!sourceArgs.has(runtime4.sourceArg))
+  for (const runtime5 of BUNDLED_MCP_RUNTIMES) {
+    if (!sourceArgs.has(runtime5.sourceArg))
       continue;
-    await copyBundledMcpRuntimeDist(input2.pluginRoot, input2.sourceRoot, runtime4);
+    await copyBundledMcpRuntimeDist(input2.pluginRoot, input2.sourceRoot, runtime5);
   }
 }
 function resolveBundledMcpRuntimeArg(pluginRoot, arg) {
-  const runtime4 = BUNDLED_MCP_RUNTIMES.find((candidate2) => candidate2.sourceArg === arg);
-  return runtime4 ? join28(pluginRoot, runtime4.destinationArg) : null;
+  const runtime5 = BUNDLED_MCP_RUNTIMES.find((candidate2) => candidate2.sourceArg === arg);
+  return runtime5 ? join28(pluginRoot, runtime5.destinationArg) : null;
 }
-async function copyBundledMcpRuntimeDist(pluginRoot, sourceRoot, runtime4) {
-  const sourcePath = resolve7(sourceRoot, runtime4.sourceDistFromPlugin);
+async function copyBundledMcpRuntimeDist(pluginRoot, sourceRoot, runtime5) {
+  const sourcePath = resolve7(sourceRoot, runtime5.sourceDistFromPlugin);
   if (!await isDirectory(sourcePath)) {
-    throw new Error(`missing built ${runtime4.label} dist at ${sourcePath}`);
+    throw new Error(`missing built ${runtime5.label} dist at ${sourcePath}`);
   }
-  const destinationPath = join28(pluginRoot, runtime4.destinationDistFromPlugin);
+  const destinationPath = join28(pluginRoot, runtime5.destinationDistFromPlugin);
   await mkdir2(dirname11(destinationPath), { recursive: true });
   await cp(sourcePath, destinationPath, { recursive: true });
 }
 async function readSourceMcpArgs(path7) {
   let parsed;
   try {
-    parsed = JSON.parse(await readFile4(path7, "utf8"));
+    parsed = JSON.parse(await readFile5(path7, "utf8"));
   } catch (error62) {
     if (error62 instanceof Error)
       return new Set;
@@ -109310,7 +109490,7 @@ async function isDirectory(path7) {
 
 // packages/omo-codex/src/install/codex-cache-local-dependencies.ts
 import { realpathSync as realpathSync7 } from "fs";
-import { readFile as readFile5, readdir as readdir3, writeFile as writeFile2 } from "fs/promises";
+import { readFile as readFile6, readdir as readdir3, writeFile as writeFile3 } from "fs/promises";
 import { dirname as dirname12, isAbsolute as isAbsolute4, join as join30, relative as relative3, resolve as resolve9, sep as sep2 } from "path";
 
 // packages/omo-codex/src/install/codex-cache-paths.ts
@@ -109376,7 +109556,7 @@ async function rewriteCachedPackageLocalFileDependencies(pluginRoot, sourceRoot)
   const packageLock = await readPackageLock(pluginRoot);
   let rewroteAnyPackageJson = false;
   for (const packageJsonPath of packageJsonPaths) {
-    const raw = await readFile5(packageJsonPath, "utf8");
+    const raw = await readFile6(packageJsonPath, "utf8");
     const parsed = JSON.parse(raw);
     if (!isPlainRecord4(parsed))
       continue;
@@ -109411,20 +109591,20 @@ async function rewriteCachedPackageLocalFileDependencies(pluginRoot, sourceRoot)
       }
     }
     if (changed) {
-      await writeFile2(packageJsonPath, `${JSON.stringify(parsed, null, "\t")}
+      await writeFile3(packageJsonPath, `${JSON.stringify(parsed, null, "\t")}
 `);
       rewroteAnyPackageJson = true;
     }
   }
   if (packageLock.changed)
-    await writeFile2(packageLock.path, `${JSON.stringify(packageLock.value, null, "\t")}
+    await writeFile3(packageLock.path, `${JSON.stringify(packageLock.value, null, "\t")}
 `);
   return rewroteAnyPackageJson;
 }
 async function readPackageLock(pluginRoot) {
   const path7 = join30(pluginRoot, "package-lock.json");
   try {
-    const parsed = JSON.parse(await readFile5(path7, "utf8"));
+    const parsed = JSON.parse(await readFile6(path7, "utf8"));
     return { path: path7, value: isPlainRecord4(parsed) ? parsed : null, changed: false };
   } catch (error62) {
     if (error62 instanceof Error && "code" in error62 && error62.code === "ENOENT") {
@@ -109498,14 +109678,14 @@ async function collectPackageJsonPaths(directory, root, paths2) {
 }
 
 // packages/omo-codex/src/install/codex-cache-mcp-manifest.ts
-import { readFile as readFile6, writeFile as writeFile3 } from "fs/promises";
+import { readFile as readFile7, writeFile as writeFile4 } from "fs/promises";
 import { join as join31, sep as sep3 } from "path";
 var CONTEXT7_API_KEY_ENV = "CONTEXT7_API_KEY";
 async function rewriteCachedMcpManifest(pluginRoot, sourceRoot = pluginRoot) {
   const manifestPath = join31(pluginRoot, ".mcp.json");
   if (!await fileExistsStrict(manifestPath))
     return;
-  const raw = await readFile6(manifestPath, "utf8");
+  const raw = await readFile7(manifestPath, "utf8");
   const parsed = JSON.parse(raw);
   if (!isPlainRecord4(parsed) || !isPlainRecord4(parsed.mcpServers))
     return;
@@ -109539,7 +109719,7 @@ async function rewriteCachedMcpManifest(pluginRoot, sourceRoot = pluginRoot) {
     }
   }
   if (changed)
-    await writeFile3(manifestPath, `${JSON.stringify(parsed, null, "\t")}
+    await writeFile4(manifestPath, `${JSON.stringify(parsed, null, "\t")}
 `);
 }
 function sanitizeContext7Auth(server2) {
@@ -109598,7 +109778,7 @@ async function rewriteCachedManifestRoot(pluginRoot, fromRoot, toRoot) {
   const manifestPath = join31(pluginRoot, ".mcp.json");
   if (!await fileExistsStrict(manifestPath))
     return;
-  const raw = await readFile6(manifestPath, "utf8");
+  const raw = await readFile7(manifestPath, "utf8");
   const parsed = JSON.parse(raw);
   if (!isPlainRecord4(parsed) || !isPlainRecord4(parsed.mcpServers))
     return;
@@ -109625,7 +109805,7 @@ async function rewriteCachedManifestRoot(pluginRoot, fromRoot, toRoot) {
     }
   }
   if (changed)
-    await writeFile3(manifestPath, `${JSON.stringify(parsed, null, "\t")}
+    await writeFile4(manifestPath, `${JSON.stringify(parsed, null, "\t")}
 `);
 }
 
@@ -109687,7 +109867,7 @@ async function unsupportedEntries(root, directory) {
 }
 
 // packages/omo-codex/src/install/codex-hook-targets.ts
-import { readFile as readFile7 } from "fs/promises";
+import { readFile as readFile8 } from "fs/promises";
 import { join as join33, sep as sep5 } from "path";
 var PLUGIN_ROOT_TARGET_PATTERN = /\$\{PLUGIN_ROOT\}[\\/]+([^"']+)/g;
 async function findMissingHookCommandTargets(pluginRoot) {
@@ -109695,7 +109875,7 @@ async function findMissingHookCommandTargets(pluginRoot) {
   for (const manifestPath of await hookManifestPaths(pluginRoot)) {
     if (!await fileExistsStrict(manifestPath))
       continue;
-    const parsed = JSON.parse(await readFile7(manifestPath, "utf8"));
+    const parsed = JSON.parse(await readFile8(manifestPath, "utf8"));
     collectCommands(parsed, commands);
   }
   const missing = [];
@@ -109719,7 +109899,7 @@ async function hookManifestPaths(pluginRoot) {
   const pluginManifestPath = join33(pluginRoot, ".codex-plugin", "plugin.json");
   if (!await fileExistsStrict(pluginManifestPath))
     return [join33(pluginRoot, "hooks", "hooks.json")];
-  const parsed = JSON.parse(await readFile7(pluginManifestPath, "utf8"));
+  const parsed = JSON.parse(await readFile8(pluginManifestPath, "utf8"));
   if (!isPlainRecord4(parsed))
     return [];
   if (typeof parsed.hooks === "string" && parsed.hooks.trim() !== "") {
@@ -109806,7 +109986,7 @@ async function maybeRunNpmInstall(cwd, runCommand, env, args = ["install"]) {
 async function maybeRunNpmBuild(cwd, runCommand, env) {
   if (!await fileExistsStrict(join34(cwd, "package.json")))
     return;
-  const packageJson = JSON.parse(await readFile8(join34(cwd, "package.json"), "utf8"));
+  const packageJson = JSON.parse(await readFile9(join34(cwd, "package.json"), "utf8"));
   if (!isPlainRecord4(packageJson))
     return;
   const scripts = packageJson.scripts;
@@ -109817,7 +109997,7 @@ async function maybeRunNpmBuild(cwd, runCommand, env) {
 async function maybeRunNpmSyncSkills(cwd, runCommand, env) {
   if (!await fileExistsStrict(join34(cwd, "package.json")))
     return;
-  const packageJson = JSON.parse(await readFile8(join34(cwd, "package.json"), "utf8"));
+  const packageJson = JSON.parse(await readFile9(join34(cwd, "package.json"), "utf8"));
   if (!isPlainRecord4(packageJson))
     return;
   const scripts = packageJson.scripts;
@@ -109880,7 +110060,7 @@ var removedSparkshellPromptSurfaceFiles = new Set(["directive.md", "plugin.json"
 var removedSparkshellTextFilePattern = /\.(?:json|md|toml|ya?ml)$/i;
 async function assertNoRemovedSparkshellPromptReferences(pluginRoot) {
   for (const filePath of await listRemovedSparkshellPromptSurfaceFiles(pluginRoot, "")) {
-    const content = await readFile8(join34(pluginRoot, filePath), "utf8");
+    const content = await readFile9(join34(pluginRoot, filePath), "utf8");
     if (!removedSparkshellReferencePattern.test(content))
       continue;
     throw new Error(`removed sparkshell reference found in Codex plugin prompt surface: ${filePath}`);
@@ -110029,7 +110209,7 @@ async function isBrokenCacheSymlink(path7) {
   }
 }
 // packages/omo-codex/src/install/codex-cached-marketplace-manifest.ts
-import { mkdir as mkdir4, rename as rename3, rm as rm7, stat as stat5, writeFile as writeFile4 } from "fs/promises";
+import { mkdir as mkdir4, rename as rename3, rm as rm7, stat as stat5, writeFile as writeFile5 } from "fs/promises";
 import { join as join36 } from "path";
 async function writeCachedMarketplaceManifest(input2) {
   const marketplaceDir = join36(input2.marketplaceRoot, ".agents", "plugins");
@@ -110042,7 +110222,7 @@ async function writeCachedMarketplaceManifest(input2) {
   const manifestPath = join36(marketplaceDir, "marketplace.json");
   const tempPath = join36(marketplaceDir, `.marketplace.json.tmp-${process.pid}-${Date.now()}`);
   try {
-    await writeFile4(tempPath, `${JSON.stringify({
+    await writeFile5(tempPath, `${JSON.stringify({
       name: input2.marketplaceName,
       plugins: input2.plugins.map((plugin) => ({
         name: plugin.name,
@@ -110068,7 +110248,7 @@ async function isDirectory2(path7) {
 
 // packages/omo-codex/src/install/codex-package-layout.ts
 import { existsSync as existsSync25 } from "fs";
-import { readFile as readFile9 } from "fs/promises";
+import { readFile as readFile10 } from "fs/promises";
 import { join as join37 } from "path";
 var PACKAGED_CODEX_INSTALLER_NAMES = new Set([
   "@code-yeongyu/lazycodex",
@@ -110084,14 +110264,14 @@ async function shouldBuildSourcePackages(repoRoot) {
   const packageJsonPath = join37(repoRoot, "package.json");
   if (!existsSync25(packageJsonPath))
     return true;
-  const packageJson = JSON.parse(await readFile9(packageJsonPath, "utf8"));
+  const packageJson = JSON.parse(await readFile10(packageJsonPath, "utf8"));
   if (!isPlainRecord4(packageJson) || typeof packageJson.name !== "string")
     return true;
   return !PACKAGED_CODEX_INSTALLER_NAMES.has(packageJson.name);
 }
 
 // packages/omo-codex/src/install/codex-config-toml.ts
-import { mkdir as mkdir5, readFile as readFile11 } from "fs/promises";
+import { mkdir as mkdir5, readFile as readFile12 } from "fs/promises";
 import { dirname as dirname16 } from "path";
 
 // packages/omo-codex/src/install/toml-section-editor.ts
@@ -110688,18 +110868,18 @@ function tomlKeySegment(value) {
 }
 
 // packages/omo-codex/src/install/codex-config-atomic-write.ts
-import { lstat as lstat7, readlink as readlink4, realpath, rename as rename4, unlink, writeFile as writeFile5 } from "fs/promises";
+import { lstat as lstat7, readlink as readlink4, realpath, rename as rename4, unlink as unlink2, writeFile as writeFile6 } from "fs/promises";
 import { basename as basename6, dirname as dirname14, isAbsolute as isAbsolute5, join as join38, resolve as resolve10 } from "path";
 var RENAME_RETRY_DELAYS_MS = [10, 25, 50];
 var RETRIABLE_RENAME_CODES = new Set(["EPERM", "EBUSY"]);
 async function writeFileAtomic(targetPath, data) {
   const writeTarget = await resolveSymlinkTarget(targetPath);
   const temporaryPath = join38(dirname14(writeTarget), `.tmp-${basename6(writeTarget)}-${process.pid}-${Date.now()}`);
-  await writeFile5(temporaryPath, data);
+  await writeFile6(temporaryPath, data);
   try {
     await renameWithRetry(temporaryPath, writeTarget);
   } catch (error62) {
-    await unlink(temporaryPath).catch((unlinkError) => {
+    await unlink2(temporaryPath).catch((unlinkError) => {
       if (unlinkError instanceof Error)
         return;
       return;
@@ -111194,7 +111374,7 @@ function isRootSetting(line, key) {
 
 // packages/omo-codex/src/install/codex-model-catalog.ts
 init_latest_models();
-import { readFile as readFile10 } from "fs/promises";
+import { readFile as readFile11 } from "fs/promises";
 import { join as join39 } from "path";
 var FALLBACK_CODEX_MODEL_CATALOG = {
   current: {
@@ -111228,7 +111408,7 @@ var FALLBACK_CODEX_MODEL_CATALOG = {
 async function readCodexModelCatalog(codexPackageRoot) {
   const catalogPath = join39(codexPackageRoot, "plugin", "model-catalog.json");
   try {
-    const parsed = JSON.parse(await readFile10(catalogPath, "utf8"));
+    const parsed = JSON.parse(await readFile11(catalogPath, "utf8"));
     return parseCodexModelCatalog(parsed) ?? FALLBACK_CODEX_MODEL_CATALOG;
   } catch (error62) {
     if (error62 instanceof Error)
@@ -111453,7 +111633,7 @@ async function updateCodexConfig(input2) {
   await mkdir5(dirname16(input2.configPath), { recursive: true });
   let config3;
   try {
-    config3 = await readFile11(input2.configPath, "utf8");
+    config3 = await readFile12(input2.configPath, "utf8");
   } catch (error62) {
     if (!isMissingFileError(error62))
       throw error62;
@@ -111501,7 +111681,7 @@ function isMissingFileError(error62) {
 
 // packages/omo-codex/src/install/codex-hook-trust.ts
 import { createHash as createHash3 } from "crypto";
-import { readFile as readFile12 } from "fs/promises";
+import { readFile as readFile13 } from "fs/promises";
 import { join as join41 } from "path";
 var EVENT_LABELS = new Map([
   ["PreToolUse", "pre_tool_use"],
@@ -111519,7 +111699,7 @@ async function trustedHookStatesForPlugin(input2) {
   const manifestPath = join41(input2.pluginRoot, ".codex-plugin", "plugin.json");
   if (!await exists(manifestPath))
     return [];
-  const manifest = JSON.parse(await readFile12(manifestPath, "utf8"));
+  const manifest = JSON.parse(await readFile13(manifestPath, "utf8"));
   if (!isPlainRecord4(manifest))
     return [];
   const states = [];
@@ -111527,7 +111707,7 @@ async function trustedHookStatesForPlugin(input2) {
     const hooksPath = join41(input2.pluginRoot, hookPath);
     if (!await exists(hooksPath))
       continue;
-    const parsed = JSON.parse(await readFile12(hooksPath, "utf8"));
+    const parsed = JSON.parse(await readFile13(hooksPath, "utf8"));
     if (!isPlainRecord4(parsed) || !isPlainRecord4(parsed.hooks))
       continue;
     states.push(...trustedHookStatesForHooksFile({
@@ -111610,7 +111790,7 @@ function stripDotSlash2(value) {
 }
 async function exists(path7) {
   try {
-    await readFile12(path7, "utf8");
+    await readFile13(path7, "utf8");
     return true;
   } catch (error62) {
     if (error62 instanceof Error)
@@ -111710,7 +111890,7 @@ function recordAt2(value, key) {
 }
 
 // packages/omo-codex/src/install/codex-marketplace-snapshot.ts
-import { cp as cp4, mkdir as mkdir6, rename as rename5, rm as rm8, writeFile as writeFile6 } from "fs/promises";
+import { cp as cp4, mkdir as mkdir6, rename as rename5, rm as rm8, writeFile as writeFile7 } from "fs/promises";
 import { join as join42, sep as sep7 } from "path";
 var INSTALLED_MARKETPLACES_DIR = ".tmp/marketplaces";
 async function writeInstalledMarketplaceSnapshot(input2) {
@@ -111730,7 +111910,7 @@ async function writeMarketplaceManifest(marketplaceRoot, marketplace) {
   const manifestDir = join42(marketplaceRoot, ".agents", "plugins");
   await mkdir6(manifestDir, { recursive: true });
   const tempPath = join42(manifestDir, `.marketplace-${process.pid}-${Date.now()}.json.tmp`);
-  await writeFile6(tempPath, `${JSON.stringify(marketplace, null, "\t")}
+  await writeFile7(tempPath, `${JSON.stringify(marketplace, null, "\t")}
 `);
   await rename5(tempPath, join42(manifestDir, "marketplace.json"));
 }
@@ -111759,15 +111939,15 @@ function shouldCopyMarketplaceSourcePath(path7, root) {
 }
 
 // packages/omo-codex/src/install/link-cached-plugin-agents.ts
-import { copyFile, lstat as lstat11, mkdir as mkdir7, readdir as readdir8, readFile as readFile17, rm as rm12, writeFile as writeFile9 } from "fs/promises";
+import { copyFile, lstat as lstat11, mkdir as mkdir7, readdir as readdir8, readFile as readFile18, rm as rm12, writeFile as writeFile10 } from "fs/promises";
 import { basename as basename7, join as join47 } from "path";
 
 // packages/omo-codex/src/install/agent-model-overrides.ts
-import { readFile as readFile14, rm as rm9, writeFile as writeFile8 } from "fs/promises";
+import { readFile as readFile15, rm as rm9, writeFile as writeFile9 } from "fs/promises";
 import { join as join44 } from "path";
 
 // packages/omo-codex/src/install/preserved-agent-settings.ts
-import { lstat as lstat8, readFile as readFile13, readdir as readdir7, writeFile as writeFile7 } from "fs/promises";
+import { lstat as lstat8, readFile as readFile14, readdir as readdir7, writeFile as writeFile8 } from "fs/promises";
 import { join as join43 } from "path";
 
 // packages/omo-codex/src/install/managed-agent-reasoning-defaults.ts
@@ -112002,7 +112182,7 @@ async function capturePreservedAgentServiceTier(input2) {
 async function restorePreservedReasoning(input2) {
   if (input2.value === undefined)
     return;
-  const content = await readFile13(input2.target, "utf8");
+  const content = await readFile14(input2.target, "utf8");
   const bundledEffort = extractReasoningEffort(content);
   const effort = resolveManagedAgentReasoning({
     agentName: input2.agentName,
@@ -112012,36 +112192,38 @@ async function restorePreservedReasoning(input2) {
   });
   if (bundledEffort === effort)
     return;
-  const replacement = replaceTopLevelStringSetting(content, "model_reasoning_effort", effort, { insertIfMissing: false });
+  const replacement = replaceTopLevelStringSetting(content, "model_reasoning_effort", effort, {
+    insertIfMissing: false
+  });
   if (!replacement.replaced)
     return;
-  await writeFile7(input2.linkPath, replacement.content);
+  await writeFile8(input2.linkPath, replacement.content);
 }
 async function restorePreservedServiceTier(input2) {
   if (!input2.preserved)
     return;
-  const content = await readFile13(input2.linkPath, "utf8");
+  const content = await readFile14(input2.linkPath, "utf8");
   if (extractServiceTier(content) === input2.value)
     return;
   const replacement = replaceTopLevelStringSetting(content, "service_tier", input2.value, { insertIfMissing: true });
   if (!replacement.replaced)
     return;
-  await writeFile7(input2.linkPath, replacement.content);
+  await writeFile8(input2.linkPath, replacement.content);
 }
 async function restorePreservedModel(input2) {
   if (input2.value === null)
     return;
-  const content = await readFile13(input2.linkPath, "utf8");
+  const content = await readFile14(input2.linkPath, "utf8");
   if (extractModel(content) === input2.value)
     return;
   const replacement = replaceTopLevelStringSetting(content, "model", input2.value, { insertIfMissing: true });
   if (!replacement.replaced)
     return;
-  await writeFile7(input2.linkPath, replacement.content);
+  await writeFile8(input2.linkPath, replacement.content);
 }
 async function readTextIfExists(path7) {
   try {
-    return await readFile13(path7, "utf8");
+    return await readFile14(path7, "utf8");
   } catch (error62) {
     if (nodeErrorCode(error62) === "ENOENT")
       return null;
@@ -112163,13 +112345,13 @@ async function writeAgentModelReceipts(codexHome, receipts) {
     await rm9(path7, { force: true });
     return;
   }
-  await writeFile8(path7, `${JSON.stringify(Object.fromEntries(receipts), null, "\t")}
+  await writeFile9(path7, `${JSON.stringify(Object.fromEntries(receipts), null, "\t")}
 `);
 }
 async function applyAgentOverride(input2) {
   if (input2.override === undefined)
     return;
-  let content = await readFile14(input2.linkPath, "utf8");
+  let content = await readFile15(input2.linkPath, "utf8");
   if (input2.override.model !== undefined) {
     content = replaceTopLevelStringSetting(content, "model", input2.override.model, { insertIfMissing: true }).content;
   }
@@ -112178,7 +112360,7 @@ async function applyAgentOverride(input2) {
       insertIfMissing: true
     }).content;
   }
-  await writeFile8(input2.linkPath, content);
+  await writeFile9(input2.linkPath, content);
 }
 function receiptPath(codexHome) {
   return join44(codexHome, "agents", RECEIPT_FILE);
@@ -112213,7 +112395,7 @@ function handEditedAgentModel(installedModel, receipt) {
 }
 
 // packages/omo-codex/src/install/retired-managed-agent-purge.ts
-import { lstat as lstat9, readFile as readFile15, rm as rm10 } from "fs/promises";
+import { lstat as lstat9, readFile as readFile16, rm as rm10 } from "fs/promises";
 import { join as join45 } from "path";
 var RETIRED_MANAGED_AGENT_FILES = [
   {
@@ -112247,7 +112429,7 @@ function hasRequiredMarkers(content, markers) {
 }
 async function readTextIfExists2(path7) {
   try {
-    return await readFile15(path7, "utf8");
+    return await readFile16(path7, "utf8");
   } catch (error62) {
     if (nodeErrorCode2(error62) === "ENOENT")
       return null;
@@ -112272,7 +112454,7 @@ function nodeErrorCode2(error62) {
 
 // packages/omo-codex/src/install/default-agent-role.ts
 import { createHash as createHash4 } from "crypto";
-import { lstat as lstat10, readFile as readFile16, rm as rm11 } from "fs/promises";
+import { lstat as lstat10, readFile as readFile17, rm as rm11 } from "fs/promises";
 import { join as join46 } from "path";
 var REGISTRATION = { name: "default", configFile: "./agents/default.toml" };
 async function installDefaultAgentRole(input2) {
@@ -112309,7 +112491,7 @@ async function installDefaultAgentRole(input2) {
   if (foreign || existing !== null && !owned) {
     throw new Error("Preserved user-owned agents.default / agents/default.toml. Move it aside to install the LazyCodex fallback, or set [codex].agents.default.disable = true in omo.jsonc. Explicit LazyCodex roles remain required.");
   }
-  const worker = await readFile16(input2.worker.path, "utf8");
+  const worker = await readFile17(input2.worker.path, "utf8");
   const content = worker.replace(/^name\s*=\s*["']lazycodex-worker-medium["']\s*$/m, 'name = "default"');
   if (content === worker)
     throw new Error("Cannot derive default: medium worker has no matching internal name");
@@ -112319,7 +112501,7 @@ async function installDefaultAgentRole(input2) {
 }
 async function readIfPresent(path7) {
   try {
-    return await readFile16(path7, "utf8");
+    return await readFile17(path7, "utf8");
   } catch (error62) {
     if (error62 instanceof Error && "code" in error62 && error62.code === "ENOENT")
       return null;
@@ -112348,13 +112530,23 @@ async function linkCachedPluginAgents(input2) {
     const agentFileName = basename7(agentPath);
     const agentName = agentNameFromToml2(agentFileName);
     const linkPath = join47(agentsDir, agentFileName);
-    receipts.set(agentName, await syncAgentFile({ ...input2, agentName, agentPath, linkPath, previousReceipt: previousReceipts.get(agentName) }));
+    receipts.set(agentName, await syncAgentFile({
+      ...input2,
+      agentName,
+      agentPath,
+      linkPath,
+      previousReceipt: previousReceipts.get(agentName)
+    }));
     linked.push({ name: agentFileName, path: linkPath, target: agentPath });
   }
   await writeAgentModelReceipts(input2.codexHome, receipts);
   const worker = linked.find((entry) => entry.name === "lazycodex-worker-medium.toml");
   if (worker !== undefined) {
-    const fallback = await installDefaultAgentRole({ codexHome: input2.codexHome, worker, enabled: input2.defaultRoleEnabled !== false });
+    const fallback = await installDefaultAgentRole({
+      codexHome: input2.codexHome,
+      worker,
+      enabled: input2.defaultRoleEnabled !== false
+    });
     if (fallback !== null)
       linked.push(fallback);
   }
@@ -112367,7 +112559,10 @@ async function syncAgentFile(input2) {
   const preservedReasoning = input2.preservedReasoning?.get(input2.agentName);
   const override = input2.agentOverrides?.get(input2.agentName);
   await replaceWithCopy(input2.linkPath, input2.agentPath);
-  await restorePreservedModel({ linkPath: input2.linkPath, value: handEditedAgentModel(installedModel, input2.previousReceipt) });
+  await restorePreservedModel({
+    linkPath: input2.linkPath,
+    value: handEditedAgentModel(installedModel, input2.previousReceipt)
+  });
   await restorePreservedReasoning({
     agentName: input2.agentName,
     linkPath: input2.linkPath,
@@ -112380,7 +112575,7 @@ async function syncAgentFile(input2) {
     value: input2.preservedServiceTier?.get(input2.agentName) ?? null
   });
   await applyAgentOverride({ linkPath: input2.linkPath, override });
-  const model = override?.model ?? extractModel(await readFile17(input2.agentPath, "utf8"));
+  const model = override?.model ?? extractModel(await readFile18(input2.agentPath, "utf8"));
   return {
     ...model === null ? {} : { model },
     ...override?.reasoningEffort === undefined ? {} : { reasoningEffort: override.reasoningEffort }
@@ -112424,7 +112619,7 @@ async function prepareReplacement(linkPath) {
 async function writeManifest(pluginRoot, agentPaths) {
   const manifestPath = join47(pluginRoot, MANIFEST_FILE);
   const payload = { agents: [...agentPaths].sort() };
-  await writeFile9(manifestPath, `${JSON.stringify(payload, null, "\t")}
+  await writeFile10(manifestPath, `${JSON.stringify(payload, null, "\t")}
 `);
 }
 function agentNameFromToml2(fileName) {
@@ -112493,12 +112688,12 @@ function agentNameFromToml3(fileName) {
 }
 
 // packages/omo-codex/src/install/codex-marketplace.ts
-import { readFile as readFile18 } from "fs/promises";
+import { readFile as readFile19 } from "fs/promises";
 import { join as join48 } from "path";
 var DEFAULT_MARKETPLACE_PATH = "packages/omo-codex/marketplace.json";
 async function readMarketplace(repoRoot, options) {
   const marketplacePath = options?.marketplacePath ?? join48(repoRoot, DEFAULT_MARKETPLACE_PATH);
-  const raw = await readFile18(marketplacePath, "utf8");
+  const raw = await readFile19(marketplacePath, "utf8");
   const parsed = JSON.parse(raw);
   if (!isPlainRecord4(parsed))
     throw new Error("marketplace.json must be an object");
@@ -112519,7 +112714,7 @@ function resolvePluginSource(repoRoot, plugin, options) {
   return join48(repoRoot, ...relativePath.split(/[\\/]/));
 }
 async function readPluginManifest(pluginRoot) {
-  const raw = await readFile18(join48(pluginRoot, ".codex-plugin", "plugin.json"), "utf8");
+  const raw = await readFile19(join48(pluginRoot, ".codex-plugin", "plugin.json"), "utf8");
   const parsed = JSON.parse(raw);
   if (!isPlainRecord4(parsed))
     throw new Error(`${pluginRoot} plugin.json must be an object`);
@@ -112600,11 +112795,11 @@ function validateLocalSourcePath(path7) {
 }
 
 // packages/omo-codex/src/install/lazycodex-version-stamp.ts
-import { readdir as readdir9, readFile as readFile19, writeFile as writeFile10 } from "fs/promises";
+import { readdir as readdir9, readFile as readFile20, writeFile as writeFile11 } from "fs/promises";
 import { join as join49 } from "path";
 async function readDistributionManifest(repoRoot) {
   try {
-    const parsed = JSON.parse(await readFile19(join49(repoRoot, "package.json"), "utf8"));
+    const parsed = JSON.parse(await readFile20(join49(repoRoot, "package.json"), "utf8"));
     if (!isPlainRecord4(parsed) || typeof parsed.version !== "string" || parsed.version.trim().length === 0)
       return;
     return {
@@ -112640,7 +112835,7 @@ async function stampLazyCodexPluginVersion(input2) {
 async function writeLazyCodexInstallSnapshot(input2) {
   if (input2.distributionManifest === undefined)
     return;
-  await writeFile10(join49(input2.pluginRoot, "lazycodex-install.json"), `${JSON.stringify({
+  await writeFile11(join49(input2.pluginRoot, "lazycodex-install.json"), `${JSON.stringify({
     packageName: input2.distributionManifest.name,
     version: input2.distributionManifest.version
   }, null, "\t")}
@@ -112648,11 +112843,11 @@ async function writeLazyCodexInstallSnapshot(input2) {
 }
 async function stampJsonVersion(path7, version2) {
   try {
-    const parsed = JSON.parse(await readFile19(path7, "utf8"));
+    const parsed = JSON.parse(await readFile20(path7, "utf8"));
     if (!isPlainRecord4(parsed))
       return;
     parsed.version = version2;
-    await writeFile10(path7, `${JSON.stringify(parsed, null, "\t")}
+    await writeFile11(path7, `${JSON.stringify(parsed, null, "\t")}
 `);
   } catch (error62) {
     if (error62 instanceof Error)
@@ -112662,7 +112857,7 @@ async function stampJsonVersion(path7, version2) {
 }
 async function readPluginHookPaths(manifestPath) {
   try {
-    const parsed = JSON.parse(await readFile19(manifestPath, "utf8"));
+    const parsed = JSON.parse(await readFile20(manifestPath, "utf8"));
     if (!isPlainRecord4(parsed))
       return [];
     if (typeof parsed.hooks === "string" && parsed.hooks.trim().length > 0)
@@ -112682,11 +112877,11 @@ function stripDotSlash3(path7) {
 }
 async function stampHookStatusMessages(path7, version2) {
   try {
-    const parsed = JSON.parse(await readFile19(path7, "utf8"));
+    const parsed = JSON.parse(await readFile20(path7, "utf8"));
     if (!isPlainRecord4(parsed))
       return;
     stampHookGroups(parsed.hooks, version2);
-    await writeFile10(path7, `${JSON.stringify(parsed, null, "\t")}
+    await writeFile11(path7, `${JSON.stringify(parsed, null, "\t")}
 `);
   } catch (error62) {
     if (error62 instanceof Error)
@@ -112763,15 +112958,10 @@ var defaultRunCommand = async (command, args, options) => {
 };
 
 // packages/omo-codex/src/install/codex-project-local-cleanup.ts
-import { copyFile as copyFile2, lstat as lstat12, readFile as readFile20, writeFile as writeFile11 } from "fs/promises";
+import { copyFile as copyFile2, lstat as lstat12, readFile as readFile21, writeFile as writeFile12 } from "fs/promises";
 import { dirname as dirname17, join as join50, resolve as resolve11 } from "path";
 var LEGACY_AGENT_CONFLICT_KEYS = ["max_threads"];
-var PROJECT_LOCAL_ARTIFACT_PATHS = [
-  ".codex/hooks.json",
-  ".codex/agents",
-  ".codex/prompts",
-  ".codex/skills"
-];
+var PROJECT_LOCAL_ARTIFACT_PATHS = [".codex/hooks.json", ".codex/agents", ".codex/prompts", ".codex/skills"];
 async function repairNearestProjectLocalCodexArtifacts(input2) {
   if (input2.startDirectory === undefined) {
     return emptyProjectLocalCodexCleanupResult();
@@ -112783,7 +112973,7 @@ async function repairNearestProjectLocalCodexArtifacts(input2) {
   const artifacts = await collectProjectLocalArtifacts(project.artifactRoots);
   const configs = [];
   for (const configPath of project.configPaths) {
-    const original = await readFile20(configPath, "utf8");
+    const original = await readFile21(configPath, "utf8");
     const repair = repairProjectLocalCodexConfigText(original);
     if (!repair.changed) {
       configs.push({
@@ -112796,7 +112986,7 @@ async function repairNearestProjectLocalCodexArtifacts(input2) {
     }
     const backupPath = `${configPath}.backup-${formatBackupTimestamp(input2.now?.() ?? new Date)}`;
     await copyFile2(configPath, backupPath);
-    await writeFile11(configPath, `${repair.config.trimEnd()}
+    await writeFile12(configPath, `${repair.config.trimEnd()}
 `);
     configs.push({
       projectRoot: project.projectRoot,
@@ -112993,13 +113183,13 @@ function formatUnknownError(error62) {
 
 // packages/omo-codex/src/install/lsp-daemon-reaper.ts
 import { createHash as createHash5 } from "crypto";
-import { lstat as lstat13, readFile as readFile22, readdir as readdir11, rm as rm13 } from "fs/promises";
+import { lstat as lstat13, readFile as readFile23, readdir as readdir11, rm as rm13 } from "fs/promises";
 import { tmpdir as tmpdir4 } from "os";
 import { join as join51, posix as posix6 } from "path";
 
 // packages/omo-codex/src/install/lsp-daemon-reaper-attestation.ts
 import { execFile } from "child_process";
-import { readFile as readFile21, readdir as readdir10, readlink as readlink5 } from "fs/promises";
+import { readFile as readFile22, readdir as readdir10, readlink as readlink5 } from "fs/promises";
 import { connect } from "net";
 import { basename as basename8 } from "path";
 var PROBE_TIMEOUT_MS = 500;
@@ -113041,7 +113231,7 @@ async function attestLegacyDaemonOwnership(input2, deps = {}) {
   return false;
 }
 async function attestLinuxOwnership(input2, deps) {
-  const readFileImpl = deps.readFile ?? readFile21;
+  const readFileImpl = deps.readFile ?? readFile22;
   const readDirImpl = deps.readDir ?? readdir10;
   const readLinkImpl = deps.readLink ?? readlink5;
   const procNetUnix = await readText(readFileImpl, "/proc/net/unix");
@@ -113266,7 +113456,7 @@ async function readRegularTrimmedFile(path7) {
     return null;
   if (!stats.isFile())
     return "non_regular";
-  const content = (await readFile22(path7, "utf8")).trim();
+  const content = (await readFile23(path7, "utf8")).trim();
   return content.length > 0 ? content : null;
 }
 function shortDigest(value) {
@@ -113327,11 +113517,11 @@ function resolveCodexInstallerBinDir(input2) {
 }
 
 // packages/omo-codex/src/install/codex-installed-bin-dir.ts
-import { readFile as readFile23, readdir as readdir12, writeFile as writeFile12 } from "fs/promises";
+import { readFile as readFile24, readdir as readdir12, writeFile as writeFile13 } from "fs/promises";
 import { join as join53 } from "path";
 var INSTALLED_BIN_DIR_MANIFEST = ".installed-bin-dir.json";
 async function writeInstalledCodexBinDir(input2) {
-  await writeFile12(join53(input2.pluginRoot, INSTALLED_BIN_DIR_MANIFEST), `${JSON.stringify({ binDir: input2.binDir }, null, 2)}
+  await writeFile13(join53(input2.pluginRoot, INSTALLED_BIN_DIR_MANIFEST), `${JSON.stringify({ binDir: input2.binDir }, null, 2)}
 `);
 }
 async function readInstalledCodexBinDir(codexHome) {
@@ -113357,7 +113547,7 @@ async function installedBinDirManifestPaths(codexHome) {
   return paths2;
 }
 async function readBinDirFromManifest(manifestPath) {
-  const raw = await readFile23(manifestPath, "utf8").catch(() => null);
+  const raw = await readFile24(manifestPath, "utf8").catch(() => null);
   if (raw === null)
     return null;
   let parsed;
@@ -113375,7 +113565,7 @@ async function readBinDirFromManifest(manifestPath) {
 }
 
 // packages/omo-codex/src/install/codex-git-bash-hooks.ts
-import { readFile as readFile24, writeFile as writeFile13 } from "fs/promises";
+import { readFile as readFile25, writeFile as writeFile14 } from "fs/promises";
 import { join as join54 } from "path";
 var WINDOWS_ONLY_GIT_BASH_HOOKS = new Set([
   "./hooks/pre-tool-use-recommending-git-bash-mcp.json",
@@ -113385,13 +113575,13 @@ async function removeGitBashHooksOffWindows(input2) {
   if (input2.platform === "win32")
     return;
   const manifestPath = join54(input2.pluginRoot, ".codex-plugin", "plugin.json");
-  const parsed = JSON.parse(await readFile24(manifestPath, "utf8"));
+  const parsed = JSON.parse(await readFile25(manifestPath, "utf8"));
   if (!isPlainRecord4(parsed) || !Array.isArray(parsed.hooks))
     return;
   const hooks = parsed.hooks.filter((hook) => typeof hook !== "string" || !WINDOWS_ONLY_GIT_BASH_HOOKS.has(hook));
   if (hooks.length === parsed.hooks.length)
     return;
-  await writeFile13(manifestPath, `${JSON.stringify({ ...parsed, hooks }, null, "\t")}
+  await writeFile14(manifestPath, `${JSON.stringify({ ...parsed, hooks }, null, "\t")}
 `);
 }
 
@@ -113609,7 +113799,10 @@ function findRepoRootFromImporter(importerDir) {
   for (let depth = 0;depth <= 7; depth += 1) {
     if (isRepoRootWithCodexPlugin(current))
       return current;
-    for (const wrapperPackageRoot of [join60(current, "node_modules", "oh-my-openagent"), join60(current, "oh-my-openagent")]) {
+    for (const wrapperPackageRoot of [
+      join60(current, "node_modules", "oh-my-openagent"),
+      join60(current, "oh-my-openagent")
+    ]) {
       if (isRepoRootWithCodexPlugin(wrapperPackageRoot))
         return wrapperPackageRoot;
     }
@@ -113762,12 +113955,12 @@ function defaultRunCommand2(command, args) {
   });
 }
 // packages/omo-codex/src/install/codex-cleanup.ts
-import { lstat as lstat16, readFile as readFile27, readdir as readdir14, rm as rm15, rmdir } from "fs/promises";
+import { lstat as lstat16, readFile as readFile28, readdir as readdir14, rm as rm15, rmdir } from "fs/promises";
 import { homedir as homedir9 } from "os";
 import { isAbsolute as isAbsolute11, join as join63, relative as relative7, resolve as resolve16 } from "path";
 
 // packages/omo-codex/src/install/codex-cleanup-bins.ts
-import { lstat as lstat14, readFile as readFile25, readdir as readdir13, readlink as readlink6, rm as rm14 } from "fs/promises";
+import { lstat as lstat14, readFile as readFile26, readdir as readdir13, readlink as readlink6, rm as rm14 } from "fs/promises";
 import { dirname as dirname20, isAbsolute as isAbsolute9, join as join61, resolve as resolve14 } from "path";
 var ROOT_RUNTIME_BIN_NAME = "omo";
 var MANAGED_CODEX_BIN_NAMES = new Set([
@@ -113829,12 +114022,12 @@ async function isManagedCodexBin(linkPath, platform2, binName) {
   }
   if (!entryStat.isFile())
     return false;
-  const content = await readFile25(linkPath, "utf8");
+  const content = await readFile26(linkPath, "utf8");
   return content.includes(RUNTIME_WRAPPER_MARKER) || content.includes(COMMAND_SHIM_MARKER);
 }
 
 // packages/omo-codex/src/install/codex-cleanup-config.ts
-import { lstat as lstat15, mkdir as mkdir8, readFile as readFile26, writeFile as writeFile14 } from "fs/promises";
+import { lstat as lstat15, mkdir as mkdir8, readFile as readFile27, writeFile as writeFile15 } from "fs/promises";
 import { dirname as dirname21 } from "path";
 var MANAGED_MARKETPLACES = ["sisyphuslabs", "lazycodex", "code-yeongyu-codex-plugins"];
 var LEGACY_MANAGED_CODEX_AGENT_NAMES_TO_PURGE2 = ["codex-ultrawork-reviewer"];
@@ -113867,14 +114060,14 @@ function cleanupCodexLightConfigText(config3) {
 async function cleanupCodexConfig(configPath, now) {
   if (!await configExists(configPath))
     return { changed: false };
-  const original = await readFile26(configPath, "utf8");
+  const original = await readFile27(configPath, "utf8");
   const next = cleanupCodexLightConfigText(original);
   if (next === original)
     return { changed: false };
   const backupPath = `${configPath}.backup-${formatBackupTimestamp2(now?.() ?? new Date)}`;
   await mkdir8(dirname21(configPath), { recursive: true });
-  await writeFile14(backupPath, original);
-  await writeFile14(configPath, `${next.trimEnd()}
+  await writeFile15(backupPath, original);
+  await writeFile15(configPath, `${next.trimEnd()}
 `);
   return { changed: true, backupPath };
 }
@@ -114151,13 +114344,13 @@ async function collectInstalledAgentPaths(codexHome, configPath) {
 async function readManagedAgentPathsFromConfig(codexHome, configPath) {
   if (!await exists6(configPath))
     return [];
-  const config3 = await readFile27(configPath, "utf8");
+  const config3 = await readFile28(configPath, "utf8");
   return MANAGED_CODEX_AGENT_NAMES2.filter((agentName) => config3.includes(`config_file = ${JSON.stringify(`./agents/${agentName}.toml`)}`)).map((agentName) => join63(codexHome, "agents", `${agentName}.toml`));
 }
 async function readInstalledAgentManifest(manifestPath) {
   if (!await exists6(manifestPath))
     return [];
-  const parsed = JSON.parse(await readFile27(manifestPath, "utf8"));
+  const parsed = JSON.parse(await readFile28(manifestPath, "utf8"));
   if (!isPlainRecord4(parsed) || !Array.isArray(parsed.agents))
     return [];
   return parsed.agents.filter((path7) => typeof path7 === "string");
@@ -114223,11 +114416,7 @@ import { promisify as promisify2 } from "util";
 import { existsSync as existsSync30 } from "fs";
 import { homedir as homedir10 } from "os";
 import { join as join64, resolve as resolve17 } from "path";
-var AGENT_DIR_ENV_NAMES = [
-  "OMO_CODING_AGENT_DIR",
-  "SENPI_CODING_AGENT_DIR",
-  "PI_CODING_AGENT_DIR"
-];
+var AGENT_DIR_ENV_NAMES = ["OMO_CODING_AGENT_DIR", "SENPI_CODING_AGENT_DIR", "PI_CODING_AGENT_DIR"];
 var AGENT_HOME_SENTINEL = "settings.json";
 function resolveAgentHome(options) {
   const { env: env2, homeDir = homedir10(), exists: exists7 = existsSync30 } = options;
@@ -114349,7 +114538,7 @@ node "%~dp0omo" %*\r
 // packages/omo-senpi/src/install/plugin-artifacts.ts
 import { createHash as createHash7 } from "crypto";
 import { constants as constants9 } from "fs";
-import { access as access2, readFile as readFile29, stat as stat6 } from "fs/promises";
+import { access as access3, readFile as readFile30, stat as stat6 } from "fs/promises";
 import { dirname as dirname25, join as join67 } from "path";
 
 // packages/memory-core/src/personas/manifest.ts
@@ -114368,18 +114557,15 @@ var PERSONA_ASSET_FILES = [
 
 // packages/omo-senpi/src/install/senpi-settings.ts
 import { constants as constants8 } from "fs";
-import { access, copyFile as copyFile3, mkdir as mkdir9, readFile as readFile28, rename as rename6, writeFile as writeFile15 } from "fs/promises";
+import { access as access2, copyFile as copyFile3, mkdir as mkdir9, readFile as readFile29, rename as rename6, writeFile as writeFile16 } from "fs/promises";
 import { basename as basename10, dirname as dirname24, join as join66, resolve as resolve19 } from "path";
 var OMO_SENPI_PACKAGE_NAME = "@code-yeongyu/omo-senpi";
 var GENERATED_PLUGIN_BASENAME = /^omo-senpi-cli-plugin-[A-Za-z0-9]{6}$/;
-var LEGACY_BUILTIN_SHADOW_PACKAGES = [
-  join66("packages", "pi-goal"),
-  join66("packages", "pi-webfetch")
-];
+var LEGACY_BUILTIN_SHADOW_PACKAGES = [join66("packages", "pi-goal"), join66("packages", "pi-webfetch")];
 async function readSettings(settingsPath) {
   let raw;
   try {
-    raw = await readFile28(settingsPath, "utf8");
+    raw = await readFile29(settingsPath, "utf8");
   } catch (error62) {
     if (isErrno(error62, "ENOENT"))
       return {};
@@ -114426,11 +114612,11 @@ async function writeSettingsAtomically(settingsPath, settings) {
   if (await fileExists(settingsPath)) {
     await copyFile3(settingsPath, backupPath);
   } else {
-    await writeFile15(backupPath, `{}
+    await writeFile16(backupPath, `{}
 `, "utf8");
   }
   const tempPath = `${settingsPath}.${process.pid}.${Date.now()}.tmp`;
-  await writeFile15(tempPath, `${JSON.stringify(settings, null, 2)}
+  await writeFile16(tempPath, `${JSON.stringify(settings, null, 2)}
 `, "utf8");
   await rename6(tempPath, settingsPath);
   return backupPath;
@@ -114453,7 +114639,7 @@ function isRecord15(value) {
 async function readPackageName(packagePath) {
   let raw;
   try {
-    raw = await readFile28(join66(packagePath, "package.json"), "utf8");
+    raw = await readFile29(join66(packagePath, "package.json"), "utf8");
   } catch (error62) {
     if (isErrno(error62, "ENOENT") || isErrno(error62, "ENOTDIR"))
       return;
@@ -114471,7 +114657,7 @@ async function readPackageName(packagePath) {
 }
 async function fileExists(path7) {
   try {
-    await access(path7, constants8.F_OK);
+    await access2(path7, constants8.F_OK);
     return true;
   } catch (error62) {
     if (isErrno(error62, "ENOENT"))
@@ -114495,6 +114681,7 @@ var REQUIRED_PLUGIN_ARTIFACTS = [
   join67("extensions", "omo-memory-commands.js"),
   join67("extensions", "omo-session-history.js"),
   join67("extensions", "omo-recall-store.js"),
+  join67("extensions", "omo-device-service.js"),
   join67("extensions", "omo-telemetry-posthog.js"),
   join67("extensions", "omo-telemetry-otlp.js"),
   join67("extensions", "omo-memory-sync.js"),
@@ -114509,6 +114696,8 @@ var REQUIRED_PLUGIN_ARTIFACTS = [
   join67("extensions", "omo-member.js"),
   join67("extensions", "memory-run-supervisor.mjs"),
   join67("extensions", "gateway-store-worker.mjs"),
+  join67("extensions", "omo-computer-run-worker.mjs"),
+  join67("extensions", "quickjs.wasm"),
   ...PERSONA_ASSET_FILES.map((filename) => join67("extensions", filename)),
   join67("skills", "ast-grep", "SKILL.md"),
   join67("skills", "browser", "SKILL.md"),
@@ -114533,6 +114722,7 @@ var REQUIRED_PLUGIN_ARTIFACTS = [
   join67("skills", "visual-qa", "SKILL.md"),
   join67("skills-conditional", "x-search", "SKILL.md"),
   join67("runtime", "agent-toolkit-sdk", "sdk.js"),
+  join67("runtime", "bunshin-ts", "sdk.js"),
   join67("runtime", "thread-sdk", "sdk.js"),
   join67("runtime", "ast-grep-mcp", "cli.js"),
   join67("runtime", "lsp-daemon", "dist", "cli.js"),
@@ -114547,13 +114737,25 @@ var REQUIRED_PLUGIN_ARTIFACTS = [
 ];
 async function ensurePluginArtifacts(context) {
   if (context.allowBuild) {
-    await context.runCommand("node", [join67(context.pluginPath, "scripts", "build-extension.mjs")], { cwd: context.repoRoot });
+    await context.runCommand("node", [join67(context.pluginPath, "scripts", "build-extension.mjs")], {
+      cwd: context.repoRoot
+    });
     await context.runCommand("node", [join67("packages", "omo-codex", "plugin", "scripts", "materialize-shared-upstreams.mjs")], { cwd: context.repoRoot });
-    await context.runCommand("node", [join67(context.pluginPath, "scripts", "sync-skills.mjs")], { cwd: context.repoRoot });
-    await context.runCommand("node", [join67(context.pluginPath, "scripts", "build-install.mjs")], { cwd: context.repoRoot });
-    await context.runCommand("node", [join67(context.pluginPath, "scripts", "stage-lsp-daemon-runtime.mjs")], { cwd: context.repoRoot });
-    await context.runCommand("node", [join67(context.pluginPath, "scripts", "stage-ast-grep-mcp-runtime.mjs")], { cwd: context.repoRoot });
-    await context.runCommand("node", [join67(context.pluginPath, "scripts", "stage-x-search-skill.mjs")], { cwd: context.repoRoot });
+    await context.runCommand("node", [join67(context.pluginPath, "scripts", "sync-skills.mjs")], {
+      cwd: context.repoRoot
+    });
+    await context.runCommand("node", [join67(context.pluginPath, "scripts", "build-install.mjs")], {
+      cwd: context.repoRoot
+    });
+    await context.runCommand("node", [join67(context.pluginPath, "scripts", "stage-lsp-daemon-runtime.mjs")], {
+      cwd: context.repoRoot
+    });
+    await context.runCommand("node", [join67(context.pluginPath, "scripts", "stage-ast-grep-mcp-runtime.mjs")], {
+      cwd: context.repoRoot
+    });
+    await context.runCommand("node", [join67(context.pluginPath, "scripts", "stage-x-search-skill.mjs")], {
+      cwd: context.repoRoot
+    });
   }
   if (await hasMissingPluginArtifact(context.pluginPath)) {
     throw new Error(`Packed omo-senpi plugin is missing required runtime artifacts at ${context.pluginPath}`);
@@ -114575,7 +114777,7 @@ async function verifyAstGrepRuntimeIntegrity(pluginPath, platform2) {
     runtimeStat = await stat6(runtimeEntry);
     if (!runtimeStat.isFile())
       throw new Error("runtime is not a file");
-    await access2(runtimeEntry, constants9.R_OK | constants9.X_OK);
+    await access3(runtimeEntry, constants9.R_OK | constants9.X_OK);
   } catch (error62) {
     throw astGrepIntegrityError(runtimeEntry, `runtime is unreadable or non-executable: ${messageOf(error62)}`);
   }
@@ -114584,7 +114786,7 @@ async function verifyAstGrepRuntimeIntegrity(pluginPath, platform2) {
   }
   let manifest;
   try {
-    manifest = JSON.parse(await readFile29(manifestPath, "utf8"));
+    manifest = JSON.parse(await readFile30(manifestPath, "utf8"));
   } catch (error62) {
     throw astGrepIntegrityError(runtimeEntry, `manifest is unreadable or invalid JSON: ${messageOf(error62)}`);
   }
@@ -114593,7 +114795,7 @@ async function verifyAstGrepRuntimeIntegrity(pluginPath, platform2) {
   }
   let actualSha256;
   try {
-    actualSha256 = createHash7("sha256").update(await readFile29(runtimeEntry)).digest("hex");
+    actualSha256 = createHash7("sha256").update(await readFile30(runtimeEntry)).digest("hex");
   } catch (error62) {
     throw astGrepIntegrityError(runtimeEntry, `runtime hash could not be computed: ${messageOf(error62)}`);
   }
@@ -114618,7 +114820,7 @@ function messageOf(error62) {
 }
 async function fileExists2(path7) {
   try {
-    await access2(path7, constants9.F_OK);
+    await access3(path7, constants9.F_OK);
     return true;
   } catch (error62) {
     if (isErrno2(error62, "ENOENT"))
@@ -114925,7 +115127,9 @@ async function verifyOmoCommand(options) {
     return {
       ok: false,
       notes: [],
-      warnings: ["Could not find an omo command owned by omo-ai after the install. Run omo --version yourself to check."]
+      warnings: [
+        "Could not find an omo command owned by omo-ai after the install. Run omo --version yourself to check."
+      ]
     };
   }
   if (!native.onPath) {
@@ -115102,10 +115306,7 @@ function nativeEditionHintLines(paint = PLAIN_PAINT) {
 // packages/omo-opencode/src/cli/star-request.ts
 import { execFile as execFile4 } from "child_process";
 import { promisify as promisify3 } from "util";
-var STAR_REPOSITORIES = [
-  "code-yeongyu/oh-my-openagent",
-  "code-yeongyu/lazycodex"
-];
+var STAR_REPOSITORIES = ["code-yeongyu/oh-my-openagent", "code-yeongyu/lazycodex"];
 var PLATFORM_REPOSITORIES = {
   opencode: ["code-yeongyu/oh-my-openagent"],
   codex: STAR_REPOSITORIES,
@@ -118783,10 +118984,7 @@ function getOpenCodeConfigDirs2(options) {
     return [getOpenCodeConfigDir2(options)];
   }
   const customConfigDir = getCliCustomConfigDir2();
-  return Array.from(new Set([
-    ...customConfigDir ? [customConfigDir] : [],
-    getCliDefaultConfigDir2()
-  ]));
+  return Array.from(new Set([...customConfigDir ? [customConfigDir] : [], getCliDefaultConfigDir2()]));
 }
 function getOpenCodeConfigDir2(options) {
   const { binary, version: version3, checkExisting = true } = options;
@@ -118883,10 +119081,7 @@ function knownUserSkillRoots() {
     join77(home, ".omo", "agent", "skills"),
     join77(home, ".senpi", "agent", "skills"),
     sharedSkillsRootPath(),
-    ...getOpenCodeConfigDirs2({ binary: "opencode" }).flatMap((dir) => [
-      join77(dir, "skills"),
-      join77(dir, "skill")
-    ])
+    ...getOpenCodeConfigDirs2({ binary: "opencode" }).flatMap((dir) => [join77(dir, "skills"), join77(dir, "skill")])
   ];
 }
 
@@ -119036,11 +119231,40 @@ function recordFields(value, fields) {
 }
 function modelInput(view) {
   const agents = isPlainRecord(view.agents) ? Object.fromEntries(Object.entries(view.agents).flatMap(([name, definition]) => {
-    const fields = recordFields(definition, ["description", "prompt", "model", "models", "models_distribution", "variant", "reasoningEffort", "tools", "temperature", "disable"]);
+    const fields = recordFields(definition, [
+      "description",
+      "prompt",
+      "model",
+      "models",
+      "models_distribution",
+      "variant",
+      "reasoningEffort",
+      "tools",
+      "temperature",
+      "disable"
+    ]);
     return fields === undefined ? [] : [[name, fields]];
   })) : undefined;
   const categories = isPlainRecord(view.categories) ? Object.fromEntries(Object.entries(view.categories).flatMap(([name, definition]) => {
-    const fields = recordFields(definition, ["description", "model", "models", "models_distribution", "fallback_models", "variant", "temperature", "top_p", "maxTokens", "thinking", "reasoningEffort", "textVerbosity", "tools", "prompt_append", "max_prompt_tokens", "is_unstable_agent", "disable"]);
+    const fields = recordFields(definition, [
+      "description",
+      "model",
+      "models",
+      "models_distribution",
+      "fallback_models",
+      "variant",
+      "temperature",
+      "top_p",
+      "maxTokens",
+      "thinking",
+      "reasoningEffort",
+      "textVerbosity",
+      "tools",
+      "prompt_append",
+      "max_prompt_tokens",
+      "is_unstable_agent",
+      "disable"
+    ]);
     return fields === undefined ? [] : [[name, fields]];
   })) : undefined;
   return {
@@ -119105,10 +119329,7 @@ function loadOmoOpenCodeConfigChain(directory, environment2 = process.env) {
     protectedUserView = mergeOmoConfigRecords(protectedUserView, block2(profile(layer.config, selectedProfile)));
   }
   return {
-    diagnostics: [
-      ...loaded.diagnostics,
-      ...resolvedModels.diagnostics
-    ],
+    diagnostics: [...loaded.diagnostics, ...resolvedModels.diagnostics],
     protectedUserView,
     views
   };
@@ -119245,6 +119466,7 @@ var BuiltinSkillNameSchema = exports_external.enum([
   "debugging",
   "security-research",
   "security-review",
+  "hyperplan",
   "visual-qa",
   "team-mode"
 ]);
@@ -119297,10 +119519,7 @@ var FallbackModelsSchema = exports_external.union([
 // packages/omo-opencode/src/config/schema/internal/permission.ts
 init_zod();
 var PermissionValueSchema2 = exports_external.enum(["ask", "allow", "deny"]);
-var BashPermissionSchema2 = exports_external.union([
-  PermissionValueSchema2,
-  exports_external.record(exports_external.string(), PermissionValueSchema2)
-]);
+var BashPermissionSchema2 = exports_external.union([PermissionValueSchema2, exports_external.record(exports_external.string(), PermissionValueSchema2)]);
 var AgentPermissionSchema = exports_external.object({
   edit: PermissionValueSchema2.optional(),
   bash: BashPermissionSchema2.optional(),
@@ -119397,12 +119616,7 @@ var BackgroundTaskConfigSchema = exports_external.object({
 });
 // packages/omo-opencode/src/config/schema/browser-automation.ts
 init_zod();
-var BrowserAutomationProviderSchema = exports_external.enum([
-  "playwright",
-  "dev-browser",
-  "playwright-cli",
-  "external"
-], {
+var BrowserAutomationProviderSchema = exports_external.enum(["playwright", "dev-browser", "playwright-cli", "external"], {
   error: (issue2) => `Browser provider ${JSON.stringify(issue2.input)} is no longer supported; use the built-in browser path: Bun.WebView / playwright-core scripts`
 });
 var BrowserAutomationConfigSchema = exports_external.object({
@@ -119493,15 +119707,7 @@ var DynamicContextPruningConfigSchema = exports_external.object({
     enabled: exports_external.boolean().default(true),
     turns: exports_external.number().min(1).max(10).default(3)
   }).optional(),
-  protected_tools: exports_external.array(exports_external.string()).default([
-    "task",
-    "todowrite",
-    "todoread",
-    "lsp_rename",
-    "session_read",
-    "session_write",
-    "session_search"
-  ]),
+  protected_tools: exports_external.array(exports_external.string()).default(["task", "todowrite", "todoread", "lsp_rename", "session_read", "session_write", "session_search"]),
   strategies: exports_external.object({
     deduplication: exports_external.object({
       enabled: exports_external.boolean().default(true)
@@ -119714,6 +119920,7 @@ var RuntimeFallbackConfigSchema = exports_external.object({
   max_fallback_attempts: exports_external.number().min(1).max(20).optional(),
   cooldown_seconds: exports_external.number().min(0).optional(),
   timeout_seconds: exports_external.number().min(0).optional(),
+  first_prompt_timeout_seconds: exports_external.number().min(0).optional(),
   notify_on_fallback: exports_external.boolean().optional(),
   restore_primary_after_cooldown: exports_external.boolean().optional()
 });
@@ -119977,12 +120184,15 @@ function materializeAgentModelChains(config4) {
     } = agent2;
     const primarySettings = primary === undefined ? {} : typeof primary === "string" ? { model: primary } : primary;
     changed = true;
-    return [name, {
-      ...rest,
-      ...primarySettings,
-      fallback_models: fallbacks,
-      ...agent2.models_distribution === "round_robin" ? { models: agent2.models } : {}
-    }];
+    return [
+      name,
+      {
+        ...rest,
+        ...primarySettings,
+        fallback_models: fallbacks,
+        ...agent2.models_distribution === "round_robin" ? { models: agent2.models } : {}
+      }
+    ];
   }));
   return changed ? { ...config4, agents } : config4;
 }
@@ -120352,9 +120562,7 @@ async function resolveSession(options) {
     const res = await client3.session.create({
       body: {
         title: `${PUBLISHED_PACKAGE_NAME} run`,
-        permission: [
-          { permission: "question", action: "deny", pattern: "*" }
-        ]
+        permission: [{ permission: "question", action: "deny", pattern: "*" }]
       },
       query: { directory }
     });
@@ -122258,10 +122466,7 @@ async function run(options) {
   process.env.OPENCODE_CLI_RUN_MODE = "true";
   process.env.OPENCODE_CLIENT = "run";
   const startTime = Date.now();
-  const {
-    message,
-    directory = process.cwd()
-  } = options;
+  const { message, directory = process.cwd() } = options;
   const jsonManager = options.json ? createJsonOutputManager() : null;
   if (jsonManager)
     jsonManager.redirectToStderr();
@@ -123025,7 +123230,7 @@ function getSuggestedInstallTag(currentVersion) {
 // packages/omo-opencode/src/cli/doctor/checks/system.ts
 init_jsonc_parser2();
 init_plugin_identity();
-var runtime4 = globalThis;
+var runtime5 = globalThis;
 var defaultDeps6 = {
   findOpenCodeBinary,
   getOpenCodeVersion: getOpenCodeVersion3,
@@ -123074,10 +123279,7 @@ function getLoadedPackageName(installedPackagePath) {
   return packageName !== undefined && ACCEPTED_PACKAGE_NAMES.some((acceptedName) => acceptedName === packageName) ? packageName : PUBLISHED_PACKAGE_NAME;
 }
 async function gatherSystemInfo(deps = defaultDeps6) {
-  const [binaryInfo, pluginInfo] = await Promise.all([
-    deps.findOpenCodeBinary(),
-    Promise.resolve(deps.getPluginInfo())
-  ]);
+  const [binaryInfo, pluginInfo] = await Promise.all([deps.findOpenCodeBinary(), Promise.resolve(deps.getPluginInfo())]);
   const loadedInfo = deps.getLoadedPluginVersion();
   const opencodeVersion = binaryInfo ? await deps.getOpenCodeVersion(binaryInfo.path) : null;
   const pluginVersion = pluginInfo.pinnedVersion ?? loadedInfo.expectedVersion ?? loadedInfo.loadedVersion;
@@ -123086,17 +123288,14 @@ async function gatherSystemInfo(deps = defaultDeps6) {
     opencodePath: binaryInfo?.path ?? null,
     pluginVersion,
     loadedVersion: loadedInfo.loadedVersion,
-    bunVersion: runtime4.Bun?.version ?? "unavailable",
+    bunVersion: runtime5.Bun?.version ?? "unavailable",
     configPath: pluginInfo.configPath,
     configValid: isConfigValid(pluginInfo.configPath, deps),
     isLocalDev: pluginInfo.isLocalDev
   };
 }
 async function checkSystem(deps = defaultDeps6) {
-  const [systemInfo, pluginInfo] = await Promise.all([
-    gatherSystemInfo(deps),
-    Promise.resolve(deps.getPluginInfo())
-  ]);
+  const [systemInfo, pluginInfo] = await Promise.all([gatherSystemInfo(deps), Promise.resolve(deps.getPluginInfo())]);
   const loadedInfo = deps.getLoadedPluginVersion();
   const latestVersion = await deps.getLatestPluginVersion(systemInfo.loadedVersion);
   const installTag = deps.getSuggestedInstallTag(systemInfo.loadedVersion);
@@ -123191,10 +123390,7 @@ function getUserConfigDir2() {
 }
 function loadCustomProviderNames() {
   const configDir = getUserConfigDir2();
-  const candidatePaths = [
-    join91(configDir, "opencode.json"),
-    join91(configDir, "opencode.jsonc")
-  ];
+  const candidatePaths = [join91(configDir, "opencode.json"), join91(configDir, "opencode.jsonc")];
   for (const configPath of candidatePaths) {
     if (!existsSync57(configPath))
       continue;
@@ -123772,9 +123968,9 @@ function commentCheckerCacheDir(input2) {
 import { readFileSync as readFileSync40, writeFileSync as writeFileSync14 } from "fs";
 import { join as join95 } from "path";
 var COMMENT_CHECKER_VERSION_MARKER = "comment-checker.version";
-function isCachedCommentCheckerCurrent(cacheDir, readFile30 = (path13) => readFileSync40(path13, "utf-8")) {
+function isCachedCommentCheckerCurrent(cacheDir, readFile31 = (path13) => readFileSync40(path13, "utf-8")) {
   try {
-    return readFile30(join95(cacheDir, COMMENT_CHECKER_VERSION_MARKER)).trim() === COMMENT_CHECKER_RELEASE_VERSION;
+    return readFile31(join95(cacheDir, COMMENT_CHECKER_VERSION_MARKER)).trim() === COMMENT_CHECKER_RELEASE_VERSION;
   } catch {
     return false;
   }
@@ -123839,7 +124035,11 @@ function getCachedBinaryPath2() {
 init_bun_which_shim();
 
 // packages/omo-opencode/src/shared/module-resolution-failure.ts
-var MODULE_RESOLUTION_ERROR_CODES = new Set(["ERR_MODULE_NOT_FOUND", "MODULE_NOT_FOUND", "ERR_PACKAGE_PATH_NOT_EXPORTED"]);
+var MODULE_RESOLUTION_ERROR_CODES = new Set([
+  "ERR_MODULE_NOT_FOUND",
+  "MODULE_NOT_FOUND",
+  "ERR_PACKAGE_PATH_NOT_EXPORTED"
+]);
 function isModuleResolutionFailure(error62) {
   if (typeof error62 !== "object" || error62 === null)
     return false;
@@ -123976,7 +124176,11 @@ async function getGhVersion(spawn4) {
 }
 async function getGhAuthStatus(spawn4) {
   try {
-    const result = await spawn4(["gh", "auth", "status"], { stdout: "pipe", stderr: "pipe", env: { ...process.env, GH_NO_UPDATE_NOTIFIER: "1" } });
+    const result = await spawn4(["gh", "auth", "status"], {
+      stdout: "pipe",
+      stderr: "pipe",
+      env: { ...process.env, GH_NO_UPDATE_NOTIFIER: "1" }
+    });
     if (result.timedOut) {
       return { authenticated: false, username: null, scopes: [], error: "gh auth status timed out" };
     }
@@ -124110,19 +124314,19 @@ function createAncestorCliCandidates(options) {
   while (true) {
     const distCliPath = resolve25(currentDirectory, options.packageRel, options.distCliRel);
     if (!seenPaths.has(distCliPath)) {
-      const runtime5 = resolveJavaScriptRuntime(options.resolveExecutable);
+      const runtime6 = resolveJavaScriptRuntime(options.resolveExecutable);
       seenPaths.add(distCliPath);
       candidates.push({
-        command: [runtime5.command, distCliPath, "mcp"],
+        command: [runtime6.command, distCliPath, "mcp"],
         root: currentDirectory,
         path: distCliPath,
-        exists: runtime5.available && options.pathExists(distCliPath),
-        runtimeAvailable: runtime5.available
+        exists: runtime6.available && options.pathExists(distCliPath),
+        runtimeAvailable: runtime6.available
       });
     }
     const sourceCliPath = resolve25(currentDirectory, options.packageRel, options.sourceCliRel);
     if (!seenPaths.has(sourceCliPath)) {
-      const runtime5 = options.resolveExecutable("bun");
+      const runtime6 = options.resolveExecutable("bun");
       const sourceCandidateAvailable = options.isSourceCandidateAvailable?.({
         root: currentDirectory,
         sourcePath: sourceCliPath,
@@ -124130,11 +124334,11 @@ function createAncestorCliCandidates(options) {
       }) ?? true;
       seenPaths.add(sourceCliPath);
       candidates.push({
-        command: [runtime5.command, sourceCliPath, "mcp"],
+        command: [runtime6.command, sourceCliPath, "mcp"],
         root: currentDirectory,
         path: sourceCliPath,
-        exists: runtime5.available && options.pathExists(sourceCliPath) && sourceCandidateAvailable,
-        runtimeAvailable: runtime5.available
+        exists: runtime6.available && options.pathExists(sourceCliPath) && sourceCandidateAvailable,
+        runtimeAvailable: runtime6.available
       });
     }
     const parentDirectory = resolve25(currentDirectory, "..");
@@ -124203,16 +124407,16 @@ function readDaemonPackageVersion(root) {
   }
 }
 function createBootstrapCandidate(root, pathExists2, resolveExecutable) {
-  const runtime5 = resolveJavaScriptRuntime(resolveExecutable);
+  const runtime6 = resolveJavaScriptRuntime(resolveExecutable);
   const bun = resolveExecutable("bun");
   const npm = resolveExecutable("npm");
   const packageManifestPath = resolve26(root, PACKAGE_REL, "package.json");
   return {
-    command: [runtime5.command, "-e", LSP_BOOTSTRAP_SCRIPT, root, npm.command, bun.command],
+    command: [runtime6.command, "-e", LSP_BOOTSTRAP_SCRIPT, root, npm.command, bun.command],
     root,
     path: resolve26(root, PACKAGE_REL, DIST_CLI_REL),
-    exists: runtime5.available && npm.available && pathExists2(packageManifestPath),
-    runtimeAvailable: runtime5.available
+    exists: runtime6.available && npm.available && pathExists2(packageManifestPath),
+    runtimeAvailable: runtime6.available
   };
 }
 function resolveLspCommand(options = {}) {
@@ -124565,7 +124769,7 @@ async function pathExists2(dir) {
 // packages/omo-opencode/src/cli/doctor/checks/codex.ts
 init_src();
 import { existsSync as existsSync63 } from "fs";
-import { lstat as lstat17, readdir as readdir15, readFile as readFile30 } from "fs/promises";
+import { lstat as lstat17, readdir as readdir15, readFile as readFile31 } from "fs/promises";
 import { homedir as homedir26 } from "os";
 import { basename as basename14, join as join100, resolve as resolve27 } from "path";
 // packages/omo-opencode/package.json
@@ -124594,8 +124798,8 @@ var package_default3 = {
   },
   dependencies: {
     "@clack/prompts": "^1.8.1",
-    "@code-yeongyu/senpi": "2026.11.2-3",
-    "@earendil-works/pi-ai": "npm:@code-yeongyu/senpi-ai@2026.11.2-3",
+    "@code-yeongyu/senpi": "2026.11.12",
+    "@earendil-works/pi-ai": "npm:@code-yeongyu/senpi-ai@2026.11.12",
     "@modelcontextprotocol/sdk": "^1.30.0",
     "@oh-my-opencode/agents-md-core": "workspace:*",
     "@oh-my-opencode/boulder-state": "workspace:*",
@@ -124622,7 +124826,7 @@ var package_default3 = {
     commander: "^15.0.0",
     "jsonc-parser": "^3.3.1",
     picocolors: "^1.1.1",
-    zod: "^4.6.5"
+    zod: "^4.6.6"
   }
 };
 
@@ -124790,7 +124994,7 @@ async function readCodexConfigSummary(configPath) {
       companionLifecycleHookStateEvents: []
     };
   }
-  const content = await readFile30(configPath, "utf8");
+  const content = await readFile31(configPath, "utf8");
   return {
     exists: true,
     marketplaceConfigured: content.includes("[marketplaces.sisyphuslabs]"),
@@ -124818,7 +125022,7 @@ async function readLinkedAgents(codexHome) {
 }
 async function readJson(path15) {
   try {
-    const parsed = JSON.parse(await readFile30(path15, "utf8"));
+    const parsed = JSON.parse(await readFile31(path15, "utf8"));
     return isPlainRecord(parsed) ? parsed : null;
   } catch (error62) {
     if (error62 instanceof Error)
@@ -124942,7 +125146,7 @@ function resolveLatestVersion(input2) {
 
 // packages/omo-opencode/src/cli/doctor/checks/codex-components.ts
 init_src();
-import { readdir as readdir16, readFile as readFile31, stat as stat7 } from "fs/promises";
+import { readdir as readdir16, readFile as readFile32, stat as stat7 } from "fs/promises";
 import { homedir as homedir27 } from "os";
 import { dirname as dirname41, isAbsolute as isAbsolute15, join as join101, relative as relative10, resolve as resolve28, sep as sep11 } from "path";
 var CODEX_COMPONENTS_CHECK_ID = "codex-components";
@@ -125181,7 +125385,9 @@ function bootstrapDetails(state2, installedVersion) {
   }
   const completed = state2.completedForVersion;
   if (completed === null || completed !== installedVersion) {
-    const lines2 = [`${BOOTSTRAP_PENDING_MESSAGE} (installed ${installedLabel}, state ${completed ?? "none"}, lastStatus=${state2.lastStatus})`];
+    const lines2 = [
+      `${BOOTSTRAP_PENDING_MESSAGE} (installed ${installedLabel}, state ${completed ?? "none"}, lastStatus=${state2.lastStatus})`
+    ];
     lines2.push(...degradedDetailLines(state2.degraded));
     return lines2;
   }
@@ -125195,7 +125401,7 @@ function degradedDetailLines(entries) {
 }
 async function readJson2(path15) {
   try {
-    const parsed = JSON.parse(await readFile31(path15, "utf8"));
+    const parsed = JSON.parse(await readFile32(path15, "utf8"));
     return isRecord20(parsed) ? parsed : null;
   } catch (error62) {
     if (error62 instanceof Error)
@@ -125223,7 +125429,7 @@ function isRecord20(value) {
 
 // packages/omo-opencode/src/cli/doctor/checks/codex-runtime-wrapper.ts
 import { existsSync as existsSync64 } from "fs";
-import { readFile as readFile32 } from "fs/promises";
+import { readFile as readFile33 } from "fs/promises";
 import { homedir as homedir28 } from "os";
 import { join as join102, resolve as resolve29 } from "path";
 var RUNTIME_WRAPPER_MARKER2 = "OMO_GENERATED_RUNTIME_WRAPPER";
@@ -125235,7 +125441,10 @@ async function checkCodexRuntimeWrapper(deps = {}) {
   const platform2 = deps.platform ?? process.platform;
   const wrapperPath = join102(binDir, platform2 === "win32" ? "omo-agent-toolkit.cmd" : "omo-agent-toolkit");
   const legacyWrapperPath = join102(binDir, platform2 === "win32" ? "omo.cmd" : "omo");
-  const [wrapper, legacyWrapper] = await Promise.all([readRuntimeWrapper(wrapperPath), readRuntimeWrapper(legacyWrapperPath)]);
+  const [wrapper, legacyWrapper] = await Promise.all([
+    readRuntimeWrapper(wrapperPath),
+    readRuntimeWrapper(legacyWrapperPath)
+  ]);
   const issues = [];
   if (wrapper?.includes(RUNTIME_WRAPPER_MARKER2) === true) {
     const targetPath = parseRuntimeTargetPath(wrapper);
@@ -125268,7 +125477,7 @@ async function checkCodexRuntimeWrapper(deps = {}) {
 }
 async function readRuntimeWrapper(path15) {
   try {
-    return await readFile32(path15, "utf8");
+    return await readFile33(path15, "utf8");
   } catch (error62) {
     if (error62 instanceof Error)
       return null;
@@ -125655,10 +125864,46 @@ function determineExitCode(results) {
 }
 function buildTimeoutResult(start, options) {
   const timeoutResult = {
-    results: [{ name: "Timeout", status: "fail", message: "Doctor timed out after 30s", issues: [{ title: "Doctor timeout", description: "Checks did not complete within 30s. A subprocess may be hanging.", severity: "error" }] }],
-    systemInfo: { opencodeVersion: null, opencodePath: null, pluginVersion: null, loadedVersion: null, bunVersion: null, configPath: null, configValid: false, isLocalDev: false },
-    tools: { lspServers: [], astGrepCli: false, commentChecker: false, ghCli: { installed: false, authenticated: false, username: null }, mcpBuiltin: [], mcpUser: [] },
-    summary: { total: 1, passed: 0, failed: 1, warnings: 0, skipped: 0, duration: Math.round(performance.now() - start) },
+    results: [
+      {
+        name: "Timeout",
+        status: "fail",
+        message: "Doctor timed out after 30s",
+        issues: [
+          {
+            title: "Doctor timeout",
+            description: "Checks did not complete within 30s. A subprocess may be hanging.",
+            severity: "error"
+          }
+        ]
+      }
+    ],
+    systemInfo: {
+      opencodeVersion: null,
+      opencodePath: null,
+      pluginVersion: null,
+      loadedVersion: null,
+      bunVersion: null,
+      configPath: null,
+      configValid: false,
+      isLocalDev: false
+    },
+    tools: {
+      lspServers: [],
+      astGrepCli: false,
+      commentChecker: false,
+      ghCli: { installed: false, authenticated: false, username: null },
+      mcpBuiltin: [],
+      mcpUser: []
+    },
+    summary: {
+      total: 1,
+      passed: 0,
+      failed: 1,
+      warnings: 0,
+      skipped: 0,
+      duration: Math.round(performance.now() - start)
+    },
     exitCode: EXIT_CODES.FAILURE,
     latestVersion: null
   };
@@ -126689,12 +126934,7 @@ import { randomUUID as randomUUID4 } from "crypto";
 
 // packages/memory-core/src/sync/keyring-port.ts
 import { Buffer as Buffer5 } from "buffer";
-import {
-  createPrivateKey as createPrivateKey2,
-  createPublicKey as createPublicKey2,
-  generateKeyPairSync,
-  sign as ed25519Sign
-} from "crypto";
+import { createPrivateKey as createPrivateKey2, createPublicKey as createPublicKey2, generateKeyPairSync, sign as ed25519Sign } from "crypto";
 
 // packages/memory-core/src/sync/canonical-json.ts
 import { Buffer as Buffer3 } from "buffer";
@@ -126814,7 +127054,11 @@ class Parser {
       return this.parseString().value;
     if (char === "-" || char >= "0" && char <= "9")
       return this.parseNumber();
-    for (const [word, literal2] of [["null", null], ["true", true], ["false", false]]) {
+    for (const [word, literal2] of [
+      ["null", null],
+      ["true", true],
+      ["false", false]
+    ]) {
       if (this.text.startsWith(word, this.position)) {
         this.position += word.length;
         return literal2;
@@ -126845,7 +127089,12 @@ class Parser {
       if (this.text[this.position] !== ":")
         throw this.fail("json", "expected ':' after object key");
       this.position++;
-      Object.defineProperty(object2, key.value, { value: this.parseValue(), enumerable: true, writable: true, configurable: true });
+      Object.defineProperty(object2, key.value, {
+        value: this.parseValue(),
+        enumerable: true,
+        writable: true,
+        configurable: true
+      });
       this.skipInsignificant();
       const next = this.text[this.position];
       if (next === ",") {
@@ -126907,8 +127156,17 @@ class Parser {
       }
       if (char === "\\") {
         const escape = this.text[this.position + 1];
-        const simple = { '"': '"', "\\": "\\", "/": "/", b: "\b", f: "\f", n: `
-`, r: "\r", t: "\t" };
+        const simple = {
+          '"': '"',
+          "\\": "\\",
+          "/": "/",
+          b: "\b",
+          f: "\f",
+          n: `
+`,
+          r: "\r",
+          t: "\t"
+        };
         if (escape in simple) {
           value += simple[escape];
           this.position += 2;
@@ -126982,14 +127240,24 @@ function labeledExpand(suiteId, label, prk, info, length) {
     throw new Error("hpke expand length exceeds one SHA-256 block");
   const lengthBytes = Buffer4.alloc(2);
   lengthBytes.writeUInt16BE(length);
-  const t0 = Buffer4.concat([lengthBytes, Buffer4.from("HPKE-v1"), suiteId, Buffer4.from(label), Buffer4.from(info), Buffer4.from([1])]);
+  const t0 = Buffer4.concat([
+    lengthBytes,
+    Buffer4.from("HPKE-v1"),
+    suiteId,
+    Buffer4.from(label),
+    Buffer4.from(info),
+    Buffer4.from([1])
+  ]);
   return createHmac("sha256", prk).update(t0).digest().subarray(0, length);
 }
 var KEM_ID = Buffer4.from([0, 32]);
 var KDF_ID = Buffer4.from([0, 1]);
 var AEAD_ID = Buffer4.from([0, 2]);
 function x25519PublicKeyFromRaw(raw) {
-  return createPublicKey({ key: { kty: "OKP", crv: "X25519", x: Buffer4.from(raw).toString("base64url") }, format: "jwk" });
+  return createPublicKey({
+    key: { kty: "OKP", crv: "X25519", x: Buffer4.from(raw).toString("base64url") },
+    format: "jwk"
+  });
 }
 function openHpkeSealedBox(sealingPrivateRaw, sealingPublicRaw, wrap, info = Buffer4.alloc(0), aad = Buffer4.alloc(0)) {
   if (wrap.length < SEALED_BOX_OVERHEAD)
@@ -127130,8 +127398,16 @@ function generateDeviceKeyMaterial() {
   };
 }
 function createDeviceKeyring(id, material) {
-  const signingPrivateKey = createPrivateKey2({ key: Buffer5.from(material.signingPrivatePkcs8, "base64url"), format: "der", type: "pkcs8" });
-  const sealingPrivateKey = createPrivateKey2({ key: Buffer5.from(material.sealingPrivatePkcs8, "base64url"), format: "der", type: "pkcs8" });
+  const signingPrivateKey = createPrivateKey2({
+    key: Buffer5.from(material.signingPrivatePkcs8, "base64url"),
+    format: "der",
+    type: "pkcs8"
+  });
+  const sealingPrivateKey = createPrivateKey2({
+    key: Buffer5.from(material.sealingPrivatePkcs8, "base64url"),
+    format: "der",
+    type: "pkcs8"
+  });
   const signingPublic = createPublicKey2(signingPrivateKey).export({ format: "jwk" }).x;
   const sealingPublic = createPublicKey2(sealingPrivateKey).export({ format: "jwk" }).x;
   if (!signingPublic || !sealingPublic)
@@ -127166,7 +127442,10 @@ async function initializeDeviceKeyring(store2) {
     sealing: material.sealingPrivatePkcs8
   };
   await store2.write(JSON.stringify(record3));
-  return createDeviceKeyring(record3.deviceId, { signingPrivatePkcs8: record3.signing, sealingPrivatePkcs8: record3.sealing });
+  return createDeviceKeyring(record3.deviceId, {
+    signingPrivatePkcs8: record3.signing,
+    sealingPrivatePkcs8: record3.sealing
+  });
 }
 async function loadDeviceKeyring(store2) {
   const raw = await store2.read();
@@ -127185,13 +127464,83 @@ async function loadDeviceKeyring(store2) {
   } catch {
     throw new Error("omo account keys: the stored device key record is unreadable. Run `omo account keys init` on a fresh keystore entry.");
   }
-  return createDeviceKeyring(record3.deviceId, { signingPrivatePkcs8: record3.signing, sealingPrivatePkcs8: record3.sealing });
+  return createDeviceKeyring(record3.deviceId, {
+    signingPrivatePkcs8: record3.signing,
+    sealingPrivatePkcs8: record3.sealing
+  });
 }
 
 // packages/omo-opencode/src/cli/account-keys/keystore.ts
 import { execFile as execFile5 } from "child_process";
 import { homedir as homedir30 } from "os";
 import { join as join106 } from "path";
+
+// packages/omo-opencode/src/shared/bun-ffi-shim.ts
+async function loadBunFfi() {
+  return import("bun:ffi");
+}
+
+// packages/omo-opencode/src/cli/service-auth/keychain-helper/process-state.ts
+var KEY = Symbol.for("omo.keychain-helper.process.v1");
+function keychainProcessState() {
+  const holder = globalThis;
+  holder[KEY] ??= {
+    secretsQueue: Promise.resolve(),
+    interactionSwitch: undefined,
+    approvalCache: undefined,
+    entryCandidates: [],
+    helperAccess: undefined,
+    heldPromptLocks: new Set,
+    handOff: undefined
+  };
+  return holder[KEY];
+}
+
+// packages/omo-opencode/src/cli/service-auth/keychain-helper/secrets-gate.ts
+async function loadInteractionSwitch() {
+  const state2 = keychainProcessState();
+  if (state2.interactionSwitch !== undefined)
+    return state2.interactionSwitch;
+  if (process.platform !== "darwin")
+    return state2.interactionSwitch = null;
+  try {
+    const { dlopen, FFIType } = await loadBunFfi();
+    const security = dlopen("/System/Library/Frameworks/Security.framework/Security", {
+      SecKeychainSetUserInteractionAllowed: { args: [FFIType.u8], returns: FFIType.i32 }
+    });
+    state2.interactionSwitch = (allowed) => {
+      security.symbols.SecKeychainSetUserInteractionAllowed(allowed ? 1 : 0);
+    };
+  } catch {
+    state2.interactionSwitch = null;
+  }
+  return state2.interactionSwitch;
+}
+function gatedSecrets(run2) {
+  const state2 = keychainProcessState();
+  const next = state2.secretsQueue.then(run2, run2);
+  state2.secretsQueue = next.then(() => {
+    return;
+  }, () => {
+    return;
+  });
+  return next;
+}
+function silentSecrets(run2) {
+  return gatedSecrets(async () => {
+    const setInteraction = await loadInteractionSwitch();
+    if (setInteraction === null)
+      throw new Error("Keychain interaction cannot be switched off on this host.");
+    setInteraction(false);
+    try {
+      return await run2();
+    } finally {
+      setInteraction(true);
+    }
+  });
+}
+
+// packages/omo-opencode/src/cli/account-keys/keystore.ts
 var DEFAULT_SERVICE = "omo-cli";
 function defaultRun(argv, input2) {
   const [file3, ...args] = argv;
@@ -127215,7 +127564,7 @@ function createOsKeyStore(name, platform2 = process.platform, run2 = defaultRun,
   const resolved = secrets === undefined ? run2 === defaultRun && typeof Bun !== "undefined" ? Bun.secrets : null : secrets;
   switch (platform2) {
     case "darwin":
-      return resolved !== null ? createBunSecretsKeyStore(name, resolved) : createMacOsKeychainKeyStore(name, run2);
+      return resolved !== null ? createBunSecretsKeyStore(name, gateRealSecrets(resolved)) : createMacOsKeychainKeyStore(name, run2);
     case "linux":
       return resolved !== null ? createBunSecretsKeyStore(name, resolved) : createLibsecretKeyStore(name, run2);
     case "win32":
@@ -127234,6 +127583,10 @@ async function guarded(run2, fail, argv, input2) {
     throw fail();
   }
 }
+var gateRealSecrets = (secrets) => typeof Bun !== "undefined" && secrets === Bun.secrets ? {
+  get: (key) => gatedSecrets(() => secrets.get(key)),
+  set: (entry) => gatedSecrets(() => secrets.set(entry))
+} : secrets;
 function createBunSecretsKeyStore(name, secrets) {
   const key = { service: DEFAULT_SERVICE, name };
   const unavailable = () => new Error("omo account keys: cannot access the OS credential store. Unlock the login keychain (macOS), the Secret Service keyring (Linux), or DPAPI (Windows), then try again. " + "Private keys are only ever stored through the OS credential facility.");
@@ -127259,7 +127612,15 @@ function createMacOsKeychainKeyStore(name, run2) {
   const fail = () => new Error("omo account keys: macOS Keychain is unavailable. Unlock the login keychain (open Keychain Access) and try again. " + "Private keys are only ever stored through the OS credential facility.");
   return {
     async read() {
-      const result = await guarded(run2, fail, ["security", "find-generic-password", "-s", DEFAULT_SERVICE, "-a", account, "-w"]);
+      const result = await guarded(run2, fail, [
+        "security",
+        "find-generic-password",
+        "-s",
+        DEFAULT_SERVICE,
+        "-a",
+        account,
+        "-w"
+      ]);
       if (result.code !== 0) {
         if (result.code === 44)
           return null;
@@ -127377,6 +127738,15 @@ function signInHint(when, route = signInRoute()) {
   return SIGN_IN_HINTS[route][when];
 }
 
+// packages/omo-opencode/src/cli/service-auth/closed-device-login.ts
+init_commander();
+function withClosedDeviceLoginOptions(command) {
+  return command.helpOption(false).allowUnknownOption().allowExcessArguments().option("--device").option("--no-browser").option("--api <url>").option("--new-device");
+}
+function isClosedDeviceLogin(options, leftover) {
+  return (options.device === true || options.browser === false) && leftover.length === 0;
+}
+
 // packages/omo-opencode/src/cli/service-auth/browser.ts
 import { execFile as execFile6 } from "child_process";
 var execute = (file3, args, env2) => new Promise((resolve31) => {
@@ -127384,7 +127754,18 @@ var execute = (file3, args, env2) => new Promise((resolve31) => {
 });
 async function openSignInBrowser(url2, executeBrowser = execute, platform2 = process.platform, environment2 = process.env) {
   const env2 = {};
-  for (const key of ["PATH", "Path", "HOME", "USERPROFILE", "SystemRoot", "WINDIR", "DISPLAY", "WAYLAND_DISPLAY", "XDG_RUNTIME_DIR", "DBUS_SESSION_BUS_ADDRESS"]) {
+  for (const key of [
+    "PATH",
+    "Path",
+    "HOME",
+    "USERPROFILE",
+    "SystemRoot",
+    "WINDIR",
+    "DISPLAY",
+    "WAYLAND_DISPLAY",
+    "XDG_RUNTIME_DIR",
+    "DBUS_SESSION_BUS_ADDRESS"
+  ]) {
     const value = environment2[key];
     if (value !== undefined)
       env2[key] = value;
@@ -127520,7 +127901,8 @@ var REFUSAL_CODES = [
   "client_upgrade_required",
   "writer_floor_mismatch",
   "service_upgrade_required",
-  "refresh_recovery_expired"
+  "refresh_recovery_expired",
+  "machine_exists"
 ];
 var isKnownRefusal = (code) => REFUSAL_CODES.includes(code);
 function refusalGuidance(code, status2) {
@@ -127542,6 +127924,8 @@ function refusalGuidance(code, status2) {
       return "update_omo";
     case "account_deleted":
       return "account_deleted";
+    case "machine_exists":
+      return "machine_exists";
     case "entitlement_required":
     case "forbidden":
     case "access_denied":
@@ -127575,6 +127959,8 @@ function refusalMessage(guidance) {
       return "This OmO account was deleted. Sign in with another account to keep using OmO.";
     case "account_refused":
       return "OmO accounts refused this request for your account. Check your account and its devices, then try again.";
+    case "machine_exists":
+      return "This computer already has an OmO device. Use its existing sign-in, or remove or replace that device on the Devices page of your OmO account, then try again.";
   }
 }
 
@@ -127726,7 +128112,11 @@ async function loginDevice(session, options) {
   if (uri.protocol !== "https:" && !(uri.protocol === "http:" && uri.hostname === "127.0.0.1" && uri.port !== "")) {
     throw new SignInError("The service returned an unsafe verification URL.");
   }
-  options.show({ verificationUri: minted.verificationUri, userCode: minted.userCode, matchingCode: minted.matchingCode });
+  options.show({
+    verificationUri: minted.verificationUri,
+    userCode: minted.userCode,
+    matchingCode: minted.matchingCode
+  });
   const now = options.now ?? Date.now;
   const sleep2 = options.sleep ?? ((ms) => setTimeout2(ms, undefined, { signal: session.signal }));
   const expiresAt = Date.parse(minted.expiresAt);
@@ -127739,12 +128129,15 @@ async function loginDevice(session, options) {
     try {
       const grant = parseReply(grantSchema, await session.request("/v1/device/token", jsonRequest({
         deviceCode: minted.deviceCode,
-        ...keys.public
+        ...keys.public,
+        ...options.machineDigest === undefined ? {} : { machineDigest: options.machineDigest }
       })));
       await session.save({ ...grant, ...keys.private });
       return;
     } catch (error62) {
       if (!(error62 instanceof ApiRefusal))
+        throw error62;
+      if (error62.code === "machine_exists")
         throw error62;
       if (error62.status === 400 && error62.code === "authorization_pending")
         continue;
@@ -127770,67 +128163,10 @@ async function loginDevice(session, options) {
   throw new SignInError("Device sign-in expired. Run omo login again for a new code.");
 }
 
-// packages/omo-opencode/src/cli/service-auth/keystore.ts
-import { createHash as createHash12, randomUUID as randomUUID7 } from "crypto";
-import { basename as basename16 } from "path";
+// packages/omo-opencode/src/cli/service-auth/machine-digest.ts
+import { createHash as createHash10 } from "crypto";
 
-// packages/omo-opencode/src/cli/service-auth/secret-service-lock.ts
-import { spawn as spawn5 } from "child_process";
-var DEFAULT_COLLECTION = "/org/freedesktop/secrets/aliases/default";
-var PROBE_TIMEOUT_MS2 = 1e4;
-var parseLockedReply = (stdout2) => {
-  const match = /<\s*(true|false)\s*>/.exec(stdout2);
-  if (match === null)
-    return null;
-  return match[1] === "true" ? "locked" : "unlocked";
-};
-var probeSecretServiceLock = () => new Promise((resolve31) => {
-  const child = spawn5("gdbus", [
-    "call",
-    "--session",
-    "--dest",
-    "org.freedesktop.secrets",
-    "--object-path",
-    DEFAULT_COLLECTION,
-    "--method",
-    "org.freedesktop.DBus.Properties.Get",
-    "org.freedesktop.Secret.Collection",
-    "Locked"
-  ], { stdio: ["ignore", "pipe", "ignore"] });
-  let stdout2 = "";
-  const timer = setTimeout(() => {
-    child.kill();
-    resolve31("unknown");
-  }, PROBE_TIMEOUT_MS2);
-  child.stdout.on("data", (chunk) => {
-    stdout2 += chunk.toString();
-  });
-  child.on("error", () => {
-    clearTimeout(timer);
-    resolve31("unknown");
-  });
-  child.on("close", (code) => {
-    clearTimeout(timer);
-    resolve31(code === 0 ? parseLockedReply(stdout2) ?? "absent" : "absent");
-  });
-});
-
-// packages/omo-opencode/src/cli/service-auth/credential-lock.ts
-import { AsyncLocalStorage as AsyncLocalStorage3 } from "async_hooks";
-import { createHash as createHash11 } from "crypto";
-import { mkdir as mkdir11 } from "fs/promises";
-import { homedir as homedir31 } from "os";
-import { join as join107 } from "path";
-
-// packages/team-core/src/team-state-store/lock-publish.ts
-import { access as access4, open as open3, unlink as unlink3 } from "fs/promises";
-import { dirname as dirname43 } from "path";
-
-// packages/team-core/src/team-state-store/lock-record.ts
-import { randomUUID as randomUUID6 } from "crypto";
-import { readFile as readFile34, stat as stat9 } from "fs/promises";
-
-// packages/memory-core/src/locks/process-identity.ts
+// packages/memory-core/src/sync/item/machine-id.ts
 import { execFile as execFile7 } from "child_process";
 
 // packages/memory-core/src/fs/resilient.ts
@@ -127867,6 +128203,24 @@ function retryOnEintrSync(operation) {
 
 // packages/memory-core/src/fs/rename-contention.ts
 var CONTENTION_CODES = new Set(["EPERM", "EBUSY", "EACCES"]);
+var CONTENTION_DELAYS_MS = [10, 25, 50, 100, 200, 400];
+var sleepFor = (ms) => new Promise((resolve31) => setTimeout(resolve31, ms));
+async function renameWithContentionRetry(from, to, deps) {
+  const delays = deps.platform === "win32" ? deps.delaysMs ?? CONTENTION_DELAYS_MS : [];
+  const sleep2 = deps.sleep ?? sleepFor;
+  for (let attempt = 0;; attempt += 1) {
+    try {
+      await retryOnEintr(() => deps.admit === undefined ? deps.rename(from, to) : deps.admit(() => deps.rename(from, to)));
+      return;
+    } catch (error62) {
+      const delay2 = delays[attempt];
+      const code = fsErrorCode(error62);
+      if (delay2 === undefined || code === undefined || !CONTENTION_CODES.has(code))
+        throw error62;
+      await sleep2(delay2);
+    }
+  }
+}
 
 // packages/memory-core/src/fs/resilient.ts
 function isFunction2(value) {
@@ -127899,9 +128253,16 @@ function resilientNamespace(namespace, kind) {
 }
 var IDEMPOTENT_HANDLE_METHODS = new Set(["stat", "sync", "datasync", "chmod", "chown", "utimes", "truncate"]);
 var promises = resilientNamespace(fsp, "async");
+function rename8(from, to, admit) {
+  return renameWithContentionRetry(from, to, {
+    rename: (source, target) => fsp.rename(source, target),
+    platform: process.platform,
+    ...admit === undefined ? {} : { admit }
+  });
+}
 var sync = resilientNamespace(fsSync, "sync");
 var {
-  access: access3,
+  access: access4,
   chmod: chmod2,
   copyFile: copyFile4,
   cp: cp5,
@@ -127909,7 +128270,7 @@ var {
   lstat: lstat18,
   mkdir: mkdir10,
   mkdtemp: mkdtemp2,
-  readFile: readFile33,
+  readFile: readFile34,
   readdir: readdir17,
   readlink: readlink7,
   realpath: realpath2,
@@ -127917,8 +128278,897 @@ var {
   rmdir: rmdir2,
   stat: stat8,
   statfs,
-  unlink: unlink2
+  unlink: unlink3
 } = promises;
+
+// packages/memory-core/src/sync/item/machine-id.ts
+async function darwinPlatformUuid() {
+  const out = await run2("/usr/sbin/ioreg", ["-rd1", "-c", "IOPlatformExpertDevice"]);
+  return /"IOPlatformUUID" = "([^"]+)"/.exec(out ?? "")?.[1] ?? null;
+}
+async function windowsMachineGuid() {
+  const out = await run2("reg", ["query", "HKLM\\SOFTWARE\\Microsoft\\Cryptography", "/v", "MachineGuid"]);
+  return /MachineGuid\s+REG_SZ\s+(\S+)/.exec(out ?? "")?.[1] ?? null;
+}
+var UUID2 = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+var LINUX_MACHINE_ID = /^[0-9a-f]{32}$/;
+function normalizeHardwareId(platform2, raw) {
+  const text = (raw ?? "").trim().toLowerCase();
+  const id = platform2 === "win32" && text.startsWith("{") && text.endsWith("}") ? text.slice(1, -1) : text;
+  const valid = platform2 === "linux" ? LINUX_MACHINE_ID.test(id) : (platform2 === "darwin" || platform2 === "win32") && UUID2.test(id);
+  return valid && /[1-9a-f]/.test(id) ? id : null;
+}
+async function readTextOrNull(path15, read) {
+  return read(path15, "utf8").then((value) => value, () => null);
+}
+async function readHardwareId(platform2 = process.platform, read = readFile34) {
+  if (platform2 === "linux") {
+    const primary = await readTextOrNull("/etc/machine-id", read);
+    const raw = primary ?? await readTextOrNull("/var/lib/dbus/machine-id", read) ?? "";
+    return normalizeHardwareId(platform2, raw);
+  }
+  if (platform2 === "darwin")
+    return normalizeHardwareId(platform2, await darwinPlatformUuid());
+  if (platform2 === "win32")
+    return normalizeHardwareId(platform2, await windowsMachineGuid());
+  return null;
+}
+function run2(command, args) {
+  return new Promise((resolve31) => {
+    execFile7(command, [...args], { timeout: 5000, windowsHide: true }, (error62, stdout2) => {
+      resolve31(error62 === null ? stdout2 : null);
+    });
+  });
+}
+
+// packages/omo-opencode/src/cli/service-auth/machine-digest.ts
+var MACHINE_IDENTITY_CAPABILITY = "hardware-digest-v1";
+function machineDigestOf(hardwareId) {
+  return createHash10("sha256").update(`omo-machine-v1${hardwareId}`, "utf8").digest("hex");
+}
+async function readMachineDigest(read = readHardwareId) {
+  const id = await read();
+  return id === null ? undefined : machineDigestOf(id);
+}
+function advertisesMachineIdentity(health) {
+  if (typeof health !== "object" || health === null || !("capabilities" in health))
+    return false;
+  const capabilities = health.capabilities;
+  return typeof capabilities === "object" && capabilities !== null && "machineIdentity" in capabilities && capabilities.machineIdentity === MACHINE_IDENTITY_CAPABILITY;
+}
+
+// packages/omo-opencode/src/cli/service-auth/keystore.ts
+import { createHash as createHash13, randomUUID as randomUUID8 } from "crypto";
+import { basename as basename18 } from "path";
+
+// packages/omo-opencode/src/cli/service-auth/keychain-helper/darwin-backend.ts
+import { homedir as homedir32 } from "os";
+import { join as join111 } from "path";
+
+// packages/omo-opencode/src/cli/service-auth/account-home.ts
+import { execFileSync as execFileSync4 } from "child_process";
+import { accessSync as accessSync5, constants as constants13, mkdirSync as mkdirSync19, readFileSync as readFileSync46, statSync as statSync8 } from "fs";
+import { homedir as homedir31 } from "os";
+import { join as join107, posix as posix13, win32 as win3210 } from "path";
+var lockDirectoryIn = (home) => join107(home, ".omo", "session-locks");
+function userRecordHome(facts) {
+  try {
+    if (facts.platform === "linux")
+      return passwdHome(facts);
+    if (facts.platform === "darwin")
+      return darwinHome(facts);
+    if (facts.platform === "win32")
+      return windowsProfile(facts);
+    return;
+  } catch {
+    return;
+  }
+}
+function passwdHome(facts) {
+  if (facts.uid === undefined)
+    return;
+  const uid = String(facts.uid);
+  const home = facts.readFile("/etc/passwd").split(`
+`).map((line) => line.split(":")).find((fields) => fields[2] === uid)?.[5];
+  return home !== undefined && posix13.isAbsolute(home) ? home : undefined;
+}
+function darwinHome(facts) {
+  const fields = facts.run("/usr/bin/id", ["-P"]).trim().split(":");
+  const home = fields[8];
+  if (facts.uid !== undefined && fields[2] !== String(facts.uid))
+    return;
+  return home !== undefined && posix13.isAbsolute(home) ? home : undefined;
+}
+function windowsProfile(facts) {
+  const whoami = system32Tool(facts, "whoami.exe");
+  const reg = system32Tool(facts, "reg.exe");
+  if (whoami === undefined || reg === undefined)
+    return;
+  const sid = /S-1-[0-9-]+/.exec(facts.run(whoami, ["/user", "/fo", "csv", "/nh"]))?.[0];
+  if (sid === undefined)
+    return;
+  const key = `HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\ProfileList\\${sid}`;
+  const value = /ProfileImagePath\s+REG_(?:EXPAND_)?SZ\s+(.+)/.exec(facts.run(reg, ["query", key, "/v", "ProfileImagePath"]))?.[1]?.trim();
+  const home = value?.replace(/%([^%]+)%/g, (whole, name) => facts.env[name] ?? whole);
+  return home !== undefined && !home.includes("%") && win3210.isAbsolute(home) ? home : undefined;
+}
+function system32Tool(facts, name) {
+  const root = facts.env.SystemRoot;
+  if (root === undefined || !/^[A-Za-z]:[\\/]/.test(root) || root.split(/[\\/]/).includes(".."))
+    return;
+  const tool = win3210.join(root, "System32", name);
+  return facts.isFile(tool) ? tool : undefined;
+}
+function chooseLockHome(facts) {
+  const home = facts.homedir();
+  const record3 = facts.recordHome();
+  if (record3 === undefined || record3 === home)
+    return home;
+  try {
+    facts.prepareLockDirectory(lockDirectoryIn(record3));
+    return record3;
+  } catch (error62) {
+    const reason = error62 instanceof Error && "code" in error62 ? String(error62.code) : String(error62);
+    facts.warn(`omo: the account home ${record3} cannot hold the credential lock (${reason}); using ${home}. A process started with another HOME may refresh the same sign-in at the same time (#12978).`);
+    return home;
+  }
+}
+var systemPlatformFacts = {
+  platform: process.platform,
+  uid: process.getuid?.(),
+  env: process.env,
+  readFile: (path15) => readFileSync46(path15, "utf8"),
+  isFile: (path15) => statSync8(path15, { throwIfNoEntry: false })?.isFile() ?? false,
+  run: (command, args) => execFileSync4(command, args, {
+    encoding: "utf8",
+    stdio: ["ignore", "pipe", "ignore"],
+    timeout: 5000,
+    windowsHide: true
+  })
+};
+var systemAccountFacts = {
+  recordHome: () => userRecordHome(systemPlatformFacts),
+  homedir: homedir31,
+  prepareLockDirectory: (directory) => {
+    mkdirSync19(directory, { recursive: true, mode: 448 });
+    accessSync5(directory, constants13.W_OK);
+  },
+  warn: (message) => process.stderr.write(`${message}
+`)
+};
+var TEST_LOCK_HOME_ENV = "OMO_TEST_CREDENTIAL_LOCK_HOME";
+var INJECTED_SECRETS = Symbol.for("omo.test.injectedSecrets");
+function testLockHome(env2, secrets) {
+  const home = env2[TEST_LOCK_HOME_ENV];
+  if (home === undefined || !(posix13.isAbsolute(home) || win3210.isAbsolute(home)))
+    return;
+  const marked = typeof secrets === "object" && secrets !== null && secrets[INJECTED_SECRETS] === true;
+  return marked ? home : undefined;
+}
+var facts = systemAccountFacts;
+var chosen;
+function accountHome() {
+  chosen ??= testLockHome(process.env, typeof Bun === "undefined" ? undefined : Bun.secrets) ?? chooseLockHome(facts);
+  return chosen;
+}
+
+// packages/omo-opencode/src/cli/service-auth/keychain-helper/client.ts
+init_zod();
+init_bun_spawn_shim();
+var MUTATING = new Set(["write", "stage", "retire", "promote", "remove"]);
+var helperReplySchema = exports_external.object({
+  owned: exports_external.boolean(),
+  value: exports_external.string(),
+  marker: exports_external.boolean(),
+  cdat: exports_external.number(),
+  mdat: exports_external.number(),
+  partition: exports_external.enum(["ours", "other", "none", "unknown"]),
+  present: exports_external.object({ staging: exports_external.boolean(), old: exports_external.boolean(), oldSlots: exports_external.array(exports_external.number().int().min(0).max(7)).optional() }).strict(),
+  missing: exports_external.boolean(),
+  recover: exports_external.boolean(),
+  ok: exports_external.boolean(),
+  created: exports_external.boolean(),
+  skipped: exports_external.boolean(),
+  slot: exports_external.number().int().min(0).max(7),
+  error: exports_external.enum(["locked", "store", "not-owned", "exists", "missing", "denied", "refused"]),
+  reason: exports_external.string(),
+  status: exports_external.number()
+}).partial().strict();
+
+class HelperProtocolError extends Error {
+}
+async function firstLine(stream) {
+  const reader = stream.getReader();
+  const decoder = new TextDecoder;
+  let text = "";
+  for (;; ) {
+    const newline = text.indexOf(`
+`);
+    if (newline !== -1)
+      return text.slice(0, newline);
+    const chunk = await reader.read();
+    if (chunk.done)
+      return null;
+    text += decoder.decode(chunk.value, { stream: true });
+  }
+}
+function isFlushable(stream) {
+  return typeof stream.flush === "function";
+}
+var spawnDetachedHelper = (path15) => {
+  const child = spawn([path15], {
+    stdin: "pipe",
+    stdout: "pipe",
+    stderr: "ignore",
+    detached: true,
+    env: process.env.HOME === undefined ? {} : { HOME: process.env.HOME }
+  });
+  const pid = child.pid;
+  if (pid === undefined)
+    throw new HelperProtocolError("The keychain helper did not start.");
+  const stdin2 = child.stdin;
+  return {
+    pid,
+    send: (line) => {
+      stdin2.write(line);
+      if (isFlushable(stdin2))
+        stdin2.flush();
+    },
+    reply: firstLine(child.stdout),
+    close: () => {
+      stdin2.end();
+    }
+  };
+};
+async function callHelper(path15, call, options = {}) {
+  const mutates = MUTATING.has(call.verb);
+  if (mutates && options.lease === undefined)
+    throw new HelperProtocolError(`The ${call.verb} helper call needs the session lock.`);
+  const helper = (options.spawn ?? spawnDetachedHelper)(path15);
+  let handedOver = false;
+  try {
+    if (mutates && options.lease !== undefined) {
+      await options.lease.handOver(helper.pid);
+      handedOver = true;
+    }
+    helper.send(`${JSON.stringify({ v: 1, verb: call.verb, account: call.account, ...call.value === undefined ? {} : { value: call.value } })}
+`);
+    const line = await helper.reply;
+    if (handedOver && options.lease !== undefined) {
+      handedOver = false;
+      await options.lease.restore();
+    }
+    if (line === null)
+      throw new HelperProtocolError(`The keychain helper exited without answering ${call.verb}.`);
+    let json2;
+    try {
+      json2 = JSON.parse(line);
+    } catch {
+      throw new HelperProtocolError(`The keychain helper sent a ${call.verb} reply that is not JSON.`);
+    }
+    const parsed = helperReplySchema.safeParse(json2);
+    if (!parsed.success)
+      throw new HelperProtocolError(`The keychain helper sent an unexpected ${call.verb} reply.`);
+    return parsed.data;
+  } catch (error62) {
+    if (handedOver && options.lease !== undefined) {
+      try {
+        await options.lease.restore();
+      } catch (restoreError) {
+        throw new AggregateError([error62, restoreError], `The ${call.verb} helper call failed and the session lock could not be restored.`);
+      }
+    }
+    throw error62;
+  } finally {
+    helper.close();
+  }
+}
+
+// packages/omo-opencode/src/cli/service-auth/keychain-helper/location.ts
+import { dirname as dirname43, join as join108, posix as posix14 } from "path";
+import { fileURLToPath as fileURLToPath9 } from "url";
+function bundleCandidates(moduleUrl) {
+  const root = dirname43(dirname43(dirname43(fileURLToPath9(moduleUrl))));
+  return [join108(root, "bin", "darwin", "omo-keychain"), join108(root, "omo-keychain")];
+}
+function machineCandidates(home, arch = process.arch) {
+  const runtimeArch = arch === "arm64" ? "arm64" : "x64";
+  return [
+    `/Applications/OmO.app/Contents/Resources/omo-runtime/darwin-${runtimeArch}/omo-keychain`,
+    posix14.join(home, "Applications", "OmO.app", "Contents", "Resources", "omo-runtime", `darwin-${runtimeArch}`, "omo-keychain"),
+    posix14.join(home, ".bun", "install", "global", "node_modules", "omo-ai", "bin", "darwin", "omo-keychain")
+  ];
+}
+async function locateHelper(candidates, verify) {
+  const rejected = [];
+  for (const path15 of candidates) {
+    const verdict = await verify(path15);
+    if (verdict === "valid")
+      return { kind: "found", path: path15 };
+    if (verdict === "invalid")
+      rejected.push(path15);
+  }
+  return rejected.length === 0 ? { kind: "missing" } : { kind: "invalid", rejected };
+}
+
+// packages/omo-opencode/src/cli/service-auth/keychain-helper/pin.ts
+import { readdirSync as readdirSync14, rmSync as rmSync9 } from "fs";
+import { chmod as chmod3, copyFile as copyFile5, constants as constants14, mkdtemp as mkdtemp3, rm as rm17, stat as stat9 } from "fs/promises";
+import { tmpdir as tmpdir6 } from "os";
+import { basename as basename16, join as join109 } from "path";
+var DIR_PREFIX = "omo-keychain-";
+var OWNED_DIR = new RegExp(`^${DIR_PREFIX}(\\d+)-`);
+var isAlive = (pid) => {
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch (error62) {
+    return !(error62 instanceof Error && ("code" in error62) && error62.code === "ESRCH");
+  }
+};
+function sweepDeadPinDirs(root = tmpdir6()) {
+  const removed2 = [];
+  let entries;
+  try {
+    entries = readdirSync14(root);
+  } catch {
+    return removed2;
+  }
+  for (const entry of entries) {
+    const owner = OWNED_DIR.exec(entry)?.[1];
+    if (owner === undefined || Number(owner) === process.pid || isAlive(Number(owner)))
+      continue;
+    try {
+      rmSync9(join109(root, entry), { recursive: true, force: true });
+    } catch {
+      continue;
+    }
+    removed2.push(entry);
+  }
+  return removed2;
+}
+var processDir;
+async function processPinDir() {
+  if (processDir !== undefined)
+    return processDir;
+  sweepDeadPinDirs();
+  const dir = await mkdtemp3(join109(tmpdir6(), `${DIR_PREFIX}${process.pid}-`));
+  process.once("exit", () => rmSync9(dir, { recursive: true, force: true }));
+  processDir = dir;
+  return dir;
+}
+var pinned = new Map;
+async function sourceIdentity(source) {
+  const info = await stat9(source);
+  return `${source}\x00${info.dev}\x00${info.ino}\x00${info.size}\x00${info.mtimeMs}\x00${info.ctimeMs}`;
+}
+async function copyAndVerify(source, verify, dir) {
+  const target = join109(dir, `${crypto.randomUUID()}-${basename16(source)}`);
+  try {
+    await copyFile5(source, target, constants14.COPYFILE_EXCL);
+    await chmod3(target, 320);
+  } catch (error62) {
+    await rm17(target, { force: true });
+    return { kind: "unavailable", reason: error62 instanceof Error ? error62.message : String(error62) };
+  }
+  let verdict;
+  try {
+    verdict = await verify(target);
+  } catch (error62) {
+    await rm17(target, { force: true });
+    return { kind: "unavailable", reason: error62 instanceof Error ? error62.message : String(error62) };
+  }
+  if (verdict === "valid")
+    return { kind: "pinned", path: target };
+  await rm17(target, { force: true });
+  return { kind: "invalid" };
+}
+async function pinVerifiedCopy(source, verify, dir) {
+  let identity2;
+  try {
+    identity2 = `${dir ?? ""}\x00${await sourceIdentity(source)}`;
+  } catch (error62) {
+    return { kind: "unavailable", reason: error62 instanceof Error ? error62.message : String(error62) };
+  }
+  const known = pinned.get(identity2);
+  if (known !== undefined) {
+    const result2 = await known;
+    if (result2.kind !== "pinned")
+      return result2;
+    let verdict;
+    try {
+      verdict = await verify(result2.path);
+    } catch (error62) {
+      pinned.delete(identity2);
+      await rm17(result2.path, { force: true });
+      return { kind: "unavailable", reason: error62 instanceof Error ? error62.message : String(error62) };
+    }
+    if (verdict === "valid")
+      return result2;
+  }
+  const created = Promise.resolve(dir ?? processPinDir()).then((target) => copyAndVerify(source, verify, target), (error62) => ({
+    kind: "unavailable",
+    reason: error62 instanceof Error ? error62.message : String(error62)
+  }));
+  pinned.set(identity2, created);
+  const result = await created;
+  if (result.kind !== "pinned")
+    pinned.delete(identity2);
+  return result;
+}
+
+// packages/omo-opencode/src/cli/service-auth/keychain-helper/signature.ts
+import { stat as stat10 } from "fs/promises";
+init_bun_spawn_shim();
+var KEYCHAIN_HELPER_REQUIREMENT = 'identifier "com.mengmota.omo-keychain-helper" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] ' + 'and certificate leaf[field.1.2.840.113635.100.6.1.13] and certificate leaf[subject.OU] = "523JNR86LZ"';
+var STRICT_ALL_ARCHITECTURES = 1 << 4 | 1 << 0;
+var UTF8 = 134217984;
+var security;
+async function loadSecurity() {
+  if (security !== undefined)
+    return security;
+  try {
+    const { dlopen, FFIType, ptr } = await loadBunFfi();
+    const cf = dlopen("/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation", {
+      CFStringCreateWithCString: { args: [FFIType.u64, FFIType.ptr, FFIType.u32], returns: FFIType.u64 },
+      CFURLCreateFromFileSystemRepresentation: {
+        args: [FFIType.u64, FFIType.ptr, FFIType.i64, FFIType.bool],
+        returns: FFIType.u64
+      },
+      CFRelease: { args: [FFIType.u64], returns: FFIType.void }
+    });
+    const sec = dlopen("/System/Library/Frameworks/Security.framework/Security", {
+      SecStaticCodeCreateWithPath: { args: [FFIType.u64, FFIType.u32, FFIType.ptr], returns: FFIType.i32 },
+      SecRequirementCreateWithString: { args: [FFIType.u64, FFIType.u32, FFIType.ptr], returns: FFIType.i32 },
+      SecStaticCodeCheckValidityWithErrors: {
+        args: [FFIType.u64, FFIType.u32, FFIType.u64, FFIType.u64],
+        returns: FFIType.i32
+      }
+    });
+    const cString = (text) => Buffer.from(`${text}\x00`, "utf8");
+    security = {
+      check(path15, requirement) {
+        const pathBytes = Buffer.from(path15, "utf8");
+        const url2 = BigInt(cf.symbols.CFURLCreateFromFileSystemRepresentation(0n, ptr(pathBytes), pathBytes.length, false));
+        const text = BigInt(cf.symbols.CFStringCreateWithCString(0n, ptr(cString(requirement)), UTF8));
+        const codeOut = new BigUint64Array(1);
+        const requirementOut = new BigUint64Array(1);
+        try {
+          if (url2 === 0n || text === 0n)
+            return false;
+          if (sec.symbols.SecStaticCodeCreateWithPath(url2, 0, ptr(codeOut)) !== 0)
+            return false;
+          if (sec.symbols.SecRequirementCreateWithString(text, 0, ptr(requirementOut)) !== 0)
+            return false;
+          const code = codeOut[0] ?? 0n;
+          const designated = requirementOut[0] ?? 0n;
+          return sec.symbols.SecStaticCodeCheckValidityWithErrors(code, STRICT_ALL_ARCHITECTURES, designated, 0n) === 0;
+        } finally {
+          for (const ref of [url2, text, codeOut[0] ?? 0n, requirementOut[0] ?? 0n])
+            if (ref !== 0n)
+              cf.symbols.CFRelease(ref);
+        }
+      }
+    };
+  } catch {
+    security = null;
+  }
+  return security;
+}
+async function verifyWithCodesign(path15, requirement) {
+  const child = spawn(["/usr/bin/codesign", "--verify", "--strict", `-R=${requirement}`, path15], {
+    stdout: "ignore",
+    stderr: "ignore",
+    env: {}
+  });
+  return await child.exited === 0;
+}
+var verifyWithSecurityFramework = async (path15, requirement) => {
+  const loaded = await loadSecurity();
+  return loaded === null ? verifyWithCodesign(path15, requirement) : loaded.check(path15, requirement);
+};
+async function fileIdentity(path15) {
+  try {
+    const info = await stat10(path15);
+    if (!info.isFile())
+      return null;
+    return `${path15}\x00${info.dev}\x00${info.ino}\x00${info.size}\x00${info.mtimeMs}\x00${info.ctimeMs}`;
+  } catch {
+    return null;
+  }
+}
+function createSignatureChecker(check2 = verifyWithSecurityFramework, requirement = KEYCHAIN_HELPER_REQUIREMENT) {
+  const verdicts = new Map;
+  const checker = async (path15) => {
+    const before = await fileIdentity(path15);
+    if (before === null)
+      return "missing";
+    const known = verdicts.get(before);
+    if (known !== undefined)
+      return known;
+    const passed = await check2(path15, requirement);
+    if (await fileIdentity(path15) !== before)
+      return "invalid";
+    const verdict = passed ? "valid" : "invalid";
+    verdicts.set(before, verdict);
+    return verdict;
+  };
+  return checker;
+}
+var processChecker;
+var processSignatureChecker = () => processChecker ??= createSignatureChecker();
+
+// packages/omo-opencode/src/cli/service-auth/keychain-helper/access.ts
+async function resolveHelperAccess(candidates, options = {}) {
+  const verify = options.verify ?? processSignatureChecker();
+  let source;
+  let pin;
+  try {
+    const location = await locateHelper(candidates, verify);
+    if (location.kind !== "found")
+      return location;
+    source = location.path;
+    pin = await (options.pin ?? pinVerifiedCopy)(source, verify);
+  } catch (error62) {
+    return { kind: "unavailable", reason: error62 instanceof Error ? error62.message : String(error62) };
+  }
+  if (pin.kind === "invalid")
+    return { kind: "invalid", rejected: [source] };
+  if (pin.kind === "unavailable")
+    return { kind: "unavailable", reason: pin.reason };
+  const pinned2 = pin.path;
+  const spawn5 = options.spawn ?? spawnDetachedHelper;
+  return {
+    kind: "ready",
+    path: pinned2,
+    call: async (call, lease) => {
+      const verdict = await verify(pinned2).catch((error62) => {
+        throw new HelperProtocolError(`OmO's keychain helper could not be checked before it ran: ${error62 instanceof Error ? error62.message : String(error62)}`);
+      });
+      if (verdict !== "valid")
+        throw new HelperProtocolError("OmO's keychain helper changed on disk and failed its signature check; it was not run.");
+      return callHelper(pinned2, call, { spawn: spawn5, ...lease === undefined ? {} : { lease } });
+    }
+  };
+}
+
+// packages/omo-opencode/src/cli/service-auth/keychain-helper/approval-cache.ts
+var systemClock = {
+  nowSeconds: () => Date.now() / 1000,
+  sleepMs: (ms) => new Promise((resolve31) => setTimeout(resolve31, ms))
+};
+function isEntryValid(entry, current, nowSeconds) {
+  if (nowSeconds < entry.readStartedAt)
+    return false;
+  return current.cdat === entry.cdat && current.mdat === entry.mdat && Math.floor(current.mdat) < Math.floor(entry.readStartedAt);
+}
+function createApprovalCache(clock = systemClock) {
+  let entry = null;
+  let deniedForBackground = false;
+  let pending = null;
+  return {
+    consume(current) {
+      if (entry === null)
+        return null;
+      if (!isEntryValid(entry, current, clock.nowSeconds())) {
+        entry = null;
+        return null;
+      }
+      return entry.value;
+    },
+    deniedForBackground: () => deniedForBackground,
+    inFlight: () => pending,
+    approve(run3) {
+      if (pending !== null)
+        return pending;
+      const readStartedAt = clock.nowSeconds();
+      const started = run3().then((answer) => {
+        if (answer.kind === "approved") {
+          entry = { value: answer.value, ...answer.attributes, readStartedAt };
+          deniedForBackground = false;
+        } else if (answer.kind === "denied")
+          deniedForBackground = true;
+        return answer;
+      });
+      const settled = () => {
+        if (pending === started)
+          pending = null;
+      };
+      started.then(settled, settled);
+      pending = started;
+      return started;
+    },
+    async afterOwnWrite(value, readAttributes) {
+      if (entry === null)
+        return;
+      const written = await readAttributes();
+      if (written === null) {
+        entry = null;
+        return;
+      }
+      while (Math.floor(clock.nowSeconds()) <= Math.floor(written.mdat)) {
+        await clock.sleepMs(Math.max(1, Math.ceil((Math.floor(written.mdat) + 1 - clock.nowSeconds()) * 1000)));
+      }
+      const readStartedAt = clock.nowSeconds();
+      const fresh = await readAttributes();
+      entry = fresh === null ? null : { value, ...fresh, readStartedAt };
+    },
+    drop() {
+      entry = null;
+    }
+  };
+}
+var processApprovalCache = () => {
+  const state2 = keychainProcessState();
+  state2.approvalCache ??= createApprovalCache();
+  return state2.approvalCache;
+};
+
+// packages/omo-opencode/src/cli/service-auth/keychain-helper/darwin-read.ts
+var ROW_8B_DEFAULT = "re-login";
+
+class HelperReadError extends Error {
+  failure;
+  constructor(failure2, message) {
+    super(message);
+    this.failure = failure2;
+  }
+}
+function failure2(reply) {
+  if (reply.error === "locked")
+    return new HelperReadError("locked", "The keychain is locked.");
+  return new HelperReadError("store", `The keychain helper answered ${reply.error ?? "unexpectedly"}.`);
+}
+async function approveOnce(deps) {
+  const running = deps.cache.inFlight();
+  if (running !== null)
+    return running;
+  const release3 = await deps.takePromptLock();
+  if (release3 === null)
+    throw new HelperReadError("pending", "Another omo process is waiting for your keychain approval.");
+  try {
+    return await deps.cache.approve(async () => {
+      const reply = await deps.access.call({ verb: "approve", account: deps.account });
+      if (reply.missing === true)
+        return { kind: "missing" };
+      if (reply.error === "denied")
+        return { kind: "denied" };
+      if (reply.error !== undefined || reply.value === undefined || reply.cdat === undefined || reply.mdat === undefined)
+        throw failure2(reply);
+      return { kind: "approved", value: reply.value, attributes: { cdat: reply.cdat, mdat: reply.mdat } };
+    });
+  } finally {
+    await release3();
+  }
+}
+async function readThroughHelper(deps, allowPrompt) {
+  const reply = await deps.access.call({ verb: "read", account: deps.account });
+  if (reply.error !== undefined)
+    throw failure2(reply);
+  if (reply.missing === true)
+    return { kind: "missing", reply };
+  if (reply.owned === true && reply.value !== undefined)
+    return {
+      kind: "value",
+      value: reply.value,
+      source: reply.marker === true || reply.recover === true ? "owned" : "owned-unmarked",
+      reply
+    };
+  const own2 = await deps.ownSilentGet().catch(() => {
+    return;
+  });
+  if (typeof own2 === "string")
+    return { kind: "value", value: own2, source: "own-identity", reply };
+  if (reply.cdat === undefined || reply.mdat === undefined)
+    throw failure2(reply);
+  const cached2 = deps.cache.consume({ cdat: reply.cdat, mdat: reply.mdat });
+  if (cached2 !== null)
+    return { kind: "value", value: cached2, source: "approved", reply };
+  const reloginInstead = reply.partition !== "ours" && reply.partition !== "none" && (deps.row8b ?? ROW_8B_DEFAULT) === "re-login";
+  if (!allowPrompt) {
+    if (reloginInstead)
+      return { kind: "missing", reply };
+    throw new HelperReadError("pending", "The keychain needs your approval; run an omo command in a terminal.");
+  }
+  if (deps.background && deps.cache.deniedForBackground())
+    throw new HelperReadError("pending", "Keychain access was denied; run an omo command in a terminal to approve it.");
+  if (reloginInstead)
+    return { kind: "missing", reply };
+  if (deps.noDialog === true)
+    throw new HelperReadError("pending", "The keychain hand-off cannot show a dialog.");
+  if (deps.handOff !== undefined && await deps.handOff()) {
+    const after = await deps.access.call({ verb: "read", account: deps.account });
+    if (after.owned === true && after.value !== undefined)
+      return { kind: "value", value: after.value, source: "owned", reply: after };
+  }
+  const answer = await approveOnce(deps);
+  if (answer.kind === "approved")
+    return { kind: "value", value: answer.value, source: "approved", reply };
+  if (answer.kind === "missing")
+    return { kind: "missing", reply };
+  throw new HelperReadError("denied", "Keychain access was denied.");
+}
+
+// packages/omo-opencode/src/cli/service-auth/keychain-helper/recovery.ts
+var OLD_SLOT_COUNT = 8;
+var oldSlotName = (account, slot) => slot === 0 ? `${account}.old` : `${account}.old.${slot}`;
+function recoveryPlan(names) {
+  if (!names.original && names.staging)
+    return names.old ? ["promote", "delete-old"] : ["promote"];
+  if (!names.original && names.old)
+    return ["delete-old"];
+  if (names.original && names.staging)
+    return names.old ? ["remove-staging", "delete-old"] : ["remove-staging"];
+  if (names.original && names.old)
+    return ["delete-old"];
+  return [];
+}
+function oldSlotsOf(reply) {
+  return reply.present?.oldSlots ?? (reply.present?.old === true ? [0] : []);
+}
+function namesFromRead(reply) {
+  const original = reply.owned === false || reply.owned === true && reply.recover !== true;
+  return {
+    original,
+    staging: reply.present?.staging === true,
+    old: reply.present?.old === true,
+    oldSlots: oldSlotsOf(reply)
+  };
+}
+async function deleteOld(name, helper, deleteOwn) {
+  const removed2 = await helper({ verb: "remove", account: name }).catch(() => null);
+  if (removed2?.ok === true)
+    return true;
+  return deleteOwn(name).catch(() => false);
+}
+async function deleteOldSlots(account, slots, helper, deleteOwn) {
+  let cleared = true;
+  for (const slot of slots)
+    if (!await deleteOld(oldSlotName(account, slot), helper, deleteOwn))
+      cleared = false;
+  return cleared;
+}
+async function runRecovery(account, names, helper, deleteOwnOld) {
+  const applied = [];
+  for (const step of recoveryPlan(names)) {
+    const ok = step === "promote" ? (await helper({ verb: "promote", account })).ok === true : step === "remove-staging" ? (await helper({ verb: "remove", account: `${account}.staging` })).ok === true : await deleteOldSlots(account, names.oldSlots, helper, deleteOwnOld);
+    if (!ok && step !== "delete-old")
+      return { applied, failed: step };
+    if (ok)
+      applied.push(step);
+  }
+  return { applied, failed: null };
+}
+
+// packages/omo-opencode/src/cli/service-auth/keychain-helper/migration.ts
+var MIGRATABLE = new Set(["own-identity", "owned-unmarked", "approved"]);
+async function migrate(account, value, source, helper, deleteOwnOld) {
+  if (!MIGRATABLE.has(source))
+    return { kind: "skipped", reason: "not-migratable" };
+  if ((await helper({ verb: "stage", account, value })).ok !== true)
+    return { kind: "failed", step: "stage" };
+  const retired = await helper({ verb: "retire", account });
+  if (retired.error === "exists" && retired.reason === "old-slots-full" || retired.ok === true && retired.skipped === true) {
+    await helper({ verb: "remove", account: `${account}.staging` });
+    return { kind: "skipped", reason: "old-slots-full" };
+  }
+  if (retired.ok !== true)
+    return { kind: "failed", step: "retire" };
+  const slot = retired.slot ?? 0;
+  if ((await helper({ verb: "promote", account })).ok !== true)
+    return { kind: "failed", step: "promote" };
+  return { kind: "migrated", oldDeleted: await deleteOld(oldSlotName(account, slot), helper, deleteOwnOld) };
+}
+
+// packages/omo-opencode/src/cli/service-auth/keychain-helper/darwin-store.ts
+class HelperOldSlotsFull extends Error {
+}
+var ALL_OLD_SLOTS = Array.from({ length: OLD_SLOT_COUNT }, (_2, slot) => slot);
+var OLD_SLOTS_FULL_MESSAGE = 'The macOS keychain holds 8 earlier OmO sign-ins that cannot be removed automatically. Open Keychain Access, delete the items whose account name ends in ".old" or ".old.1" to ".old.7" for OmO, then sign in again.';
+var failed = (reply, verb) => new HelperReadError(reply.error === "locked" ? "locked" : "store", `The keychain helper could not ${verb} the sign-in (${reply.error ?? "no answer"}).`);
+function lockedDarwinStore(deps, lease) {
+  const helper = (call) => deps.access.call(call, lease);
+  const deleteOwnOld = (name) => deps.ownDelete(name);
+  let lastRead = null;
+  const read = async () => {
+    const result = await readThroughHelper(deps, false);
+    lastRead = result.kind === "value" ? result : null;
+    return result.kind === "value" ? result.value : null;
+  };
+  return {
+    async recover() {
+      const reply = await deps.access.call({ verb: "read", account: deps.account });
+      if (reply.error === undefined)
+        await runRecovery(deps.account, namesFromRead(reply), helper, deleteOwnOld);
+    },
+    read,
+    async settle() {
+      if (lastRead === null)
+        return;
+      const outcome = await migrate(deps.account, lastRead.value, lastRead.source, helper, deleteOwnOld);
+      if (outcome.kind === "skipped" && outcome.reason === "old-slots-full")
+        deps.notice(`omo: ${OLD_SLOTS_FULL_MESSAGE}`);
+      if (outcome.kind === "failed")
+        deps.notice(`omo: the macOS keychain item could not be moved to OmO's keychain helper (${outcome.step}); it keeps working as before.`);
+    },
+    async write(value, intent, beforeRetire) {
+      const state2 = await deps.access.call({ verb: "read", account: deps.account });
+      if (state2.error !== undefined)
+        throw failed(state2, "check");
+      if (state2.owned === false) {
+        const approved = state2.cdat !== undefined && state2.mdat !== undefined && deps.cache.consume({ cdat: state2.cdat, mdat: state2.mdat }) !== null;
+        const readable = lastRead !== null || approved || await deps.ownSilentGet().catch(() => {
+          return;
+        }) !== undefined;
+        if (readable || intent !== "fresh-sign-in") {
+          await deps.ownOverwrite(value);
+          if (lastRead?.source === "approved")
+            await deps.cache.afterOwnWrite(value, async () => {
+              const after = await deps.access.call({ verb: "read", account: deps.account });
+              return after.cdat === undefined || after.mdat === undefined ? null : { cdat: after.cdat, mdat: after.mdat };
+            });
+          return;
+        }
+        await beforeRetire?.();
+        const retired = await helper({ verb: "retire", account: deps.account });
+        if (retired.reason === "old-slots-full" || retired.ok === true && retired.skipped === true)
+          throw new HelperOldSlotsFull(OLD_SLOTS_FULL_MESSAGE);
+        if (retired.ok !== true)
+          throw failed(retired, "replace");
+      }
+      const written = await helper({ verb: "write", account: deps.account, value });
+      if (written.ok !== true)
+        throw failed(written, "save");
+      lastRead = { kind: "value", value, source: "owned", reply: written };
+    },
+    async clear() {
+      const removed2 = await helper({ verb: "remove", account: deps.account });
+      if (removed2.error === "not-owned")
+        await deps.ownDelete(deps.account);
+      else if (removed2.ok !== true)
+        throw failed(removed2, "remove");
+      await helper({ verb: "remove", account: `${deps.account}.staging` });
+      const present = await helper({ verb: "read", account: deps.account });
+      const slots = present.error === undefined ? oldSlotsOf(present) : ALL_OLD_SLOTS;
+      await deleteOldSlots(deps.account, slots, helper, deleteOwnOld);
+      lastRead = null;
+    }
+  };
+}
+
+// packages/omo-opencode/src/cli/service-auth/keychain-helper/owner-marker.ts
+init_bun_spawn_shim();
+var MARKER_LINE = /^\s*"gena"<blob>="omo-owner\/1"\s*$/m;
+var ITEM_NOT_FOUND = 44;
+var probeOwnerMarker = async (service, account, keychain) => {
+  const args = ["find-generic-password", "-s", service, "-a", account, ...keychain === undefined ? [] : [keychain]];
+  const child = spawn(["/usr/bin/security", ...args], {
+    stdout: "pipe",
+    stderr: "ignore",
+    env: process.env.HOME === undefined ? {} : { HOME: process.env.HOME }
+  });
+  const [stdout2, code] = await Promise.all([new Response(child.stdout).text(), child.exited]);
+  if (code === ITEM_NOT_FOUND)
+    return "absent";
+  if (code !== 0)
+    return "unknown";
+  return MARKER_LINE.test(stdout2) ? "helper-owned" : "other";
+};
+
+// packages/omo-opencode/src/cli/service-auth/keychain-helper/prompt-lock.ts
+import { mkdir as mkdir11 } from "fs/promises";
+import { dirname as dirname46 } from "path";
+
+// packages/team-core/src/team-state-store/lock-publish.ts
+import { access as access5, open as open3, unlink as unlink4 } from "fs/promises";
+import { dirname as dirname44 } from "path";
+
+// packages/team-core/src/team-state-store/lock-record.ts
+import { randomUUID as randomUUID6 } from "crypto";
+import { readFile as readFile35, stat as stat11 } from "fs/promises";
+
+// packages/memory-core/src/locks/process-identity.ts
+import { execFile as execFile8 } from "child_process";
 
 // packages/memory-core/src/locks/process-start-time.ts
 var PROC_PIDTBSDINFO = 3;
@@ -127975,7 +129225,10 @@ async function openKernel32() {
     const { dlopen, FFIType } = await import("bun:ffi");
     const library = dlopen("kernel32.dll", {
       OpenProcess: { args: [FFIType.u32, FFIType.i32, FFIType.u32], returns: FFIType.ptr },
-      GetProcessTimes: { args: [FFIType.ptr, FFIType.ptr, FFIType.ptr, FFIType.ptr, FFIType.ptr], returns: FFIType.i32 },
+      GetProcessTimes: {
+        args: [FFIType.ptr, FFIType.ptr, FFIType.ptr, FFIType.ptr, FFIType.ptr],
+        returns: FFIType.i32
+      },
       CloseHandle: { args: [FFIType.ptr], returns: FFIType.i32 }
     });
     return library.symbols;
@@ -128013,7 +129266,7 @@ function errorCode(error62) {
 }
 async function execFileText(command, args) {
   return await new Promise((resolve31) => {
-    execFile7(command, args, { encoding: "utf8", timeout: 2000, windowsHide: true }, (error62, stdout2) => {
+    execFile8(command, args, { encoding: "utf8", timeout: 2000, windowsHide: true }, (error62, stdout2) => {
       if (error62 !== null) {
         resolve31(null);
         return;
@@ -128025,11 +129278,11 @@ async function execFileText(command, args) {
 }
 async function readLinuxStartIdentity(pid) {
   try {
-    const stat9 = await readFile33(`/proc/${pid}/stat`, "utf8");
-    const commandEnd = stat9.lastIndexOf(")");
+    const stat11 = await readFile34(`/proc/${pid}/stat`, "utf8");
+    const commandEnd = stat11.lastIndexOf(")");
     if (commandEnd < 0)
       return null;
-    const fieldsAfterCommand = stat9.slice(commandEnd + 2).trim().split(/\s+/);
+    const fieldsAfterCommand = stat11.slice(commandEnd + 2).trim().split(/\s+/);
     const startTicks = fieldsAfterCommand[19];
     return startTicks === undefined ? null : `linux-proc-start-ticks:${startTicks}`;
   } catch {
@@ -128264,13 +129517,16 @@ async function isWorkerLockReleased(incarnation, record3) {
 // packages/team-core/src/team-state-store/lock-record.ts
 async function buildLockRecord(ownerTag) {
   await registerLockWorker();
-  const processStart = await getProcessStartIdentity(process.pid);
+  const processStart = await lockProcessStartLine(process.pid);
   return `${ownerTag} ${randomUUID6()}
 ${process.pid}
 ${Date.now()}
 ${lockOwnerInstanceId}
-${processStart ?? "unavailable"}
+${processStart}
 `;
+}
+async function lockProcessStartLine(pid) {
+  return await getProcessStartIdentity(pid) ?? "unavailable";
 }
 function errorCode2(error62) {
   if (!(error62 instanceof Error) || !("code" in error62))
@@ -128300,8 +129556,8 @@ function parseLockOwner(content) {
 }
 async function readLockRecord(lockPath) {
   try {
-    const content = await readFile34(lockPath, "utf8");
-    const { mtimeMs } = await stat9(lockPath);
+    const content = await readFile35(lockPath, "utf8");
+    const { mtimeMs } = await stat11(lockPath);
     return { content, modifiedAtEpochMs: mtimeMs };
   } catch (error62) {
     if (!(error62 instanceof Error))
@@ -128332,7 +129588,7 @@ async function isLockRecordStale(record3, staleAfterMs) {
 
 // packages/team-core/src/team-state-store/lock-publish.ts
 async function pathMayExist(path15, deps = {}) {
-  const accessPath = deps.access ?? access4;
+  const accessPath = deps.access ?? access5;
   try {
     await accessPath(path15);
     return true;
@@ -128349,7 +129605,7 @@ async function assertRetryableLockOpenError(lockPath, error62, deps) {
   if (code === "EPERM") {
     if (await pathMayExist(lockPath, deps))
       return;
-    if ((deps?.platform ?? process.platform) === "win32" && await pathMayExist(dirname43(lockPath), deps))
+    if ((deps?.platform ?? process.platform) === "win32" && await pathMayExist(dirname44(lockPath), deps))
       return;
   }
   throw error62;
@@ -128369,7 +129625,7 @@ async function publishLockRecord(lockPath, record3) {
   } catch (error62) {
     markLockRecordReleased(record3);
     await fileHandle.close();
-    await unlink3(lockPath).catch(() => {
+    await unlink4(lockPath).catch(() => {
       return;
     });
     throw error62;
@@ -128378,9 +129634,14 @@ async function publishLockRecord(lockPath, record3) {
   return true;
 }
 
+// packages/team-core/src/team-state-store/lock-lease.ts
+import { randomUUID as randomUUID7 } from "crypto";
+import { open as open4, readdir as readdir18, readFile as readFile36, rename as rename9, rm as rm18 } from "fs/promises";
+import { basename as basename17, dirname as dirname45, join as join110 } from "path";
+
 // packages/team-core/src/team-state-store/lock-reclaim.ts
-import { createHash as createHash10 } from "crypto";
-import { unlink as unlink4 } from "fs/promises";
+import { createHash as createHash11 } from "crypto";
+import { unlink as unlink5 } from "fs/promises";
 var RECLAIM_UNLINK_ATTEMPTS = 3;
 var RECLAIM_UNLINK_RETRY_MS = 25;
 function delay2(ms) {
@@ -128389,11 +129650,11 @@ function delay2(ms) {
   });
 }
 function reclaimGuardPath(lockPath, record3) {
-  return `${lockPath}.reclaim-${createHash10("sha256").update(record3).digest("hex").slice(0, 16)}`;
+  return `${lockPath}.reclaim-${createHash11("sha256").update(record3).digest("hex").slice(0, 16)}`;
 }
 async function unlinkWithRetry(path15, deps) {
   const wait = deps.delay ?? delay2;
-  const unlinkFile = deps.unlink ?? unlink4;
+  const unlinkFile = deps.unlink ?? unlink5;
   for (let attempt = 1;; attempt += 1) {
     try {
       await unlinkFile(path15);
@@ -128411,6 +129672,19 @@ async function unlinkWithRetry(path15, deps) {
   }
 }
 async function removeLockRecordIfUnchanged(lockPath, expectedRecord, staleAfterMs, deps = {}) {
+  return withRecordGuard(lockPath, expectedRecord, staleAfterMs, deps, async () => {
+    const current = await readLockRecord(lockPath);
+    if (current === null)
+      return "absent";
+    if (current.content !== expectedRecord || !await isLockRecordStale(current, staleAfterMs))
+      return "changed";
+    const unlinked = await unlinkWithRetry(lockPath, deps);
+    if (unlinked !== "stuck")
+      forgetLockRecord(expectedRecord);
+    return unlinked === "absent" ? "absent" : unlinked;
+  });
+}
+async function withRecordGuard(lockPath, expectedRecord, staleAfterMs, deps, act) {
   const guardPath = reclaimGuardPath(lockPath, expectedRecord);
   const guardRecord = await buildLockRecord("lock-reclaim");
   if (!await publishLockRecord(guardPath, guardRecord)) {
@@ -128421,20 +129695,103 @@ async function removeLockRecordIfUnchanged(lockPath, expectedRecord, staleAfterM
     return "busy";
   }
   try {
-    const current = await readLockRecord(lockPath);
-    if (current === null)
-      return "absent";
-    if (current.content !== expectedRecord || !await isLockRecordStale(current, staleAfterMs))
-      return "changed";
-    const unlinked = await unlinkWithRetry(lockPath, deps);
-    if (unlinked !== "stuck")
-      forgetLockRecord(expectedRecord);
-    return unlinked === "absent" ? "absent" : unlinked;
+    return await act();
   } finally {
     markLockRecordReleased(guardRecord);
     if (await unlinkWithRetry(guardPath, deps) !== "stuck")
       forgetLockRecord(guardRecord);
   }
+}
+
+// packages/team-core/src/team-state-store/lock-lease.ts
+class LockLeaseLostError extends Error {
+  constructor(lockPath) {
+    super(`The lock at ${lockPath} changed while it was handed over; the critical section was aborted.`);
+    this.name = "LockLeaseLostError";
+  }
+}
+var leaseTempPrefix = (lockPath) => `.${basename17(lockPath)}.`;
+var LEASE_TEMP_SUFFIX = ".lease";
+var UUID3 = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
+var escapeRegExp2 = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+var leaseTempPattern = (lockPath) => new RegExp(`^\\.${escapeRegExp2(basename17(lockPath))}\\.${UUID3}\\.lease$`);
+async function replaceRecord(lockPath, content) {
+  const temporary = join110(dirname45(lockPath), `${leaseTempPrefix(lockPath)}${randomUUID7()}${LEASE_TEMP_SUFFIX}`);
+  try {
+    const handle = await open4(temporary, "wx", 384);
+    try {
+      await handle.writeFile(content);
+    } finally {
+      await handle.close();
+    }
+    await rename9(temporary, lockPath);
+  } catch (error62) {
+    await rm18(temporary, { force: true });
+    throw error62;
+  }
+}
+async function removeLeftoverTemps(lockPath) {
+  const pattern = leaseTempPattern(lockPath);
+  let entries;
+  try {
+    entries = await readdir18(dirname45(lockPath));
+  } catch (error62) {
+    if (error62 instanceof Error && "code" in error62 && error62.code === "ENOENT")
+      return;
+    throw error62;
+  }
+  for (const entry of entries) {
+    if (pattern.test(entry))
+      await rm18(join110(dirname45(lockPath), entry), { force: true });
+  }
+}
+async function currentRecord(lockPath) {
+  try {
+    return await readFile36(lockPath, "utf8");
+  } catch (error62) {
+    if (error62 instanceof Error && "code" in error62 && (error62.code === "ENOENT" || error62.code === "ENOTDIR"))
+      return null;
+    throw error62;
+  }
+}
+function createLockLease(lockPath, ownerRecord, ownerTag, options = {}) {
+  const staleAfterMs = options.staleAfterMs ?? Number.POSITIVE_INFINITY;
+  let handedTo = null;
+  return {
+    async handOver(pid) {
+      if (handedTo !== null)
+        throw new Error("The lock is already handed over; restore it first.");
+      if (!Number.isInteger(pid) || pid <= 0 || pid === process.pid)
+        throw new Error(`Cannot hand the lock to pid ${pid}.`);
+      if (await currentRecord(lockPath) !== ownerRecord)
+        throw new LockLeaseLostError(lockPath);
+      await removeLeftoverTemps(lockPath);
+      const processStart = await lockProcessStartLine(pid);
+      const record3 = `${ownerTag} ${randomUUID7()}
+${pid}
+${Date.now()}
+${randomUUID7()}
+${processStart}
+`;
+      await replaceRecord(lockPath, record3);
+      handedTo = record3;
+    },
+    async restore() {
+      if (handedTo === null)
+        throw new Error("The lock is not handed over.");
+      const expected = handedTo;
+      handedTo = null;
+      const outcome = await withRecordGuard(lockPath, expected, staleAfterMs, {}, async () => {
+        if (await currentRecord(lockPath) !== expected)
+          return "lost";
+        await options.beforeRestoreRename?.();
+        await replaceRecord(lockPath, ownerRecord);
+        return "restored";
+      });
+      if (outcome !== "restored")
+        throw new LockLeaseLostError(lockPath);
+    }
+  };
 }
 
 // packages/team-core/src/team-state-store/locks.ts
@@ -128466,7 +129823,7 @@ async function withLock(lockPath, fn, opts) {
   const ownerTag = opts?.ownerTag ?? "owner";
   const record3 = await acquireLock(lockPath, ownerTag, staleAfterMs);
   try {
-    return await fn();
+    return await fn(createLockLease(lockPath, record3, ownerTag, { staleAfterMs }));
   } finally {
     markLockRecordReleased(record3);
     const outcome = await removeLockRecordIfUnchanged(lockPath, record3, staleAfterMs);
@@ -128483,22 +129840,392 @@ async function reapStaleLock(lockPath, staleAfterMs = DEFAULT_STALE_AFTER_MS, de
   return await removeLockRecordIfUnchanged(lockPath, observed.content, staleAfterMs, deps);
 }
 
-// packages/omo-opencode/src/cli/service-auth/credential-lock.ts
-var held = new AsyncLocalStorage3;
-function credentialLockPaths(api2, home = homedir31()) {
-  const id = createHash11("sha256").update(serviceOrigin(api2)).digest("hex");
-  const directory = join107(home, ".omo", "session-locks");
-  return { directory, lock: join107(directory, `${id}.lock`), desktopRecord: join107(directory, `${id}.desktop-generation.json`) };
+// packages/omo-opencode/src/cli/service-auth/keychain-helper/prompt-lock.ts
+function promptLockAt(path15, hooks2 = {}) {
+  return async () => {
+    const held = keychainProcessState().heldPromptLocks;
+    if (held.has(path15))
+      return null;
+    held.add(path15);
+    let granted = false;
+    try {
+      await mkdir11(dirname46(path15), { recursive: true, mode: 448 });
+      await hooks2.beforePublish?.();
+      for (let attempt = 0;attempt < 2; attempt++) {
+        const record3 = await buildLockRecord("keychain-prompt");
+        if (await publishLockRecord(path15, record3)) {
+          granted = true;
+          return async () => {
+            markLockRecordReleased(record3);
+            try {
+              await (hooks2.removeRecord ?? ((target, owned) => removeLockRecordIfUnchanged(target, owned, Number.POSITIVE_INFINITY)))(path15, record3);
+            } finally {
+              held.delete(path15);
+            }
+          };
+        }
+        if (await reapStaleLock(path15, Number.POSITIVE_INFINITY) !== "removed")
+          return null;
+      }
+      return null;
+    } finally {
+      if (!granted)
+        held.delete(path15);
+    }
+  };
 }
-async function withCredentialLock(api2, action, home = homedir31(), ownerTag = "cli-session") {
+
+// packages/omo-opencode/src/cli/service-auth/keychain-helper/darwin-backend.ts
+var ROW_9B_DEFAULT = "reinstall-notice";
+var helperAccess = () => sharedHelperAccess(() => {
+  const { entryCandidates } = keychainProcessState();
+  return resolveHelperAccess([
+    ...entryCandidates,
+    ...bundleCandidates(import.meta.url),
+    ...machineCandidates(homedir32())
+  ]);
+});
+function sharedHelperAccess(resolve31) {
+  const state3 = keychainProcessState();
+  if (state3.helperAccess !== undefined)
+    return state3.helperAccess;
+  const started = resolve31();
+  state3.helperAccess = started;
+  started.then((access6) => {
+    if (access6.kind === "unavailable" && state3.helperAccess === started)
+      state3.helperAccess = undefined;
+  }, () => {
+    if (state3.helperAccess === started)
+      state3.helperAccess = undefined;
+  });
+  return started;
+}
+
+class HelperMissingForOwnedItem extends Error {
+}
+function asKeystoreError(error62, pending) {
+  if (!(error62 instanceof HelperReadError))
+    return error62;
+  if (error62.failure === "pending")
+    return pending(error62.message);
+  if (error62.failure === "locked")
+    return Object.assign(new Error(error62.message), { code: "-25308" });
+  return error62;
+}
+function createDarwinBackend(options) {
+  const silently = options.silently ?? silentSecrets;
+  const key = { service: options.service, name: options.account };
+  const deps = {
+    account: options.account,
+    access: options.access,
+    cache: options.cache ?? processApprovalCache(),
+    background: options.background,
+    takePromptLock: promptLockAt(join111(lockDirectoryIn(options.home ?? accountHome()), `${options.account}.keychain-prompt`)),
+    ownSilentGet: () => silently(() => options.secrets.get(key)),
+    ownOverwrite: (value) => silently(() => options.secrets.set({ ...key, value })),
+    ownDelete: (name) => name === options.account ? gatedSecrets(() => options.secrets.delete({ ...key, name })) : silently(() => options.secrets.delete({ ...key, name })),
+    notice: options.notice,
+    ...options.row8b === undefined ? {} : { row8b: options.row8b },
+    ...options.handOff === undefined ? {} : { handOff: options.handOff },
+    noDialog: options.noDialog === true
+  };
+  let unowned = false;
+  return {
+    read: async () => {
+      const result = await readThroughHelper(deps, true);
+      unowned = result.kind === "value" && result.source !== "owned";
+      return result.kind === "value" ? result.value : null;
+    },
+    underLock: (lease) => lockedDarwinStore(deps, lease),
+    migrationPending: () => unowned
+  };
+}
+async function guardHelperlessRead(service, account, choice = ROW_9B_DEFAULT, probe2 = probeOwnerMarker) {
+  if (choice === "dialog")
+    return;
+  if (await probe2(service, account) === "helper-owned")
+    throw new HelperMissingForOwnedItem("OmO's keychain helper is missing or damaged on this Mac. Reinstall omo, then try again.");
+}
+
+// packages/omo-opencode/src/cli/service-auth/keychain-helper/store-binding.ts
+import { homedir as homedir33 } from "os";
+
+// packages/omo-opencode/src/cli/service-auth/keychain-helper/creator-handoff.ts
+init_bun_file_shim();
+init_bun_spawn_shim();
+import { dirname as dirname48, posix as posix15 } from "path";
+
+// packages/omo-opencode/src/cli/service-auth/keychain-helper/runtime-capabilities.ts
+init_zod();
+import { readFile as readFile37 } from "fs/promises";
+import { dirname as dirname47, join as join112 } from "path";
+var RUNTIME_CAPABILITIES_FILE = "omo-runtime-capabilities.json";
+var RUNTIME_CAPABILITIES = { keychainHandoff: 1 };
+var capabilitiesSchema = exports_external.object({ keychainHandoff: exports_external.number().int() }).passthrough();
+async function runtimeDeclaresKeychainHandoff(runtime6) {
+  const text = await readFile37(join112(dirname47(runtime6), RUNTIME_CAPABILITIES_FILE), "utf8").catch(() => null);
+  if (text === null)
+    return false;
+  try {
+    const parsed = capabilitiesSchema.safeParse(JSON.parse(text));
+    return parsed.success && parsed.data.keychainHandoff >= RUNTIME_CAPABILITIES.keychainHandoff;
+  } catch {
+    return false;
+  }
+}
+
+// packages/omo-opencode/src/cli/service-auth/keychain-helper/creator-handoff.ts
+var DEVELOPER_ID_TEAM = 'anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] and certificate leaf[field.1.2.840.113635.100.6.1.13] and certificate leaf[subject.OU] = "523JNR86LZ"';
+var DESKTOP_RUNTIME_REQUIREMENT = `identifier "com.mengmota.omo-desktop-runtime" and ${DEVELOPER_ID_TEAM}`;
+var DESKTOP_APP_REQUIREMENT = DEVELOPER_ID_TEAM;
+var HANDOFF_ENV = "OMO_KEYCHAIN_HANDOFF";
+var HANDOFF_DEADLINE_MS = 45000;
+function desktopRuntimeCandidates(home, arch = process.arch) {
+  const runtimeArch = arch === "arm64" ? "arm64" : "x64";
+  return ["/Applications/OmO.app", posix15.join(home, "Applications", "OmO.app")].map((app) => ({
+    app,
+    runtime: posix15.join(app, "Contents", "Resources", "omo-runtime", `darwin-${runtimeArch}`, "omo")
+  }));
+}
+var verifyBundle = async (app, requirement) => {
+  const child = spawn(["/usr/bin/codesign", "--verify", "--deep", "--strict", `-R=${requirement}`, app], {
+    stdin: "ignore",
+    stdout: "ignore",
+    stderr: "ignore"
+  });
+  return await child.exited === 0;
+};
+var runBounded = async (path15, args, env2, deadlineMs) => {
+  const child = spawn([path15, ...args], { cwd: dirname48(path15), stdin: "ignore", stdout: "ignore", stderr: "ignore", env: env2 });
+  let killed = false;
+  const timer = setTimeout(() => {
+    killed = true;
+    child.kill("SIGKILL");
+  }, deadlineMs);
+  try {
+    const code = await child.exited;
+    return killed ? null : code;
+  } finally {
+    clearTimeout(timer);
+  }
+};
+function createCreatorHandOff(options) {
+  return async () => {
+    const env2 = options.env ?? process.env;
+    if (env2[HANDOFF_ENV] === "1")
+      return false;
+    const checkRuntime = options.checkRuntime ?? verifyWithSecurityFramework;
+    const checkBundle = options.checkBundle ?? verifyBundle;
+    const declaresHandOff = options.declaresHandOff ?? runtimeDeclaresKeychainHandoff;
+    const self = options.selfPath ?? process.execPath;
+    for (const { app, runtime: runtime6 } of options.candidates) {
+      if (runtime6 === self || !await bunFile(runtime6).exists())
+        continue;
+      const verified = await Promise.resolve().then(async () => await checkBundle(app, DESKTOP_APP_REQUIREMENT) && await checkRuntime(runtime6, DESKTOP_RUNTIME_REQUIREMENT) && await declaresHandOff(runtime6)).catch(() => false);
+      if (!verified)
+        continue;
+      const childEnv = { [HANDOFF_ENV]: "1" };
+      if (env2.HOME !== undefined)
+        childEnv.HOME = env2.HOME;
+      const origin = options.origin ?? env2.OMO_SERVICE_API_URL;
+      if (origin !== undefined)
+        childEnv.OMO_SERVICE_API_URL = origin;
+      try {
+        return await (options.run ?? runBounded)(runtime6, ["account", "token"], childEnv, HANDOFF_DEADLINE_MS) === 0;
+      } catch {
+        return false;
+      }
+    }
+    return false;
+  };
+}
+
+// packages/omo-opencode/src/cli/service-auth/keychain-helper/store-binding.ts
+var readers = new Map;
+var INJECTED_SECRETS2 = Symbol.for("omo.test.injectedSecrets");
+var isInjectedSecrets = (api2) => api2[INJECTED_SECRETS2] === true;
+var backends = new Map;
+function processHandOff(origin) {
+  return () => {
+    const state3 = keychainProcessState();
+    state3.handOff ??= createCreatorHandOff({ candidates: desktopRuntimeCandidates(homedir33()), origin })();
+    return state3.handOff;
+  };
+}
+function bindKeychainHelper(input2) {
+  const { secrets: real, key, options } = input2;
+  const eligible = input2.platform === "darwin" && input2.namespace === "omo-cli" && (options !== undefined || typeof Bun !== "undefined" && real === Bun.secrets && !isInjectedSecrets(real));
+  const secrets = !eligible ? real : {
+    get: (entry) => gatedSecrets(() => real.get(entry)),
+    set: (entry) => gatedSecrets(() => real.set(entry)),
+    delete: (entry) => gatedSecrets(() => real.delete(entry))
+  };
+  const cacheKey = `${key.service}
+${key.name}
+${input2.background ? "bounded" : "interactive"}`;
+  let own2;
+  const backend = () => {
+    if (!eligible)
+      return Promise.resolve(null);
+    const known = options === undefined ? backends.get(cacheKey) : own2;
+    if (known !== undefined)
+      return known;
+    const created = (options?.access ?? helperAccess)().then((access6) => access6.kind !== "ready" ? null : createDarwinBackend({
+      access: access6,
+      secrets: real,
+      service: key.service,
+      account: key.name,
+      background: input2.background,
+      noDialog: options?.noDialog ?? process.env[HANDOFF_ENV] === "1",
+      notice: input2.notice,
+      ...options?.home === undefined ? {} : { home: options.home },
+      ...options?.row8b === undefined ? {} : { row8b: options.row8b },
+      ...options?.silently === undefined ? {} : { silently: options.silently },
+      ...options?.cache === undefined ? {} : { cache: options.cache },
+      handOff: options === undefined ? processHandOff(input2.origin) : options.handOff ?? (async () => false)
+    }));
+    if (options === undefined) {
+      backends.set(cacheKey, created);
+      created.then((found) => {
+        if (found === null && backends.get(cacheKey) === created)
+          backends.delete(cacheKey);
+      });
+    } else
+      own2 = created;
+    return created;
+  };
+  const reader = (helper) => {
+    const known = readers.get(helper);
+    if (known !== undefined)
+      return known;
+    const refuse = async () => {
+      throw new Error("OmO's keychain helper changes the sign-in only under the session lock.");
+    };
+    const created = {
+      get: async () => {
+        try {
+          return await helper.read();
+        } catch (error62) {
+          throw asKeystoreError(error62, (message) => input2.pending(`${message} Credentials are never saved to a file.`));
+        }
+      },
+      set: refuse,
+      delete: refuse
+    };
+    readers.set(helper, created);
+    return created;
+  };
+  return {
+    secrets,
+    eligible,
+    backend,
+    reader,
+    isHelperReader: (api2) => [...readers.values()].includes(api2),
+    guardHelperless: async () => {
+      if (!eligible)
+        return;
+      if ((options?.noDialog ?? process.env[HANDOFF_ENV] === "1") === true)
+        throw input2.pending("The keychain hand-off cannot show a dialog.");
+      await guardHelperlessRead(key.service, key.name, options?.row9b, options?.ownerMarker);
+    }
+  };
+}
+function lockedStoreView(helper, lease, codec2, mapError, done) {
+  const locked = helper.underLock(lease);
+  const run3 = async (step) => {
+    try {
+      return await step();
+    } catch (error62) {
+      throw mapError(error62);
+    } finally {
+      done();
+    }
+  };
+  return {
+    read: () => run3(async () => {
+      const text = await locked.read();
+      return text === null ? null : codec2.parse(text);
+    }),
+    write: (value, intent = "update", beforeRetire) => run3(async () => {
+      const next = codec2.amend === undefined ? value : codec2.amend(await locked.read(), value);
+      await locked.write(codec2.serialize(next), intent, beforeRetire);
+    }),
+    clear: () => run3(() => locked.clear()),
+    recover: () => run3(() => locked.recover()),
+    settle: () => run3(() => locked.settle())
+  };
+}
+
+// packages/omo-opencode/src/cli/service-auth/secret-service-lock.ts
+import { spawn as spawn5 } from "child_process";
+var DEFAULT_COLLECTION = "/org/freedesktop/secrets/aliases/default";
+var PROBE_TIMEOUT_MS2 = 1e4;
+var parseLockedReply = (stdout2) => {
+  const match = /<\s*(true|false)\s*>/.exec(stdout2);
+  if (match === null)
+    return null;
+  return match[1] === "true" ? "locked" : "unlocked";
+};
+var probeSecretServiceLock = () => new Promise((resolve31) => {
+  const child = spawn5("gdbus", [
+    "call",
+    "--session",
+    "--dest",
+    "org.freedesktop.secrets",
+    "--object-path",
+    DEFAULT_COLLECTION,
+    "--method",
+    "org.freedesktop.DBus.Properties.Get",
+    "org.freedesktop.Secret.Collection",
+    "Locked"
+  ], { stdio: ["ignore", "pipe", "ignore"] });
+  let stdout2 = "";
+  const timer = setTimeout(() => {
+    child.kill();
+    resolve31("unknown");
+  }, PROBE_TIMEOUT_MS2);
+  child.stdout.on("data", (chunk) => {
+    stdout2 += chunk.toString();
+  });
+  child.on("error", () => {
+    clearTimeout(timer);
+    resolve31("unknown");
+  });
+  child.on("close", (code) => {
+    clearTimeout(timer);
+    resolve31(code === 0 ? parseLockedReply(stdout2) ?? "absent" : "absent");
+  });
+});
+
+// packages/omo-opencode/src/cli/service-auth/credential-lock.ts
+import { AsyncLocalStorage as AsyncLocalStorage3 } from "async_hooks";
+import { createHash as createHash12 } from "crypto";
+import { mkdir as mkdir12 } from "fs/promises";
+import { join as join114 } from "path";
+var held = new AsyncLocalStorage3;
+var CREDENTIAL_LOCK_STALE_AFTER_MS = 60000;
+function credentialLockPaths(api2, home = accountHome()) {
+  const id = createHash12("sha256").update(serviceOrigin(api2)).digest("hex");
+  const directory = lockDirectoryIn(home);
+  return {
+    directory,
+    lock: join114(directory, `${id}.lock`),
+    desktopRecord: join114(directory, `${id}.desktop-generation.json`)
+  };
+}
+function heldCredentialLease(api2, home = accountHome()) {
+  return held.getStore()?.get(credentialLockPaths(api2, home).lock);
+}
+async function withCredentialLock(api2, action, home = accountHome(), ownerTag = "cli-session") {
   const { directory, lock: lock2 } = credentialLockPaths(api2, home);
   const owned = held.getStore();
-  if (owned?.has(lock2))
-    return action();
-  await mkdir11(directory, { recursive: true, mode: 448 });
-  return withLock(lock2, () => held.run(new Set([...owned ?? [], lock2]), action), {
+  const outer = owned?.get(lock2);
+  if (outer !== undefined)
+    return action(outer);
+  await mkdir12(directory, { recursive: true, mode: 448 });
+  return withLock(lock2, (lease) => held.run(new Map([...owned ?? [], [lock2, lease]]), () => action(lease)), {
     ownerTag,
-    staleAfterMs: Number.POSITIVE_INFINITY
+    staleAfterMs: CREDENTIAL_LOCK_STALE_AFTER_MS
   });
 }
 
@@ -128539,7 +130266,7 @@ var stderrNoticeOncePerProcess = (message) => {
 };
 var isLocked = (error62) => error62 instanceof Error && (LOCKED.test(error62.message) || LOCKED.test(String(error62.code ?? "")));
 function credentialId(api2) {
-  return createHash12("sha256").update(serviceOrigin(api2)).digest("hex");
+  return createHash13("sha256").update(serviceOrigin(api2)).digest("hex");
 }
 function createCredentialStore(api2, options = {}) {
   const store2 = createSealedStore(api2, "omo-cli", credentialSchema, options.secrets, options.platform, options.lockProbe, options.notice, options.wait, (current, value) => {
@@ -128548,17 +130275,51 @@ function createCredentialStore(api2, options = {}) {
     return {
       ...value,
       ...accountId === undefined ? {} : { accountId },
-      credentialGeneration: sameIdentity ? current?.credentialGeneration ?? randomUUID7() : randomUUID7()
+      credentialGeneration: sameIdentity ? current?.credentialGeneration ?? randomUUID8() : randomUUID8()
     };
-  });
+  }, options.keychainHelper);
+  const sections = new WeakMap;
+  const underLock = (lease) => {
+    const known = sections.get(lease);
+    if (known !== undefined)
+      return known;
+    const view = (async () => {
+      const opened = await store2.underLock?.(lease) ?? null;
+      await opened?.recover();
+      return opened;
+    })();
+    sections.set(lease, view);
+    return view;
+  };
+  const held2 = async () => {
+    const lease = heldCredentialLease(api2, options.home);
+    return lease === undefined ? null : underLock(lease);
+  };
+  const locked = async (helper, plain) => {
+    if (heldCredentialLease(api2, options.home) === undefined)
+      await store2.prepare?.();
+    await withCredentialLock(api2, async (lease) => {
+      const view = await underLock(lease);
+      await (view === null ? plain() : helper(view));
+    }, options.home);
+  };
   return {
-    read: store2.read,
-    readAuthoritative: store2.readAuthoritative,
-    write: (value) => withCredentialLock(api2, () => store2.write(value), options.home),
-    clear: () => withCredentialLock(api2, store2.clear, options.home)
+    read: async () => {
+      const view = await held2();
+      return view === null ? store2.read() : view.read();
+    },
+    readAuthoritative: async () => {
+      const view = await held2();
+      return view === null ? store2.readAuthoritative() : view.read();
+    },
+    write: (value, intent, beforeRetire) => locked((view) => view.write(value, intent, beforeRetire), () => store2.write(value)),
+    clear: () => locked((view) => view.clear(), store2.clear),
+    ...store2.prepare === undefined ? {} : { prepare: store2.prepare },
+    underLock,
+    ...store2.migrationPending === undefined ? {} : { migrationPending: store2.migrationPending }
   };
 }
-function createSealedStore(api2, namespace, schema2, secrets = typeof Bun === "undefined" ? null : Bun.secrets, platform2 = process.platform, lockProbe = probeSecretServiceLock, notice = stderrNoticeOncePerProcess, wait = SESSION_READ_WAIT, amendWrite) {
+function createSealedStore(api2, namespace, schema2, secrets = typeof Bun === "undefined" ? null : Bun.secrets, platform2 = process.platform, lockProbe = probeSecretServiceLock, notice = stderrNoticeOncePerProcess, wait = SESSION_READ_WAIT, amendWrite, keychainHelper) {
   if (!secrets)
     throw new SignInError("OmO sign-in needs Bun 1.4 or newer with OS credential storage. No file fallback is available.");
   const platformName = platform2 === "darwin" ? "macOS Keychain" : platform2 === "linux" ? "Linux Secret Service (libsecret and an unlocked keyring)" : platform2 === "win32" ? "Windows Credential Manager" : null;
@@ -128567,6 +130328,18 @@ function createSealedStore(api2, namespace, schema2, secrets = typeof Bun === "u
   const key = { service: namespace, name: credentialId(api2) };
   const slot = `${key.service}
 ${key.name}`;
+  const helper = bindKeychainHelper({
+    platform: platform2,
+    namespace,
+    secrets,
+    key,
+    background: wait.kind === "bounded",
+    origin: api2,
+    notice,
+    pending: (message) => new KeychainApprovalPendingError(message),
+    ...keychainHelper === undefined ? {} : { options: keychainHelper }
+  });
+  secrets = helper.secrets;
   const readsOf = (api3) => {
     const known = processReads.get(api3);
     if (known !== undefined)
@@ -128592,17 +130365,19 @@ ${key.name}`;
     reads.set(slot, read);
     return read;
   };
-  const waiting = platform2 === "darwin" ? `macOS Keychain is waiting for your approval: answer the "${basename16(process.execPath)} wants to access key ${namespace}" dialog ("Always Allow" stops it asking again)` : `${platformName} has not answered; it may be waiting for your approval or an unlock in a system dialog`;
+  const waiting = platform2 === "darwin" ? `macOS Keychain is waiting for your approval: answer the "${basename18(process.execPath)} wants to access key ${namespace}" dialog ("Always Allow" stops it asking again)` : `${platformName} has not answered; it may be waiting for your approval or an unlock in a system dialog`;
+  const helperWaiting = `macOS Keychain is waiting for your approval: answer the "OmO's keychain helper wants to access key ${namespace}" dialog`;
   const answered = async (api3, fresh = false) => {
+    const waitingFor = helper.isHelperReader(api3) ? helperWaiting : waiting;
     const read = fresh ? Promise.resolve().then(() => api3.get(key)) : sharedRead(api3);
     let timer;
     try {
       if (wait.kind === "interactive") {
-        timer = setTimeout(() => wait.notice(`omo: ${waiting}.`), wait.noticeAfterMs);
+        timer = setTimeout(() => wait.notice(`omo: ${waitingFor}.`), wait.noticeAfterMs);
         return await read;
       }
       const expired = new Promise((_2, reject) => {
-        timer = setTimeout(() => reject(new KeychainApprovalPendingError(`${waiting}, then try again. Credentials are never saved to a file.`)), wait.deadlineMs);
+        timer = setTimeout(() => reject(new KeychainApprovalPendingError(`${waitingFor}, then try again. Credentials are never saved to a file.`)), wait.deadlineMs);
       });
       return await Promise.race([read, expired]);
     } finally {
@@ -128627,41 +130402,76 @@ ${key.name}`;
       notice("omo: could not check whether the keyring is locked (gdbus or the Secret Service did not answer); using libsecret directly.");
     }
   };
-  const parsedRead = async (fresh) => {
-    await assertUsable();
-    let value;
-    try {
-      value = await answered(secrets, fresh);
-    } catch (error62) {
-      if (error62 instanceof KeychainApprovalPendingError)
-        throw error62;
-      throw unavailable(error62);
-    }
-    if (value === null)
-      return null;
+  const parseStored = (value) => {
     try {
       return schema2.parse(JSON.parse(value));
     } catch {
       throw new InvalidCredentialState(signInRoute() === "cli" ? "Stored sign-in data is invalid. Run omo account forget, then omo login." : "The OmO sign-in saved on this computer can't be read. Run omo account forget to remove it, then sign in again in the desktop app.");
     }
   };
+  const previousOf = (raw) => {
+    if (raw === null)
+      return null;
+    try {
+      return schema2.parse(JSON.parse(raw));
+    } catch {
+      return null;
+    }
+  };
+  const rawRead = async (fresh) => {
+    await assertUsable();
+    const backend = await helper.backend();
+    try {
+      if (backend === null)
+        await helper.guardHelperless();
+      return await answered(backend === null ? secrets : helper.reader(backend), fresh);
+    } catch (error62) {
+      if (error62 instanceof KeychainApprovalPendingError)
+        throw error62;
+      if (error62 instanceof HelperMissingForOwnedItem)
+        throw new CredentialStoreError(error62.message);
+      throw unavailable(error62);
+    }
+  };
+  const parsedRead = async (fresh) => {
+    const value = await rawRead(fresh);
+    return value === null ? null : parseStored(value);
+  };
+  const lockedFailure = (error62) => {
+    const mapped = asKeystoreError(error62, (message) => new KeychainApprovalPendingError(message));
+    if (error62 instanceof HelperOldSlotsFull)
+      return new CredentialStoreError(error62.message);
+    if (mapped instanceof KeychainApprovalPendingError || mapped instanceof SignInError)
+      return mapped;
+    if (mapped instanceof Error && mapped.name === "LockLeaseLostError")
+      return mapped;
+    return unavailable(mapped);
+  };
   return {
     read: () => parsedRead(false),
     readAuthoritative: () => parsedRead(true),
+    async prepare() {
+      if (await helper.backend() !== null)
+        await rawRead(false);
+    },
+    async underLock(lease) {
+      const backend = await helper.backend();
+      if (backend === null)
+        return null;
+      const codec2 = {
+        parse: parseStored,
+        serialize: (value) => JSON.stringify(schema2.parse(value)),
+        ...amendWrite === undefined ? {} : { amend: (raw, next) => amendWrite(previousOf(raw), next) }
+      };
+      return lockedStoreView(backend, lease, codec2, lockedFailure, () => forget(helper.reader(backend)));
+    },
+    migrationPending: async () => (await helper.backend())?.migrationPending() ?? false,
     async write(value) {
       await assertUsable();
+      if (await helper.backend() !== null)
+        throw new Error("OmO's keychain helper writes only under the session lock.");
       try {
-        let next = value;
-        if (amendWrite !== undefined) {
-          const raw = await answered(secrets, true);
-          let previous = null;
-          if (raw !== null) {
-            try {
-              previous = schema2.parse(JSON.parse(raw));
-            } catch {}
-          }
-          next = amendWrite(previous, value);
-        }
+        const next = amendWrite === undefined ? value : amendWrite(previousOf(await answered(secrets, true)), value);
         await secrets.set({ ...key, value: JSON.stringify(schema2.parse(next)) });
       } catch (error62) {
         throw unavailable(error62);
@@ -128670,6 +130480,8 @@ ${key.name}`;
     },
     async clear() {
       await assertUsable();
+      if (await helper.backend() !== null)
+        throw new Error("OmO's keychain helper deletes only under the session lock.");
       try {
         await secrets.delete(key);
       } catch (error62) {
@@ -128680,8 +130492,264 @@ ${key.name}`;
   };
 }
 
+// packages/omo-opencode/src/cli/service-auth/session.ts
+import { homedir as homedir34 } from "os";
+
+// packages/omo-opencode/src/cli/service-auth/signed-out-marker.ts
+init_zod();
+import { mkdir as mkdir13, readFile as readFile38, rename as rename10, rm as rm19, writeFile as writeFile18 } from "fs/promises";
+import { dirname as dirname49, join as join115 } from "path";
+var markerSchema = exports_external.object({ device: exports_external.string().nullable(), at: exports_external.string() });
+var signedOutMarkerPath = (home, credential) => join115(home, ".omo", "account-state", `${credential}.signed-out.json`);
+async function readSignedOutMarker(path15) {
+  const text = await readFile38(path15, "utf8").catch(() => null);
+  if (text === null)
+    return null;
+  let value;
+  try {
+    value = JSON.parse(text);
+  } catch {
+    return null;
+  }
+  const parsed = markerSchema.safeParse(value);
+  return parsed.success ? parsed.data : null;
+}
+async function writeSignedOutMarker(path15, device) {
+  await mkdir13(dirname49(path15), { recursive: true, mode: 448 });
+  const staging = `${path15}.${process.pid}.tmp`;
+  await writeFile18(staging, JSON.stringify({ device, at: new Date().toISOString() }), {
+    mode: 384
+  });
+  await rename10(staging, path15);
+}
+var clearSignedOutMarker = (path15) => rm19(path15, { force: true });
+
+// packages/omo-opencode/src/cli/service-auth/session.ts
+class SessionEnded extends SignInError {
+  deviceRevoked;
+  code;
+  constructor(message, deviceRevoked, code) {
+    super(message);
+    this.deviceRevoked = deviceRevoked;
+    this.code = code;
+  }
+}
+var DEVICE_REVOKING_REFUSALS = new Set(["account_deleted", "reauth_required", "device_revoked"]);
+var discardedOf = (credentials, cause) => ({
+  kind: "credential",
+  deviceId: credentials.device.id,
+  accountId: credentials.accountId,
+  owner: credentials.owner,
+  cause
+});
+function createSession(options) {
+  const api2 = serviceOrigin(options.api);
+  const deviceService = options.deviceService;
+  const now = options.now ?? Date.now;
+  const { store: store2, signal, beforeKeysDiscarded } = options;
+  const markerPath = signedOutMarkerPath(options.home ?? homedir34(), credentialId(api2));
+  async function locked(action) {
+    signal?.throwIfAborted();
+    if (heldCredentialLease(api2, options.home) === undefined)
+      await store2.prepare?.();
+    return withCredentialLock(api2, async (lease) => {
+      signal?.throwIfAborted();
+      return action(await store2.underLock?.(lease) ?? null);
+    }, options.home);
+  }
+  const request = (path15, init) => requestApi(api2, path15, init, signal);
+  const accountOf = async (access6) => {
+    const body = await request("/v1/me", { headers: { authorization: `Bearer ${access6}` } }).catch(() => null);
+    const id = typeof body === "object" && body !== null && "account" in body && typeof body.account === "object" && body.account !== null && "id" in body.account ? body.account.id : undefined;
+    return typeof id === "string" && id !== "" ? id : undefined;
+  };
+  async function refreshed(current) {
+    if (current.refreshState === "uncertain" || current.refreshAttempt !== undefined) {
+      throw new SessionEnded(`Refresh recovery can no longer be proved safe. ${signInHint("again")}`, false, "refresh_recovery_expired");
+    }
+    if (Date.parse(current.accessTokenExpiresAt) > now() + 30000)
+      return current;
+    await store2.write({ ...current, refreshState: "uncertain" });
+    try {
+      const tokens = parseReply(tokenSchema, await request("/v1/session/refresh", jsonRequest({ refreshToken: current.refreshToken })));
+      const successor = { ...current, ...tokens };
+      await store2.write(successor);
+      return successor;
+    } catch (error62) {
+      if (error62 instanceof CredentialStoreError)
+        throw error62;
+      if (error62 instanceof ApiRefusal && error62.status < 500 && ["unauthorized", "account_deleted", "reauth_required", "invalid_grant", "device_revoked"].includes(error62.code)) {
+        await beforeKeysDiscarded(discardedOf(current, "refused"));
+        await store2.clear();
+        await deviceService?.forget();
+        throw new SessionEnded(error62.code === "reauth_required" ? `This session was ended because its refresh token was reused. ${signInHint("again")}` : refusalMessage(refusalGuidance(error62.code, error62.status)), DEVICE_REVOKING_REFUSALS.has(error62.code), error62.code);
+      }
+      if (error62 instanceof RequestFailure && error62.notSent || error62 instanceof ApiRefusal && error62.status === 429 && error62.code === "rate_limited") {
+        await store2.write(current);
+        throw error62;
+      }
+      throw new SessionEnded(`The refresh outcome is unknown. Saved credentials and keys were retained. ${signInHint("again")}`, false, "refresh_recovery_expired");
+    }
+  }
+  async function snapshot() {
+    return locked(async (view) => {
+      const current = await store2.read();
+      if (current === null)
+        return null;
+      await view?.settle();
+      return refreshed(current);
+    });
+  }
+  return {
+    request,
+    signal,
+    transaction: locked,
+    async ready() {
+      await store2.read();
+    },
+    async save(value) {
+      await locked(async () => {
+        let stored;
+        try {
+          stored = await store2.readAuthoritative();
+        } catch (error62) {
+          if (!(error62 instanceof InvalidCredentialState))
+            throw error62;
+          await beforeKeysDiscarded({ kind: "unreadable" });
+          stored = null;
+        }
+        if (stored !== null && stored.device.id !== value.device.id)
+          await beforeKeysDiscarded(discardedOf(stored, "replaced"));
+        await store2.write(value, "fresh-sign-in", () => beforeKeysDiscarded({ kind: "unreadable" }));
+        await clearSignedOutMarker(markerPath);
+      });
+      await deviceService?.adopt(value);
+    },
+    signedOutMarker: () => readSignedOutMarker(markerPath),
+    clearSignedOutMarker: () => clearSignedOutMarker(markerPath),
+    async update(action, options2 = {}) {
+      return locked(async () => {
+        let current;
+        try {
+          current = await store2.readAuthoritative();
+        } catch (error62) {
+          if (!options2.replaceInvalid || !(error62 instanceof InvalidCredentialState))
+            throw error62;
+          current = null;
+        }
+        return action(current);
+      });
+    },
+    async forget() {
+      await locked(() => store2.clear());
+      await deviceService?.forget();
+    },
+    accessSnapshot: snapshot,
+    async logout() {
+      try {
+        return await locked(async () => {
+          let current = null;
+          let account;
+          try {
+            current = await store2.readAuthoritative();
+            if (current !== null) {
+              if (current.refreshState === "uncertain")
+                return false;
+              const access6 = Date.parse(current.accessTokenExpiresAt) <= now() ? (await refreshed(current)).accessToken : current.accessToken;
+              if (current.accountId === undefined && current.owner === undefined && await beforeKeysDiscarded.wantsAccount?.() === true) {
+                account = await accountOf(access6);
+              }
+              await request(`/v1/devices/${encodeURIComponent(current.device.id)}`, {
+                method: "DELETE",
+                headers: { authorization: `Bearer ${access6}` }
+              });
+            }
+            return true;
+          } catch (error62) {
+            if (error62 instanceof SessionEnded)
+              return error62.deviceRevoked;
+            if (error62 instanceof SignInError)
+              return false;
+            throw error62;
+          } finally {
+            await writeSignedOutMarker(markerPath, current?.device.id ?? null);
+            const stored = current === null ? null : await store2.read().catch(() => current);
+            if (stored !== null)
+              await beforeKeysDiscarded(discardedOf(stored.accountId === undefined && account !== undefined ? { ...stored, accountId: account } : stored, "logout"));
+            await store2.clear();
+          }
+        });
+      } finally {
+        await deviceService?.forget();
+      }
+    },
+    async accessToken(expect) {
+      signal?.throwIfAborted();
+      const snapshot2 = await store2.read();
+      signal?.throwIfAborted();
+      if (snapshot2 !== null && snapshot2.refreshState !== "uncertain" && snapshot2.refreshAttempt === undefined && Date.parse(snapshot2.accessTokenExpiresAt) > now() + 30000 && (expect === undefined || expect(snapshot2)) && !await store2.migrationPending?.())
+        return snapshot2.accessToken;
+      return locked(async (view) => {
+        const current = await store2.readAuthoritative();
+        if (current === null)
+          throw new SignInError(`Not signed in. ${signInHint("first")}`);
+        if (expect !== undefined && !expect(current))
+          throw new CredentialIdentityChanged;
+        await view?.settle();
+        return (await refreshed(current)).accessToken;
+      });
+    },
+    async removeForLimit(error62, choose) {
+      if (!(error62 instanceof ApiRefusal) || error62.detail === undefined)
+        throw error62;
+      const headers = { authorization: `Bearer ${error62.detail.managementToken}` };
+      const listed = parseReply(deviceListSchema, await request("/v1/devices", { headers }));
+      const devices = listed.devices.filter((device) => device.revokedAt === null);
+      const chosen2 = await choose(devices);
+      if (chosen2 === null)
+        return false;
+      if (!devices.some((device) => device.id === chosen2))
+        throw new SignInError("No matching device was selected.");
+      await request(`/v1/devices/${encodeURIComponent(chosen2)}`, { method: "DELETE", headers });
+      return true;
+    }
+  };
+}
+
+// packages/omo-opencode/src/cli/service-auth/machine-device.ts
+class MachineAlreadySignedIn extends SignInError {
+}
+
+class MachineCredentialUnreadable extends SignInError {
+}
+async function refuseSecondMachineDevice(session, deviceService, options = {}) {
+  const stored = await session.accessSnapshot().catch((error62) => {
+    if (error62 instanceof CredentialStoreError || error62 instanceof InvalidCredentialState) {
+      if (options.newDevice === true)
+        return null;
+      throw new MachineCredentialUnreadable(`omo could not read this computer's OmO sign-in (${terminalText(error62.message)}), so it did not register another device. Unlock or repair the credential store and run omo login again, or run omo login --new-device to register a new device anyway.`);
+    }
+    if (!(error62 instanceof SessionEnded))
+      throw error62;
+    if (error62.code === "refresh_recovery_expired") {
+      throw new MachineAlreadySignedIn("This computer's OmO sign-in has a refresh whose outcome is unknown. omo kept its credential and keys and did not register another device. Run omo logout to end that sign-in, then run omo login again.");
+    }
+    return null;
+  });
+  if (stored !== null) {
+    throw new MachineAlreadySignedIn(`This computer is already signed in to OmO as ${terminalText(stored.device.name)}, and omo uses that device. Run omo logout first to sign in again.`);
+  }
+  const held2 = await deviceService?.machineDevice?.() ?? { kind: "absent" };
+  if (held2.kind === "held") {
+    throw new MachineAlreadySignedIn(`This computer's OmO device service already holds its device, ${terminalText(held2.device.name)}. omo uses that device instead of registering another one: sign in from the OmO desktop app to share it with omo, or run omo logout first to sign this computer in again.`);
+  }
+  if (held2.kind === "unknown") {
+    throw new MachineAlreadySignedIn(`This computer's OmO device service is installed but did not answer (${terminalText(held2.reason)}), so omo did not register another device. Start the device service, then run omo login again.`);
+  }
+}
+
 // packages/omo-opencode/src/cli/service-auth/loopback.ts
-import { createHash as createHash13, randomBytes as randomBytes5, timingSafeEqual } from "crypto";
+import { createHash as createHash14, randomBytes as randomBytes5, timingSafeEqual } from "crypto";
 import { createServer as createServer3 } from "http";
 class BrowserUnavailable extends SignInError {
 }
@@ -128727,7 +130795,7 @@ async function authorize(options) {
     const url2 = new URL(serviceOrigin(options.accounts));
     url2.search = new URLSearchParams({
       redirect_uri: `${origin}/callback`,
-      code_challenge: createHash13("sha256").update(verifier).digest("base64url"),
+      code_challenge: createHash14("sha256").update(verifier).digest("base64url"),
       code_challenge_method: "S256",
       state: state3
     }).toString();
@@ -128767,11 +130835,14 @@ async function loginLoopback(session, options) {
         kind: "cli",
         deviceName: options.name,
         platform: options.platform,
-        ...keys.public
+        ...keys.public,
+        ...options.machineDigest === undefined ? {} : { machineDigest: options.machineDigest }
       })));
       await session.save({ ...grant, ...keys.private });
       return;
     } catch (error62) {
+      if (error62 instanceof ApiRefusal && error62.code === "machine_exists")
+        throw error62;
       if (await session.removeForLimit(error62, options.chooseDevice))
         continue;
       throw new SignInError("Sign-in cancelled. No device was removed.");
@@ -128779,187 +130850,75 @@ async function loginLoopback(session, options) {
   }
 }
 
-// packages/omo-opencode/src/cli/service-auth/session.ts
-import { homedir as homedir32 } from "os";
+// packages/memory-core/src/sync/device-retire.ts
+import { createHash as createHash15, randomBytes as randomBytes6 } from "crypto";
+import { join as join118 } from "path";
 
-// packages/omo-opencode/src/cli/service-auth/signed-out-marker.ts
-init_zod();
-import { mkdir as mkdir12, readFile as readFile35, rename as rename8, rm as rm17, writeFile as writeFile17 } from "fs/promises";
-import { dirname as dirname44, join as join108 } from "path";
-var markerSchema = exports_external.object({ device: exports_external.string().nullable(), at: exports_external.string() });
-var signedOutMarkerPath = (home, credential) => join108(home, ".omo", "account-state", `${credential}.signed-out.json`);
-async function readSignedOutMarker(path15) {
-  const text = await readFile35(path15, "utf8").catch(() => null);
-  if (text === null)
-    return null;
-  let value;
+// packages/memory-core/src/identity/layout.ts
+import { homedir as homedir35 } from "os";
+import { join as join116, resolve as resolve31 } from "path";
+var MEMORY_ROOT_ENV_VAR = "OMO_MEMORY_HOME";
+function defaultMemoryRoot() {
+  return join116(homedir35(), ".omo", "memory");
+}
+function resolveMemoryRoot(env2, cwd) {
+  const override = env2[MEMORY_ROOT_ENV_VAR];
+  if (override === undefined || override.trim() === "") {
+    return defaultMemoryRoot();
+  }
+  return resolve31(cwd, override);
+}
+// packages/memory-core/src/sync/pin-dir.ts
+import { join as join117 } from "path";
+var syncPinDir = (memoryRoot) => join117(memoryRoot, "sync-device");
+
+// packages/memory-core/src/sync/device-retire.ts
+var trustAnchorRoot = (pinDir) => join118(pinDir, "trust-anchor");
+var trustAnchorKey = (account) => createHash15("sha256").update(account, "utf8").digest("base64url");
+var trustAnchorDir = (pinDir, account) => join118(trustAnchorRoot(pinDir), trustAnchorKey(account));
+var hasLiveTrustAnchor = async (pinDir) => {
   try {
-    value = JSON.parse(text);
-  } catch {
-    return null;
+    return (await readdir17(trustAnchorRoot(pinDir))).some((name) => !name.includes(".retired-"));
+  } catch (error62) {
+    if (error62 instanceof Error && "code" in error62 && error62.code === "ENOENT")
+      return false;
+    throw error62;
   }
-  const parsed = markerSchema.safeParse(value);
-  return parsed.success ? parsed.data : null;
-}
-async function writeSignedOutMarker(path15, device) {
-  await mkdir12(dirname44(path15), { recursive: true, mode: 448 });
-  const staging = `${path15}.${process.pid}.tmp`;
-  await writeFile17(staging, JSON.stringify({ device, at: new Date().toISOString() }), { mode: 384 });
-  await rename8(staging, path15);
-}
-var clearSignedOutMarker = (path15) => rm17(path15, { force: true });
+};
+var retireSyncDevice = async (input2) => {
+  const dir = trustAnchorDir(input2.pinDir, input2.account);
+  try {
+    await rename8(dir, `${dir}.retired-${Date.now()}-${randomBytes6(4).toString("hex")}`);
+  } catch (error62) {
+    if (!(error62 instanceof Error && ("code" in error62) && error62.code === "ENOENT"))
+      throw error62;
+  }
+};
 
-// packages/omo-opencode/src/cli/service-auth/session.ts
-class SessionEnded extends SignInError {
-  deviceRevoked;
-  code;
-  constructor(message, deviceRevoked, code) {
-    super(message);
-    this.deviceRevoked = deviceRevoked;
-    this.code = code;
-  }
-}
-var DEVICE_REVOKING_REFUSALS = new Set(["account_deleted", "reauth_required", "device_revoked"]);
-function createSession(options) {
-  const api2 = serviceOrigin(options.api);
-  const now = options.now ?? Date.now;
-  const { store: store2, signal } = options;
-  const markerPath = signedOutMarkerPath(options.home ?? homedir32(), credentialId(api2));
-  async function locked(action) {
-    signal?.throwIfAborted();
-    return withCredentialLock(api2, async () => {
-      signal?.throwIfAborted();
-      return action();
-    }, options.home);
-  }
-  const request = (path15, init) => requestApi(api2, path15, init, signal);
-  async function refreshed(current) {
-    if (current.refreshState === "uncertain" || current.refreshAttempt !== undefined) {
-      throw new SessionEnded(`Refresh recovery can no longer be proved safe. ${signInHint("again")}`, false, "refresh_recovery_expired");
+// packages/omo-opencode/src/cli/service-auth/sync-pin-retire.ts
+var reason = (error62) => error62 instanceof Error && ("code" in error62) && typeof error62.code === "string" ? error62.code : "unknown";
+function retireSyncPinOnDiscard(options) {
+  const hook = async (discarded) => {
+    if (discarded.kind === "unreadable") {
+      options.log("memory sync: a stored sign-in could not be read while it was replaced; its sync pin was left in place");
+      return;
     }
-    if (Date.parse(current.accessTokenExpiresAt) > now() + 30000)
-      return current;
-    await store2.write({ ...current, refreshState: "uncertain" });
+    const account = discarded.owner?.accountId ?? discarded.accountId;
+    if (account === undefined)
+      return;
     try {
-      const tokens = parseReply(tokenSchema, await request("/v1/session/refresh", jsonRequest({ refreshToken: current.refreshToken })));
-      const successor = { ...current, ...tokens };
-      await store2.write(successor);
-      return successor;
+      await retireSyncDevice({ pinDir: options.pinDir(), account });
     } catch (error62) {
-      if (error62 instanceof CredentialStoreError)
-        throw error62;
-      if (error62 instanceof ApiRefusal && error62.status < 500 && ["unauthorized", "account_deleted", "reauth_required", "invalid_grant", "device_revoked"].includes(error62.code)) {
-        await store2.clear();
-        throw new SessionEnded(error62.code === "reauth_required" ? `This session was ended because its refresh token was reused. ${signInHint("again")}` : refusalMessage(refusalGuidance(error62.code, error62.status)), DEVICE_REVOKING_REFUSALS.has(error62.code), error62.code);
-      }
-      if (error62 instanceof RequestFailure && error62.notSent || error62 instanceof ApiRefusal && error62.status === 429 && error62.code === "rate_limited") {
-        await store2.write(current);
-        throw error62;
-      }
-      throw new SessionEnded(`The refresh outcome is unknown. Saved credentials and keys were retained. ${signInHint("again")}`, false, "refresh_recovery_expired");
-    }
-  }
-  async function snapshot() {
-    return locked(async () => {
-      const current = await store2.read();
-      return current === null ? null : refreshed(current);
-    });
-  }
-  return {
-    request,
-    signal,
-    transaction: locked,
-    async ready() {
-      await store2.read();
-    },
-    async save(value) {
-      await locked(async () => {
-        await store2.write(value);
-        await clearSignedOutMarker(markerPath);
-      });
-    },
-    signedOutMarker: () => readSignedOutMarker(markerPath),
-    clearSignedOutMarker: () => clearSignedOutMarker(markerPath),
-    async update(action, options2 = {}) {
-      return locked(async () => {
-        let current;
-        try {
-          current = await store2.readAuthoritative();
-        } catch (error62) {
-          if (!options2.replaceInvalid || !(error62 instanceof InvalidCredentialState))
-            throw error62;
-          current = null;
-        }
-        return action(current);
-      });
-    },
-    async forget() {
-      await locked(() => store2.clear());
-    },
-    accessSnapshot: snapshot,
-    async logout() {
-      return locked(async () => {
-        let current = null;
-        try {
-          current = await store2.readAuthoritative();
-          if (current !== null) {
-            if (current.refreshState === "uncertain")
-              return false;
-            const access5 = Date.parse(current.accessTokenExpiresAt) <= now() ? (await refreshed(current)).accessToken : current.accessToken;
-            await request(`/v1/devices/${encodeURIComponent(current.device.id)}`, {
-              method: "DELETE",
-              headers: { authorization: `Bearer ${access5}` }
-            });
-          }
-          return true;
-        } catch (error62) {
-          if (error62 instanceof SessionEnded)
-            return error62.deviceRevoked;
-          if (error62 instanceof SignInError)
-            return false;
-          throw error62;
-        } finally {
-          await writeSignedOutMarker(markerPath, current?.device.id ?? null);
-          await store2.clear();
-        }
-      });
-    },
-    async accessToken(expect) {
-      signal?.throwIfAborted();
-      const snapshot2 = await store2.read();
-      signal?.throwIfAborted();
-      if (snapshot2 !== null && snapshot2.refreshState !== "uncertain" && snapshot2.refreshAttempt === undefined && Date.parse(snapshot2.accessTokenExpiresAt) > now() + 30000 && (expect === undefined || expect(snapshot2)))
-        return snapshot2.accessToken;
-      return locked(async () => {
-        const current = await store2.readAuthoritative();
-        if (current === null)
-          throw new SignInError(`Not signed in. ${signInHint("first")}`);
-        if (expect !== undefined && !expect(current))
-          throw new CredentialIdentityChanged;
-        return (await refreshed(current)).accessToken;
-      });
-    },
-    async removeForLimit(error62, choose) {
-      if (!(error62 instanceof ApiRefusal) || error62.detail === undefined)
-        throw error62;
-      const headers = { authorization: `Bearer ${error62.detail.managementToken}` };
-      const listed = parseReply(deviceListSchema, await request("/v1/devices", { headers }));
-      const devices = listed.devices.filter((device) => device.revokedAt === null);
-      const chosen = await choose(devices);
-      if (chosen === null)
-        return false;
-      if (!devices.some((device) => device.id === chosen))
-        throw new SignInError("No matching device was selected.");
-      await request(`/v1/devices/${encodeURIComponent(chosen)}`, { method: "DELETE", headers });
-      return true;
+      options.log(`memory sync: the sync pin could not be retired (${reason(error62)}); it was left in place`);
     }
   };
+  return Object.assign(hook, { wantsAccount: () => hasLiveTrustAnchor(options.pinDir()).catch(() => false) });
 }
 
 // packages/omo-opencode/src/cli/service-auth/commands.ts
 async function ensureServiceAvailable(session, api2) {
   try {
-    await session.request("/v1/health", { method: "GET" });
+    return await session.request("/v1/health", { method: "GET" });
   } catch (error62) {
     if (!(error62 instanceof SignInError))
       throw error62;
@@ -128969,6 +130928,10 @@ async function ensureServiceAvailable(session, api2) {
     throw new SignInError(`OmO accounts at ${api2} aren't available right now. Try again later.`);
   }
 }
+async function beginLogin(session, deviceService, api2, newDevice = false) {
+  await refuseSecondMachineDevice(session, deviceService, { newDevice });
+  return ensureServiceAvailable(session, api2);
+}
 function deviceChoices(devices) {
   return devices.map((device) => ({ value: device.id, label: terminalText(device.name) }));
 }
@@ -128977,20 +130940,20 @@ var chooseDevice = async (devices) => {
     console.error("Device limit reached. Run omo login in an interactive terminal to choose a device to remove.");
     return null;
   }
-  const chosen = await select({
+  const chosen2 = await select({
     message: "Device limit reached. Remove a device to sign in?",
     options: [{ value: "", label: "Cancel (keep all devices)" }, ...deviceChoices(devices)]
   });
-  if (isCancel(chosen) || chosen === "")
+  if (isCancel(chosen2) || chosen2 === "")
     return null;
   const agreed = await confirm({ message: "Sign out the selected device?", initialValue: false });
-  return agreed === true ? chosen : null;
+  return agreed === true ? chosen2 : null;
 };
 var DEFAULT_ACCOUNTS_ORIGIN = "https://signin.omo.dev";
 function accountsOrigin(options, env2) {
   return serviceOrigin(options.accounts ?? env2.OMO_SERVICE_ACCOUNTS_URL ?? DEFAULT_ACCOUNTS_ORIGIN);
 }
-async function run2(action, options) {
+async function run3(action, options, hooks2 = {}) {
   const controller = new AbortController;
   const cancel2 = () => controller.abort();
   process.once("SIGINT", cancel2);
@@ -128998,7 +130961,17 @@ async function run2(action, options) {
   try {
     const api2 = serviceOrigin(options.api ?? process.env.OMO_SERVICE_API_URL ?? "https://api.omo.dev");
     const store2 = createCredentialStore(api2, { wait: INTERACTIVE_READ_WAIT });
-    const session = createSession({ api: api2, store: store2, signal: controller.signal });
+    const deviceService = hooks2.deviceService?.(api2);
+    const session = createSession({
+      api: api2,
+      store: store2,
+      signal: controller.signal,
+      ...deviceService === undefined ? {} : { deviceService },
+      beforeKeysDiscarded: retireSyncPinOnDiscard({
+        pinDir: () => syncPinDir(resolveMemoryRoot(process.env, process.cwd())),
+        log: (line) => console.error(line)
+      })
+    });
     if (action === "logout") {
       const revoked = await session.logout();
       console.log("Signed out of OmO. Stored credentials and device keys were removed.");
@@ -129012,7 +130985,9 @@ async function run2(action, options) {
       console.log(saved ? `Signed in to ${api2} as ${terminalText(saved.device.name)}.` : "Not signed in.");
       return;
     }
-    await ensureServiceAvailable(session, api2);
+    const health = await beginLogin(session, deviceService, api2, options.newDevice === true);
+    const machineDigest = advertisesMachineIdentity(health) ? await readMachineDigest() : undefined;
+    const digest = machineDigest === undefined ? {} : { machineDigest };
     const name = deviceName();
     const platform2 = devicePlatform();
     if (!options.device && options.browser !== false) {
@@ -129022,7 +130997,8 @@ async function run2(action, options) {
           name,
           platform: platform2,
           open: openSignInBrowser,
-          chooseDevice
+          chooseDevice,
+          ...digest
         });
         console.log("Signed in to OmO.");
         return;
@@ -129035,6 +131011,7 @@ async function run2(action, options) {
       name,
       platform: platform2,
       chooseDevice,
+      ...digest,
       show: (code) => {
         console.log(`Open ${code.verificationUri}`);
         console.log(`User code: ${code.userCode}`);
@@ -129056,8 +131033,12 @@ function refuseClosedServiceAuth() {
   console.error(SERVICE_ACCOUNTS_CLOSED_MESSAGE);
   process.exit(1);
 }
-function configureClosedServiceAuthCommands(program2) {
+function configureClosedServiceAuthCommands(program2, hooks2) {
   for (const name of SERVICE_AUTH_COMMANDS) {
+    if (name === "login") {
+      configureClosedDeviceLogin(program2, hooks2);
+      continue;
+    }
     const command = program2.command(name, { hidden: true }).helpOption(false).allowUnknownOption().allowExcessArguments().action(() => {
       console.error(SERVICE_ACCOUNTS_CLOSED_MESSAGE);
       process.exitCode = 1;
@@ -129065,16 +131046,3012 @@ function configureClosedServiceAuthCommands(program2) {
     command.help = refuseClosedServiceAuth;
   }
 }
-function configureServiceAuthCommands(program2, open4 = serviceAccountsOpen()) {
-  if (!open4) {
-    configureClosedServiceAuthCommands(program2);
+function configureClosedDeviceLogin(program2, hooks2) {
+  const command = withClosedDeviceLoginOptions(program2.command("login", { hidden: true })).action((options) => {
+    if (!isClosedDeviceLogin(options, command.args)) {
+      console.error(SERVICE_ACCOUNTS_CLOSED_MESSAGE);
+      process.exitCode = 1;
+      return;
+    }
+    return run3("login", { ...options, device: true }, hooks2);
+  });
+  command.help = refuseClosedServiceAuth;
+}
+function configureServiceAuthCommands(program2, open5 = serviceAccountsOpen(), hooks2 = {}) {
+  if (!open5) {
+    configureClosedServiceAuthCommands(program2, hooks2);
     return;
   }
-  program2.command("login").description("Sign in to OmO using the OS credential store").option("--device", "Use a device code instead of a browser callback").option("--no-browser", "Sign in by device code without opening a browser").option("--api <url>", "OmO API origin (or OMO_SERVICE_API_URL)").option("--accounts <url>", "OmO sign-in page origin (or OMO_SERVICE_ACCOUNTS_URL)").action((options) => run2("login", options));
+  program2.command("login").description("Sign in to OmO using the OS credential store").option("--device", "Use a device code instead of a browser callback").option("--no-browser", "Sign in by device code without opening a browser").option("--new-device", "Register a new device even if this computer's stored sign-in cannot be read").option("--api <url>", "OmO API origin (or OMO_SERVICE_API_URL)").option("--accounts <url>", "OmO sign-in page origin (or OMO_SERVICE_ACCOUNTS_URL)").action((options) => run3("login", options, hooks2));
   for (const action of ["logout", "whoami"]) {
-    program2.command(action).description(action === "logout" ? "Remove stored OmO credentials and device keys" : "Show the current OmO device sign-in").option("--api <url>", "OmO API origin (or OMO_SERVICE_API_URL)").action((options) => run2(action, options));
+    program2.command(action).description(action === "logout" ? "Remove stored OmO credentials and device keys" : "Show the current OmO device sign-in").option("--api <url>", "OmO API origin (or OMO_SERVICE_API_URL)").action((options) => run3(action, options, hooks2));
   }
 }
+
+// packages/omo-native/device-service-handoff.ts
+import { existsSync as existsSync70 } from "fs";
+
+// packages/device-service-core/src/device-service.ts
+import { homedir as homedir36 } from "os";
+import { join as join121 } from "path";
+
+// packages/device-service-core/src/local-api/access.ts
+import { createHmac as createHmac2, randomBytes as randomBytes7, timingSafeEqual as timingSafeEqual2 } from "crypto";
+import { chmodSync as chmodSync7, closeSync as closeSync5, lstatSync as lstatSync5, openSync as openSync5, readFileSync as readFileSync47, renameSync as renameSync10, rmSync as rmSync10, writeFileSync as writeFileSync17 } from "fs";
+import { join as join119 } from "path";
+
+// packages/device-service-core/src/local-api/errors.ts
+class LocalApiError extends Error {
+  code;
+  reason;
+  action;
+  limit_chars;
+  path_refusal;
+  command_id;
+  not_sent;
+  constructor(code, reason2, extra = {}) {
+    super(`${code}: ${reason2}`);
+    this.name = "LocalApiError";
+    this.code = code;
+    this.reason = reason2;
+    this.action = extra.action ?? null;
+    if (extra.limit_chars !== undefined)
+      this.limit_chars = extra.limit_chars;
+    if (extra.path_refusal !== undefined)
+      this.path_refusal = extra.path_refusal;
+    if (extra.command_id !== undefined)
+      this.command_id = extra.command_id;
+    if (extra.not_sent === true)
+      this.not_sent = true;
+  }
+}
+var protocolViolation = (detail) => {
+  throw new LocalApiError("protocol_violation", detail);
+};
+
+// packages/device-service-core/src/local-api/dacl.ts
+import { spawn as spawn6 } from "child_process";
+var runPowerShell = async (script, env2) => {
+  const encoded = Buffer.from(script, "utf16le").toString("base64");
+  const proc = spawn6("powershell.exe", ["-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-EncodedCommand", encoded], { env: { ...process.env, ...env2 }, stdio: ["ignore", "pipe", "pipe"], windowsHide: true });
+  const chunks = [];
+  const errChunks = [];
+  proc.stdout.on("data", (chunk) => chunks.push(chunk));
+  proc.stderr.on("data", (chunk) => errChunks.push(chunk));
+  const code = await new Promise((resolve32, reject) => {
+    proc.once("error", reject);
+    proc.once("close", (exitCode) => resolve32(exitCode ?? -1));
+  });
+  return {
+    code,
+    out: Buffer.concat(chunks).toString("utf8"),
+    err: Buffer.concat(errChunks).toString("utf8")
+  };
+};
+var firstErrorLine = (err) => {
+  const line = (err ?? "").split(/\r?\n/).find((text) => text.trim() !== "" && !text.startsWith("#< CLIXML"))?.trim() ?? "";
+  return line === "" ? "" : `: ${line.slice(0, 300)}`;
+};
+var APPLY = String.raw`
+$ErrorActionPreference = 'Stop'
+trap { [Console]::Error.WriteLine($_.Exception.Message); exit 1 }
+$sid = New-Object System.Security.Principal.SecurityIdentifier($env:LA_SID)
+if ($env:LA_KIND -eq 'dir') {
+  $acl = New-Object System.Security.AccessControl.DirectorySecurity
+  $inherit = [System.Security.AccessControl.InheritanceFlags]'ContainerInherit, ObjectInherit'
+} else {
+  $acl = New-Object System.Security.AccessControl.FileSecurity
+  $inherit = [System.Security.AccessControl.InheritanceFlags]::None
+}
+$rule = New-Object System.Security.AccessControl.FileSystemAccessRule($sid,
+  [System.Security.AccessControl.FileSystemRights]::FullControl, $inherit,
+  [System.Security.AccessControl.PropagationFlags]::None, [System.Security.AccessControl.AccessControlType]::Allow)
+$acl.SetAccessRuleProtection($true, $false)
+$acl.SetOwner($sid)
+$acl.AddAccessRule($rule)
+if ($env:LA_KIND -eq 'dir') {
+  [System.IO.Directory]::SetAccessControl($env:LA_PATH, $acl)
+} else {
+  [System.IO.File]::SetAccessControl($env:LA_PATH, $acl)
+}
+Write-Output 'applied'
+`;
+var DESCRIBE_DACL_SCRIPT = String.raw`
+$ErrorActionPreference = 'Stop'
+Add-Type -TypeDefinition @'
+using System;
+using System.ComponentModel;
+using System.Runtime.InteropServices;
+public static class LaSddl {
+  [DllImport("advapi32.dll", CharSet = CharSet.Unicode)]
+  static extern uint GetNamedSecurityInfoW(string name, int type, int info, out IntPtr owner, out IntPtr group,
+    out IntPtr dacl, out IntPtr sacl, out IntPtr sd);
+  [DllImport("advapi32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+  static extern bool ConvertSecurityDescriptorToStringSecurityDescriptorW(IntPtr sd, int revision, int info,
+    out IntPtr text, out int length);
+  [DllImport("kernel32.dll")]
+  static extern IntPtr LocalFree(IntPtr memory);
+  public static string Read(string path) {
+    IntPtr owner, group, dacl, sacl, sd;
+    uint code = GetNamedSecurityInfoW(path, 1, 5, out owner, out group, out dacl, out sacl, out sd);
+    if (code != 0) throw new Win32Exception((int)code);
+    try {
+      IntPtr text; int length;
+      if (!ConvertSecurityDescriptorToStringSecurityDescriptorW(sd, 1, 5, out text, out length))
+        throw new Win32Exception(Marshal.GetLastWin32Error());
+      try { return Marshal.PtrToStringUni(text); } finally { LocalFree(text); }
+    } finally { LocalFree(sd); }
+  }
+}
+'@
+[LaSddl]::Read($env:LA_PATH)
+`;
+var SID_TOKEN_SCRIPT = String.raw`
+$ErrorActionPreference = 'Stop'
+(New-Object System.Security.AccessControl.RawSecurityDescriptor("O:$env:LA_SID")).GetSddlForm('Owner')
+`;
+var CURRENT_USER_SID_SCRIPT = "[System.Security.Principal.WindowsIdentity]::GetCurrent().User.Value";
+var ACE_TYPES = new Set([
+  "A",
+  "D",
+  "OA",
+  "OD",
+  "AU",
+  "AL",
+  "OU",
+  "OL",
+  "ML",
+  "XA",
+  "XD",
+  "ZA",
+  "XU",
+  "SP",
+  "RA",
+  "SD",
+  "CA"
+]);
+var DACL_FLAG = /^(?:P|AI|AR|NO_ACCESS_CONTROL)/;
+var SID_TOKEN = /^(?:S-1-\d+(?:-\d+)+|[A-Z]{2})$/;
+var aceEnd = (text, start) => {
+  let depth = 0;
+  for (let i2 = start;i2 < text.length; i2 += 1) {
+    if (text[i2] === '"') {
+      if (depth < 2)
+        return;
+      const close = text.indexOf('"', i2 + 1);
+      if (close === -1)
+        return;
+      i2 = close;
+    } else if (text[i2] === "(")
+      depth += 1;
+    else if (text[i2] === ")") {
+      depth -= 1;
+      if (depth === 0)
+        return i2;
+    }
+  }
+  return;
+};
+var GUID_FIELD = /^(?:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})?$/;
+var parseAce = (body) => {
+  const parts = body.split(";");
+  if (parts.length < 6)
+    return;
+  const [type = "", flags = "", rights = "", objectGuid = "", inheritObjectGuid = "", sid = ""] = parts;
+  const extra = parts.length > 6 ? parts.slice(6).join(";") : undefined;
+  if (!ACE_TYPES.has(type) || !SID_TOKEN.test(sid))
+    return;
+  if (!/^[A-Z]*$/.test(flags) || !/^(?:[A-Z]+|0x[0-9a-fA-F]+)?$/.test(rights))
+    return;
+  if (extra === undefined && parts.length !== 6)
+    return;
+  if (!GUID_FIELD.test(objectGuid) || !GUID_FIELD.test(inheritObjectGuid))
+    return;
+  return { type, flags, rights, objectGuid, inheritObjectGuid, sid, extra };
+};
+var parseSddl = (sddl) => {
+  const head = /^O:(S-1-\d+(?:-\d+)+|[A-Z]{2})D:/.exec(sddl);
+  if (head === null)
+    return;
+  const owner = head[1] ?? "";
+  let rest = sddl.slice(head[0].length);
+  const tokens = [];
+  for (let flag = DACL_FLAG.exec(rest);flag !== null; flag = DACL_FLAG.exec(rest)) {
+    tokens.push(flag[0]);
+    rest = rest.slice(flag[0].length);
+  }
+  const aces = [];
+  while (rest.length > 0) {
+    if (!rest.startsWith("("))
+      return;
+    const close = aceEnd(rest, 0);
+    if (close === undefined)
+      return;
+    const ace = parseAce(rest.slice(1, close));
+    if (ace === undefined)
+      return;
+    aces.push(ace);
+    rest = rest.slice(close + 1);
+  }
+  return { sddl, owner, protected: tokens.includes("P"), flags: tokens.join(""), aces };
+};
+var exactDaclVerdict = (dacl, userSid, kind, userAlias) => {
+  const isUser = (token) => token === userSid || userAlias !== undefined && token === userAlias;
+  const [ace, ...others] = dacl.aces;
+  return isUser(dacl.owner) && dacl.flags === "PAI" && ace !== undefined && others.length === 0 && ace.type === "A" && ace.flags === (kind === "dir" ? "OICI" : "") && ace.rights === "FA" && ace.objectGuid === "" && ace.inheritObjectGuid === "" && isUser(ace.sid) && ace.extra === undefined;
+};
+var currentUserSid = async (run4 = runPowerShell) => {
+  const { code, out } = await run4(CURRENT_USER_SID_SCRIPT, {});
+  const sid = out.trim();
+  if (code !== 0 || !/^S-1-[0-9-]+$/.test(sid))
+    throw new LocalApiError("insecure_state_dir", "the user SID is unreadable");
+  return sid;
+};
+var userSidToken = async (userSid, run4 = runPowerShell) => {
+  const { code, out } = await run4(SID_TOKEN_SCRIPT, { LA_SID: userSid });
+  const match = code === 0 ? /^O:(S-1-\d+(?:-\d+)+|[A-Z]{2})$/.exec(out.trim()) : null;
+  return match?.[1];
+};
+var applyExactDacl = async (path15, userSid, kind, run4 = runPowerShell) => {
+  const { code, err } = await run4(APPLY, { LA_PATH: path15, LA_SID: userSid, LA_KIND: kind });
+  if (code !== 0)
+    throw new LocalApiError("insecure_state_dir", `the exact DACL could not be applied${firstErrorLine(err)}`);
+};
+var describeDacl = async (path15, run4 = runPowerShell) => {
+  const { code, out } = await run4(DESCRIBE_DACL_SCRIPT, { LA_PATH: path15 });
+  const dacl = code === 0 ? parseSddl(out.trim()) : undefined;
+  if (dacl === undefined)
+    throw new LocalApiError("insecure_state_dir", "the DACL could not be read back");
+  return dacl;
+};
+var verifyExactDacl = async (path15, userSid, kind, run4 = runPowerShell) => {
+  let dacl;
+  try {
+    dacl = await describeDacl(path15, run4);
+  } catch (error62) {
+    if (error62 instanceof LocalApiError)
+      return false;
+    throw error62;
+  }
+  return exactDaclVerdict(dacl, userSid, kind, await userSidToken(userSid, run4));
+};
+var windowsSecureFile = (userSid, run4 = runPowerShell) => async (path15, kind) => {
+  const target = kind === "dir" ? "dir" : "file";
+  await applyExactDacl(path15, userSid, target, run4);
+  if (!await verifyExactDacl(path15, userSid, target, run4))
+    throw new LocalApiError("insecure_state_dir", "the DACL is not exactly one ACE for the user");
+};
+
+// packages/device-service-core/src/local-api/access.ts
+var TOKEN_FILE = "token";
+var TOKEN_BYTES = 32;
+var NONCE_BYTES = 32;
+var SOCKET_FILE = "service.sock";
+var base64url3 = (bytes) => Buffer.from(bytes).toString("base64url");
+var mintNonce = () => base64url3(randomBytes7(NONCE_BYTES));
+var mintId = () => base64url3(randomBytes7(16));
+var insecure = (detail) => {
+  throw new LocalApiError("insecure_state_dir", detail);
+};
+var decoded = (value, bytes, what) => {
+  const out = Buffer.from(value, "base64url");
+  if (out.length !== bytes || base64url3(out) !== value)
+    throw new LocalApiError("protocol_violation", `${what} is not ${bytes} base64url bytes`);
+  return out;
+};
+var UNIX_ENDPOINT = "unix";
+var tcpEndpoint = (port) => `tcp:${port}`;
+var proof = (token, label, nonce, endpoint) => base64url3(createHmac2("sha256", token).update(label).update(decoded(nonce, NONCE_BYTES, "a nonce")).update(endpoint, "utf8").digest());
+var serverProof = (token, clientNonce, endpoint) => proof(token, "server", clientNonce, endpoint);
+var clientProof = (token, serverNonce, endpoint) => proof(token, "client", serverNonce, endpoint);
+var proofMatches = (expected, actual) => {
+  const a2 = Buffer.from(expected);
+  const b2 = Buffer.from(actual);
+  return a2.length === b2.length && timingSafeEqual2(a2, b2);
+};
+var isMissing = (error62) => typeof error62 === "object" && error62 !== null && ("code" in error62) && (error62.code === "ENOENT" || error62.code === "ENOTDIR");
+var currentUid = () => process.getuid?.() ?? insecure("this platform has no uid");
+var privateEntry = (path15, kind, uid, checkMode = true) => {
+  let stat12;
+  try {
+    stat12 = lstatSync5(path15);
+  } catch (error62) {
+    if (isMissing(error62))
+      return insecure(`the ${kind} is missing`);
+    throw error62;
+  }
+  const isKind = kind === "dir" ? stat12.isDirectory() : kind === "socket" ? stat12.isSocket() : stat12.isFile();
+  if (!isKind)
+    insecure(`the ${kind} is not a plain ${kind}`);
+  if (stat12.uid !== uid)
+    insecure(`the ${kind} belongs to another user`);
+  if (checkMode && (stat12.mode & 63) !== 0)
+    insecure(`the ${kind} is open to group or others`);
+};
+var checkPosixAccess = (stateDir) => {
+  const uid = currentUid();
+  privateEntry(stateDir, "dir", uid);
+  privateEntry(join119(stateDir, SOCKET_FILE), "socket", uid);
+  privateEntry(join119(stateDir, TOKEN_FILE), "file", uid);
+};
+var posixSecureFile = async (path15, kind) => {
+  const uid = currentUid();
+  privateEntry(path15, kind, uid, false);
+  chmodSync7(path15, kind === "dir" ? 448 : 384);
+  privateEntry(path15, kind, uid);
+};
+var readToken = (stateDir) => {
+  let value;
+  try {
+    value = readFileSync47(join119(stateDir, TOKEN_FILE), "utf8");
+  } catch (error62) {
+    if (isMissing(error62))
+      return insecure("the token is missing");
+    throw error62;
+  }
+  try {
+    return decoded(value, TOKEN_BYTES, "the token");
+  } catch (error62) {
+    if (error62 instanceof LocalApiError)
+      return insecure("the token is malformed");
+    throw error62;
+  }
+};
+
+// packages/device-service-core/src/local-api/limits.ts
+import { createHash as createHash16 } from "crypto";
+
+// packages/device-service-core/src/local-api/spec-proto.ts
+var SESSION_BLOB_MAX = 16777216;
+var SESSION_COMMAND_TEXT_MAX_CHARS = 1e6;
+var SESSION_COMMAND_TEXT_MAX_BYTES = 3000000;
+var SESSION_DEVICE_MAX_CHARS = 64;
+var SESSION_PROJECT_MAX_CHARS = 256;
+var SESSION_ID_MAX_CHARS = 128;
+var SESSION_KIND_MAX_CHARS = 32;
+var SESSION_READ_TAIL_MAX = 200;
+var SESSION_SUMMARY_TITLE_MAX_CHARS = 256;
+var SESSION_SUMMARY_PROJECT_MAX_CHARS = 128;
+var SESSION_SUMMARY_PATH_MAX_CHARS = 1024;
+
+class ProtoError extends Error {
+  code;
+  constructor(code, message) {
+    super(message);
+    this.code = code;
+  }
+}
+var validateCommandText = (text) => {
+  if (typeof text !== "string" || !text.isWellFormed())
+    throw new ProtoError("malformed", "command text");
+  if (text.length > SESSION_COMMAND_TEXT_MAX_CHARS || new TextEncoder().encode(text).length > SESSION_COMMAND_TEXT_MAX_BYTES)
+    throw new ProtoError("payload_too_large", "session command text over the limit");
+  return text;
+};
+
+// packages/device-service-core/src/local-api/limits.ts
+var LOCAL_INLINE_MAX = 524288;
+var LOCAL_CHUNK_MAX = 262144;
+var LOCAL_JSON_EXPANSION_MAX = 6;
+var LOCAL_BLOB_MAX = LOCAL_JSON_EXPANSION_MAX * SESSION_BLOB_MAX;
+var encoder2 = new TextEncoder;
+var lineBytes = (value) => encoder2.encode(JSON.stringify(value)).length + 1;
+var sha256Hex = (data) => createHash16("sha256").update(data).digest("hex");
+var chunkPayload = (data) => {
+  const chunks = [];
+  for (let off = 0;off < data.length; off += LOCAL_CHUNK_MAX)
+    chunks.push({
+      off,
+      b: Buffer.from(data.subarray(off, off + LOCAL_CHUNK_MAX)).toString("base64")
+    });
+  return chunks;
+};
+
+// packages/device-service-core/src/local-api/validate-fields.ts
+import { posix as posix16, win32 as win3211 } from "path";
+
+// packages/device-service-core/src/local-api/vocabulary.ts
+var LOCAL_API_VERSION = 1;
+var STATUS_STATES = [
+  "not_configured",
+  "disabled",
+  "sign_in_required",
+  "plan_required",
+  "keychain_locked",
+  "connecting",
+  "activation_pending",
+  "connected",
+  "offline",
+  "authorization_stale",
+  "service_degraded",
+  "update_required",
+  "signed_out"
+];
+var POLICY_STATES = ["off", "pending", "active"];
+var THIS_DEVICE_STATES = [
+  "unclassified",
+  "desktop_unregistered",
+  "indeterminate",
+  "desktop",
+  "cli_only",
+  "acked"
+];
+var CAPABILITIES = ["sessions", "devices", "enforcement", "upgrade", "control"];
+var OPTIONAL_CAPABILITIES = ["machine"];
+var REFUSED_REASONS = ["version", "data_home_required", "malformed"];
+var ROUND_STATES = ["open", "done"];
+var ROUND_DEVICE_STATES = [
+  "answered",
+  "pending",
+  "undelivered",
+  "page_cap",
+  "cursor_echo",
+  "timed_out",
+  "skipped"
+];
+var LISTING_SOURCES = ["live", "cache"];
+var SESSION_ROW_STATES = ["running", "idle", "ended"];
+var FILTER_KEYS = ["device", "project", "state"];
+var BLOB_OF = ["state", "record", "entry"];
+var BLOB_ABORT_REASONS = ["digest_mismatch", "source_gone", "too_large", "detached"];
+var UPLOAD_ABORT_REASONS = ["message_too_long", "parts_conflict", "malformed", "detached"];
+var DETACH_REASONS = [
+  "authorization_expired",
+  "activation_pending",
+  "service_disabled",
+  "owner_transfer",
+  "peer_revoked",
+  "stream_key_pending",
+  "peer_detached",
+  "blob_failed",
+  "session_closed",
+  "session_replaced"
+];
+var ATTACH_PENDING_REASONS = ["stream_key_pending"];
+var COMMAND_ID_CHARS = 22;
+var COMMAND_STATES = [
+  "queued",
+  "transport_confirmed",
+  "not confirmed",
+  "not delivered: never_sent",
+  "engine_dispatched",
+  "engine_applied",
+  "engine_refused",
+  "engine_stale",
+  "uncertain"
+];
+var COMMAND_UNCERTAIN_REASONS = [
+  "request_gone",
+  "no_receipt",
+  "engine_restarted",
+  "recipient_revoked",
+  "transport_expired",
+  "unconfirmed",
+  "lease_expired",
+  "cancelled",
+  "hand_restarted",
+  "result_expired",
+  "record_too_large"
+];
+var COMMAND_REFUSAL_REASONS = [
+  "parts_conflict",
+  "peer_unauthorized",
+  "message_too_long",
+  "engine_capability_missing",
+  "malformed",
+  "method_unclassified",
+  "method_local_only",
+  "capability_missing",
+  "schema_stale",
+  "tool_unknown",
+  "cancelled",
+  "hand_restarted",
+  "scope_unknown",
+  "scope_closed",
+  "epoch_fenced",
+  "epoch_step_exceeded"
+];
+var RETRYABLE_STATES = ["not confirmed", "not delivered: never_sent"];
+var ERROR_CODES = [
+  "unauthenticated",
+  "client_proof_invalid",
+  "invalid_request",
+  "unknown_type",
+  "forbidden",
+  "owner_transfer",
+  "internal",
+  "signed_out",
+  "device_mismatch",
+  "device_changed",
+  "account_changed",
+  "device_key_invalid",
+  "service_disabled",
+  "sign_in_required",
+  "plan_required",
+  "activation_pending",
+  "authorization_stale",
+  "peer_not_found",
+  "peer_not_session_client",
+  "session_not_found",
+  "engine_too_old",
+  "not_attached",
+  "command_id_conflict",
+  "message_too_long",
+  "upload_incomplete",
+  "malformed",
+  "method_unclassified",
+  "method_local_only",
+  "host_not_answering",
+  "unsupported"
+];
+var PATH_REFUSAL_PROBLEMS = [
+  "not_absolute",
+  "not_found",
+  "not_regular_file",
+  "not_executable",
+  "foreign_owner",
+  "group_writable",
+  "world_writable",
+  "windows_acl"
+];
+var CHANNEL_CLOSED_REASONS = [
+  "event_overflow",
+  "event_too_large",
+  "idle",
+  "engine_closed",
+  "event_lost",
+  "event_gap"
+];
+
+// packages/device-service-core/src/local-api/validate-fields.ts
+var REQUEST_ID_MAX_CHARS = 64;
+var LOCAL_ID_MAX_CHARS = 64;
+var PATH_MAX_CHARS = 4096;
+var LABEL_MAX_CHARS = 256;
+var REASON_MAX_CHARS = 1024;
+var ENTRY_ID_MAX_BYTES = 128;
+var NONCE_CHARS = 43;
+
+class InvalidMessage extends Error {
+  detail;
+  constructor(detail) {
+    super(detail);
+    this.name = "InvalidMessage";
+    this.detail = detail;
+  }
+}
+var fail = (detail) => {
+  throw new InvalidMessage(detail);
+};
+var assertNever2 = (value) => {
+  throw new Error(`unexpected variant ${JSON.stringify(value)}`);
+};
+var keysOf = (record3) => Object.keys(record3).filter((key) => Object.hasOwn(record3, key));
+var isRecord21 = (v) => typeof v === "object" && v !== null && !Array.isArray(v);
+var exactly = (v, required2, optional2 = [], what = "message") => {
+  if (!isRecord21(v))
+    return fail(`${what} must be an object`);
+  for (const name of required2)
+    if (!Object.hasOwn(v, name))
+      fail(`${what} misses ${name}`);
+  for (const key of Object.keys(v))
+    if (!required2.includes(key) && !optional2.includes(key))
+      fail(`${what} has an unknown field`);
+  return v;
+};
+var known = (v, required2, optional2 = [], what = "message") => {
+  if (!isRecord21(v))
+    return fail(`${what} must be an object`);
+  const out = {};
+  for (const name of required2) {
+    if (!Object.hasOwn(v, name))
+      fail(`${what} misses ${name}`);
+    out[name] = v[name];
+  }
+  for (const name of optional2)
+    if (Object.hasOwn(v, name))
+      out[name] = v[name];
+  return out;
+};
+var oneOf = (list, v, what) => list.find((item) => item === v) ?? fail(what);
+var text = (v, max, what, min = 1) => typeof v === "string" && v.length >= min && v.length <= max && v.isWellFormed() ? v : fail(what);
+var bool = (v, what) => typeof v === "boolean" ? v : fail(what);
+var uint = (v, min, max, what) => typeof v === "number" && Number.isSafeInteger(v) && v >= min && v <= max ? v : fail(what);
+var BASE64URL = /^[A-Za-z0-9_-]+$/;
+var localId = (v, what) => typeof v === "string" && v.length >= 1 && v.length <= LOCAL_ID_MAX_CHARS && BASE64URL.test(v) ? v : fail(what);
+var commandId = (v) => typeof v === "string" && v.length === COMMAND_ID_CHARS && BASE64URL.test(v) ? v : fail("command_id");
+var nonce = (v, what) => typeof v === "string" && v.length === NONCE_CHARS && BASE64URL.test(v) ? v : fail(what);
+var PRINTABLE = /^[\x21-\x7e]+$/;
+var requestId = (v) => typeof v === "string" && v.length <= REQUEST_ID_MAX_CHARS && PRINTABLE.test(v) ? v : undefined;
+var SEMVER = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/;
+var semver = (v, what) => typeof v === "string" && v.length <= 64 && SEMVER.test(v) ? v : fail(what);
+var absolutePath = (v, what) => typeof v === "string" && v.length <= PATH_MAX_CHARS && v.isWellFormed() && !v.includes("\x00") && (posix16.isAbsolute(v) || win3211.isAbsolute(v)) ? v : fail(what);
+var entryId = (v, what) => typeof v === "string" && v.length > 0 && v.isWellFormed() && new TextEncoder().encode(v).length <= ENTRY_ID_MAX_BYTES ? v : fail(what);
+var nullable2 = (v, check2) => v === null ? null : check2(v);
+var SHA256_HEX = /^[0-9a-f]{64}$/;
+var sha256Field = (v, what) => typeof v === "string" && SHA256_HEX.test(v) ? v : fail(what);
+var base64Bytes = (v, max, what) => {
+  if (typeof v !== "string" || v.length === 0 || v.length > 4 * Math.ceil(max / 3))
+    return fail(what);
+  const bytes = Buffer.from(v, "base64");
+  return bytes.length <= max && bytes.toString("base64") === v ? new Uint8Array(bytes) : fail(what);
+};
+var UNSAFE_KEYS2 = ["__proto__", "constructor", "prototype"];
+var safeKey = (key, what) => UNSAFE_KEYS2.includes(key) ? fail(what) : key;
+var jsonValue = (v, what) => {
+  if (v === null || typeof v === "boolean" || typeof v === "string")
+    return v;
+  if (typeof v === "number")
+    return Number.isFinite(v) ? v : fail(what);
+  if (Array.isArray(v))
+    return v.map((item) => jsonValue(item, what));
+  if (isRecord21(v))
+    return jsonObject(v, what);
+  return fail(what);
+};
+var jsonObject = (v, what) => {
+  if (!isRecord21(v))
+    return fail(what);
+  const out = {};
+  for (const [key, item] of Object.entries(v))
+    out[key] = jsonValue(item, what);
+  return out;
+};
+// packages/device-service-core/src/local-api/upload.ts
+var MESSAGE_LIMIT_CHARS = SESSION_COMMAND_TEXT_MAX_CHARS;
+var LOCAL_UPLOAD_PARTS_MAX = Math.ceil(SESSION_COMMAND_TEXT_MAX_BYTES / LOCAL_CHUNK_MAX);
+var checkCommandText = (value) => {
+  try {
+    validateCommandText(value);
+    return "ok";
+  } catch (error62) {
+    if (error62 instanceof ProtoError)
+      return error62.code === "payload_too_large" ? "message_too_long" : "malformed";
+    throw error62;
+  }
+};
+var uploadParts = (value) => {
+  const chunks = chunkPayload(new TextEncoder().encode(value));
+  return chunks.map(({ b: b2 }, index) => ({ index, count: chunks.length, b: b2 }));
+};
+
+class UploadAssembler {
+  #uploads = new Map;
+  #refused = new Map;
+  accept(part) {
+    const refused = this.#refused.get(part.upload_id);
+    if (refused !== undefined)
+      return { kind: "refused", reason: refused };
+    const data = new Uint8Array(Buffer.from(part.b, "base64"));
+    const upload = this.#uploads.get(part.upload_id) ?? {
+      count: part.count,
+      parts: new Map,
+      bytes: 0
+    };
+    const problem = this.#problem(upload, part, data);
+    if (problem !== undefined)
+      return this.#refuse(part.upload_id, problem);
+    if (!upload.parts.has(part.index)) {
+      upload.parts.set(part.index, data);
+      upload.bytes += data.length;
+    }
+    this.#uploads.set(part.upload_id, upload);
+    if (upload.bytes > SESSION_COMMAND_TEXT_MAX_BYTES)
+      return this.#refuse(part.upload_id, "message_too_long");
+    return { kind: "accepted", complete: upload.parts.size === upload.count };
+  }
+  take(uploadId) {
+    const refused = this.#refused.get(uploadId);
+    if (refused !== undefined)
+      return { kind: "refused", reason: refused };
+    const upload = this.#uploads.get(uploadId);
+    if (upload === undefined || upload.parts.size !== upload.count)
+      return { kind: "incomplete" };
+    this.#uploads.delete(uploadId);
+    const bytes = new Uint8Array(upload.bytes);
+    let at = 0;
+    for (let index = 0;index < upload.count; index += 1) {
+      const part = upload.parts.get(index) ?? new Uint8Array(0);
+      bytes.set(part, at);
+      at += part.length;
+    }
+    let value;
+    try {
+      value = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+    } catch (error62) {
+      if (error62 instanceof TypeError)
+        return { kind: "refused", reason: "malformed" };
+      throw error62;
+    }
+    const verdict = checkCommandText(value);
+    return verdict === "ok" ? { kind: "text", text: value } : { kind: "refused", reason: verdict };
+  }
+  discard(uploadId) {
+    this.#uploads.delete(uploadId);
+    this.#refused.delete(uploadId);
+  }
+  #problem(upload, part, data) {
+    if (part.count !== upload.count)
+      return "parts_conflict";
+    if (part.index !== part.count - 1 && data.length !== LOCAL_CHUNK_MAX)
+      return "malformed";
+    const existing = upload.parts.get(part.index);
+    if (existing !== undefined && !Buffer.from(existing).equals(data))
+      return "parts_conflict";
+    return;
+  }
+  #refuse(uploadId, reason2) {
+    this.#uploads.delete(uploadId);
+    this.#refused.set(uploadId, reason2);
+    return { kind: "refused", reason: reason2 };
+  }
+}
+// packages/device-service-core/src/local-api/chunking.ts
+class LocalBlobAssembler {
+  #open;
+  #parts = [];
+  #received = 0;
+  inFlight() {
+    return this.#open !== undefined;
+  }
+  accept(event) {
+    switch (event.kind) {
+      case "session.blob_open":
+        if (this.#open !== undefined)
+          return protocolViolation("one blob in flight per attach");
+        if (event.bytes > LOCAL_BLOB_MAX)
+          return protocolViolation("blob over LOCAL_BLOB_MAX");
+        this.#open = event;
+        return;
+      case "session.blob_chunk": {
+        const open5 = this.#current(event.id);
+        const data = Buffer.from(event.b, "base64");
+        const end = this.#received + data.length;
+        if (event.off !== this.#received || end > open5.bytes)
+          return protocolViolation("blob chunk out of order");
+        if (data.length !== LOCAL_CHUNK_MAX && end !== open5.bytes)
+          return protocolViolation("short blob chunk");
+        this.#parts.push(new Uint8Array(data));
+        this.#received = end;
+        return;
+      }
+      case "session.blob_done": {
+        const open5 = this.#current(event.id);
+        if (this.#received !== open5.bytes)
+          return protocolViolation("blob done before its last chunk");
+        const data = new Uint8Array(open5.bytes);
+        let at = 0;
+        for (const part of this.#parts) {
+          data.set(part, at);
+          at += part.length;
+        }
+        this.#reset();
+        return sha256Hex(data) === open5.sha256 ? { kind: "blob", open: open5, data } : protocolViolation("blob digest mismatch");
+      }
+      case "session.blob_abort": {
+        if (event.reason === "too_large")
+          return { kind: "too_large", query_id: event.query_id, entry_id: event.entry_id };
+        const open5 = this.#current(event.id);
+        this.#reset();
+        return { kind: "aborted", open: open5, reason: event.reason };
+      }
+      default:
+        return assertNever2(event);
+    }
+  }
+  #current(id) {
+    const open5 = this.#open;
+    return open5 !== undefined && open5.id === id ? open5 : protocolViolation("blob not open");
+  }
+  #reset() {
+    this.#open = undefined;
+    this.#parts = [];
+    this.#received = 0;
+  }
+}
+
+// packages/device-service-core/src/local-api/client-listing.ts
+class ListingTracker {
+  #watches = new Map;
+  watch(query_id, settle2, onRevision) {
+    this.#watches.set(query_id, { ...settle2, onRevision, open: undefined, last: undefined });
+  }
+  failAll(error62) {
+    for (const watch of this.#watches.values())
+      watch.reject(error62);
+    this.#watches.clear();
+  }
+  accept(event) {
+    const watch = this.#watches.get(event.query_id);
+    if (watch === undefined)
+      return;
+    switch (event.kind) {
+      case "sessions.round": {
+        if (event.state === "open")
+          return;
+        if (watch.open !== undefined)
+          return protocolViolation("a round ended during an open revision");
+        this.#watches.delete(event.query_id);
+        const last = watch.last;
+        return watch.resolve({
+          query_id: event.query_id,
+          revision: last?.revision ?? 0,
+          rows: last?.rows ?? [],
+          incomplete: last?.incomplete ?? [],
+          devices: event.devices
+        });
+      }
+      case "sessions.listing_begin":
+        if (watch.open !== undefined || event.revision <= (watch.last?.revision ?? 0))
+          return protocolViolation("a revision out of order");
+        watch.open = { revision: event.revision, rows: [] };
+        return;
+      case "sessions.listing_rows":
+        if (watch.open?.revision !== event.revision)
+          return protocolViolation("rows outside their revision");
+        for (const row of event.rows)
+          watch.open.rows.push(row);
+        return;
+      case "sessions.listing_end": {
+        if (watch.open?.revision !== event.revision)
+          return protocolViolation("listing_end outside its revision");
+        const revision = {
+          query_id: event.query_id,
+          revision: event.revision,
+          rows: watch.open.rows,
+          incomplete: event.incomplete
+        };
+        watch.open = undefined;
+        watch.last = revision;
+        watch.onRevision?.(revision);
+        return;
+      }
+      default:
+        return assertNever2(event);
+    }
+  }
+}
+
+// packages/device-service-core/src/local-api/validate-shapes.ts
+var CODE = /^[a-z_]{1,64}$/;
+var ATTACH_ID_MAX = 4294967295;
+var MILLIS_MAX = Number.MAX_SAFE_INTEGER;
+var deviceId = (v, what = "device") => text(v, SESSION_DEVICE_MAX_CHARS, what);
+var sessionId = (v) => text(v, SESSION_ID_MAX_CHARS, "session_id");
+var attachId = (v) => uint(v, 1, ATTACH_ID_MAX, "attach_id");
+var millis = (v, what) => uint(v, 0, MILLIS_MAX, what);
+var deviceRef = (v, what = "device", fields = exactly) => {
+  const m2 = fields(v, ["id", "name"], [], what);
+  return {
+    id: deviceId(m2["id"], `${what}.id`),
+    name: text(m2["name"], LABEL_MAX_CHARS, `${what}.name`)
+  };
+};
+var policyOf = (v) => {
+  const m2 = known(v, ["state", "generation", "this_device", "homes_pending", "unacked"], [], "policy");
+  const unacked = m2["unacked"];
+  if (!Array.isArray(unacked))
+    return fail("policy.unacked");
+  return {
+    state: oneOf(POLICY_STATES, m2["state"], "policy.state"),
+    generation: millis(m2["generation"], "policy.generation"),
+    this_device: oneOf(THIS_DEVICE_STATES, m2["this_device"], "policy.this_device"),
+    homes_pending: millis(m2["homes_pending"], "policy.homes_pending"),
+    unacked: unacked.map((u4) => {
+      const entry = known(u4, ["device", "label"], [], "policy.unacked");
+      return {
+        device: deviceId(entry["device"]),
+        label: text(entry["label"], LABEL_MAX_CHARS, "label", 0)
+      };
+    })
+  };
+};
+var statusOf = (v) => {
+  const m2 = known(v, ["state", "since_ms", "device", "origin_configured", "enabled"], ["detail", "policy"], "status");
+  const detail = m2["detail"];
+  const policy = m2["policy"];
+  return {
+    state: oneOf(STATUS_STATES, m2["state"], "status.state"),
+    since_ms: millis(m2["since_ms"], "status.since_ms"),
+    ...detail === undefined ? {} : { detail: detailOf(detail) },
+    device: nullable2(m2["device"], (d) => deviceRef(d, "status.device", known)),
+    origin_configured: bool(m2["origin_configured"], "status.origin_configured"),
+    enabled: bool(m2["enabled"], "status.enabled"),
+    ...policy === undefined ? {} : { policy: policyOf(policy) }
+  };
+};
+var detailOf = (v) => {
+  const m2 = known(v, ["code", "action"], [], "status.detail");
+  const code = m2["code"];
+  return {
+    code: typeof code === "string" && CODE.test(code) ? code : fail("status.detail.code"),
+    action: nullable2(m2["action"], (a2) => text(a2, LABEL_MAX_CHARS, "status.detail.action"))
+  };
+};
+var deviceRowOf = (v) => {
+  const m2 = known(v, ["device", "label", "kind", "platform", "last_seen_ms", "online"], [], "device row");
+  return {
+    device: deviceId(m2["device"]),
+    label: text(m2["label"], LABEL_MAX_CHARS, "label", 0),
+    kind: text(m2["kind"], 64, "kind", 0),
+    platform: text(m2["platform"], 64, "platform", 0),
+    last_seen_ms: nullable2(m2["last_seen_ms"], (t2) => millis(t2, "last_seen_ms")),
+    online: bool(m2["online"], "online")
+  };
+};
+var ROW_FIELDS = ["device", "session_id", "title", "project", "path", "state", "updated_ms", "source", "as_of"];
+var ROW_KIND = new RegExp(`^[a-z][a-z0-9_-]{0,${SESSION_KIND_MAX_CHARS - 1}}$`);
+var rowLinks = (m2) => {
+  const kind = m2["kind"];
+  if (Object.hasOwn(m2, "parent") !== Object.hasOwn(m2, "parent_listed"))
+    fail("parent_listed");
+  return {
+    ...kind === undefined ? {} : { kind: typeof kind === "string" && ROW_KIND.test(kind) ? kind : fail("row kind") },
+    ...m2["parent"] === undefined ? {} : {
+      parent: sessionId(m2["parent"]),
+      parent_listed: bool(m2["parent_listed"], "parent_listed")
+    }
+  };
+};
+var listingRowOf = (v) => {
+  const m2 = known(v, ROW_FIELDS, ["kind", "parent", "parent_listed", "durable_id"], "listing row");
+  const durable = m2["durable_id"];
+  return {
+    ...rowLinks(m2),
+    ...durable === undefined ? {} : { durable_id: text(durable, SESSION_ID_MAX_CHARS, "durable_id") },
+    device: deviceId(m2["device"]),
+    session_id: sessionId(m2["session_id"]),
+    title: text(m2["title"], SESSION_SUMMARY_TITLE_MAX_CHARS, "title", 0),
+    project: text(m2["project"], SESSION_SUMMARY_PROJECT_MAX_CHARS, "project"),
+    path: text(m2["path"], SESSION_SUMMARY_PATH_MAX_CHARS, "path"),
+    state: oneOf(SESSION_ROW_STATES, m2["state"], "row state"),
+    updated_ms: millis(m2["updated_ms"], "updated_ms"),
+    source: oneOf(LISTING_SOURCES, m2["source"], "row source"),
+    as_of: millis(m2["as_of"], "as_of")
+  };
+};
+var BODY_FIELDS = ["attach_id", "cursor", "state", "entries", "history_truncated", "oldest_entry_id"];
+var snapshotBodyOf = (m2) => {
+  const cursor3 = known(m2["cursor"], ["marker_id", "last_entry_id"], [], "cursor");
+  const entries = m2["entries"];
+  if (!Array.isArray(entries))
+    return fail("entries");
+  return {
+    attach_id: attachId(m2["attach_id"]),
+    cursor: {
+      marker_id: entryId(cursor3["marker_id"], "cursor.marker_id"),
+      last_entry_id: nullable2(cursor3["last_entry_id"], (e) => entryId(e, "cursor.last_entry_id"))
+    },
+    state: jsonObject(m2["state"], "state"),
+    entries: entries.map((e) => jsonValue(e, "entries")),
+    history_truncated: bool(m2["history_truncated"], "history_truncated"),
+    oldest_entry_id: nullable2(m2["oldest_entry_id"], (e) => entryId(e, "oldest_entry_id"))
+  };
+};
+var snapshotBlobOf = (v) => snapshotBodyOf(known(v, BODY_FIELDS, [], "snapshot"));
+var SNAPSHOT_FIELDS = BODY_FIELDS;
+var readEntryOf = (v) => {
+  const m2 = known(v, ["kind", "entry_id"], ["entry", "bytes", "sha256"], "read entry");
+  const entry_id = entryId(m2["entry_id"], "entry_id");
+  if (m2["kind"] === "entry") {
+    exactly(m2, ["kind", "entry_id", "entry"], [], "read entry");
+    return { kind: "entry", entry_id, entry: jsonValue(m2["entry"], "entry") };
+  }
+  if (m2["kind"] !== "entry_ref")
+    return fail("read entry kind");
+  exactly(m2, ["kind", "entry_id", "bytes", "sha256"], [], "read entry");
+  return {
+    kind: "entry_ref",
+    entry_id,
+    bytes: uint(m2["bytes"], 1, MILLIS_MAX, "bytes"),
+    sha256: sha256Field(m2["sha256"], "sha256")
+  };
+};
+var pathRefusalOf = (v) => {
+  const m2 = known(v, ["component", "problem"], [], "error.path_refusal");
+  return {
+    component: text(m2["component"], PATH_MAX_CHARS, "error.path_refusal.component"),
+    problem: oneOf(PATH_REFUSAL_PROBLEMS, m2["problem"], "error.path_refusal.problem")
+  };
+};
+var errorBodyOf = (v) => {
+  const m2 = known(v, ["code", "reason", "action"], ["limit_chars", "path_refusal"], "error");
+  const code = oneOf(ERROR_CODES, m2["code"], "error.code");
+  const limit = m2["limit_chars"];
+  if (code === "message_too_long" !== (limit !== undefined))
+    return fail("error.limit_chars");
+  const refusal = m2["path_refusal"];
+  if (refusal !== undefined && code !== "forbidden")
+    return fail("error.path_refusal");
+  return {
+    code,
+    reason: text(m2["reason"], REASON_MAX_CHARS, "error.reason", 0),
+    action: nullable2(m2["action"], (a2) => text(a2, LABEL_MAX_CHARS, "error.action")),
+    ...limit === undefined ? {} : { limit_chars: uint(limit, 1, MILLIS_MAX, "error.limit_chars") },
+    ...refusal === undefined ? {} : { path_refusal: pathRefusalOf(refusal) }
+  };
+};
+
+// packages/device-service-core/src/local-api/validate-command.ts
+var commandRpcOf = (v) => jsonObject(v, "rpc");
+var requestFields = (v, names, optional2 = []) => exactly(v, ["id", "type", ...names], optional2, "request");
+var commandIdField = (v) => v === undefined ? {} : { command_id: commandId(v) };
+var ROUTE_FIELDS = ["command_id", "delegated", "endpoint"];
+var routeFields = (m2) => {
+  const delegated = m2["delegated"];
+  if (delegated !== undefined && delegated !== true)
+    return fail("delegated");
+  return {
+    ...delegated === true ? { delegated: true } : {},
+    ...m2["endpoint"] === undefined ? {} : { endpoint: endpointKey(m2["endpoint"]) }
+  };
+};
+var COMMAND_REQUEST_VALIDATORS = {
+  "session.command": (v, id) => {
+    if (Object.hasOwn(v, "device")) {
+      const m3 = requestFields(v, ["device", "endpoint", "rpc"], ["command_id", "locate"]);
+      const locate = m3["locate"];
+      if (locate !== undefined && locate !== true)
+        return fail("locate");
+      return {
+        id,
+        type: "session.command",
+        device: deviceId(m3["device"]),
+        endpoint: endpointKey(m3["endpoint"]),
+        ...commandIdField(m3["command_id"]),
+        ...locate === true ? { locate: true } : {},
+        rpc: commandRpcOf(m3["rpc"])
+      };
+    }
+    if (Object.hasOwn(v, "upload_id")) {
+      const m3 = requestFields(v, ["attach", "upload_id"], ROUTE_FIELDS);
+      return {
+        id,
+        type: "session.command",
+        attach: localId(m3["attach"], "attach"),
+        ...commandIdField(m3["command_id"]),
+        upload_id: localId(m3["upload_id"], "upload_id"),
+        ...routeFields(m3)
+      };
+    }
+    const m2 = requestFields(v, ["attach", "rpc"], ROUTE_FIELDS);
+    return {
+      id,
+      type: "session.command",
+      attach: localId(m2["attach"], "attach"),
+      ...commandIdField(m2["command_id"]),
+      rpc: commandRpcOf(m2["rpc"]),
+      ...routeFields(m2)
+    };
+  },
+  "session.command_part": (v, id) => {
+    const m2 = requestFields(v, ["attach", "upload_id", "index", "count", "b"]);
+    const count = uint(m2["count"], 1, LOCAL_UPLOAD_PARTS_MAX, "count");
+    base64Bytes(m2["b"], LOCAL_CHUNK_MAX, "b");
+    return {
+      id,
+      type: "session.command_part",
+      attach: localId(m2["attach"], "attach"),
+      upload_id: localId(m2["upload_id"], "upload_id"),
+      index: uint(m2["index"], 0, count - 1, "index"),
+      count,
+      b: typeof m2["b"] === "string" ? m2["b"] : fail("b")
+    };
+  }
+};
+
+// packages/device-service-core/src/local-api/validate-stream-events.ts
+var eventFields = (v, names, optional2 = []) => known(v, ["type", "kind", ...names], optional2, "event");
+var attachOf = (m2) => localId(m2["attach"], "attach");
+var queryOf = (m2) => localId(m2["query_id"], "query_id");
+var blobIdOf = (m2) => localId(m2["id"], "blob id");
+var targetOf = (m2) => {
+  const of = oneOf(BLOB_OF, m2["of"], "blob of");
+  switch (of) {
+    case "state": {
+      const p2 = known(m2["position"], ["attach_id"], [], "position");
+      return { of, position: { attach_id: attachId(p2["attach_id"]) } };
+    }
+    case "record": {
+      const p2 = known(m2["position"], ["attach_id", "seq"], [], "position");
+      const seq = uint(p2["seq"], 1, Number.MAX_SAFE_INTEGER, "seq");
+      return { of, position: { attach_id: attachId(p2["attach_id"]), seq } };
+    }
+    case "entry": {
+      const p2 = known(m2["position"], ["query_id", "entry_id"], [], "position");
+      return {
+        of,
+        position: { query_id: queryOf(p2), entry_id: entryId(p2["entry_id"], "position.entry_id") }
+      };
+    }
+  }
+};
+var STREAM_EVENT_VALIDATORS = {
+  "session.snapshot": (v) => {
+    const m2 = eventFields(v, ["attach", ...SNAPSHOT_FIELDS]);
+    return { type: "event", kind: "session.snapshot", attach: attachOf(m2), ...snapshotBodyOf(m2) };
+  },
+  "session.snapshot_loading": (v) => {
+    const m2 = eventFields(v, ["attach", "blob"]);
+    return {
+      type: "event",
+      kind: "session.snapshot_loading",
+      attach: attachOf(m2),
+      blob: localId(m2["blob"], "blob")
+    };
+  },
+  "session.records": (v) => {
+    const m2 = eventFields(v, ["attach", "attach_id", "records"]);
+    const records = m2["records"];
+    if (!Array.isArray(records) || records.length === 0)
+      return fail("records");
+    const attach_id = attachId(m2["attach_id"]);
+    return {
+      type: "event",
+      kind: "session.records",
+      attach: attachOf(m2),
+      attach_id,
+      records: records.map((r2) => jsonObject(r2, "record"))
+    };
+  },
+  "session.blob_open": (v) => {
+    const m2 = eventFields(v, ["attach", "id", "of", "bytes", "sha256", "position"]);
+    return {
+      type: "event",
+      kind: "session.blob_open",
+      attach: attachOf(m2),
+      id: blobIdOf(m2),
+      bytes: uint(m2["bytes"], 1, LOCAL_BLOB_MAX, "blob bytes"),
+      sha256: sha256Field(m2["sha256"], "blob sha256"),
+      ...targetOf(m2)
+    };
+  },
+  "session.blob_chunk": (v) => {
+    const m2 = eventFields(v, ["attach", "id", "off", "b"]);
+    base64Bytes(m2["b"], LOCAL_CHUNK_MAX, "blob chunk");
+    const b2 = typeof m2["b"] === "string" ? m2["b"] : fail("blob chunk");
+    const off = uint(m2["off"], 0, LOCAL_BLOB_MAX, "blob off");
+    return {
+      type: "event",
+      kind: "session.blob_chunk",
+      attach: attachOf(m2),
+      id: blobIdOf(m2),
+      off,
+      b: b2
+    };
+  },
+  "session.blob_done": (v) => {
+    const m2 = eventFields(v, ["attach", "id"]);
+    return { type: "event", kind: "session.blob_done", attach: attachOf(m2), id: blobIdOf(m2) };
+  },
+  "session.blob_abort": (v) => {
+    const head = eventFields(v, ["attach", "id", "reason"], ["query_id", "entry_id"]);
+    const reason2 = oneOf(BLOB_ABORT_REASONS, head["reason"], "blob abort reason");
+    const base = {
+      type: "event",
+      kind: "session.blob_abort",
+      attach: attachOf(head),
+      id: blobIdOf(head)
+    };
+    if (reason2 !== "too_large") {
+      exactly(head, ["type", "kind", "attach", "id", "reason"], [], "event");
+      return { ...base, reason: reason2 };
+    }
+    const m2 = eventFields(v, ["attach", "id", "reason", "query_id", "entry_id"]);
+    return { ...base, reason: reason2, query_id: queryOf(m2), entry_id: entryId(m2["entry_id"], "entry_id") };
+  },
+  "session.attach_pending": (v) => {
+    const m2 = eventFields(v, ["attach", "reason"]);
+    const reason2 = oneOf(ATTACH_PENDING_REASONS, m2["reason"], "pending reason");
+    return { type: "event", kind: "session.attach_pending", attach: attachOf(m2), reason: reason2 };
+  },
+  "session.detached": (v) => {
+    const m2 = eventFields(v, ["attach", "reason"]);
+    const reason2 = oneOf(DETACH_REASONS, m2["reason"], "detach reason");
+    return { type: "event", kind: "session.detached", attach: attachOf(m2), reason: reason2 };
+  }
+};
+
+// packages/device-service-core/src/local-api/validate-delegated.ts
+var ENDPOINT_KEY = /^[A-Za-z0-9_-]{22}$/;
+var ENDPOINTS_MAX = 16;
+var endpointKey = (v, what = "endpoint") => typeof v === "string" && ENDPOINT_KEY.test(v) ? v : fail(what);
+var ENGINE_ID_MAX_CHARS = 128;
+var engineId = (v) => typeof v === "string" && v.length >= 1 && v.length <= ENGINE_ID_MAX_CHARS && v.isWellFormed() ? v : fail("engine_id");
+var DELEGATED_REQUEST_VALIDATORS = {
+  "session.endpoints": (v, id) => ({
+    id,
+    type: "session.endpoints",
+    device: deviceId(requestFields(v, ["device"])["device"])
+  }),
+  "session.locate": (v, id) => {
+    const m2 = requestFields(v, ["device", "engine_id"]);
+    return { id, type: "session.locate", device: deviceId(m2["device"]), engine_id: engineId(m2["engine_id"]) };
+  }
+};
+var locateData = (v) => {
+  const m2 = known(v, ["device", "key", "session"], [], "data");
+  const device = deviceId(m2["device"]);
+  const key = endpointKey(m2["key"], "key");
+  return m2["session"] === `${device}.${key}` ? { device, key, session: `${device}.${key}` } : fail("session");
+};
+var endpointsData = (v) => {
+  const endpoints = known(v, ["endpoints"], [], "data")["endpoints"];
+  if (!Array.isArray(endpoints) || endpoints.length > ENDPOINTS_MAX)
+    return fail("endpoints");
+  const keys = endpoints.map((e) => endpointKey(e, "endpoints"));
+  return new Set(keys).size === keys.length ? { endpoints: keys } : fail("endpoints");
+};
+var blobId = (m2) => localId(m2["id"], "blob id");
+var blobRefOf = (v) => {
+  const m2 = known(v, ["id", "bytes", "sha256"], [], "blob");
+  return {
+    id: blobId(m2),
+    bytes: uint(m2["bytes"], 1, LOCAL_BLOB_MAX, "blob bytes"),
+    sha256: sha256Field(m2["sha256"], "blob sha256")
+  };
+};
+var locatedOf = (device, v) => {
+  const m2 = known(v, ["key", "session"], [], "located");
+  const key = endpointKey(m2["key"], "located key");
+  return m2["session"] === `${device}.${key}` ? { key, session: `${device}.${key}` } : fail("located session");
+};
+var COMMAND_EVENT_FIELDS = ["blob", "frame", "command_id", "response", "located"];
+var commandEventOf = (v) => {
+  const head = { type: "event", kind: "session.command_event" };
+  const all = eventFields(v, ["device"], COMMAND_EVENT_FIELDS);
+  const shape = (names, optional2 = []) => exactly(all, ["type", "kind", "device", ...names], optional2, "event");
+  if (Object.hasOwn(all, "blob")) {
+    const m3 = shape(["blob"]);
+    return { ...head, device: deviceId(m3["device"]), blob: blobRefOf(m3["blob"]) };
+  }
+  if (lineBytes(v) > LOCAL_INLINE_MAX)
+    return fail("an inline command event over LOCAL_INLINE_MAX is a blob");
+  if (Object.hasOwn(all, "frame")) {
+    const m3 = shape(["frame"]);
+    return { ...head, device: deviceId(m3["device"]), frame: jsonObject(m3["frame"], "frame") };
+  }
+  const m2 = shape(["command_id", "response"], ["located"]);
+  const device = deviceId(m2["device"]);
+  return {
+    ...head,
+    device,
+    command_id: commandId(m2["command_id"]),
+    response: jsonObject(m2["response"], "response"),
+    ...m2["located"] === undefined ? {} : { located: locatedOf(device, m2["located"]) }
+  };
+};
+var DELEGATED_EVENT_VALIDATORS = {
+  "session.command_event": commandEventOf,
+  "session.command_blob_chunk": (v) => {
+    const m2 = eventFields(v, ["id", "off", "b"]);
+    base64Bytes(m2["b"], LOCAL_CHUNK_MAX, "blob chunk");
+    return {
+      type: "event",
+      kind: "session.command_blob_chunk",
+      id: blobId(m2),
+      off: uint(m2["off"], 0, LOCAL_BLOB_MAX, "blob off"),
+      b: typeof m2["b"] === "string" ? m2["b"] : fail("blob chunk")
+    };
+  },
+  "session.command_blob_done": (v) => ({
+    type: "event",
+    kind: "session.command_blob_done",
+    id: blobId(eventFields(v, ["id"]))
+  }),
+  "session.channel_closed": (v) => {
+    const m2 = eventFields(v, ["device", "reason"]);
+    return {
+      type: "event",
+      kind: "session.channel_closed",
+      device: deviceId(m2["device"]),
+      reason: oneOf(CHANNEL_CLOSED_REASONS, m2["reason"], "channel closed reason")
+    };
+  }
+};
+
+// packages/device-service-core/src/local-api/validate-events.ts
+var revisionOf = (m2) => uint(m2["revision"], 1, Number.MAX_SAFE_INTEGER, "revision");
+var devicesOf = (v) => {
+  if (!isRecord21(v))
+    return fail("round devices");
+  const out = {};
+  for (const [device, state3] of Object.entries(v))
+    out[safeKey(deviceId(device), "round device")] = oneOf(ROUND_DEVICE_STATES, state3, "round device state");
+  return out;
+};
+var commandStateOf = (v) => {
+  const m2 = eventFields(v, ["command_id", "state", "retryable"], ["reason", "receipt"]);
+  const state3 = oneOf(COMMAND_STATES, m2["state"], "command state");
+  if (bool(m2["retryable"], "retryable") !== RETRYABLE_STATES.includes(state3))
+    return fail("retryable");
+  const head = {
+    type: "event",
+    kind: "session.command_state",
+    command_id: commandId(m2["command_id"]),
+    ...m2["receipt"] === undefined ? {} : { receipt: jsonObject(m2["receipt"], "receipt") }
+  };
+  const reason2 = m2["reason"];
+  switch (state3) {
+    case "engine_refused":
+      return {
+        ...head,
+        state: state3,
+        reason: oneOf(COMMAND_REFUSAL_REASONS, reason2, "refusal reason"),
+        retryable: false
+      };
+    case "uncertain":
+      return {
+        ...head,
+        state: state3,
+        reason: oneOf(COMMAND_UNCERTAIN_REASONS, reason2, "uncertain reason"),
+        retryable: false
+      };
+    case "not confirmed":
+    case "not delivered: never_sent":
+      return reason2 === undefined ? { ...head, state: state3, retryable: true } : fail("reason");
+    case "queued":
+    case "transport_confirmed":
+    case "engine_dispatched":
+    case "engine_applied":
+    case "engine_stale":
+      return reason2 === undefined ? { ...head, state: state3, retryable: false } : fail("reason");
+  }
+};
+var VALIDATORS = {
+  ...STREAM_EVENT_VALIDATORS,
+  ...DELEGATED_EVENT_VALIDATORS,
+  "status.changed": (v) => ({
+    type: "event",
+    kind: "status.changed",
+    status: statusOf(eventFields(v, ["status"])["status"])
+  }),
+  "sessions.round": (v) => {
+    const m2 = eventFields(v, ["query_id", "state", "devices"]);
+    const state3 = oneOf(ROUND_STATES, m2["state"], "round state");
+    return {
+      type: "event",
+      kind: "sessions.round",
+      query_id: queryOf(m2),
+      state: state3,
+      devices: devicesOf(m2["devices"])
+    };
+  },
+  "sessions.listing_begin": (v) => {
+    const m2 = eventFields(v, ["query_id", "revision"]);
+    return {
+      type: "event",
+      kind: "sessions.listing_begin",
+      query_id: queryOf(m2),
+      revision: revisionOf(m2)
+    };
+  },
+  "sessions.listing_rows": (v) => {
+    const m2 = eventFields(v, ["query_id", "revision", "rows"]);
+    const rows = m2["rows"];
+    if (!Array.isArray(rows) || rows.length === 0)
+      return fail("rows");
+    return {
+      type: "event",
+      kind: "sessions.listing_rows",
+      query_id: queryOf(m2),
+      revision: revisionOf(m2),
+      rows: rows.map(listingRowOf)
+    };
+  },
+  "sessions.listing_end": (v) => {
+    const m2 = eventFields(v, ["query_id", "revision", "incomplete"]);
+    const incomplete = m2["incomplete"];
+    if (!Array.isArray(incomplete))
+      return fail("incomplete");
+    const devices = incomplete.map((d) => deviceId(d));
+    return {
+      type: "event",
+      kind: "sessions.listing_end",
+      query_id: queryOf(m2),
+      revision: revisionOf(m2),
+      incomplete: devices
+    };
+  },
+  "session.command_state": commandStateOf,
+  "session.read_result": (v) => {
+    const m2 = eventFields(v, ["attach", "query_id", "entries", "next_before"]);
+    const entries = m2["entries"];
+    if (!Array.isArray(entries) || entries.length > SESSION_READ_TAIL_MAX)
+      return fail("entries");
+    const rows = entries.map(readEntryOf);
+    if (new Set(rows.map((r2) => r2.entry_id)).size !== rows.length)
+      return fail("duplicate entry_id");
+    const next_before = nullable2(m2["next_before"], (e) => entryId(e, "next_before"));
+    return {
+      type: "event",
+      kind: "session.read_result",
+      attach: attachOf(m2),
+      query_id: queryOf(m2),
+      entries: rows,
+      next_before
+    };
+  },
+  "session.upload_abort": (v) => {
+    const m2 = eventFields(v, ["upload_id", "reason"]);
+    const reason2 = oneOf(UPLOAD_ABORT_REASONS, m2["reason"], "upload abort reason");
+    return {
+      type: "event",
+      kind: "session.upload_abort",
+      upload_id: localId(m2["upload_id"], "upload_id"),
+      reason: reason2
+    };
+  }
+};
+var EVENT_KINDS = keysOf(VALIDATORS);
+var validateEventFields = (v) => {
+  if (v["type"] !== "event")
+    return fail("an event has type event");
+  return VALIDATORS[oneOf(EVENT_KINDS, v["kind"], "event kind")](v);
+};
+
+// packages/device-service-core/src/local-api/validate-requests.ts
+var ENVIRONMENTS_MAX = 1024;
+var PKCS8_KEY_BYTES = 48;
+var PKCS8_PREFIX = {
+  ed25519: "302e020100300506032b657004220420",
+  x25519: "302e020100300506032b656e04220420"
+};
+var pkcs8 = (v, algorithm, what) => {
+  const bytes = base64Bytes(v, PKCS8_KEY_BYTES, what);
+  const prefix = Buffer.from(bytes.subarray(0, 16)).toString("hex");
+  const exact = bytes.length === PKCS8_KEY_BYTES && prefix === PKCS8_PREFIX[algorithm];
+  return exact && typeof v === "string" ? v : fail(what);
+};
+var filterOf = (v) => {
+  const { device, project, state: state3 } = exactly(v, [], FILTER_KEYS, "filter");
+  return {
+    ...device === undefined ? {} : { device: deviceId(device, "filter.device") },
+    ...project === undefined ? {} : { project: text(project, SESSION_PROJECT_MAX_CHARS, "filter.project") },
+    ...state3 === undefined ? {} : { state: SESSION_ROW_STATES.find((s) => s === state3) ?? fail("filter.state") }
+  };
+};
+var environmentsOf = (v) => {
+  if (!Array.isArray(v) || v.length > ENVIRONMENTS_MAX)
+    return fail("environments");
+  const rows = v.map((e) => {
+    const m2 = exactly(e, ["environment_id", "revoked", "closed"], [], "environment");
+    return {
+      environment_id: text(m2["environment_id"], 128, "environment_id"),
+      revoked: uint(m2["revoked"], 0, Number.MAX_SAFE_INTEGER, "revoked"),
+      closed: uint(m2["closed"], 0, Number.MAX_SAFE_INTEGER, "closed")
+    };
+  });
+  return new Set(rows.map((r2) => r2.environment_id)).size === rows.length ? rows : fail("duplicate environment_id");
+};
+var bare = (v) => {
+  requestFields(v, []);
+};
+var agentDir = (v) => absolutePath(requestFields(v, ["agent_dir"])["agent_dir"], "agent_dir");
+var VALIDATORS2 = {
+  ...COMMAND_REQUEST_VALIDATORS,
+  ...DELEGATED_REQUEST_VALIDATORS,
+  authenticate: (v, id) => {
+    const m2 = requestFields(v, ["client_proof"]);
+    return { id, type: "authenticate", client_proof: text(m2["client_proof"], 64, "client_proof") };
+  },
+  "status.get": (v, id) => {
+    bare(v);
+    return { id, type: "status.get" };
+  },
+  "status.subscribe": (v, id) => {
+    bare(v);
+    return { id, type: "status.subscribe" };
+  },
+  "control.attach.get": (v, id) => {
+    bare(v);
+    return { id, type: "control.attach.get" };
+  },
+  "control.attach.set": (v, id) => {
+    const attached = bool(requestFields(v, ["attached"])["attached"], "attached");
+    return { id, type: "control.attach.set", attached };
+  },
+  "service.set_enabled": (v, id) => {
+    const enabled = bool(requestFields(v, ["enabled"])["enabled"], "enabled");
+    return { id, type: "service.set_enabled", enabled };
+  },
+  "refresher.register": (v, id) => {
+    const m2 = requestFields(v, ["binary_path", "version"]);
+    const binary_path = absolutePath(m2["binary_path"], "binary_path");
+    return {
+      id,
+      type: "refresher.register",
+      binary_path,
+      version: semver(m2["version"], "version")
+    };
+  },
+  "device.adopt": (v, id) => {
+    const m2 = requestFields(v, ["device", "signing_private_key", "sealing_private_key"]);
+    return {
+      id,
+      type: "device.adopt",
+      device: deviceRef(m2["device"]),
+      signing_private_key: pkcs8(m2["signing_private_key"], "ed25519", "signing_private_key"),
+      sealing_private_key: pkcs8(m2["sealing_private_key"], "x25519", "sealing_private_key")
+    };
+  },
+  "device.forget": (v, id) => {
+    bare(v);
+    return { id, type: "device.forget" };
+  },
+  "device.info": (v, id) => {
+    bare(v);
+    return { id, type: "device.info" };
+  },
+  "endpoints.register": (v, id) => ({ id, type: "endpoints.register", agent_dir: agentDir(v) }),
+  "endpoints.unregister": (v, id) => ({ id, type: "endpoints.unregister", agent_dir: agentDir(v) }),
+  "devices.list": (v, id) => {
+    bare(v);
+    return { id, type: "devices.list" };
+  },
+  "sessions.list": (v, id) => {
+    const { filter, rows } = requestFields(v, [], ["filter", "rows"]);
+    if (rows !== undefined && rows !== 2 && rows !== 3)
+      return fail("rows");
+    return {
+      id,
+      type: "sessions.list",
+      ...filter === undefined ? {} : { filter: filterOf(filter) },
+      ...rows === undefined ? {} : { rows }
+    };
+  },
+  "session.attach": (v, id) => {
+    const m2 = requestFields(v, ["device", "session_id"]);
+    return {
+      id,
+      type: "session.attach",
+      device: deviceId(m2["device"]),
+      session_id: sessionId(m2["session_id"])
+    };
+  },
+  "session.detach": (v, id) => ({
+    id,
+    type: "session.detach",
+    attach: localId(requestFields(v, ["attach"])["attach"], "attach")
+  }),
+  "session.read": (v, id) => {
+    const m2 = requestFields(v, ["attach"], ["before_entry_id", "tail"]);
+    const before = m2["before_entry_id"];
+    const tail = m2["tail"];
+    return {
+      id,
+      type: "session.read",
+      attach: localId(m2["attach"], "attach"),
+      ...before === undefined ? {} : { before_entry_id: entryId(before, "before_entry_id") },
+      ...tail === undefined ? {} : { tail: uint(tail, 1, SESSION_READ_TAIL_MAX, "tail") }
+    };
+  },
+  "enforcement.report": (v, id) => {
+    const m2 = requestFields(v, ["generation", "data_home", "environments", "complete"]);
+    return {
+      id,
+      type: "enforcement.report",
+      generation: uint(m2["generation"], 0, Number.MAX_SAFE_INTEGER, "generation"),
+      data_home: absolutePath(m2["data_home"], "data_home"),
+      environments: environmentsOf(m2["environments"]),
+      complete: bool(m2["complete"], "complete")
+    };
+  },
+  "owner.shutdown_for_upgrade": (v, id) => {
+    const target_version = semver(requestFields(v, ["target_version"])["target_version"], "target_version");
+    return { id, type: "owner.shutdown_for_upgrade", target_version };
+  }
+};
+var REQUEST_TYPES = keysOf(VALIDATORS2);
+
+// packages/device-service-core/src/local-api/validate.ts
+var asViolation = (check2) => {
+  try {
+    return check2();
+  } catch (error62) {
+    if (error62 instanceof InvalidMessage)
+      throw new LocalApiError("protocol_violation", error62.detail);
+    throw error62;
+  }
+};
+var validateWelcome = (v) => asViolation(() => {
+  if (isRecord21(v) && v["type"] === "refused") {
+    const m3 = known(v, ["type", "reason"], [], "refused");
+    return { type: "refused", reason: oneOf(REFUSED_REASONS, m3["reason"], "refused reason") };
+  }
+  if (isRecord21(v) && v["type"] === "welcome" && v["v"] !== LOCAL_API_VERSION)
+    return { type: "refused", reason: "version" };
+  const fields = ["type", "v", "service_version", "owner", "server_proof", "server_nonce", "capabilities", "state"];
+  const m2 = known(v, fields, [], "welcome");
+  const capabilities = m2["capabilities"];
+  if (m2["type"] !== "welcome" || m2["owner"] !== "service")
+    return fail("welcome");
+  if (!Array.isArray(capabilities) || new Set(capabilities).size !== capabilities.length)
+    return fail("capabilities");
+  return {
+    type: "welcome",
+    v: LOCAL_API_VERSION,
+    service_version: semver(m2["service_version"], "service_version"),
+    owner: "service",
+    server_proof: nonce(m2["server_proof"], "server_proof"),
+    server_nonce: nonce(m2["server_nonce"], "server_nonce"),
+    capabilities: capabilities.map((c3) => oneOf([...CAPABILITIES, ...OPTIONAL_CAPABILITIES], c3, "capability")),
+    state: statusOf(m2["state"])
+  };
+});
+var empty = (v) => {
+  known(v, [], [], "data");
+  return {};
+};
+var one = (v, name) => known(v, [name], [], "data")[name];
+var attachState = (v) => {
+  const m2 = known(v, ["attached", "changedAt"], [], "data");
+  const changedAt = m2["changedAt"];
+  return {
+    attached: bool(m2["attached"], "attached"),
+    changedAt: typeof changedAt === "string" ? changedAt : fail("changedAt")
+  };
+};
+var DATA = {
+  authenticate: empty,
+  "status.get": statusOf,
+  "status.subscribe": empty,
+  "service.set_enabled": (v) => ({ enabled: bool(one(v, "enabled"), "enabled") }),
+  "refresher.register": empty,
+  "device.adopt": (v) => ({ device: deviceRef(one(v, "device"), "device", known) }),
+  "device.forget": empty,
+  "device.info": (v) => ({
+    device: nullable2(one(v, "device"), (d) => deviceRef(d, "device", known))
+  }),
+  "endpoints.register": empty,
+  "endpoints.unregister": empty,
+  "devices.list": (v) => {
+    const devices = one(v, "devices");
+    return Array.isArray(devices) ? { devices: devices.map(deviceRowOf) } : fail("devices");
+  },
+  "sessions.list": (v) => ({ query_id: localId(one(v, "query_id"), "query_id") }),
+  "session.attach": (v) => ({ attach: localId(one(v, "attach"), "attach") }),
+  "session.detach": empty,
+  "session.command": (v) => ({ command_id: commandId(one(v, "command_id")) }),
+  "session.command_part": (v) => ({
+    received: uint(one(v, "received"), 0, LOCAL_UPLOAD_PARTS_MAX - 1, "received")
+  }),
+  "session.read": (v) => ({ query_id: localId(one(v, "query_id"), "query_id") }),
+  "enforcement.report": empty,
+  "owner.shutdown_for_upgrade": empty,
+  "session.endpoints": endpointsData,
+  "session.locate": locateData,
+  "control.attach.get": attachState,
+  "control.attach.set": attachState
+};
+var validateResponse = (v, type) => asViolation(() => {
+  const m2 = known(v, ["id", "type", "ok"], ["data", "error"], "response");
+  const id = requestId(m2["id"]) ?? fail("response id");
+  if (m2["type"] !== "response")
+    return fail("response type");
+  if (m2["ok"] === true) {
+    exactly(m2, ["id", "type", "ok", "data"], [], "response");
+    return { id, ok: true, data: DATA[type](m2["data"]) };
+  }
+  if (m2["ok"] !== false)
+    return fail("response ok");
+  exactly(m2, ["id", "type", "ok", "error"], [], "response");
+  return { id, ok: false, error: errorBodyOf(m2["error"]) };
+});
+var validateEvent = (v) => asViolation(() => isRecord21(v) ? validateEventFields(v) : fail("an event is an object"));
+var validateSnapshotBlob = (v) => asViolation(() => snapshotBlobOf(v));
+
+// packages/device-service-core/src/local-api/client-assembly.ts
+var parsed = (data) => {
+  try {
+    return JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(data));
+  } catch (error62) {
+    if (error62 instanceof SyntaxError || error62 instanceof TypeError)
+      return protocolViolation("a blob is not UTF-8 JSON");
+    throw error62;
+  }
+};
+var checked = (check2) => {
+  try {
+    return check2();
+  } catch (error62) {
+    if (error62 instanceof InvalidMessage)
+      return protocolViolation(error62.detail);
+    throw error62;
+  }
+};
+
+class EventAssembler {
+  #emit;
+  #blobs = new Map;
+  #listings = new ListingTracker;
+  #reads = new Map;
+  constructor(emit) {
+    this.#emit = emit;
+  }
+  watchListing(query_id, settle2, onRevision) {
+    this.#listings.watch(query_id, settle2, onRevision);
+  }
+  watchRead(query_id, attach, settle2) {
+    this.#reads.set(query_id, { ...settle2, attach, result: undefined, filled: new Map });
+  }
+  failAll(error62) {
+    this.#listings.failAll(error62);
+    for (const watch of this.#reads.values())
+      watch.reject(error62);
+    this.#reads.clear();
+  }
+  accept(event) {
+    this.#emit(event);
+    switch (event.kind) {
+      case "session.blob_open":
+      case "session.blob_chunk":
+      case "session.blob_done":
+      case "session.blob_abort":
+        return this.#blob(event.attach, event);
+      case "sessions.listing_begin":
+      case "sessions.listing_rows":
+      case "sessions.listing_end":
+      case "sessions.round":
+        return this.#listings.accept(event);
+      case "session.read_result":
+        return this.#readResult(event);
+      case "session.detached":
+        return this.#detached(event.attach);
+      case "status.changed":
+      case "session.snapshot":
+      case "session.snapshot_loading":
+      case "session.records":
+      case "session.attach_pending":
+      case "session.command_state":
+      case "session.upload_abort":
+      case "session.command_event":
+      case "session.command_blob_chunk":
+      case "session.command_blob_done":
+      case "session.channel_closed":
+        return;
+      default:
+        return assertNever2(event);
+    }
+  }
+  #blob(attach, event) {
+    const assembler = this.#blobs.get(attach) ?? new LocalBlobAssembler;
+    this.#blobs.set(attach, assembler);
+    const outcome = assembler.accept(event);
+    if (outcome === undefined)
+      return;
+    switch (outcome.kind) {
+      case "blob":
+        return this.#apply(attach, outcome.open, outcome.data);
+      case "aborted":
+        if (outcome.open.of === "entry")
+          this.#failRead(outcome.open.position.query_id, "an entry blob was aborted");
+        return;
+      case "too_large":
+        return this.#fill(outcome.query_id, outcome.entry_id, (ref) => ({
+          entry_id: ref.entry_id,
+          too_large: true,
+          bytes: ref.bytes
+        }));
+      default:
+        return assertNever2(outcome);
+    }
+  }
+  #apply(attach, open5, data) {
+    const value = parsed(data);
+    switch (open5.of) {
+      case "state": {
+        const body = validateSnapshotBlob(value);
+        if (body.attach_id !== open5.position.attach_id)
+          protocolViolation("a snapshot blob of another attach generation");
+        return this.#emit({ type: "event", kind: "session.snapshot", attach, ...body });
+      }
+      case "record": {
+        const records = [checked(() => jsonObject(value, "record"))];
+        return this.#emit({
+          type: "event",
+          kind: "session.records",
+          attach,
+          attach_id: open5.position.attach_id,
+          records
+        });
+      }
+      case "entry": {
+        const entry = checked(() => jsonValue(value, "entry"));
+        return this.#fill(open5.position.query_id, open5.position.entry_id, (ref) => ref.bytes === open5.bytes && ref.sha256 === open5.sha256 ? { entry_id: ref.entry_id, entry } : protocolViolation("an entry blob unlike its entry_ref"));
+      }
+      default:
+        return assertNever2(open5);
+    }
+  }
+  #fill(query_id, entry_id, make) {
+    const watch = this.#reads.get(query_id);
+    if (watch === undefined)
+      return;
+    if (watch.result === undefined)
+      return protocolViolation("an entry blob before its read_result");
+    const ref = watch.result.entries.find((e) => e.kind === "entry_ref" && e.entry_id === entry_id);
+    if (ref === undefined || ref.kind !== "entry_ref")
+      return protocolViolation("a blob for an entry the page did not reference");
+    watch.filled.set(entry_id, make(ref));
+    this.#finishRead(query_id, watch);
+  }
+  #readResult(event) {
+    const watch = this.#reads.get(event.query_id);
+    if (watch === undefined)
+      return;
+    watch.result = event;
+    this.#finishRead(event.query_id, watch);
+  }
+  #finishRead(query_id, watch) {
+    const result = watch.result;
+    if (result === undefined)
+      return;
+    const entries = [];
+    for (const entry of result.entries) {
+      const filled = entry.kind === "entry" ? { entry_id: entry.entry_id, entry: entry.entry } : watch.filled.get(entry.entry_id);
+      if (filled === undefined)
+        return;
+      entries.push(filled);
+    }
+    this.#reads.delete(query_id);
+    watch.resolve({ entries, next_before: result.next_before });
+  }
+  #failRead(query_id, reason2) {
+    const watch = this.#reads.get(query_id);
+    if (watch === undefined)
+      return;
+    this.#reads.delete(query_id);
+    watch.reject(new LocalApiError("read_failed", reason2));
+  }
+  #detached(attach) {
+    this.#blobs.delete(attach);
+    for (const [query_id, watch] of this.#reads)
+      if (watch.attach === attach)
+        this.#failRead(query_id, "the attach was detached");
+  }
+}
+
+// packages/device-service-core/src/local-api/framing.ts
+var LOCAL_LINE_MAX = 1048576;
+var LF = 10;
+var encoder3 = new TextEncoder;
+var utf8 = new TextDecoder("utf-8", { fatal: true });
+var encodeLine = (value) => {
+  const body = encoder3.encode(JSON.stringify(value));
+  if (body.length > LOCAL_LINE_MAX)
+    throw new LocalApiError("protocol_violation", `a ${body.length}-byte line exceeds LOCAL_LINE_MAX`);
+  const line = new Uint8Array(body.length + 1);
+  line.set(body);
+  line[body.length] = LF;
+  return line;
+};
+var parseLine = (line) => {
+  let decoded2;
+  try {
+    decoded2 = utf8.decode(line);
+  } catch (error62) {
+    if (error62 instanceof TypeError)
+      throw new LocalApiError("protocol_violation", "a line is not UTF-8");
+    throw error62;
+  }
+  try {
+    return JSON.parse(decoded2);
+  } catch (error62) {
+    if (error62 instanceof SyntaxError)
+      throw new LocalApiError("protocol_violation", "a line is not JSON");
+    throw error62;
+  }
+};
+
+class LineDecoder {
+  #onLine;
+  #onOversized;
+  #parts = [];
+  #length = 0;
+  #discarding = false;
+  constructor(onLine, onOversized) {
+    this.#onLine = onLine;
+    this.#onOversized = onOversized;
+  }
+  push(chunk) {
+    let start = 0;
+    while (start < chunk.length) {
+      const lf = chunk.indexOf(LF, start);
+      this.#take(chunk.subarray(start, lf === -1 ? chunk.length : lf));
+      if (lf === -1)
+        return;
+      this.#finish();
+      start = lf + 1;
+    }
+  }
+  #take(piece) {
+    if (this.#discarding || piece.length === 0)
+      return;
+    if (this.#length + piece.length > LOCAL_LINE_MAX) {
+      this.#discarding = true;
+      this.#onOversized(this.#length + piece.length);
+      this.#parts = [];
+      this.#length = 0;
+      return;
+    }
+    this.#parts.push(piece.slice());
+    this.#length += piece.length;
+  }
+  #finish() {
+    if (this.#discarding) {
+      this.#discarding = false;
+      return;
+    }
+    const line = new Uint8Array(this.#length);
+    let at = 0;
+    for (const part of this.#parts) {
+      line.set(part, at);
+      at += part.length;
+    }
+    this.#parts = [];
+    this.#length = 0;
+    this.#onLine(line);
+  }
+}
+
+// packages/device-service-core/src/local-api/client-connection.ts
+var EXPIRED = { settle: () => {}, fail: () => {} };
+var typeOf = (message) => typeof message === "object" && message !== null ? Reflect.get(message, "type") : undefined;
+
+class ClientConnection {
+  #transport;
+  #onEvent;
+  #pending = new Map;
+  closed;
+  #first;
+  #resolveFirst;
+  #rejectFirst;
+  #nextId = 1;
+  #ended = false;
+  #oversized = 0;
+  #deadline;
+  constructor(transport, onEvent, deadline) {
+    this.#transport = transport;
+    this.#onEvent = onEvent;
+    this.#deadline = deadline;
+    this.#first = new Promise((resolve32, reject) => {
+      this.#resolveFirst = resolve32;
+      this.#rejectFirst = reject;
+    });
+    const decoder = new LineDecoder((line) => this.#onLine(line), () => {
+      this.#oversized += 1;
+    });
+    transport.onData((bytes) => decoder.push(bytes));
+    this.closed = new Promise((resolve32) => {
+      transport.onClose(() => {
+        this.#ended = true;
+        this.#failAll(new LocalApiError("closed", "the connection closed"));
+        resolve32();
+      });
+    });
+  }
+  send(message) {
+    this.#transport.write(encodeLine(message));
+  }
+  firstMessage() {
+    return this.#first;
+  }
+  oversizedLines() {
+    return this.#oversized;
+  }
+  get endpoint() {
+    return this.#transport.endpoint;
+  }
+  close() {
+    this.#transport.close();
+  }
+  destroy() {
+    this.#transport.destroy();
+  }
+  request(type, params, onAnswer) {
+    if (this.#ended)
+      return Promise.reject(new LocalApiError("closed", "the connection is closed"));
+    const id = String(this.#nextId);
+    this.#nextId += 1;
+    const message = { id, type, ...params };
+    if (lineBytes(message) > LOCAL_INLINE_MAX)
+      return Promise.reject(new LocalApiError("protocol_violation", "a request line over LOCAL_INLINE_MAX"));
+    return new Promise((resolve32, reject) => {
+      const cancel2 = this.#deadline.timer(() => {
+        if (this.#pending.get(id) === undefined)
+          return;
+        this.#pending.set(id, EXPIRED);
+        reject(new LocalApiError("request_timeout", `the owner did not answer ${type} in time`));
+      }, this.#deadline.ms);
+      this.#pending.set(id, {
+        settle: (raw) => {
+          cancel2();
+          let response;
+          try {
+            response = validateResponse(raw, type);
+          } catch (error62) {
+            if (error62 instanceof LocalApiError)
+              reject(error62);
+            throw error62;
+          }
+          if (!response.ok) {
+            const { code, reason: reason2, action, limit_chars, path_refusal } = response.error;
+            reject(new LocalApiError(code, reason2, {
+              action,
+              ...limit_chars === undefined ? {} : { limit_chars },
+              ...path_refusal === undefined ? {} : { path_refusal }
+            }));
+            return;
+          }
+          onAnswer?.(response.data);
+          resolve32(response.data);
+        },
+        fail: (error62) => {
+          cancel2();
+          reject(error62);
+        }
+      });
+      this.send(message);
+    });
+  }
+  #onLine(line) {
+    try {
+      const message = parseLine(line);
+      if (this.#resolveFirst !== undefined) {
+        const resolve32 = this.#resolveFirst;
+        this.#resolveFirst = undefined;
+        this.#rejectFirst = undefined;
+        resolve32(message);
+        return;
+      }
+      const type = typeOf(message);
+      if (type === "response")
+        return this.#settle(message);
+      if (type === "event")
+        return this.#onEvent(validateEvent(message));
+      this.#violation("a message that is neither a response nor an event");
+    } catch (error62) {
+      if (!(error62 instanceof LocalApiError))
+        throw error62;
+      this.#violation(error62.reason);
+    }
+  }
+  #settle(message) {
+    const id = typeof message === "object" && message !== null ? Reflect.get(message, "id") : undefined;
+    const pending = typeof id === "string" ? this.#pending.get(id) : undefined;
+    if (typeof id !== "string" || pending === undefined)
+      return this.#violation("a response to no pending request");
+    this.#pending.delete(id);
+    pending.settle(message);
+  }
+  #violation(detail) {
+    this.#failAll(new LocalApiError("protocol_violation", detail));
+    this.#transport.destroy();
+  }
+  #failAll(error62) {
+    this.#rejectFirst?.(error62);
+    this.#resolveFirst = undefined;
+    this.#rejectFirst = undefined;
+    for (const pending of this.#pending.values())
+      pending.fail(error62);
+    this.#pending.clear();
+  }
+}
+
+// packages/device-service-core/src/local-api/transport.ts
+import { lstatSync as lstatSync6, readFileSync as readFileSync48, unlinkSync as unlinkSync10 } from "fs";
+import { createConnection, createServer as createServer4 } from "net";
+import { join as join120 } from "path";
+var ENDPOINT_FILE = "endpoint.json";
+var wrap = (socket, endpoint) => {
+  const closeListeners = [];
+  let closed = false;
+  socket.on("close", () => {
+    closed = true;
+    for (const listener of closeListeners.splice(0))
+      listener();
+  });
+  socket.on("error", () => {});
+  return {
+    endpoint,
+    write: (bytes) => {
+      if (!closed)
+        socket.write(bytes);
+    },
+    close: () => {
+      socket.end();
+    },
+    destroy: () => {
+      socket.destroy();
+    },
+    onData: (listener) => {
+      socket.on("data", (chunk) => listener(new Uint8Array(chunk.buffer, chunk.byteOffset, chunk.byteLength)));
+    },
+    onClose: (listener) => {
+      if (closed)
+        listener();
+      else
+        closeListeners.push(listener);
+    }
+  };
+};
+var readEndpointPort = (stateDir) => {
+  const parsed2 = JSON.parse(readFileSync48(join120(stateDir, ENDPOINT_FILE), "utf8"));
+  const port = typeof parsed2 === "object" && parsed2 !== null ? Reflect.get(parsed2, "port") : undefined;
+  if (typeof port !== "number" || !Number.isInteger(port) || port < 1 || port > 65535)
+    throw new LocalApiError("insecure_state_dir", "endpoint.json holds no port");
+  return port;
+};
+var connectLocal = (stateDir, options = {}) => new Promise((resolve32, reject) => {
+  const port = process.platform === "win32" ? readEndpointPort(stateDir) : undefined;
+  const endpoint = port === undefined ? UNIX_ENDPOINT : tcpEndpoint(port);
+  const socket = port === undefined ? createConnection({ path: join120(stateDir, SOCKET_FILE) }) : createConnection({ host: "127.0.0.1", port });
+  if (options.background === true)
+    socket.unref();
+  socket.once("error", reject);
+  socket.once("connect", () => {
+    socket.off("error", reject);
+    resolve32(wrap(socket, endpoint));
+  });
+});
+
+// packages/device-service-core/src/local-api/client.ts
+var HANDSHAKE_TIMEOUT_MS = 1e4;
+var REQUEST_TIMEOUT_MS = 30000;
+var realTimer = (expire, ms) => {
+  const timer = setTimeout(expire, ms);
+  return () => clearTimeout(timer);
+};
+var proveAndAuthenticate = async (connection, options) => {
+  const nonce2 = mintNonce();
+  connection.send({
+    type: "hello",
+    v: LOCAL_API_VERSION,
+    client: options.client,
+    client_nonce: nonce2
+  });
+  try {
+    const welcome = validateWelcome(await connection.firstMessage());
+    if (welcome.type === "refused")
+      throw new LocalApiError("refused", welcome.reason);
+    const token = (options.readToken ?? (() => readToken(options.stateDir)))();
+    if (!proofMatches(serverProof(token, nonce2, connection.endpoint), welcome.server_proof))
+      throw new LocalApiError("server_proof_invalid", "the owner did not prove the per-boot token");
+    await connection.request("authenticate", {
+      client_proof: clientProof(token, welcome.server_nonce, connection.endpoint)
+    });
+    return welcome;
+  } catch (error62) {
+    connection.destroy();
+    throw error62;
+  }
+};
+var handshake = (connection, options) => new Promise((resolve32, reject) => {
+  const cancel2 = (options.handshakeTimer ?? realTimer)(() => {
+    connection.destroy();
+    reject(new LocalApiError("handshake_timeout", "the owner did not complete the handshake"));
+  }, HANDSHAKE_TIMEOUT_MS);
+  proveAndAuthenticate(connection, options).then(resolve32, reject).finally(cancel2);
+});
+var sendCommand = async (connection, attach, rpc, command_id, route) => {
+  const sent = command_id ?? mintId();
+  const id = { command_id: sent };
+  const timedOut = (error62) => {
+    if (error62 instanceof LocalApiError && error62.code === "request_timeout")
+      throw new LocalApiError("request_timeout", `command ${sent} may have been dispatched; follow its command state`, {
+        command_id: sent
+      });
+    throw error62;
+  };
+  const draft = {
+    id: "x".repeat(REQUEST_ID_MAX_CHARS),
+    type: "session.command",
+    attach,
+    ...id,
+    ...route,
+    rpc
+  };
+  if (lineBytes(draft) > LOCAL_INLINE_MAX) {
+    const json2 = JSON.stringify(rpc);
+    if (checkCommandText(json2) === "message_too_long")
+      throw new LocalApiError("message_too_long", "the command is over the engine limit", {
+        limit_chars: MESSAGE_LIMIT_CHARS
+      });
+    const upload_id = mintId();
+    const parts = uploadParts(json2).map((part) => connection.request("session.command_part", { attach, upload_id, ...part }));
+    await Promise.all(parts);
+    return (await connection.request("session.command", { attach, ...id, ...route, upload_id }).catch(timedOut)).command_id;
+  }
+  return (await connection.request("session.command", { attach, ...id, ...route, rpc }).catch(timedOut)).command_id;
+};
+var sendEndpointCommand = async (connection, device, endpoint, rpc, command_id, locate) => {
+  const sent = command_id ?? mintId();
+  const params = { device, endpoint, command_id: sent, ...locate ? { locate: true } : {}, rpc };
+  if (lineBytes({ id: "x".repeat(REQUEST_ID_MAX_CHARS), type: "session.command", ...params }) > LOCAL_INLINE_MAX)
+    throw new LocalApiError("message_too_long", "an endpoint command travels inline only", {
+      limit_chars: MESSAGE_LIMIT_CHARS
+    });
+  try {
+    return (await connection.request("session.command", params)).command_id;
+  } catch (error62) {
+    if (error62 instanceof LocalApiError && error62.code === "request_timeout")
+      throw new LocalApiError("request_timeout", `command ${sent} may have been dispatched; follow its command state`, {
+        command_id: sent
+      });
+    throw error62;
+  }
+};
+var connectLocalApi = async (options) => {
+  if (process.platform !== "win32")
+    checkPosixAccess(options.stateDir);
+  const transport = await (options.transport ?? (() => connectLocal(options.stateDir)))();
+  const listeners = new Set;
+  const assembler = new EventAssembler((event) => {
+    for (const listener of [...listeners])
+      listener(event);
+  });
+  const connection = new ClientConnection(transport, (event) => assembler.accept(event), {
+    timer: options.requestTimer ?? realTimer,
+    ms: REQUEST_TIMEOUT_MS
+  });
+  connection.closed.then(() => assembler.failAll(new LocalApiError("closed", "the connection closed")));
+  const welcome = await handshake(connection, options);
+  return {
+    welcome,
+    request: (type, params) => connection.request(type, params),
+    onEvent: (listener) => {
+      listeners.add(listener);
+      return () => {
+        listeners.delete(listener);
+      };
+    },
+    command: (attach, rpc, command_id, route = {}) => sendCommand(connection, attach, rpc, command_id, route),
+    endpointCommand: (device, endpoint, rpc, command_id, options2) => sendEndpointCommand(connection, device, endpoint, rpc, command_id, options2?.locate === true),
+    list: (filter, onRevision, rows) => new Promise((resolve32, reject) => {
+      const params = {
+        ...filter === undefined ? {} : { filter },
+        ...rows === undefined ? {} : { rows }
+      };
+      const watch = (data) => assembler.watchListing(data.query_id, { resolve: resolve32, reject }, onRevision);
+      connection.request("sessions.list", params, watch).catch(reject);
+    }),
+    read: (attach, options2 = {}) => new Promise((resolve32, reject) => {
+      const watch = (data) => assembler.watchRead(data.query_id, attach, { resolve: resolve32, reject });
+      connection.request("session.read", { attach, ...options2 }, watch).catch(reject);
+    }),
+    oversizedLines: () => connection.oversizedLines(),
+    close: () => connection.close(),
+    closed: connection.closed
+  };
+};
+
+// packages/device-service-core/src/remote-attach.ts
+import { randomBytes as randomBytes8 } from "crypto";
+
+// packages/device-service-core/src/delegated-channel.ts
+import { createHash as createHash17 } from "crypto";
+var isObject3 = (value) => typeof value === "object" && value !== null && !Array.isArray(value);
+function followDelegatedChannel(device) {
+  const replies = new Map;
+  const locateds = new Map;
+  const frames = new Set;
+  const losses = new Set;
+  const blobs = new Map;
+  const lost = (reason2) => {
+    for (const listener of [...losses])
+      listener(reason2);
+  };
+  const body = (value) => {
+    if (!isObject3(value))
+      return lost("a command event that is not an object");
+    const frame = value["frame"];
+    if (isObject3(frame)) {
+      for (const listener of [...frames])
+        listener(frame);
+      return;
+    }
+    const commandId2 = value["command_id"];
+    const response = value["response"];
+    if (typeof commandId2 !== "string" || !isObject3(response))
+      return lost("a command event with neither a frame nor a reply");
+    replies.set(commandId2, response);
+    const located = value["located"];
+    if (isObject3(located) && typeof located["key"] === "string" && located["key"].length > 0 && located["session"] === `${device}.${located["key"]}`)
+      locateds.set(commandId2, { key: located["key"], session: located["session"] });
+  };
+  const accept = (event) => {
+    switch (event.kind) {
+      case "session.command_event":
+        if (event.device !== device)
+          return;
+        if ("blob" in event)
+          blobs.set(event.blob.id, { ref: event.blob, parts: [], received: 0 });
+        else
+          body(event);
+        return;
+      case "session.command_blob_chunk": {
+        const blob = blobs.get(event.id);
+        if (blob === undefined)
+          return;
+        const bytes = Buffer.from(event.b, "base64");
+        if (event.off !== blob.received || blob.received + bytes.length > blob.ref.bytes) {
+          blobs.delete(event.id);
+          return lost("a command event blob arrived out of order or over its length");
+        }
+        blob.parts.push(bytes);
+        blob.received += bytes.length;
+        return;
+      }
+      case "session.command_blob_done": {
+        const blob = blobs.get(event.id);
+        if (blob === undefined)
+          return;
+        blobs.delete(event.id);
+        const bytes = Buffer.concat(blob.parts);
+        if (bytes.length !== blob.ref.bytes || createHash17("sha256").update(bytes).digest("hex") !== blob.ref.sha256)
+          return lost("a command event blob failed its length or sha256 check");
+        let parsed2;
+        try {
+          parsed2 = JSON.parse(bytes.toString("utf8"));
+        } catch {
+          return lost("a command event blob is not JSON");
+        }
+        return body(parsed2);
+      }
+      case "session.channel_closed":
+        if (event.device !== device)
+          return;
+        blobs.clear();
+        return lost(`the delegated channel closed (${event.reason})`);
+      default:
+        return;
+    }
+  };
+  return {
+    takeReply: (commandId2) => {
+      const reply = replies.get(commandId2);
+      replies.delete(commandId2);
+      return reply;
+    },
+    takeLocated: (commandId2) => {
+      const located = locateds.get(commandId2);
+      locateds.delete(commandId2);
+      return located;
+    },
+    onFrame: (listener) => {
+      frames.add(listener);
+      return () => frames.delete(listener);
+    },
+    onLoss: (listener) => {
+      losses.add(listener);
+      return () => losses.delete(listener);
+    },
+    accept,
+    stop: () => {
+      frames.clear();
+      losses.clear();
+      blobs.clear();
+      replies.clear();
+      locateds.clear();
+    }
+  };
+}
+
+// packages/device-service-core/src/remote-attach.ts
+var attachEvent = (event) => {
+  switch (event.kind) {
+    case "session.snapshot":
+    case "session.records":
+    case "session.attach_pending":
+    case "session.detached":
+      return event;
+    default:
+      return;
+  }
+};
+var ENDED_COMMAND_WAIT_MS = 30000;
+var PROGRESS_STATES = new Set([
+  "queued",
+  "transport_confirmed",
+  "engine_dispatched"
+]);
+var toRemote = (event) => {
+  switch (event.kind) {
+    case "session.snapshot": {
+      const { type: _type, kind: _kind, attach: _attach, ...snapshot } = event;
+      return { kind: "snapshot", snapshot };
+    }
+    case "session.records":
+      return { kind: "records", attach_id: event.attach_id, records: event.records };
+    case "session.attach_pending":
+      return { kind: "pending", reason: event.reason };
+    case "session.detached":
+      return { kind: "detached", reason: event.reason };
+  }
+};
+function openAttach(client3, device, sessionId2) {
+  const early = [];
+  const history = [];
+  const listeners = new Set;
+  let handle;
+  let resolveSnapshot;
+  let rejectSnapshot;
+  const snapshot = new Promise((resolve32, reject) => {
+    resolveSnapshot = resolve32;
+    rejectSnapshot = reject;
+  });
+  snapshot.catch(() => {});
+  let resolveDetached;
+  const detached = new Promise((resolve32) => {
+    resolveDetached = resolve32;
+  });
+  let ended = false;
+  let failure3;
+  const commands2 = new Set;
+  let channel;
+  let drain;
+  let released = false;
+  const release3 = () => {
+    if (released)
+      return;
+    released = true;
+    clearTimeout(drain);
+    stop2();
+    channel?.stop();
+  };
+  const endCommands = (reason2) => {
+    for (const end of [...commands2])
+      end(reason2);
+    release3();
+  };
+  const finish = (reason2) => {
+    if (ended)
+      return;
+    ended = true;
+    listeners.clear();
+    rejectSnapshot(new Error(`the attach ended before its snapshot: ${reason2}`));
+    resolveDetached(reason2);
+    if (reason2 === "closed" || commands2.size === 0)
+      return endCommands(reason2);
+    drain = setTimeout(() => endCommands(reason2), ENDED_COMMAND_WAIT_MS);
+    drain.unref?.();
+  };
+  const deliver = (event) => {
+    const remote = toRemote(event);
+    if (remote.kind === "snapshot") {
+      history.length = 0;
+      resolveSnapshot(remote.snapshot);
+    }
+    history.push(remote);
+    for (const listener of [...listeners]) {
+      try {
+        listener(remote);
+      } catch (error62) {
+        failure3 = error62;
+        finish("listener_failed");
+        return;
+      }
+    }
+    if (remote.kind === "detached")
+      finish(remote.reason);
+  };
+  const stop2 = client3.onEvent((event) => {
+    channel?.accept(event);
+    const mine = attachEvent(event);
+    if (mine === undefined)
+      return;
+    if (handle === undefined)
+      early.push(mine);
+    else if (mine.attach === handle)
+      deliver(mine);
+  });
+  client3.closed.then(() => {
+    finish("closed");
+    endCommands("closed");
+  });
+  return client3.request("session.attach", { device, session_id: sessionId2 }).then(({ attach }) => {
+    handle = attach;
+    const delegated = followDelegatedChannel(device);
+    channel = delegated;
+    if (ended)
+      delegated.stop();
+    for (const event of early.splice(0))
+      if (event.attach === attach)
+        deliver(event);
+    return {
+      device,
+      sessionId: sessionId2,
+      handle: attach,
+      snapshot,
+      detached,
+      onEvent: (listener) => {
+        for (const event of history)
+          listener(event);
+        if (!ended)
+          listeners.add(listener);
+        return () => listeners.delete(listener);
+      },
+      failure: () => failure3,
+      onFrame: (listener) => delegated.onFrame(listener),
+      onChannelLoss: (listener) => delegated.onLoss(listener),
+      command: (rpc) => new Promise((resolve32, reject) => {
+        if (ended)
+          return reject(new Error("the attach has ended"));
+        const commandId2 = randomBytes8(16).toString("base64url");
+        const settle2 = () => {
+          stopState();
+          commands2.delete(end);
+          if (ended && commands2.size === 0)
+            release3();
+        };
+        const end = (reason2) => {
+          settle2();
+          reject(new Error(`the attach ended before the command settled: ${reason2}`));
+        };
+        const stopState = client3.onEvent((event) => {
+          if (event.kind !== "session.command_state" || event.command_id !== commandId2)
+            return;
+          if (PROGRESS_STATES.has(event.state))
+            return;
+          const response = delegated.takeReply(commandId2);
+          settle2();
+          resolve32(response === undefined ? { outcome: event } : { outcome: event, response });
+        });
+        commands2.add(end);
+        client3.command(attach, rpc, commandId2, { delegated: true }).catch((error62) => {
+          settle2();
+          reject(error62);
+        });
+      }),
+      read: (options = {}) => client3.read(attach, {
+        ...options.before === undefined ? {} : { before_entry_id: options.before },
+        ...options.tail === undefined ? {} : { tail: options.tail }
+      }),
+      detach: async () => {
+        try {
+          await client3.request("session.detach", { attach });
+        } catch (error62) {
+          if (!(error62 instanceof LocalApiError && error62.code === "not_attached"))
+            throw error62;
+        }
+        finish("detached");
+      }
+    };
+  }, (error62) => {
+    stop2();
+    throw error62;
+  });
+}
+
+// packages/device-service-core/src/listing-rows.ts
+function newestRowsListing(client3) {
+  let rows = 3;
+  return async function list(filter, onRevision) {
+    for (;; ) {
+      try {
+        return await client3.list(filter, onRevision, rows);
+      } catch (error62) {
+        if (rows === undefined || !(error62 instanceof LocalApiError) || error62.code !== "invalid_request")
+          throw error62;
+        rows = rows === 3 ? 2 : undefined;
+      }
+    }
+  };
+}
+
+// packages/device-service-core/src/device-service.ts
+import { randomBytes as randomBytes9 } from "crypto";
+
+// packages/device-service-core/src/release/version.ts
+var SEMVER2 = /^(\d+)\.(\d+)\.(\d+)(?:-([0-9A-Za-z.-]+))?(?:\+[0-9A-Za-z.-]+)?$/;
+var compareIdentifier = (a2, b2) => {
+  const numericA = /^\d+$/.test(a2);
+  const numericB = /^\d+$/.test(b2);
+  if (numericA && numericB)
+    return Math.sign(Number(a2) - Number(b2));
+  if (numericA !== numericB)
+    return numericA ? -1 : 1;
+  return a2 < b2 ? -1 : a2 > b2 ? 1 : 0;
+};
+var compareVersions4 = (a2, b2) => {
+  const left = SEMVER2.exec(a2);
+  const right = SEMVER2.exec(b2);
+  if (left === null || right === null)
+    throw new Error(`not a semantic version: ${left === null ? a2 : b2}`);
+  for (const index of [1, 2, 3]) {
+    const difference = Number(left[index]) - Number(right[index]);
+    if (difference !== 0)
+      return Math.sign(difference);
+  }
+  const preLeft = left[4]?.split(".") ?? [];
+  const preRight = right[4]?.split(".") ?? [];
+  if (preLeft.length === 0 || preRight.length === 0)
+    return Math.sign(preRight.length - preLeft.length);
+  for (let index = 0;index < Math.max(preLeft.length, preRight.length); index++) {
+    const x = preLeft[index];
+    const y2 = preRight[index];
+    if (x === undefined || y2 === undefined)
+      return x === undefined ? -1 : 1;
+    const order = compareIdentifier(x, y2);
+    if (order !== 0)
+      return order;
+  }
+  return 0;
+};
+// packages/device-service-core/src/device-service.ts
+var ENDPOINT_COMMAND_WAIT_MS = 120000;
+function sendToEndpoint(client3, device, endpoint, rpc, locate) {
+  return new Promise((resolve32, reject) => {
+    const commandId2 = randomBytes9(16).toString("base64url");
+    const channel = followDelegatedChannel(device);
+    let done = false;
+    const settle2 = () => {
+      done = true;
+      stop2();
+      channel.stop();
+      clearTimeout(timer);
+    };
+    const fail2 = (error62) => {
+      if (done)
+        return;
+      settle2();
+      reject(error62);
+    };
+    const stop2 = client3.onEvent((event) => {
+      channel.accept(event);
+      if (done || event.kind !== "session.command_state" || event.command_id !== commandId2)
+        return;
+      if (PROGRESS_STATES.has(event.state))
+        return;
+      const response = channel.takeReply(commandId2);
+      const located = channel.takeLocated(commandId2);
+      settle2();
+      resolve32({
+        outcome: event,
+        ...response === undefined ? {} : { response },
+        ...located === undefined ? {} : { located }
+      });
+    });
+    const timer = setTimeout(() => fail2(new Error(`no final state for endpoint command ${commandId2} within ${ENDPOINT_COMMAND_WAIT_MS} ms`)), ENDPOINT_COMMAND_WAIT_MS);
+    timer.unref?.();
+    client3.closed.then(() => fail2(new Error("the connection closed before the endpoint command settled")));
+    const send2 = (asked) => client3.endpointCommand(device, endpoint, rpc, commandId2, { locate: asked });
+    send2(locate).catch((error62) => locate && error62 instanceof LocalApiError && error62.code === "invalid_request" ? send2(false).catch(fail2) : fail2(error62));
+  });
+}
+var markNotSent = (error62) => error62 instanceof LocalApiError ? new LocalApiError(error62.code, error62.reason, {
+  action: error62.action,
+  ...error62.limit_chars === undefined ? {} : { limit_chars: error62.limit_chars },
+  ...error62.path_refusal === undefined ? {} : { path_refusal: error62.path_refusal },
+  not_sent: true
+}) : error62;
+function deviceServiceStateDir(platform2 = process.platform, env2 = process.env, home = homedir36()) {
+  if (platform2 !== "win32")
+    return join121(home, ".omo", "device-service");
+  const localAppData = env2.LOCALAPPDATA ?? join121(home, "AppData", "Local");
+  return join121(localAppData, "OmO", "device-service");
+}
+function deviceServiceEndpointPath(stateDir, platform2 = process.platform) {
+  return join121(stateDir, platform2 === "win32" ? ENDPOINT_FILE : SOCKET_FILE);
+}
+var ADOPT_ACCOUNT_MIN_SERVICE_VERSION = "0.1.3";
+var acceptsAdoptAccount = (serviceVersion) => compareVersions4(serviceVersion, ADOPT_ACCOUNT_MIN_SERVICE_VERSION) >= 0;
+async function connectDeviceService(options) {
+  const stateDir = options.stateDir ?? deviceServiceStateDir();
+  const client3 = await (options.connect ?? connectLocalApi)({
+    stateDir,
+    client: { name: "omo", version: options.version },
+    ...options.background === true ? { transport: () => connectLocal(stateDir, { background: true }) } : {}
+  });
+  return {
+    serviceVersion: client3.welcome.service_version,
+    capabilities: client3.welcome.capabilities,
+    initialStatus: client3.welcome.state,
+    status: () => client3.request("status.get", {}),
+    watchStatus: async (listener) => {
+      const stop2 = client3.onEvent((event) => {
+        if (event.kind === "status.changed")
+          listener(event.status);
+      });
+      try {
+        await client3.request("status.subscribe", {});
+      } catch (error62) {
+        stop2();
+        throw error62;
+      }
+      return stop2;
+    },
+    setEnabled: async (enabled) => (await client3.request("service.set_enabled", { enabled })).enabled,
+    attachControl: () => client3.request("control.attach.get", {}),
+    setAttachControl: (attached) => client3.request("control.attach.set", { attached }),
+    registerRefresher: async (binaryPath, version3) => {
+      await client3.request("refresher.register", { binary_path: binaryPath, version: version3 });
+    },
+    adopt: async ({ device, signingPrivateKey, sealingPrivateKey, account }) => (await client3.request("device.adopt", {
+      device,
+      signing_private_key: signingPrivateKey,
+      sealing_private_key: sealingPrivateKey,
+      ...account !== undefined && acceptsAdoptAccount(client3.welcome.service_version) ? { account } : {}
+    })).device,
+    registerEndpoints: async (agentDir2) => {
+      await client3.request("endpoints.register", { agent_dir: agentDir2 });
+    },
+    forget: async () => {
+      await client3.request("device.forget", {});
+    },
+    thisDevice: async () => (await client3.request("device.info", {})).device,
+    devices: async () => (await client3.request("devices.list", {})).devices,
+    sessions: newestRowsListing(client3),
+    attach: (device, sessionId2) => openAttach(client3, device, sessionId2),
+    endpointCommand: async (device, rpc, options2) => {
+      let endpoint;
+      try {
+        endpoint = (await client3.request("session.endpoints", { device })).endpoints[0];
+      } catch (error62) {
+        throw markNotSent(error62);
+      }
+      if (endpoint === undefined)
+        throw new LocalApiError("unsupported", "the device lists no engine endpoint", { not_sent: true });
+      return await sendToEndpoint(client3, device, endpoint, rpc, options2?.locate === true);
+    },
+    close: () => client3.close(),
+    closed: client3.closed,
+    locate: (device, engineId2) => client3.request("session.locate", { device, engine_id: engineId2 })
+  };
+}
+// packages/device-service-core/src/bootstrap.ts
+import { existsSync as existsSync69 } from "fs";
+
+// packages/device-service-core/src/hand-device-keys.ts
+import { existsSync as existsSync68 } from "fs";
+var DEAD_ENDPOINT_CODES = new Set(["ENOENT", "ECONNREFUSED", "ECONNRESET", "EPIPE"]);
+var connectFailure = (error62) => {
+  const detail = error62 instanceof Error ? error62.message : String(error62);
+  if (error62 instanceof LocalApiError) {
+    if (error62.code === "refused" || error62.code === "server_proof_invalid")
+      return { cause: "refused", detail };
+    if (error62.code === "insecure_state_dir")
+      return { cause: "unreadable", detail };
+    if (error62.code === "handshake_timeout" || error62.code === "request_timeout")
+      return { cause: "timed_out", detail };
+    return { cause: "failed", detail };
+  }
+  const code = error62 instanceof Error && "code" in error62 ? String(error62.code) : "";
+  return { cause: DEAD_ENDPOINT_CODES.has(code) ? "dead_endpoint" : "failed", detail };
+};
+var connectOrNotRunning = async (connect2, log6) => {
+  try {
+    return await connect2();
+  } catch (error62) {
+    const { cause, detail } = connectFailure(error62);
+    log6?.(`OmO device service: ${cause}, treated as not running (${detail}).`);
+    return "not_running";
+  }
+};
+var adopted = (status2) => status2.device !== null && status2.state !== "sign_in_required";
+var handDeviceKeys = async (options) => {
+  if (!existsSync68(deviceServiceEndpointPath(options.stateDir)))
+    return "not_running";
+  const service = await connectOrNotRunning(options.connect, options.log);
+  if (service === "not_running")
+    return "not_running";
+  try {
+    if (options.when === "not_adopted" && adopted(await service.status()))
+      return "already_adopted";
+    await service.adopt(options.credential);
+    return "adopted";
+  } finally {
+    service.close();
+  }
+};
+
+// packages/device-service-core/src/bootstrap.ts
+var forgetDeviceService = async (options) => {
+  if (!existsSync69(deviceServiceEndpointPath(options.stateDir)))
+    return "not_running";
+  const service = await connectOrNotRunning(options.connect, options.log);
+  if (service === "not_running")
+    return "not_running";
+  try {
+    await service.forget();
+  } finally {
+    service.close();
+  }
+  return "forgotten";
+};
+// packages/device-service-core/src/release/release-assets.ts
+var MANIFEST = "latest.json";
+var CHECKSUMS_MAX_BYTES = 64 * 1024;
+var MANIFEST_MAX_BYTES = 4 * 1024;
+var BINARY_MAX_BYTES = 512 * 1024 * 1024;
+var DEVICE_SERVICE_HOSTS = [
+  "darwin-arm64",
+  "darwin-x64",
+  "linux-x64",
+  "linux-arm64",
+  "windows-x64",
+  "windows-arm64"
+];
+var deviceServiceAssetName = (host) => host.startsWith("windows-") ? `omo-device-service-${host}.exe` : `omo-device-service-${host}`;
+var RELEASE_FILES = new Set([MANIFEST, ...DEVICE_SERVICE_HOSTS.map(deviceServiceAssetName)]);
+
+// packages/device-service-core/src/strict-ed25519/strict-ed25519.ts
+var P2 = (1n << 255n) - 19n;
+var L = (1n << 252n) + 27742317777372353535851937790883648493n;
+var mod = (n3) => {
+  const r2 = n3 % P2;
+  return r2 < 0n ? r2 + P2 : r2;
+};
+var power = (base, exponent) => {
+  let result = 1n;
+  let b2 = mod(base);
+  for (let n3 = exponent;n3 > 0n; n3 >>= 1n) {
+    if (n3 & 1n)
+      result = mod(result * b2);
+    b2 = mod(b2 * b2);
+  }
+  return result;
+};
+var D = mod(-121665n * power(121666n, P2 - 2n));
+var SQRT_MINUS_ONE = power(2n, (P2 - 1n) / 4n);
+var keyCache = new Map;
+// packages/device-service-core/src/release/release-key.json
+var release_key_default = {
+  alg: "Ed25519",
+  public_keys_hex: ["6c6781a91888e3e5be10d1b27466319a7d5adf2a7d2b254f4118eda9cbcb4465", "ca9407b484a30ac7f09cb152455176f1e03fc6ca3446ff930bc7587215759016"]
+};
+
+// packages/device-service-core/src/release/release-signature.ts
+var HEX_KEY = /^[0-9a-f]{64}$/;
+var parseReleaseKeySet = (value) => {
+  if (typeof value !== "object" || value === null || Array.isArray(value))
+    throw new Error("release key: not an object");
+  if (Object.keys(value).toSorted().join(",") !== "alg,public_keys_hex")
+    throw new Error("release key: fields must be exactly alg and public_keys_hex");
+  const alg = Reflect.get(value, "alg");
+  const hexes = Reflect.get(value, "public_keys_hex");
+  if (alg !== "Ed25519")
+    throw new Error("release key: alg must be Ed25519");
+  if (!Array.isArray(hexes))
+    throw new Error("release key: public_keys_hex must be an array");
+  if (new Set(hexes).size !== hexes.length)
+    throw new Error("release key: public_keys_hex must not repeat a key");
+  return hexes.map((hex3) => {
+    if (typeof hex3 !== "string" || !HEX_KEY.test(hex3))
+      throw new Error("release key: each public_keys_hex entry must be 64 lowercase hex characters");
+    return hex3;
+  });
+};
+var DEVICE_SERVICE_RELEASE_KEYS = parseReleaseKeySet(release_key_default);
+// packages/device-service-core/src/release/acquire.ts
+var platformSecure = process.platform === "win32" ? async (path15, kind) => windowsSecureFile(await currentUserSid())(path15, kind) : posixSecureFile;
+// packages/device-service-core/src/registrant.ts
+var NONE2 = Symbol("none registered");
+// packages/omo-native/package.json
+var package_default4 = {
+  name: "omo-ai",
+  version: "5.1.69",
+  type: "module",
+  description: "OmO Native - the standalone omo command with the OMO extension built in: bun add -g omo-ai",
+  bin: {
+    omo: "bin/omo.js"
+  },
+  files: [
+    "bin",
+    "plugin"
+  ],
+  engines: {
+    node: ">=24.0.0"
+  },
+  scripts: {
+    postinstall: "node bin/senpi-patch.mjs"
+  },
+  dependencies: {
+    "@code-yeongyu/senpi": "2026.11.12"
+  },
+  repository: {
+    type: "git",
+    url: "git+https://github.com/code-yeongyu/oh-my-openagent.git"
+  }
+};
+
+// packages/omo-native/device-service-handoff.ts
+var isRecord22 = (value) => typeof value === "object" && value !== null;
+async function accountOf(api2, credentials, doFetch) {
+  if (credentials.accountId !== undefined)
+    return credentials.accountId;
+  const response = await doFetch(`${api2}/v1/me`, { headers: { authorization: `Bearer ${credentials.accessToken}` } });
+  if (!response.ok)
+    throw new Error(`the account read failed (${response.status})`);
+  const body = await response.json();
+  const id = isRecord22(body) && isRecord22(body["account"]) ? body["account"]["id"] : undefined;
+  if (typeof id !== "string" || id === "")
+    throw new Error("the account read named no account");
+  return id;
+}
+function cliDeviceServiceHandoff(options) {
+  const stateDir = options.stateDir ?? deviceServiceStateDir();
+  const connect2 = options.connect ?? (() => connectDeviceService({ version: package_default4.version, stateDir }));
+  const doFetch = options.fetch ?? fetch;
+  const report2 = (what) => (error62) => {
+    options.log(`OmO device service: ${what} did not complete (${error62 instanceof Error ? error62.message : String(error62)}).`);
+  };
+  return {
+    adopt: async (credentials) => {
+      if (!existsSync70(deviceServiceEndpointPath(stateDir)))
+        return;
+      try {
+        const account = await accountOf(options.api, credentials, doFetch);
+        await handDeviceKeys({
+          stateDir,
+          connect: connect2,
+          when: "always",
+          log: options.log,
+          credential: {
+            device: { id: credentials.device.id, name: credentials.device.name },
+            signingPrivateKey: credentials.signingPrivateKey,
+            sealingPrivateKey: credentials.sealingPrivateKey,
+            account
+          }
+        });
+      } catch (error62) {
+        report2("handing this sign-in to it")(error62);
+      }
+    },
+    machineDevice: async () => {
+      if (!existsSync70(deviceServiceEndpointPath(stateDir)))
+        return { kind: "absent" };
+      let failure3;
+      const service = await connectOrNotRunning(connect2, (line) => {
+        failure3 = line;
+        options.log(line);
+      });
+      if (service === "not_running") {
+        return {
+          kind: "unknown",
+          reason: failure3 ?? "the device service endpoint is present but nothing answered"
+        };
+      }
+      try {
+        const status2 = await service.status();
+        return status2.device === null ? { kind: "absent" } : { kind: "held", device: status2.device };
+      } catch (error62) {
+        return { kind: "unknown", reason: error62 instanceof Error ? error62.message : String(error62) };
+      } finally {
+        service.close();
+      }
+    },
+    forget: async () => {
+      try {
+        await forgetDeviceService({ stateDir, connect: connect2, log: options.log });
+      } catch (error62) {
+        report2("forgetting this device")(error62);
+      }
+    }
+  };
+}
+
+// packages/omo-native/service-auth-command.ts
+var cliServiceAuthHooks = {
+  deviceService: (api2) => cliDeviceServiceHandoff({ api: api2, log: (line) => process.stderr.write(`${line}
+`) })
+};
+
+// packages/omo-opencode/src/cli/service-auth/cli-service-auth-state.ts
+var installed;
+function installCliServiceAuthHooks(hooks2) {
+  installed = hooks2;
+}
+function openCodeServiceAuthHooks() {
+  if (installed === undefined) {
+    throw new Error("OpenCode service-auth hooks were not installed");
+  }
+  return installed;
+}
+
+// packages/omo-opencode/src/cli/service-auth/cli-service-auth-hooks.js
+installCliServiceAuthHooks(cliServiceAuthHooks);
 
 // packages/omo-opencode/src/cli/install-command-options.ts
 function resolveInstallArgs(options, invocationName = process.env.OMO_INVOCATION_NAME) {
@@ -129107,7 +134084,7 @@ function resolveInstallArgs(options, invocationName = process.env.OMO_INVOCATION
 init_commander();
 
 // packages/omo-opencode/src/cli/boulder/boulder.ts
-import { existsSync as existsSync68 } from "fs";
+import { existsSync as existsSync71 } from "fs";
 
 // packages/omo-opencode/src/cli/boulder/formatter.ts
 var import_picocolors22 = __toESM(require_picocolors(), 1);
@@ -129244,10 +134221,10 @@ async function boulder(options) {
   const boulderFilePath = getBoulderFilePath(directory);
   const state3 = readBoulderState(directory);
   if (!state3) {
-    const message = existsSync68(boulderFilePath) ? formatReadErrorMessage(options.json) : formatNoBoulderMessage(options.json);
+    const message = existsSync71(boulderFilePath) ? formatReadErrorMessage(options.json) : formatNoBoulderMessage(options.json);
     process.stderr.write(`${message}
 `);
-    return existsSync68(boulderFilePath) ? 2 : 1;
+    return existsSync71(boulderFilePath) ? 2 : 1;
   }
   const works = getBoulderWorks(state3);
   const filteredWorks = options.workId ? works.filter((work) => work.work_id === options.workId) : works;
@@ -129264,13 +134241,13 @@ async function boulder(options) {
   return 0;
 }
 // packages/omo-opencode/src/cli/codex-ulw-loop.ts
-import { spawn as spawn6 } from "child_process";
-import { existsSync as existsSync69, readFileSync as readFileSync46, realpathSync as realpathSync13 } from "fs";
-import { homedir as homedir33 } from "os";
+import { spawn as spawn7 } from "child_process";
+import { existsSync as existsSync72, readFileSync as readFileSync49, realpathSync as realpathSync13 } from "fs";
+import { homedir as homedir37 } from "os";
 var ULW_LOOP_DELEGATION_SENTINEL = "OMO_ULW_LOOP_DELEGATED";
 function resolveCodexUlwLoopCommand(input2 = {}) {
   const env2 = input2.env ?? process.env;
-  const homeDir = input2.homeDir ?? homedir33();
+  const homeDir = input2.homeDir ?? homedir37();
   const localComponentBin = resolveLocalUlwLoopBin(env2, homeDir);
   if (localComponentBin !== null)
     return { executable: localComponentBin, argsPrefix: [] };
@@ -129293,29 +134270,29 @@ async function codexUlwLoop(args) {
     console.error("Codex ulw-loop is not installed. Run: npx lazycodex-ai@latest install --no-tui");
     return 1;
   }
-  const { promise: promise2, resolve: resolve31 } = Promise.withResolvers();
-  const child = spawn6(command.executable, [...command.argsPrefix, ...args], {
+  const { promise: promise2, resolve: resolve32 } = Promise.withResolvers();
+  const child = spawn7(command.executable, [...command.argsPrefix, ...args], {
     stdio: "inherit",
     env: { ...process.env, [ULW_LOOP_DELEGATION_SENTINEL]: "1" }
   });
   child.on("error", (error62) => {
     console.error(error62.message);
-    resolve31(1);
+    resolve32(1);
   });
-  child.on("close", (code) => resolve31(code ?? 1));
+  child.on("close", (code) => resolve32(code ?? 1));
   return promise2;
 }
 function resolveLocalUlwLoopBin(env2, homeDir) {
   const candidates = resolveCodexComponentBinCandidates({ executableName: "omo-ulw-loop", env: env2, homeDir });
-  return candidates.find((candidate2) => existsSync69(candidate2)) ?? null;
+  return candidates.find((candidate2) => existsSync72(candidate2)) ?? null;
 }
 function resolveLegacyLocalOmoBin(env2, homeDir, currentExecutablePaths) {
   const candidates = resolveCodexComponentBinCandidates({ executableName: "omo", env: env2, homeDir });
-  return candidates.find((candidate2) => existsSync69(candidate2) && !isCurrentExecutable(candidate2, currentExecutablePaths) && !isGeneratedRuntimeWrapper(candidate2)) ?? null;
+  return candidates.find((candidate2) => existsSync72(candidate2) && !isCurrentExecutable(candidate2, currentExecutablePaths) && !isGeneratedRuntimeWrapper(candidate2)) ?? null;
 }
 function isGeneratedRuntimeWrapper(candidate2) {
   try {
-    return readFileSync46(candidate2, "utf8").includes(RUNTIME_WRAPPER_MARKER);
+    return readFileSync49(candidate2, "utf8").includes(RUNTIME_WRAPPER_MARKER);
   } catch (error62) {
     if (error62 instanceof Error)
       return false;
@@ -129370,10 +134347,7 @@ async function refreshModelCapabilities(options, deps = {}) {
 
 // packages/omo-opencode/src/cli/worktree-sweep/classify.ts
 import path15 from "path";
-var DEFAULT_EXCLUDE_PREFIXES = [
-  "~/.codex/worktrees",
-  "~/.codex-gui-cli-remote/worktrees"
-];
+var DEFAULT_EXCLUDE_PREFIXES = ["~/.codex/worktrees", "~/.codex-gui-cli-remote/worktrees"];
 function expandHome(value, home) {
   if (value === "~")
     return home;
@@ -129417,8 +134391,8 @@ function formatClassification(classification) {
 function formatSummary(result) {
   const mode2 = result.apply ? "apply" : "dry-run";
   const removed2 = result.repos.reduce((total, repo) => total + repo.removed.length, 0);
-  const failed = result.repos.reduce((total, repo) => total + repo.failed.length, 0);
-  return `SUMMARY mode=${mode2} repos=${result.repos.length} sweep=${result.sweepCount} keep=${result.keepCount} prune=${result.pruneCount} removed=${removed2} failed=${failed}`;
+  const failed2 = result.repos.reduce((total, repo) => total + repo.failed.length, 0);
+  return `SUMMARY mode=${mode2} repos=${result.repos.length} sweep=${result.sweepCount} keep=${result.keepCount} prune=${result.pruneCount} removed=${removed2} failed=${failed2}`;
 }
 function formatResult(result) {
   const lines = [];
@@ -129427,8 +134401,8 @@ function formatResult(result) {
     for (const classification of repo.classifications) {
       lines.push(formatClassification(classification));
     }
-    for (const failure2 of repo.failed) {
-      lines.push(`FAILED ${failure2.path} ${failure2.error}`);
+    for (const failure3 of repo.failed) {
+      lines.push(`FAILED ${failure3.path} ${failure3.error}`);
     }
   }
   lines.push(formatSummary(result));
@@ -129436,11 +134410,11 @@ function formatResult(result) {
 }
 // packages/omo-opencode/src/cli/worktree-sweep/options.ts
 function parseOlderThanDays(value) {
-  const parsed = Number(value);
-  if (!Number.isFinite(parsed) || parsed < 0 || !Number.isInteger(parsed)) {
+  const parsed2 = Number(value);
+  if (!Number.isFinite(parsed2) || parsed2 < 0 || !Number.isInteger(parsed2)) {
     throw new Error(`--older-than must be a non-negative integer number of days, got: ${value}`);
   }
-  return parsed;
+  return parsed2;
 }
 // packages/omo-opencode/src/cli/worktree-sweep/parse-worktree-list.ts
 import { normalize } from "path";
@@ -129479,9 +134453,9 @@ function applyLine(record3, line) {
   }
   if (line === "locked" || line.startsWith("locked ")) {
     record3.locked = true;
-    const reason = line.slice("locked".length).trim();
-    if (reason.length > 0)
-      record3.lockReason = reason;
+    const reason2 = line.slice("locked".length).trim();
+    if (reason2.length > 0)
+      record3.lockReason = reason2;
     return;
   }
   if (line === "prunable" || line.startsWith("prunable ")) {
@@ -129512,8 +134486,8 @@ function linkedWorktrees(records) {
   return records.slice(1);
 }
 // packages/omo-opencode/src/cli/worktree-sweep/sweep.ts
-import { existsSync as existsSync70 } from "fs";
-import { stat as stat10 } from "fs/promises";
+import { existsSync as existsSync73 } from "fs";
+import { stat as stat12 } from "fs/promises";
 import os7 from "os";
 import { normalize as normalize2 } from "path";
 
@@ -129536,24 +134510,13 @@ async function listWorktreesPorcelain(repo) {
   return result.stdout;
 }
 async function detectDefaultBranch(repo) {
-  const symbolic = await runGit(repo, [
-    "symbolic-ref",
-    "--quiet",
-    "--short",
-    "refs/remotes/origin/HEAD"
-  ]);
+  const symbolic = await runGit(repo, ["symbolic-ref", "--quiet", "--short", "refs/remotes/origin/HEAD"]);
   if (symbolic.code === 0) {
     const value = symbolic.stdout.trim();
     if (value.length > 0)
       return value.replace(/^[^/]*\//, "");
   }
-  const local = await runGit(repo, [
-    "branch",
-    "--list",
-    "main",
-    "master",
-    "--format=%(refname:short)"
-  ]);
+  const local = await runGit(repo, ["branch", "--list", "main", "master", "--format=%(refname:short)"]);
   if (local.code === 0) {
     for (const candidate2 of ["main", "master"]) {
       if (local.stdout.split(`
@@ -129596,14 +134559,14 @@ async function isOlderThan(worktreePath, days, now) {
   if (days <= 0)
     return false;
   try {
-    const stats = await stat10(worktreePath);
+    const stats = await stat12(worktreePath);
     return now - stats.mtimeMs > days * DAY_MS;
   } catch {
     return false;
   }
 }
 async function classifyRecord(repo, record3, defaultBranch, options) {
-  const pathExists4 = existsSync70(record3.path);
+  const pathExists4 = existsSync73(record3.path);
   const external2 = isExcludedPath(record3.path, options.excludePrefixes, options.home);
   const current = options.currentWorktree !== undefined && record3.path === options.currentWorktree;
   if (record3.locked || !pathExists4 || external2 || current) {
@@ -129632,14 +134595,14 @@ async function sweepRepo(repo, options) {
   const records = linkedWorktrees(allRecords);
   const startedInLinked = records.some((record3) => record3.path === toplevel);
   const mainWorktree = allRecords[0]?.path;
-  const root = startedInLinked && mainWorktree !== undefined && existsSync70(mainWorktree) ? mainWorktree : toplevel;
+  const root = startedInLinked && mainWorktree !== undefined && existsSync73(mainWorktree) ? mainWorktree : toplevel;
   const currentWorktree = startedInLinked ? toplevel : undefined;
   const classifications = [];
   for (const record3 of records) {
     classifications.push(await classifyRecord(root, record3, defaultBranch, { ...options, currentWorktree }));
   }
   const removed2 = [];
-  const failed = [];
+  const failed2 = [];
   if (options.apply) {
     for (const classification of classifications) {
       if (classification.decision !== "SWEEP")
@@ -129648,7 +134611,7 @@ async function sweepRepo(repo, options) {
       if (result.code === 0)
         removed2.push(classification.path);
       else {
-        failed.push({
+        failed2.push({
           path: classification.path,
           error: result.stderr.trim() || `git worktree remove exited with ${result.code}`
         });
@@ -129656,7 +134619,7 @@ async function sweepRepo(repo, options) {
     }
     await pruneWorktrees(root);
   }
-  return { repo: root, defaultBranch, classifications, removed: removed2, failed };
+  return { repo: root, defaultBranch, classifications, removed: removed2, failed: failed2 };
 }
 async function sweepWorktrees(options = {}) {
   const apply = options.apply === true;
@@ -129734,7 +134697,10 @@ function configureRuntimeCommands(program2) {
     } catch (error62) {
       throw new InvalidArgumentError(error62 instanceof Error ? error62.message : String(error62));
     }
-  }).option("--repo <path>", "Repository to sweep (repeatable)", (value, previous = []) => [...previous, value]).option("--json", "Output structured JSON result").addHelpText("after", `
+  }).option("--repo <path>", "Repository to sweep (repeatable)", (value, previous = []) => [
+    ...previous,
+    value
+  ]).option("--json", "Output structured JSON result").addHelpText("after", `
 Examples:
   $ omo-agent-toolkit worktree-sweep
   $ omo-agent-toolkit worktree-sweep --older-than=14
@@ -129761,7 +134727,7 @@ prunes.
 
 // packages/omo-opencode/src/cli/config-migrate.ts
 init_startup_migration();
-import { posix as posix13 } from "path";
+import { posix as posix17 } from "path";
 function reports(result) {
   return result.results.map((entry) => ({
     diagnostics: entry.diagnostics,
@@ -129795,7 +134761,7 @@ function runConfigMigrate(options = {}) {
     dryRun: options.dryRun ?? false,
     environment: environment2,
     ...homeDir === undefined ? {} : { env: { HOME: homeDir }, homeDir },
-    pathOperations: posix13
+    pathOperations: posix17
   });
   const report2 = reports(result);
   const response = {
@@ -129944,7 +134910,7 @@ program2.command("config").description("Manage unified OMO configuration").comma
 });
 configureRuntimeCommands(program2);
 program2.addCommand(createMcpOAuthCommand());
-configureServiceAuthCommands(program2);
+configureServiceAuthCommands(program2, serviceAccountsOpen(), openCodeServiceAuthHooks());
 configureAccountKeysCommands(program2);
 function runCli() {
   program2.parse();
