@@ -10,6 +10,17 @@ Releases of [gdraganic/oh-my-openagent](https://github.com/gdraganic/oh-my-opena
 
 To release: add a `## [<version>] - YYYY-MM-DD` section here on `main` (with the `Fork-Patch: v2-support` trailer), then run the **Fork release** workflow with that version.
 
+## [5.1.72-fork.1] - 2026-11-16
+
+Rebased on upstream `dev` of 2026-11-16 (1,430 commits since fork.1): upstream releases 5.1.70 to 5.1.72, mostly OmO Native (sign-in, cross-device threads, memory sync). Relevant to the OpenCode edition:
+
+- A foreground `task` (`run_in_background: false`) waits for its child instead of failing with `Session error` about a second in.
+- Claude Fable (Prometheus, Metis, artistry) gets the assistant-prefill repair Mythos already had (#13537).
+- A monitor no longer loses a batch that arrives while the previous one is being sent.
+- Default models are unchanged.
+
+Upstream workflows added since fork.1 are dropped, as usual. Verified on OpenCode 2.3.0.
+
 ## [5.1.69-fork.1] - 2026-11-13
 
 Rebased on upstream `dev` of 2026-11-13 (2,914 commits since fork.1): upstream releases 5.1.60 to 5.1.69, mostly OmO Native (cross-device threads, memory, engine updates). Relevant to the OpenCode edition:
