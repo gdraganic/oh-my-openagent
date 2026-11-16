@@ -76,8 +76,9 @@ export declare function helperSession(keychain: ReturnType<typeof fakeKeychain>,
         }): Promise<T>;
         forget(): Promise<void>;
         accessSnapshot: () => Promise<Credentials | null>;
+        accountEmail: () => Promise<string | undefined>;
         logout(): Promise<boolean>;
-        accessToken(expect?: (current: Credentials) => boolean): Promise<string>;
+        accessToken: (expect?: (current: Credentials) => boolean) => Promise<string>;
         removeForLimit(error: unknown, choose: import("../protocol").ChooseDevice): Promise<boolean>;
     };
     home: string;

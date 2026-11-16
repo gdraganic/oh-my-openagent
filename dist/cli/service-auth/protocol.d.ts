@@ -15,6 +15,7 @@ export declare const platformSchema: z.ZodEnum<{
     windows: "windows";
 }>;
 export type Platform = z.infer<typeof platformSchema>;
+export declare const nonempty: z.ZodString;
 export declare const tokenSchema: z.ZodObject<{
     accessToken: z.ZodString;
     accessTokenExpiresAt: z.ZodString;
@@ -73,7 +74,7 @@ export declare const deviceCodeSchema: z.ZodObject<{
     expiresAt: z.ZodString;
     intervalSeconds: z.ZodNumber;
 }, z.core.$strip>;
-declare const limitSchema: z.ZodObject<{
+export declare const limitSchema: z.ZodObject<{
     reason: z.ZodLiteral<"device_limit">;
     managementToken: z.ZodString;
     used: z.ZodNumber;
@@ -111,6 +112,5 @@ export declare class ApiRefusal extends SignInError {
 }
 export declare function parseReply<T>(schema: z.ZodType<T>, value: unknown): T;
 export declare function serviceOrigin(value: string): string;
-export declare function requestApi(api: string, path: string, init: RequestInit, signal?: AbortSignal): Promise<unknown>;
 export declare const jsonRequest: (body: unknown) => RequestInit;
 export {};

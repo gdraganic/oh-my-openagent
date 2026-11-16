@@ -14,3 +14,13 @@ export declare function isClosedDeviceLogin(options: {
 }, leftover: readonly string[]): boolean;
 /** Whether a whole `omo …` argv is the closed-accounts device-code login, parsed exactly as `commands.ts` parses it. */
 export declare function parsesAsClosedDeviceLogin(args: readonly string[]): boolean;
+/** The bare form (#13265): plain `login` with no flag and no operand runs the device flow while closed, behind the
+ * attach-before-mint refusal (#13096); `login --` parses to exactly this form. Any flag or operand is not bare. */
+export declare function isClosedBareLogin(options: {
+    readonly device?: unknown;
+    readonly browser?: unknown;
+    readonly api?: unknown;
+    readonly help?: unknown;
+}, leftover: readonly string[]): boolean;
+/** Whether a whole `omo …` argv is the bare closed `login`, parsed exactly as `commands.ts` parses it (#13265). */
+export declare function parsesAsBareClosedLogin(args: readonly string[]): boolean;

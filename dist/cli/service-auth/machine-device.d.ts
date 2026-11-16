@@ -14,6 +14,4 @@ export declare class MachineCredentialUnreadable extends SignInError {
  * cannot be read all refuse, keeping every held identity untouched. A stored sign-in the service ended and the store
  * cleared no longer counts.
  */
-export declare function refuseSecondMachineDevice(session: Pick<Session, "accessSnapshot">, deviceService: DeviceServiceHandoff | undefined, options?: {
-    readonly newDevice?: boolean;
-}): Promise<void>;
+export declare function refuseSecondMachineDevice(session: Pick<Session, "accessSnapshot">, deviceService: DeviceServiceHandoff | undefined): Promise<void>;

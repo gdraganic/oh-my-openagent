@@ -2121,7 +2121,7 @@ var package_default;
 var init_package = __esm(() => {
   package_default = {
     name: "oh-my-opencode",
-    version: "5.1.69-fork.1",
+    version: "5.1.72-fork.1",
     description: "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
     main: "./dist/index.js",
     types: "dist/index.d.ts",
@@ -2322,7 +2322,7 @@ var init_package = __esm(() => {
     },
     devDependencies: {
       "@clack/prompts": "^1.8.1",
-      "@code-yeongyu/senpi": "2026.11.12",
+      "@code-yeongyu/senpi": "2026.11.15-2",
       "@modelcontextprotocol/sdk": "^1.30.0",
       "@oh-my-opencode/agents-md-core": "workspace:*",
       "@oh-my-opencode/ast-grep-mcp": "workspace:*",
@@ -2384,7 +2384,7 @@ var init_package = __esm(() => {
       "jsonc-parser": "^3.3.1",
       knip: "6.43.0",
       "node-pty": "^1.1.0",
-      omowright: "^0.3.0",
+      omowright: "^0.3.1",
       "oxc-parser": "0.148.0",
       oxlint: "1.89.0",
       picocolors: "^1.1.1",
@@ -2394,18 +2394,18 @@ var init_package = __esm(() => {
       typescript: "^7.0.2"
     },
     optionalDependencies: {
-      "oh-my-opencode-darwin-arm64": "5.1.69",
-      "oh-my-opencode-darwin-x64": "5.1.69",
-      "oh-my-opencode-darwin-x64-baseline": "5.1.69",
-      "oh-my-opencode-linux-arm64": "5.1.69",
-      "oh-my-opencode-linux-arm64-musl": "5.1.69",
-      "oh-my-opencode-linux-x64": "5.1.69",
-      "oh-my-opencode-linux-x64-baseline": "5.1.69",
-      "oh-my-opencode-linux-x64-musl": "5.1.69",
-      "oh-my-opencode-linux-x64-musl-baseline": "5.1.69",
-      "oh-my-opencode-windows-arm64": "5.1.69",
-      "oh-my-opencode-windows-x64": "5.1.69",
-      "oh-my-opencode-windows-x64-baseline": "5.1.69"
+      "oh-my-opencode-darwin-arm64": "5.1.72",
+      "oh-my-opencode-darwin-x64": "5.1.72",
+      "oh-my-opencode-darwin-x64-baseline": "5.1.72",
+      "oh-my-opencode-linux-arm64": "5.1.72",
+      "oh-my-opencode-linux-arm64-musl": "5.1.72",
+      "oh-my-opencode-linux-x64": "5.1.72",
+      "oh-my-opencode-linux-x64-baseline": "5.1.72",
+      "oh-my-opencode-linux-x64-musl": "5.1.72",
+      "oh-my-opencode-linux-x64-musl-baseline": "5.1.72",
+      "oh-my-opencode-windows-arm64": "5.1.72",
+      "oh-my-opencode-windows-x64": "5.1.72",
+      "oh-my-opencode-windows-x64-baseline": "5.1.72"
     },
     overrides: {
       hono: "^4.13.8",
@@ -91648,6 +91648,16 @@ var init_provenance = __esm(() => {
   }).strict();
 });
 
+// packages/omo-config-core/src/schema/session-wake.ts
+var OmoSessionWakeSettingsSchema;
+var init_session_wake = __esm(() => {
+  init_zod();
+  OmoSessionWakeSettingsSchema = object({
+    same_device: boolean2().optional(),
+    wake_limit: number2().int().min(0).optional()
+  }).strict();
+});
+
 // packages/omo-config-core/src/schema/config.ts
 var OmoOpenCodeHarnessConfigSchema, OmoDisabledSkillsSchema, OmoExcludedModelsSchema, OmoTypedHarnessConfigSchema, OmoConfigProfileSchema, OmoConfigSchema, OmoConfigLayerSchema;
 var init_config = __esm(() => {
@@ -91667,11 +91677,13 @@ var init_config = __esm(() => {
   init_device_service();
   init_format_on_mutation();
   init_provenance();
+  init_session_wake();
   OmoOpenCodeHarnessConfigSchema = record(string2(), unknown());
   OmoDisabledSkillsSchema = array(string2());
   OmoExcludedModelsSchema = array(string2());
   OmoTypedHarnessConfigSchema = object({
     provenance: OmoProvenanceSettingsSchema.optional(),
+    session_wake: OmoSessionWakeSettingsSchema.optional(),
     formatOnMutation: OmoFormatOnMutationLayerSchema.optional(),
     categories: OmoCategoriesConfigSchema.optional(),
     agents: OmoAgentsConfigSchema.optional(),
@@ -91692,6 +91704,7 @@ var init_config = __esm(() => {
   }).strict();
   OmoConfigProfileSchema = object({
     provenance: OmoProvenanceSettingsSchema.optional(),
+    session_wake: OmoSessionWakeSettingsSchema.optional(),
     formatOnMutation: OmoFormatOnMutationLayerSchema.optional(),
     categories: OmoCategoriesConfigSchema.optional(),
     agents: OmoAgentsConfigSchema.optional(),
@@ -91716,6 +91729,7 @@ var init_config = __esm(() => {
   }).strict();
   OmoConfigSchema = object({
     provenance: OmoProvenanceSettingsSchema.optional(),
+    session_wake: OmoSessionWakeSettingsSchema.optional(),
     formatOnMutation: OmoFormatOnMutationSchema.optional(),
     $schema: string2().optional(),
     categories: OmoCategoriesConfigSchema.optional(),
@@ -91744,6 +91758,7 @@ var init_config = __esm(() => {
   }).strict();
   OmoConfigLayerSchema = object({
     provenance: OmoProvenanceSettingsSchema.optional(),
+    session_wake: OmoSessionWakeSettingsSchema.optional(),
     formatOnMutation: OmoFormatOnMutationLayerSchema.optional(),
     $schema: string2().optional(),
     categories: OmoCategoriesConfigSchema.optional(),
@@ -91905,6 +91920,7 @@ var init_schema = __esm(() => {
   init_model_profile();
   init_model_ref();
   init_provenance();
+  init_session_wake();
   init_side_panel();
   init_task();
   init_team();
@@ -107042,7 +107058,7 @@ var package_default2;
 var init_package2 = __esm(() => {
   package_default2 = {
     name: "@oh-my-opencode/omo-codex",
-    version: "5.1.69",
+    version: "5.1.72",
     type: "module",
     private: true,
     description: "Codex harness adapter for oh-my-openagent. Vendored Codex plugin namespace (omo) + TypeScript installer + telemetry.",
@@ -114767,6 +114783,7 @@ var REQUIRED_PLUGIN_ARTIFACTS = [
   join67("extensions", "loro_wasm_bg.wasm"),
   join67("extensions", "CaseFolding.txt"),
   join67("extensions", "omo-thread-client.js"),
+  join67("extensions", "omo-wake.js"),
   join67("extensions", "omo-telemetry-recovery.js"),
   join67("extensions", "omo-feedback.js"),
   join67("extensions", "omo-desktop-toolkit.js"),
@@ -124877,14 +124894,15 @@ var package_default3 = {
   },
   dependencies: {
     "@clack/prompts": "^1.8.1",
-    "@code-yeongyu/senpi": "2026.11.12",
-    "@earendil-works/pi-ai": "npm:@code-yeongyu/senpi-ai@2026.11.12",
+    "@code-yeongyu/senpi": "2026.11.15-2",
+    "@earendil-works/pi-ai": "npm:@code-yeongyu/senpi-ai@2026.11.15-2",
     "@modelcontextprotocol/sdk": "^1.30.0",
     "@oh-my-opencode/agents-md-core": "workspace:*",
     "@oh-my-opencode/boulder-state": "workspace:*",
     "@oh-my-opencode/claude-code-compat-core": "workspace:*",
     "@oh-my-opencode/comment-checker-core": "workspace:*",
     "@oh-my-opencode/delegate-core": "workspace:*",
+    "@oh-my-opencode/device-service-core": "workspace:*",
     "@oh-my-opencode/hashline-core": "workspace:*",
     "@oh-my-opencode/mcp-client-core": "workspace:*",
     "@oh-my-opencode/model-core": "workspace:*",
@@ -127809,8 +127827,8 @@ function signInRoute(open2 = serviceAccountsOpen()) {
 var SIGN_IN_HINTS = {
   cli: { first: "Run omo login first.", again: "Sign in again with omo login." },
   desktop: {
-    first: "Sign in from the OmO desktop app on this computer first.",
-    again: "Sign in again from the OmO desktop app on this computer."
+    first: "Sign in from the OmO desktop app on this computer, or run omo login in a terminal on a computer without it.",
+    again: "Sign in again from the OmO desktop app on this computer, or run omo login in a terminal."
   }
 };
 function signInHint(when, route = signInRoute()) {
@@ -127820,10 +127838,13 @@ function signInHint(when, route = signInRoute()) {
 // packages/omo-opencode/src/cli/service-auth/closed-device-login.ts
 init_commander();
 function withClosedDeviceLoginOptions(command) {
-  return command.helpOption(false).allowUnknownOption().allowExcessArguments().option("--device").option("--no-browser").option("--api <url>").option("--new-device");
+  return command.helpOption(false).allowUnknownOption().allowExcessArguments().option("--device").option("--no-browser").option("--api <url>").option("--help");
 }
 function isClosedDeviceLogin(options, leftover) {
   return (options.device === true || options.browser === false) && leftover.length === 0;
+}
+function isClosedBareLogin(options, leftover) {
+  return options.device === undefined && options.browser !== false && options.api === undefined && options.help === undefined && leftover.length === 0;
 }
 
 // packages/omo-opencode/src/cli/service-auth/browser.ts
@@ -127900,14 +127921,6 @@ class RequestFailure extends SignInError {
     this.responseStatus = responseStatus;
   }
 }
-
-class InvalidApiResponse extends SignInError {
-  status;
-  constructor(status2) {
-    super("The service returned an invalid error response.");
-    this.status = status2;
-  }
-}
 var platformSchema = exports_external.enum(["macos", "linux", "windows"]);
 var nonempty = exports_external.string().min(1);
 var timestamp = exports_external.string().datetime({ offset: true });
@@ -127938,15 +127951,6 @@ var deviceCodeSchema = exports_external.object({
   verificationUri: exports_external.string().transform(terminalText).pipe(exports_external.string().url()),
   expiresAt: timestamp,
   intervalSeconds: exports_external.number().int().min(1).max(60)
-});
-var envelopeSchema = exports_external.object({
-  error: exports_external.object({
-    code: nonempty,
-    message: exports_external.string(),
-    retryable: exports_external.boolean(),
-    requestId: exports_external.string(),
-    detail: exports_external.unknown().optional()
-  })
 });
 var limitSchema = exports_external.object({
   reason: exports_external.literal("device_limit"),
@@ -128083,59 +128087,6 @@ function serviceOrigin(value) {
     throw new SignInError("Service URLs must be HTTPS origins, or http://127.0.0.1:<port> for local testing.");
   }
   return url2.origin;
-}
-async function requestApi(api2, path15, init, signal) {
-  let response;
-  let body;
-  try {
-    response = await fetch(`${api2}${path15}`, {
-      ...init,
-      redirect: "error",
-      signal: signal ? AbortSignal.any([signal, AbortSignal.timeout(30000)]) : AbortSignal.timeout(30000)
-    });
-  } catch (error63) {
-    const cause = error63 instanceof Error && error63.cause instanceof Error ? error63.cause : error63;
-    const code = cause instanceof Error ? Reflect.get(cause, "code") : undefined;
-    throw new RequestFailure(typeof code === "string" && [
-      "ENOTFOUND",
-      "ECONNREFUSED",
-      "ENETUNREACH",
-      "EHOSTUNREACH",
-      "EAI_AGAIN",
-      "ConnectionRefused",
-      "EADDRNOTAVAIL",
-      "ENETDOWN",
-      "EHOSTDOWN",
-      "UND_ERR_CONNECT_TIMEOUT",
-      "ERR_TLS_HANDSHAKE_TIMEOUT",
-      "DEPTH_ZERO_SELF_SIGNED_CERT",
-      "CERT_HAS_EXPIRED",
-      "ERR_TLS_CERT_ALTNAME_INVALID",
-      "UNABLE_TO_VERIFY_LEAF_SIGNATURE",
-      "SELF_SIGNED_CERT_IN_CHAIN",
-      "CERT_NOT_YET_VALID",
-      "UNABLE_TO_GET_ISSUER_CERT",
-      "UNABLE_TO_GET_ISSUER_CERT_LOCALLY",
-      "CERT_SIGNATURE_FAILURE",
-      "CERT_UNTRUSTED",
-      "CERT_REJECTED"
-    ].includes(code));
-  }
-  if (response.status === 204)
-    return null;
-  try {
-    body = await response.json();
-  } catch {
-    throw new RequestFailure(false, response.status);
-  }
-  if (response.ok)
-    return body;
-  const envelope = envelopeSchema.safeParse(body);
-  if (!envelope.success)
-    throw new InvalidApiResponse(response.status);
-  const error62 = envelope.data.error;
-  const detail = limitSchema.safeParse(error62.detail);
-  throw new ApiRefusal(error62.code, response.status, error62.code === "entitlement_required" && detail.success ? detail.data : undefined, response.headers.get("retry-after"));
 }
 var jsonRequest = (body) => ({
   method: "POST",
@@ -130485,7 +130436,7 @@ ${key.name}`;
     try {
       return schema2.parse(JSON.parse(value));
     } catch {
-      throw new InvalidCredentialState(signInRoute() === "cli" ? "Stored sign-in data is invalid. Run omo account forget, then omo login." : "The OmO sign-in saved on this computer can't be read. Run omo account forget to remove it, then sign in again in the desktop app.");
+      throw new InvalidCredentialState(signInRoute() === "cli" ? "Stored sign-in data is invalid. Run omo account forget, then omo login." : "The OmO sign-in saved on this computer can't be read. Run omo account forget to remove it, then sign in again from the OmO desktop app on this computer, or with omo login in a terminal.");
     }
   };
   const previousOf = (raw) => {
@@ -130574,6 +130525,100 @@ ${key.name}`;
 // packages/omo-opencode/src/cli/service-auth/session.ts
 import { homedir as homedir34 } from "node:os";
 
+// packages/device-service-core/src/local-only.ts
+var KEY2 = Symbol.for("omo.local-only-process.v1");
+function state3() {
+  const holder = globalThis;
+  holder[KEY2] ??= { marked: false };
+  return holder[KEY2];
+}
+
+class LocalOnlyNetworkRefused extends Error {
+  code = "local_only_network_refused";
+  site;
+  constructor(site) {
+    super(`a local-only omo remote command reached the network at ${site}`);
+    this.site = site;
+  }
+}
+function refuseIfLocalOnly(site) {
+  if (state3().marked)
+    throw new LocalOnlyNetworkRefused(site);
+}
+
+// packages/omo-opencode/src/cli/service-auth/protocol-request.ts
+init_zod();
+class InvalidApiResponse extends SignInError {
+  status;
+  constructor(status2) {
+    super("The service returned an invalid error response.");
+    this.status = status2;
+  }
+}
+var envelopeSchema = exports_external.object({
+  error: exports_external.object({
+    code: nonempty,
+    message: exports_external.string(),
+    retryable: exports_external.boolean(),
+    requestId: exports_external.string(),
+    detail: exports_external.unknown().optional()
+  })
+});
+async function requestApi(api2, path15, init, signal) {
+  refuseIfLocalOnly("service-auth/protocol-request.ts requestApi");
+  let response;
+  let body;
+  try {
+    response = await fetch(`${api2}${path15}`, {
+      ...init,
+      redirect: "error",
+      signal: signal ? AbortSignal.any([signal, AbortSignal.timeout(30000)]) : AbortSignal.timeout(30000)
+    });
+  } catch (error63) {
+    const cause = error63 instanceof Error && error63.cause instanceof Error ? error63.cause : error63;
+    const code = cause instanceof Error ? Reflect.get(cause, "code") : undefined;
+    throw new RequestFailure(typeof code === "string" && [
+      "ENOTFOUND",
+      "ECONNREFUSED",
+      "ENETUNREACH",
+      "EHOSTUNREACH",
+      "EAI_AGAIN",
+      "ConnectionRefused",
+      "EADDRNOTAVAIL",
+      "ENETDOWN",
+      "EHOSTDOWN",
+      "UND_ERR_CONNECT_TIMEOUT",
+      "ERR_TLS_HANDSHAKE_TIMEOUT",
+      "DEPTH_ZERO_SELF_SIGNED_CERT",
+      "CERT_HAS_EXPIRED",
+      "ERR_TLS_CERT_ALTNAME_INVALID",
+      "UNABLE_TO_VERIFY_LEAF_SIGNATURE",
+      "SELF_SIGNED_CERT_IN_CHAIN",
+      "CERT_NOT_YET_VALID",
+      "UNABLE_TO_GET_ISSUER_CERT",
+      "UNABLE_TO_GET_ISSUER_CERT_LOCALLY",
+      "CERT_SIGNATURE_FAILURE",
+      "CERT_UNTRUSTED",
+      "CERT_REJECTED"
+    ].includes(code));
+  }
+  if (response.status === 204)
+    return null;
+  try {
+    body = await response.json();
+  } catch {
+    throw new RequestFailure(false, response.status);
+  }
+  if (response.ok)
+    return body;
+  const envelope = envelopeSchema.safeParse(body);
+  if (!envelope.success)
+    throw new InvalidApiResponse(response.status);
+  const error62 = envelope.data.error;
+  const detail = limitSchema.safeParse(error62.detail);
+  throw new ApiRefusal(error62.code, response.status, error62.code === "entitlement_required" && detail.success ? detail.data : undefined, response.headers.get("retry-after"));
+}
+
 // packages/omo-opencode/src/cli/service-auth/signed-out-marker.ts
 init_zod();
 import { mkdir as mkdir13, readFile as readFile38, rename as rename10, rm as rm19, writeFile as writeFile18 } from "node:fs/promises";
@@ -130648,6 +130693,7 @@ function createSession(options) {
     }
     if (Date.parse(current.accessTokenExpiresAt) > now() + 30000)
       return current;
+    refuseIfLocalOnly("service-auth/session.ts refresh");
     await store2.write({ ...current, refreshState: "uncertain" });
     try {
       const tokens = parseReply(tokenSchema, await request("/v1/session/refresh", jsonRequest({ refreshToken: current.refreshToken })));
@@ -130677,6 +130723,28 @@ function createSession(options) {
         return null;
       await view?.settle();
       return refreshed(current);
+    });
+  }
+  async function emailOf(access6) {
+    const body = await request("/v1/me", { headers: { authorization: `Bearer ${access6}` } }).catch(() => null);
+    const user = typeof body === "object" && body !== null && "user" in body ? body.user : undefined;
+    const email3 = typeof user === "object" && user !== null && "email" in user ? user.email : undefined;
+    return typeof email3 === "string" && email3 !== "" ? email3 : undefined;
+  }
+  async function accessTokenImpl(expect) {
+    signal?.throwIfAborted();
+    const snapshot2 = await store2.read();
+    signal?.throwIfAborted();
+    if (snapshot2 !== null && snapshot2.refreshState !== "uncertain" && snapshot2.refreshAttempt === undefined && Date.parse(snapshot2.accessTokenExpiresAt) > now() + 30000 && (expect === undefined || expect(snapshot2)) && !await store2.migrationPending?.())
+      return snapshot2.accessToken;
+    return locked(async (view) => {
+      const current = await store2.readAuthoritative();
+      if (current === null)
+        throw new SignInError(`Not signed in. ${signInHint("first")}`);
+      if (expect !== undefined && !expect(current))
+        throw new CredentialIdentityChanged;
+      await view?.settle();
+      return (await refreshed(current)).accessToken;
     });
   }
   return {
@@ -130724,6 +130792,7 @@ function createSession(options) {
       await deviceService?.forget();
     },
     accessSnapshot: snapshot,
+    accountEmail: async () => emailOf(await accessTokenImpl()),
     async logout() {
       try {
         return await locked(async () => {
@@ -130762,22 +130831,7 @@ function createSession(options) {
         await deviceService?.forget();
       }
     },
-    async accessToken(expect) {
-      signal?.throwIfAborted();
-      const snapshot2 = await store2.read();
-      signal?.throwIfAborted();
-      if (snapshot2 !== null && snapshot2.refreshState !== "uncertain" && snapshot2.refreshAttempt === undefined && Date.parse(snapshot2.accessTokenExpiresAt) > now() + 30000 && (expect === undefined || expect(snapshot2)) && !await store2.migrationPending?.())
-        return snapshot2.accessToken;
-      return locked(async (view) => {
-        const current = await store2.readAuthoritative();
-        if (current === null)
-          throw new SignInError(`Not signed in. ${signInHint("first")}`);
-        if (expect !== undefined && !expect(current))
-          throw new CredentialIdentityChanged;
-        await view?.settle();
-        return (await refreshed(current)).accessToken;
-      });
-    },
+    accessToken: (expect) => accessTokenImpl(expect),
     async removeForLimit(error62, choose) {
       if (!(error62 instanceof ApiRefusal) || error62.detail === undefined)
         throw error62;
@@ -130801,29 +130855,50 @@ class MachineAlreadySignedIn extends SignInError {
 
 class MachineCredentialUnreadable extends SignInError {
 }
-async function refuseSecondMachineDevice(session, deviceService, options = {}) {
+var DAMAGED = Symbol("damaged stored sign-in");
+var START_OVER = "To start over, remove this computer's device on the Devices page if it is still listed, then run omo account forget, then sign in again. omo account forget ends this computer's local sign-in and has its device service forget the device, without signing the device out on the OmO service.";
+var UNCERTAIN_REFRESH = "This computer's OmO sign-in has a refresh whose outcome is unknown. omo kept its credential and keys and did not register another device.";
+var heldCost = (name) => ` This computer's OmO device service holds that device, ${terminalText(name)}, so these steps also sign out the device service, and the OmO desktop app if it is installed, on this computer.`;
+function unreadableRefusal(heldDeviceName) {
+  const cost = heldDeviceName === undefined ? "" : heldCost(heldDeviceName);
+  return new MachineCredentialUnreadable(`omo could not read this computer's stored OmO sign-in, so it did not register another device. ${START_OVER}${cost}`);
+}
+async function refuseSecondMachineDevice(session, deviceService) {
+  let damaged;
   const stored = await session.accessSnapshot().catch((error62) => {
-    if (error62 instanceof CredentialStoreError || error62 instanceof InvalidCredentialState) {
-      if (options.newDevice === true)
-        return null;
-      throw new MachineCredentialUnreadable(`omo could not read this computer's OmO sign-in (${terminalText(error62.message)}), so it did not register another device. Unlock or repair the credential store and run omo login again, or run omo login --new-device to register a new device anyway.`);
+    if (error62 instanceof CredentialStoreError) {
+      throw new MachineCredentialUnreadable(`omo could not read this computer's OmO sign-in (${terminalText(error62.message)}), so it did not register another device. Unlock the credential store, then sign in again.`);
+    }
+    if (error62 instanceof InvalidCredentialState) {
+      damaged = "unreadable";
+      return DAMAGED;
     }
     if (!(error62 instanceof SessionEnded))
       throw error62;
     if (error62.code === "refresh_recovery_expired") {
-      throw new MachineAlreadySignedIn("This computer's OmO sign-in has a refresh whose outcome is unknown. omo kept its credential and keys and did not register another device. Run omo logout to end that sign-in, then run omo login again.");
+      damaged = "uncertain";
+      return DAMAGED;
     }
     return null;
   });
-  if (stored !== null) {
+  if (stored !== null && stored !== DAMAGED) {
     throw new MachineAlreadySignedIn(`This computer is already signed in to OmO as ${terminalText(stored.device.name)}, and omo uses that device. Run omo logout first to sign in again.`);
   }
   const held2 = await deviceService?.machineDevice?.() ?? { kind: "absent" };
+  if (damaged === "unreadable" && held2.kind !== "unknown") {
+    throw unreadableRefusal(held2.kind === "held" ? held2.device.name : undefined);
+  }
+  if (damaged === "uncertain" && held2.kind === "held") {
+    throw new MachineAlreadySignedIn(`${UNCERTAIN_REFRESH} This computer's OmO device service holds its device, ${terminalText(held2.device.name)}: sign in from the OmO desktop app to share it with omo. If this refusal still appears afterwards, ${START_OVER.charAt(0).toLowerCase()}${START_OVER.slice(1)}${heldCost(held2.device.name)}`);
+  }
+  if (damaged === "uncertain" && held2.kind === "absent") {
+    throw new MachineAlreadySignedIn(`${UNCERTAIN_REFRESH} ${START_OVER}`);
+  }
   if (held2.kind === "held") {
     throw new MachineAlreadySignedIn(`This computer's OmO device service already holds its device, ${terminalText(held2.device.name)}. omo uses that device instead of registering another one: sign in from the OmO desktop app to share it with omo, or run omo logout first to sign this computer in again.`);
   }
   if (held2.kind === "unknown") {
-    throw new MachineAlreadySignedIn(`This computer's OmO device service is installed but did not answer (${terminalText(held2.reason)}), so omo did not register another device. Start the device service, then run omo login again.`);
+    throw new MachineAlreadySignedIn(`This computer's OmO device service is installed but did not answer (${terminalText(held2.reason)}), so omo did not register another device. Start the device service (opening the OmO desktop app starts it), then sign in again.${held2.endpoint === undefined ? "" : ` If the device service was removed, delete its leftover file ${terminalText(held2.endpoint)} first.`}`);
   }
 }
 
@@ -130834,7 +130909,7 @@ class BrowserUnavailable extends SignInError {
 }
 async function authorize(options) {
   const verifier = randomBytes5(32).toString("base64url");
-  const state3 = randomBytes5(32).toString("base64url");
+  const state4 = randomBytes5(32).toString("base64url");
   const answer = Promise.withResolvers();
   const abort = () => answer.reject(new SignInError("Browser sign-in cancelled or timed out."));
   let accepted = false;
@@ -130850,7 +130925,7 @@ async function authorize(options) {
     }
     const code = url2.searchParams.get("code");
     const suppliedState = Buffer.from(url2.searchParams.get("state") ?? "");
-    const expectedState = Buffer.from(state3);
+    const expectedState = Buffer.from(state4);
     if (accepted || url2.searchParams.getAll("state").length !== 1 || suppliedState.length !== expectedState.length || !timingSafeEqual(suppliedState, expectedState) || url2.searchParams.getAll("code").length !== 1 || !code) {
       response.writeHead(400).end("Invalid sign-in response");
       return;
@@ -130876,7 +130951,7 @@ async function authorize(options) {
       redirect_uri: `${origin}/callback`,
       code_challenge: createHash14("sha256").update(verifier).digest("base64url"),
       code_challenge_method: "S256",
-      state: state3
+      state: state4
     }).toString();
     const timer = setTimeout(abort, 5 * 60000);
     options.signal?.addEventListener("abort", abort, { once: true });
@@ -131007,8 +131082,8 @@ async function ensureServiceAvailable(session, api2) {
     throw new SignInError(`OmO accounts at ${api2} aren't available right now. Try again later.`);
   }
 }
-async function beginLogin(session, deviceService, api2, newDevice = false) {
-  await refuseSecondMachineDevice(session, deviceService, { newDevice });
+async function beginLogin(session, deviceService, api2) {
+  await refuseSecondMachineDevice(session, deviceService);
   return ensureServiceAvailable(session, api2);
 }
 function deviceChoices(devices) {
@@ -131029,6 +131104,7 @@ var chooseDevice = async (devices) => {
   return agreed === true ? chosen2 : null;
 };
 var DEFAULT_ACCOUNTS_ORIGIN = "https://signin.omo.dev";
+var DEFAULT_API_ORIGIN = "https://api.omo.dev";
 function accountsOrigin(options, env2) {
   return serviceOrigin(options.accounts ?? env2.OMO_SERVICE_ACCOUNTS_URL ?? DEFAULT_ACCOUNTS_ORIGIN);
 }
@@ -131038,7 +131114,7 @@ async function run3(action, options, hooks2 = {}) {
   process.once("SIGINT", cancel2);
   process.once("SIGTERM", cancel2);
   try {
-    const api2 = serviceOrigin(options.api ?? process.env.OMO_SERVICE_API_URL ?? "https://api.omo.dev");
+    const api2 = serviceOrigin(options.api ?? process.env.OMO_SERVICE_API_URL ?? DEFAULT_API_ORIGIN);
     const store2 = createCredentialStore(api2, { wait: INTERACTIVE_READ_WAIT });
     const deviceService = hooks2.deviceService?.(api2);
     const session = createSession({
@@ -131060,15 +131136,25 @@ async function run3(action, options, hooks2 = {}) {
     }
     if (action === "whoami") {
       await session.accessToken();
-      const saved = await store2.read();
-      console.log(saved ? `Signed in to ${api2} as ${terminalText(saved.device.name)}.` : "Not signed in.");
+      const [saved, email3] = await Promise.all([store2.read(), session.accountEmail().catch(() => {
+        return;
+      })]);
+      console.log(saved ? email3 === undefined ? `Signed in to ${api2} as ${terminalText(saved.device.name)}.` : `Signed in to ${api2} as ${terminalText(email3)} (${terminalText(saved.device.name)}).` : "Not signed in.");
       return;
     }
-    const health = await beginLogin(session, deviceService, api2, options.newDevice === true);
+    const health = await beginLogin(session, deviceService, api2);
     const machineDigest = advertisesMachineIdentity(health) ? await readMachineDigest() : undefined;
     const digest = machineDigest === undefined ? {} : { machineDigest };
     const name = deviceName();
     const platform2 = devicePlatform();
+    if (api2 !== DEFAULT_API_ORIGIN)
+      console.log(`OmO API: ${api2}`);
+    const signedIn = async () => {
+      const email3 = await session.accountEmail().catch(() => {
+        return;
+      });
+      console.log(email3 === undefined ? "Signed in to OmO. The account could not be read; run omo whoami to see it." : `Signed in to OmO as ${terminalText(email3)}.`);
+    };
     if (!options.device && options.browser !== false) {
       try {
         await loginLoopback(session, {
@@ -131079,7 +131165,7 @@ async function run3(action, options, hooks2 = {}) {
           chooseDevice,
           ...digest
         });
-        console.log("Signed in to OmO.");
+        await signedIn();
         return;
       } catch (error62) {
         if (!(error62 instanceof BrowserUnavailable))
@@ -131097,7 +131183,7 @@ async function run3(action, options, hooks2 = {}) {
         console.log(`Matching code: ${code.matchingCode}`);
       }
     });
-    console.log("Signed in to OmO.");
+    await signedIn();
   } catch (error62) {
     console.error(controller.signal.aborted ? "Sign-in cancelled." : error62 instanceof SignInError ? error62.message : "OmO sign-in stopped on an unexpected error. Run the command again, and report it with /bug if it keeps failing.");
     process.exitCode = 1;
@@ -131106,42 +131192,75 @@ async function run3(action, options, hooks2 = {}) {
     process.removeListener("SIGTERM", cancel2);
   }
 }
-var SERVICE_ACCOUNTS_CLOSED_MESSAGE = "Signing in from the terminal isn't available yet. Sign in from the OmO desktop app on this computer; omo uses that sign-in.";
-var SERVICE_AUTH_COMMANDS = ["login", "logout", "whoami"];
+var CLOSED_LOGIN_MESSAGE = "This form of omo login isn't available while OmO accounts are closed. Run plain omo login to sign in by device code (the route for a computer without the OmO desktop app's sign-in), or omo login --device.";
+var CLOSED_LOGIN_HELP = `Sign in to OmO from this terminal with a device code.
+
+While OmO accounts are closed, omo login signs a computer in by device code: omo prints a
+verification URL with a user code and a matching code, a person approves on another device,
+and the credential is stored in the OS credential store.
+
+  omo login                 device-code sign-in (a computer without the OmO desktop app's sign-in)
+  omo login --device        force the device-code route
+  omo login --no-browser    the same, never opening a browser
+  omo login --api <url>     OmO API origin (or OMO_SERVICE_API_URL)
+
+The service's approval page decides who may sign in. A computer whose OmO desktop app or
+stored sign-in already has its device is refused instead of registering a second one.`;
+var CLOSED_LOGOUT_HELP = `Sign out of OmO: revoke this machine's device and remove the stored credentials and device keys.
+
+  omo logout [--api <url>]
+
+This runs while OmO accounts are closed. One machine is one device: on a computer that
+shares the OmO desktop app's sign-in, this signs the whole machine out.`;
+var CLOSED_WHOAMI_HELP = `Show the current OmO device sign-in.
+
+  omo whoami [--api <url>]
+
+This runs while OmO accounts are closed.`;
+var CLOSED_AUTH_HELP = { login: CLOSED_LOGIN_HELP, logout: CLOSED_LOGOUT_HELP, whoami: CLOSED_WHOAMI_HELP };
 function refuseClosedServiceAuth() {
-  console.error(SERVICE_ACCOUNTS_CLOSED_MESSAGE);
+  console.error(CLOSED_LOGIN_MESSAGE);
   process.exit(1);
 }
+function describeClosedAuthCommand(name) {
+  return () => {
+    console.log(CLOSED_AUTH_HELP[name]);
+    process.exit(0);
+  };
+}
 function configureClosedServiceAuthCommands(program2, hooks2) {
-  for (const name of SERVICE_AUTH_COMMANDS) {
-    if (name === "login") {
-      configureClosedDeviceLogin(program2, hooks2);
-      continue;
-    }
-    const command = program2.command(name, { hidden: true }).helpOption(false).allowUnknownOption().allowExcessArguments().action(() => {
-      console.error(SERVICE_ACCOUNTS_CLOSED_MESSAGE);
-      process.exitCode = 1;
+  configureClosedDeviceLogin(program2, hooks2);
+  for (const name of ["logout", "whoami"]) {
+    const command = program2.command(name, { hidden: true }).helpOption(false).allowUnknownOption().allowExcessArguments().option("--api <url>").option("--help").action((options) => {
+      if (options.help === true) {
+        console.log(CLOSED_AUTH_HELP[name]);
+        return;
+      }
+      if (command.args.length !== 0)
+        refuseClosedServiceAuth();
+      return run3(name, options, hooks2);
     });
-    command.help = refuseClosedServiceAuth;
+    command.help = describeClosedAuthCommand(name);
   }
 }
 function configureClosedDeviceLogin(program2, hooks2) {
   const command = withClosedDeviceLoginOptions(program2.command("login", { hidden: true })).action((options) => {
-    if (!isClosedDeviceLogin(options, command.args)) {
-      console.error(SERVICE_ACCOUNTS_CLOSED_MESSAGE);
-      process.exitCode = 1;
+    if (options.help === true) {
+      console.log(CLOSED_LOGIN_HELP);
       return;
     }
-    return run3("login", { ...options, device: true }, hooks2);
+    if (isClosedDeviceLogin(options, command.args) || isClosedBareLogin(options, command.args))
+      return run3("login", { ...options, device: true }, hooks2);
+    refuseClosedServiceAuth();
   });
-  command.help = refuseClosedServiceAuth;
+  command.help = describeClosedAuthCommand("login");
 }
 function configureServiceAuthCommands(program2, open5 = serviceAccountsOpen(), hooks2 = {}) {
   if (!open5) {
     configureClosedServiceAuthCommands(program2, hooks2);
     return;
   }
-  program2.command("login").description("Sign in to OmO using the OS credential store").option("--device", "Use a device code instead of a browser callback").option("--no-browser", "Sign in by device code without opening a browser").option("--new-device", "Register a new device even if this computer's stored sign-in cannot be read").option("--api <url>", "OmO API origin (or OMO_SERVICE_API_URL)").option("--accounts <url>", "OmO sign-in page origin (or OMO_SERVICE_ACCOUNTS_URL)").action((options) => run3("login", options, hooks2));
+  program2.command("login").description("Sign in to OmO using the OS credential store").option("--device", "Use a device code instead of a browser callback").option("--no-browser", "Sign in by device code without opening a browser").option("--api <url>", "OmO API origin (or OMO_SERVICE_API_URL)").option("--accounts <url>", "OmO sign-in page origin (or OMO_SERVICE_ACCOUNTS_URL)").action((options) => run3("login", options, hooks2));
   for (const action of ["logout", "whoami"]) {
     program2.command(action).description(action === "logout" ? "Remove stored OmO credentials and device keys" : "Show the current OmO device sign-in").option("--api <url>", "OmO API origin (or OMO_SERVICE_API_URL)").action((options) => run3(action, options, hooks2));
   }
@@ -131151,12 +131270,19 @@ function configureServiceAuthCommands(program2, open5 = serviceAccountsOpen(), h
 import { existsSync as existsSync70 } from "node:fs";
 
 // packages/device-service-core/src/device-service.ts
-import { homedir as homedir36 } from "node:os";
-import { join as join121 } from "node:path";
+import { join as join123 } from "node:path";
 
 // packages/device-service-core/src/local-api/access.ts
-import { createHmac as createHmac2, randomBytes as randomBytes7, timingSafeEqual as timingSafeEqual2 } from "node:crypto";
-import { chmodSync as chmodSync7, closeSync as closeSync5, lstatSync as lstatSync5, openSync as openSync5, readFileSync as readFileSync47, renameSync as renameSync10, rmSync as rmSync10, writeFileSync as writeFileSync17 } from "node:fs";
+import {
+  chmodSync as chmodSync7,
+  closeSync as closeSync5,
+  lstatSync as lstatSync5,
+  openSync as openSync5,
+  readFileSync as readFileSync47,
+  renameSync as renameSync10,
+  rmSync as rmSync10,
+  writeFileSync as writeFileSync17
+} from "node:fs";
 import { join as join119 } from "node:path";
 
 // packages/device-service-core/src/local-api/errors.ts
@@ -131167,7 +131293,9 @@ class LocalApiError extends Error {
   limit_chars;
   path_refusal;
   command_id;
-  not_sent;
+  candidates;
+  incomplete;
+  sign_in_reason;
   constructor(code, reason2, extra = {}) {
     super(`${code}: ${reason2}`);
     this.name = "LocalApiError";
@@ -131180,12 +131308,94 @@ class LocalApiError extends Error {
       this.path_refusal = extra.path_refusal;
     if (extra.command_id !== undefined)
       this.command_id = extra.command_id;
-    if (extra.not_sent === true)
-      this.not_sent = true;
+    if (extra.candidates !== undefined)
+      this.candidates = extra.candidates;
+    if (extra.incomplete !== undefined)
+      this.incomplete = extra.incomplete;
+    if (extra.sign_in_reason !== undefined)
+      this.sign_in_reason = extra.sign_in_reason;
   }
 }
 var protocolViolation = (detail) => {
   throw new LocalApiError("protocol_violation", detail);
+};
+
+// packages/device-service-core/src/local-api/proof.ts
+import { createHmac as createHmac2, randomBytes as randomBytes7, timingSafeEqual as timingSafeEqual2 } from "node:crypto";
+
+// packages/device-service-core/src/local-api/bytes-encoding.ts
+var ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+var portable = {
+  hex: (bytes) => Array.from(bytes, (b2) => b2.toString(16).padStart(2, "0")).join(""),
+  base64: (bytes) => {
+    let out = "";
+    for (let i2 = 0;i2 < bytes.length; i2 += 3) {
+      const [a2 = 0, b2 = 0, c3 = 0] = [bytes[i2], bytes[i2 + 1], bytes[i2 + 2]];
+      const n3 = a2 << 16 | b2 << 8 | c3;
+      out += ALPHABET.charAt(n3 >> 18 & 63) + ALPHABET.charAt(n3 >> 12 & 63);
+      out += i2 + 1 < bytes.length ? ALPHABET.charAt(n3 >> 6 & 63) : "=";
+      out += i2 + 2 < bytes.length ? ALPHABET.charAt(n3 & 63) : "=";
+    }
+    return out;
+  },
+  fromBase64url: (text) => {
+    if (!/^[A-Za-z0-9_-]*={0,2}$/.test(text))
+      throw new SyntaxError("invalid base64url");
+    const clean = text.replaceAll("-", "+").replaceAll("_", "/").replace(/=+$/, "");
+    if (clean.length % 4 === 1)
+      throw new SyntaxError("invalid base64url");
+    const out = new Uint8Array(Math.floor(clean.length * 3 / 4));
+    let bits = 0;
+    let value = 0;
+    let at = 0;
+    for (const ch of clean) {
+      value = value << 6 | ALPHABET.indexOf(ch);
+      bits += 6;
+      if (bits >= 8) {
+        bits -= 8;
+        out[at++] = value >> bits & 255;
+      }
+    }
+    return out;
+  }
+};
+var native = (bytes) => bytes;
+var from = Uint8Array;
+var toHex = (bytes) => native(bytes).toHex?.() ?? portable.hex(bytes);
+var toBase64 = (bytes) => native(bytes).toBase64?.() ?? portable.base64(bytes);
+var toBase64url = (bytes) => native(bytes).toBase64?.({ alphabet: "base64url", omitPadding: true }) ?? portable.base64(bytes).replaceAll("+", "-").replaceAll("/", "_").replace(/=+$/, "");
+var fromBase64url = (text) => from.fromBase64?.(text, { alphabet: "base64url" }) ?? portable.fromBase64url(text);
+var fromBase64 = (text) => {
+  if (!/^[A-Za-z0-9+/]*={0,2}$/.test(text))
+    throw new SyntaxError("invalid base64");
+  return from.fromBase64?.(text) ?? portable.fromBase64url(text.replaceAll("+", "-").replaceAll("/", "_"));
+};
+
+// packages/device-service-core/src/local-api/proof.ts
+var NONCE_BYTES = 32;
+var mintNonce = () => toBase64url(randomBytes7(NONCE_BYTES));
+var mintId = () => toBase64url(randomBytes7(16));
+var decodedBytes = (value, bytes, what) => {
+  const violation = () => new LocalApiError("protocol_violation", `${what} is not ${bytes} base64url bytes`);
+  let out;
+  try {
+    out = fromBase64url(value);
+  } catch (error62) {
+    if (error62 instanceof Error)
+      throw violation();
+    throw error62;
+  }
+  if (out.length !== bytes || toBase64url(out) !== value)
+    throw violation();
+  return out;
+};
+var proof = (token, label, nonce, endpoint) => toBase64url(createHmac2("sha256", token).update(label).update(decodedBytes(nonce, NONCE_BYTES, "a nonce")).update(endpoint).digest());
+var serverProof = (token, clientNonce, endpoint) => proof(token, "server", clientNonce, endpoint);
+var clientProof = (token, serverNonce, endpoint) => proof(token, "client", serverNonce, endpoint);
+var proofMatches = (expected, actual) => {
+  const a2 = new TextEncoder().encode(expected);
+  const b2 = new TextEncoder().encode(actual);
+  return a2.length === b2.length && timingSafeEqual2(a2, b2);
 };
 
 // packages/device-service-core/src/local-api/dacl.ts
@@ -131194,26 +131404,16 @@ var runPowerShell = async (script, env2) => {
   const encoded = Buffer.from(script, "utf16le").toString("base64");
   const proc = spawn6("powershell.exe", ["-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-EncodedCommand", encoded], { env: { ...process.env, ...env2 }, stdio: ["ignore", "pipe", "pipe"], windowsHide: true });
   const chunks = [];
-  const errChunks = [];
   proc.stdout.on("data", (chunk) => chunks.push(chunk));
-  proc.stderr.on("data", (chunk) => errChunks.push(chunk));
+  proc.stderr.resume();
   const code = await new Promise((resolve32, reject) => {
     proc.once("error", reject);
     proc.once("close", (exitCode) => resolve32(exitCode ?? -1));
   });
-  return {
-    code,
-    out: Buffer.concat(chunks).toString("utf8"),
-    err: Buffer.concat(errChunks).toString("utf8")
-  };
+  return { code, out: new TextDecoder().decode(Buffer.concat(chunks)) };
 };
-var firstErrorLine = (err) => {
-  const line = (err ?? "").split(/\r?\n/).find((text) => text.trim() !== "" && !text.startsWith("#< CLIXML"))?.trim() ?? "";
-  return line === "" ? "" : `: ${line.slice(0, 300)}`;
-};
-var APPLY = String.raw`
+var APPLY_DACL_SCRIPT = String.raw`
 $ErrorActionPreference = 'Stop'
-trap { [Console]::Error.WriteLine($_.Exception.Message); exit 1 }
 $sid = New-Object System.Security.Principal.SecurityIdentifier($env:LA_SID)
 if ($env:LA_KIND -eq 'dir') {
   $acl = New-Object System.Security.AccessControl.DirectorySecurity
@@ -131228,11 +131428,7 @@ $rule = New-Object System.Security.AccessControl.FileSystemAccessRule($sid,
 $acl.SetAccessRuleProtection($true, $false)
 $acl.SetOwner($sid)
 $acl.AddAccessRule($rule)
-if ($env:LA_KIND -eq 'dir') {
-  [System.IO.Directory]::SetAccessControl($env:LA_PATH, $acl)
-} else {
-  [System.IO.File]::SetAccessControl($env:LA_PATH, $acl)
-}
+Set-Acl -LiteralPath $env:LA_PATH -AclObject $acl
 Write-Output 'applied'
 `;
 var DESCRIBE_DACL_SCRIPT = String.raw`
@@ -131264,10 +131460,6 @@ public static class LaSddl {
 }
 '@
 [LaSddl]::Read($env:LA_PATH)
-`;
-var SID_TOKEN_SCRIPT = String.raw`
-$ErrorActionPreference = 'Stop'
-(New-Object System.Security.AccessControl.RawSecurityDescriptor("O:$env:LA_SID")).GetSddlForm('Owner')
 `;
 var CURRENT_USER_SID_SCRIPT = "[System.Security.Principal.WindowsIdentity]::GetCurrent().User.Value";
 var ACE_TYPES = new Set([
@@ -131354,10 +131546,9 @@ var parseSddl = (sddl) => {
   }
   return { sddl, owner, protected: tokens.includes("P"), flags: tokens.join(""), aces };
 };
-var exactDaclVerdict = (dacl, userSid, kind, userAlias) => {
-  const isUser = (token) => token === userSid || userAlias !== undefined && token === userAlias;
+var exactDaclVerdict = (dacl, userSid, kind) => {
   const [ace, ...others] = dacl.aces;
-  return isUser(dacl.owner) && dacl.flags === "PAI" && ace !== undefined && others.length === 0 && ace.type === "A" && ace.flags === (kind === "dir" ? "OICI" : "") && ace.rights === "FA" && ace.objectGuid === "" && ace.inheritObjectGuid === "" && isUser(ace.sid) && ace.extra === undefined;
+  return dacl.owner === userSid && dacl.flags === "PAI" && ace !== undefined && others.length === 0 && ace.type === "A" && ace.flags === (kind === "dir" ? "OICI" : "") && ace.rights === "FA" && ace.objectGuid === "" && ace.inheritObjectGuid === "" && ace.sid === userSid && ace.extra === undefined;
 };
 var currentUserSid = async (run4 = runPowerShell) => {
   const { code, out } = await run4(CURRENT_USER_SID_SCRIPT, {});
@@ -131366,16 +131557,6 @@ var currentUserSid = async (run4 = runPowerShell) => {
     throw new LocalApiError("insecure_state_dir", "the user SID is unreadable");
   return sid;
 };
-var userSidToken = async (userSid, run4 = runPowerShell) => {
-  const { code, out } = await run4(SID_TOKEN_SCRIPT, { LA_SID: userSid });
-  const match = code === 0 ? /^O:(S-1-\d+(?:-\d+)+|[A-Z]{2})$/.exec(out.trim()) : null;
-  return match?.[1];
-};
-var applyExactDacl = async (path15, userSid, kind, run4 = runPowerShell) => {
-  const { code, err } = await run4(APPLY, { LA_PATH: path15, LA_SID: userSid, LA_KIND: kind });
-  if (code !== 0)
-    throw new LocalApiError("insecure_state_dir", `the exact DACL could not be applied${firstErrorLine(err)}`);
-};
 var describeDacl = async (path15, run4 = runPowerShell) => {
   const { code, out } = await run4(DESCRIBE_DACL_SCRIPT, { LA_PATH: path15 });
   const dacl = code === 0 ? parseSddl(out.trim()) : undefined;
@@ -131383,51 +131564,16 @@ var describeDacl = async (path15, run4 = runPowerShell) => {
     throw new LocalApiError("insecure_state_dir", "the DACL could not be read back");
   return dacl;
 };
-var verifyExactDacl = async (path15, userSid, kind, run4 = runPowerShell) => {
-  let dacl;
-  try {
-    dacl = await describeDacl(path15, run4);
-  } catch (error62) {
-    if (error62 instanceof LocalApiError)
-      return false;
-    throw error62;
-  }
-  return exactDaclVerdict(dacl, userSid, kind, await userSidToken(userSid, run4));
-};
-var windowsSecureFile = (userSid, run4 = runPowerShell) => async (path15, kind) => {
-  const target = kind === "dir" ? "dir" : "file";
-  await applyExactDacl(path15, userSid, target, run4);
-  if (!await verifyExactDacl(path15, userSid, target, run4))
-    throw new LocalApiError("insecure_state_dir", "the DACL is not exactly one ACE for the user");
-};
 
 // packages/device-service-core/src/local-api/access.ts
 var TOKEN_FILE = "token";
 var TOKEN_BYTES = 32;
-var NONCE_BYTES = 32;
 var SOCKET_FILE = "service.sock";
-var base64url3 = (bytes) => Buffer.from(bytes).toString("base64url");
-var mintNonce = () => base64url3(randomBytes7(NONCE_BYTES));
-var mintId = () => base64url3(randomBytes7(16));
 var insecure = (detail) => {
   throw new LocalApiError("insecure_state_dir", detail);
 };
-var decoded = (value, bytes, what) => {
-  const out = Buffer.from(value, "base64url");
-  if (out.length !== bytes || base64url3(out) !== value)
-    throw new LocalApiError("protocol_violation", `${what} is not ${bytes} base64url bytes`);
-  return out;
-};
 var UNIX_ENDPOINT = "unix";
 var tcpEndpoint = (port) => `tcp:${port}`;
-var proof = (token, label, nonce, endpoint) => base64url3(createHmac2("sha256", token).update(label).update(decoded(nonce, NONCE_BYTES, "a nonce")).update(endpoint, "utf8").digest());
-var serverProof = (token, clientNonce, endpoint) => proof(token, "server", clientNonce, endpoint);
-var clientProof = (token, serverNonce, endpoint) => proof(token, "client", serverNonce, endpoint);
-var proofMatches = (expected, actual) => {
-  const a2 = Buffer.from(expected);
-  const b2 = Buffer.from(actual);
-  return a2.length === b2.length && timingSafeEqual2(a2, b2);
-};
 var isMissing = (error62) => typeof error62 === "object" && error62 !== null && ("code" in error62) && (error62.code === "ENOENT" || error62.code === "ENOTDIR");
 var currentUid = () => process.getuid?.() ?? insecure("this platform has no uid");
 var privateEntry = (path15, kind, uid, checkMode = true) => {
@@ -131469,7 +131615,7 @@ var readToken = (stateDir) => {
     throw error62;
   }
   try {
-    return decoded(value, TOKEN_BYTES, "the token");
+    return decodedBytes(value, TOKEN_BYTES, "the token");
   } catch (error62) {
     if (error62 instanceof LocalApiError)
       return insecure("the token is malformed");
@@ -131481,31 +131627,45 @@ var readToken = (stateDir) => {
 import { createHash as createHash16 } from "node:crypto";
 
 // packages/device-service-core/src/local-api/spec-proto.ts
+class ProtoError extends Error {
+  code;
+  constructor(code, detail) {
+    super(`${code}: ${detail}`);
+    this.code = code;
+    this.name = "ProtoError";
+  }
+}
 var SESSION_BLOB_MAX = 16777216;
-var SESSION_COMMAND_TEXT_MAX_CHARS = 1e6;
-var SESSION_COMMAND_TEXT_MAX_BYTES = 3000000;
+var SESSION_KIND_MAX_CHARS = 32;
+var SESSION_ID_MAX_CHARS = 128;
 var SESSION_DEVICE_MAX_CHARS = 64;
 var SESSION_PROJECT_MAX_CHARS = 256;
-var SESSION_ID_MAX_CHARS = 128;
-var SESSION_KIND_MAX_CHARS = 32;
 var SESSION_READ_TAIL_MAX = 200;
 var SESSION_SUMMARY_TITLE_MAX_CHARS = 256;
 var SESSION_SUMMARY_PROJECT_MAX_CHARS = 128;
 var SESSION_SUMMARY_PATH_MAX_CHARS = 1024;
-
-class ProtoError extends Error {
-  code;
-  constructor(code, message) {
-    super(message);
-    this.code = code;
-  }
-}
-var validateCommandText = (text) => {
-  if (typeof text !== "string" || !text.isWellFormed())
-    throw new ProtoError("malformed", "command text");
-  if (text.length > SESSION_COMMAND_TEXT_MAX_CHARS || new TextEncoder().encode(text).length > SESSION_COMMAND_TEXT_MAX_BYTES)
-    throw new ProtoError("payload_too_large", "session command text over the limit");
-  return text;
+var SESSION_MODEL_PROVIDER_MAX_CHARS = 64;
+var SESSION_MODEL_ID_MAX_CHARS = 128;
+var SESSION_SETTLED_DAYS_MAX = 36500;
+var SESSION_SETTLED_THREAD_TITLE_MAX_CHARS = 256;
+var SESSION_KEY_CHARS = 22;
+var UNSAFE_KEYS2 = ["__proto__", "constructor", "prototype"];
+var sessionFail = (detail) => {
+  throw new ProtoError("bad_request", `session payload ${detail}`);
+};
+var B64URL = /^[A-Za-z0-9_-]+$/;
+var base64UrlId = (v, n3, detail) => typeof v === "string" && v.length === n3 && B64URL.test(v) ? v : sessionFail(detail);
+var sessionKeyOf = (v) => base64UrlId(v, SESSION_KEY_CHARS, "session key");
+var safeKey = (key, detail) => UNSAFE_KEYS2.includes(key) ? sessionFail(detail) : key;
+var STREAM_INLINE_MAX = 12000;
+var validateStreamSessionKey = (v) => sessionKeyOf(v);
+var validRosterDeviceId = (value) => typeof value === "string" && value.length > 0 && value.length <= 64 && value.isWellFormed();
+var METHOD = /^(?=.{1,64}$)[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$/;
+var methodOf = (v, what) => {
+  const type = typeof v === "string" && METHOD.test(v) ? v : sessionFail(what);
+  for (const segment of type.split("."))
+    safeKey(segment, what);
+  return type;
 };
 
 // packages/device-service-core/src/local-api/limits.ts
@@ -131513,6 +131673,10 @@ var LOCAL_INLINE_MAX = 524288;
 var LOCAL_CHUNK_MAX = 262144;
 var LOCAL_JSON_EXPANSION_MAX = 6;
 var LOCAL_BLOB_MAX = LOCAL_JSON_EXPANSION_MAX * SESSION_BLOB_MAX;
+var MACHINE_UPLOAD_MAX_BYTES = 3840000;
+var MACHINE_UPLOAD_PARTS_MAX = Math.ceil(MACHINE_UPLOAD_MAX_BYTES / LOCAL_CHUNK_MAX);
+var grouped = (n3) => n3.toLocaleString("en-US");
+var MACHINE_UPLOAD_LIMIT = `an uploaded batch is at most ${grouped(MACHINE_UPLOAD_MAX_BYTES)} bytes (${MACHINE_UPLOAD_PARTS_MAX} parts of ${grouped(LOCAL_CHUNK_MAX)} bytes)`;
 var encoder2 = new TextEncoder;
 var lineBytes = (value) => encoder2.encode(JSON.stringify(value)).length + 1;
 var sha256Hex = (data) => createHash16("sha256").update(data).digest("hex");
@@ -131521,7 +131685,7 @@ var chunkPayload = (data) => {
   for (let off = 0;off < data.length; off += LOCAL_CHUNK_MAX)
     chunks.push({
       off,
-      b: Buffer.from(data.subarray(off, off + LOCAL_CHUNK_MAX)).toString("base64")
+      b: toBase64(data.subarray(off, off + LOCAL_CHUNK_MAX))
     });
   return chunks;
 };
@@ -131544,8 +131708,10 @@ var STATUS_STATES = [
   "authorization_stale",
   "service_degraded",
   "update_required",
-  "signed_out"
+  "signed_out",
+  "fail_closed"
 ];
+var STATUS_UPDATE_PHASES = ["trial", "committed"];
 var POLICY_STATES = ["off", "pending", "active"];
 var THIS_DEVICE_STATES = [
   "unclassified",
@@ -131571,9 +131737,26 @@ var ROUND_DEVICE_STATES = [
 var LISTING_SOURCES = ["live", "cache"];
 var SESSION_ROW_STATES = ["running", "idle", "ended"];
 var FILTER_KEYS = ["device", "project", "state"];
+var LISTING_SETTLED_BY_KINDS = [
+  "user",
+  "agent",
+  "pr-merged",
+  "pr-closed",
+  "inactivity"
+];
 var BLOB_OF = ["state", "record", "entry"];
-var BLOB_ABORT_REASONS = ["digest_mismatch", "source_gone", "too_large", "detached"];
-var UPLOAD_ABORT_REASONS = ["message_too_long", "parts_conflict", "malformed", "detached"];
+var BLOB_ABORT_REASONS = [
+  "digest_mismatch",
+  "source_gone",
+  "too_large",
+  "detached"
+];
+var UPLOAD_ABORT_REASONS = [
+  "message_too_long",
+  "parts_conflict",
+  "malformed",
+  "detached"
+];
 var DETACH_REASONS = [
   "authorization_expired",
   "activation_pending",
@@ -131586,6 +131769,14 @@ var DETACH_REASONS = [
   "session_closed",
   "session_replaced"
 ];
+var UPDATE_NOTICE_PHASES = [
+  "draining",
+  "final",
+  "updated",
+  "rolled_back",
+  "failed"
+];
+var UPDATE_POLICIES = ["defer", "force", "ask"];
 var ATTACH_PENDING_REASONS = ["stream_key_pending"];
 var COMMAND_ID_CHARS = 22;
 var COMMAND_STATES = [
@@ -131610,7 +131801,8 @@ var COMMAND_UNCERTAIN_REASONS = [
   "cancelled",
   "hand_restarted",
   "result_expired",
-  "record_too_large"
+  "record_too_large",
+  "result_undecodable"
 ];
 var COMMAND_REFUSAL_REASONS = [
   "parts_conflict",
@@ -131628,9 +131820,15 @@ var COMMAND_REFUSAL_REASONS = [
   "scope_unknown",
   "scope_closed",
   "epoch_fenced",
-  "epoch_step_exceeded"
+  "epoch_step_exceeded",
+  "route_unlisted",
+  "rate_limited",
+  "unknown_reason"
 ];
-var RETRYABLE_STATES = ["not confirmed", "not delivered: never_sent"];
+var RETRYABLE_STATES = [
+  "not confirmed",
+  "not delivered: never_sent"
+];
 var ERROR_CODES = [
   "unauthenticated",
   "client_proof_invalid",
@@ -131652,6 +131850,7 @@ var ERROR_CODES = [
   "peer_not_found",
   "peer_not_session_client",
   "session_not_found",
+  "session_ambiguous",
   "engine_too_old",
   "not_attached",
   "command_id_conflict",
@@ -131661,7 +131860,15 @@ var ERROR_CODES = [
   "method_unclassified",
   "method_local_only",
   "host_not_answering",
-  "unsupported"
+  "unsupported",
+  "unknown_delivery"
+];
+var ALIAS_INCOMPLETE_REASONS = [
+  "cache",
+  "timed_out",
+  "undelivered",
+  "skipped",
+  "stopped"
 ];
 var PATH_REFUSAL_PROBLEMS = [
   "not_absolute",
@@ -131673,6 +131880,16 @@ var PATH_REFUSAL_PROBLEMS = [
   "world_writable",
   "windows_acl"
 ];
+var MACHINE_OP_STATES = [
+  "queued",
+  "transport_confirmed",
+  "host_dispatched",
+  "host_applied",
+  "link_down"
+];
+var MACHINE_STATES = ["online", "offline", "unsupported"];
+var MACHINE_LOOKUP_STATES = ["in_flight", "terminal", "unknown"];
+var MACHINE_BLOB_ABORT_REASONS = ["digest_mismatch", "source_gone", "too_large"];
 var CHANNEL_CLOSED_REASONS = [
   "event_overflow",
   "event_too_large",
@@ -131752,11 +131969,18 @@ var sha256Field = (v, what) => typeof v === "string" && SHA256_HEX.test(v) ? v :
 var base64Bytes = (v, max, what) => {
   if (typeof v !== "string" || v.length === 0 || v.length > 4 * Math.ceil(max / 3))
     return fail(what);
-  const bytes = Buffer.from(v, "base64");
-  return bytes.length <= max && bytes.toString("base64") === v ? new Uint8Array(bytes) : fail(what);
+  let bytes;
+  try {
+    bytes = fromBase64(v);
+  } catch (error62) {
+    if (error62 instanceof Error)
+      return fail(what);
+    throw error62;
+  }
+  return bytes.length <= max && toBase64(bytes) === v ? bytes : fail(what);
 };
-var UNSAFE_KEYS2 = ["__proto__", "constructor", "prototype"];
-var safeKey = (key, what) => UNSAFE_KEYS2.includes(key) ? fail(what) : key;
+var UNSAFE_KEYS3 = ["__proto__", "constructor", "prototype"];
+var safeKey2 = (key, what) => UNSAFE_KEYS3.includes(key) ? fail(what) : key;
 var jsonValue = (v, what) => {
   if (v === null || typeof v === "boolean" || typeof v === "string")
     return v;
@@ -131776,9 +132000,22 @@ var jsonObject = (v, what) => {
     out[key] = jsonValue(item, what);
   return out;
 };
+// packages/device-service-core/src/local-api/command-text.ts
+var COMMAND_TEXT_MAX_CHARS = 1e6;
+var COMMAND_TEXT_MAX_BYTES = 3000000;
+var validateCommandText = (text2) => {
+  if (typeof text2 !== "string" || !text2.isWellFormed())
+    throw new ProtoError("bad_request", "session payload command text");
+  if (text2.length > COMMAND_TEXT_MAX_CHARS || new TextEncoder().encode(text2).length > COMMAND_TEXT_MAX_BYTES)
+    throw new ProtoError("payload_too_large", "session command text over the limit");
+  return text2;
+};
+
 // packages/device-service-core/src/local-api/upload.ts
-var MESSAGE_LIMIT_CHARS = SESSION_COMMAND_TEXT_MAX_CHARS;
-var LOCAL_UPLOAD_PARTS_MAX = Math.ceil(SESSION_COMMAND_TEXT_MAX_BYTES / LOCAL_CHUNK_MAX);
+var sameBytes = (a2, b2) => a2.length === b2.length && a2.every((byte, i2) => byte === b2[i2]);
+var MESSAGE_LIMIT_CHARS = COMMAND_TEXT_MAX_CHARS;
+var LOCAL_UPLOAD_PARTS_MAX = Math.ceil(COMMAND_TEXT_MAX_BYTES / LOCAL_CHUNK_MAX);
+var REFUSED_UPLOADS_KEPT = 64;
 var checkCommandText = (value) => {
   try {
     validateCommandText(value);
@@ -131797,11 +132034,15 @@ var uploadParts = (value) => {
 class UploadAssembler {
   #uploads = new Map;
   #refused = new Map;
+  #maxBytes;
+  constructor(maxBytes = COMMAND_TEXT_MAX_BYTES) {
+    this.#maxBytes = maxBytes;
+  }
   accept(part) {
     const refused = this.#refused.get(part.upload_id);
     if (refused !== undefined)
       return { kind: "refused", reason: refused };
-    const data = new Uint8Array(Buffer.from(part.b, "base64"));
+    const data = fromBase64(part.b);
     const upload = this.#uploads.get(part.upload_id) ?? {
       count: part.count,
       parts: new Map,
@@ -131815,11 +132056,11 @@ class UploadAssembler {
       upload.bytes += data.length;
     }
     this.#uploads.set(part.upload_id, upload);
-    if (upload.bytes > SESSION_COMMAND_TEXT_MAX_BYTES)
+    if (upload.bytes > this.#maxBytes)
       return this.#refuse(part.upload_id, "message_too_long");
     return { kind: "accepted", complete: upload.parts.size === upload.count };
   }
-  take(uploadId) {
+  takeBytes(uploadId) {
     const refused = this.#refused.get(uploadId);
     if (refused !== undefined)
       return { kind: "refused", reason: refused };
@@ -131834,9 +132075,15 @@ class UploadAssembler {
       bytes.set(part, at);
       at += part.length;
     }
+    return { kind: "bytes", bytes };
+  }
+  take(uploadId) {
+    const taken = this.takeBytes(uploadId);
+    if (taken.kind !== "bytes")
+      return taken;
     let value;
     try {
-      value = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+      value = new TextDecoder("utf-8", { fatal: true }).decode(taken.bytes);
     } catch (error62) {
       if (error62 instanceof TypeError)
         return { kind: "refused", reason: "malformed" };
@@ -131844,6 +132091,22 @@ class UploadAssembler {
     }
     const verdict = checkCommandText(value);
     return verdict === "ok" ? { kind: "text", text: value } : { kind: "refused", reason: verdict };
+  }
+  missing(uploadId) {
+    const upload = this.#uploads.get(uploadId);
+    if (upload === undefined)
+      return;
+    const indexes = Array.from({ length: upload.count }, (_2, i2) => i2).filter((i2) => !upload.parts.has(i2));
+    return { indexes, count: upload.count };
+  }
+  held() {
+    return this.#uploads.size;
+  }
+  knows(uploadId) {
+    return this.#uploads.has(uploadId) || this.#refused.has(uploadId);
+  }
+  pending() {
+    return [...this.#uploads.values()].filter((u4) => u4.parts.size < u4.count).length;
   }
   discard(uploadId) {
     this.#uploads.delete(uploadId);
@@ -131855,13 +132118,19 @@ class UploadAssembler {
     if (part.index !== part.count - 1 && data.length !== LOCAL_CHUNK_MAX)
       return "malformed";
     const existing = upload.parts.get(part.index);
-    if (existing !== undefined && !Buffer.from(existing).equals(data))
+    if (existing !== undefined && !sameBytes(existing, data))
       return "parts_conflict";
     return;
   }
   #refuse(uploadId, reason2) {
     this.#uploads.delete(uploadId);
+    this.#refused.delete(uploadId);
     this.#refused.set(uploadId, reason2);
+    for (const oldest of this.#refused.keys()) {
+      if (this.#refused.size <= REFUSED_UPLOADS_KEPT)
+        break;
+      this.#refused.delete(oldest);
+    }
     return { kind: "refused", reason: reason2 };
   }
 }
@@ -131884,7 +132153,7 @@ class LocalBlobAssembler {
         return;
       case "session.blob_chunk": {
         const open5 = this.#current(event.id);
-        const data = Buffer.from(event.b, "base64");
+        const data = fromBase64(event.b);
         const end = this.#received + data.length;
         if (event.off !== this.#received || end > open5.bytes)
           return protocolViolation("blob chunk out of order");
@@ -131991,12 +132260,114 @@ class ListingTracker {
   }
 }
 
+// packages/device-service-core/src/local-api/session-ref.ts
+var KEY_CHARS = 22;
+var MIN_CHARS = KEY_CHARS + 2;
+var MAX_CHARS = KEY_CHARS + 65;
+var isStreamSessionKey = (v) => {
+  try {
+    validateStreamSessionKey(v);
+    return true;
+  } catch (error62) {
+    if (error62 instanceof ProtoError)
+      return false;
+    throw error62;
+  }
+};
+var parseSessionRef = (v) => {
+  if (typeof v !== "string" || !v.isWellFormed())
+    return;
+  if (v.length < MIN_CHARS || v.length > MAX_CHARS || v[v.length - KEY_CHARS - 1] !== ".")
+    return;
+  const device = v.slice(0, -KEY_CHARS - 1);
+  const key = v.slice(-KEY_CHARS);
+  return isStreamSessionKey(key) && validRosterDeviceId(device) ? { device, key } : undefined;
+};
+var formatSessionRef = (ref) => {
+  if (!isStreamSessionKey(ref.key) || !validRosterDeviceId(ref.device))
+    throw new RangeError("not a session id: the device or the key is malformed");
+  return `${ref.device}.${ref.key}`;
+};
+var CONTROL = /[\u0000-\u001f\u007f-\u009f]/;
+var ALIAS_MAX_CHARS = 256;
+var unsafeAlias = (s) => s !== s.trim() || CONTROL.test(s) || parseSessionRef(s) !== undefined || isStreamSessionKey(s);
+
+// packages/device-service-core/src/local-api/validate-snapshot-from.ts
+var SNAPSHOT_OPTIONAL_FIELDS = ["from"];
+var snapshotFromOf = (v) => {
+  const m2 = known(v, ["last_entry_id", "delta"], [], "from");
+  return {
+    last_entry_id: entryId(m2["last_entry_id"], "from.last_entry_id"),
+    delta: bool(m2["delta"], "from.delta")
+  };
+};
+
+// packages/device-service-core/src/local-api/protocol-status.ts
+var SIGN_IN_REASONS = ["not_adopted", "device_revoked", "reauth_required"];
+
+// packages/device-service-core/src/local-api/validate-session-answer.ts
+var refOf = (v, what) => {
+  const m2 = known(v, ["device", "key", "session"], [], what);
+  const ref = parseSessionRef(m2["session"]);
+  if (ref === undefined || ref.device !== m2["device"] || ref.key !== m2["key"])
+    return fail(what);
+  return { device: ref.device, key: ref.key, session: formatSessionRef(ref) };
+};
+var commandAnswerOf = (v) => {
+  const m2 = known(v, ["command_id"], ["device", "key", "session"], "session.command data");
+  const command_id = commandId(m2["command_id"]);
+  if (m2["device"] === undefined && m2["key"] === undefined && m2["session"] === undefined)
+    return { command_id };
+  const { device, key, session } = m2;
+  return { command_id, ...refOf({ device, key, session }, "session.command data") };
+};
+var listOf = (v, item, what) => Array.isArray(v) ? v.map(item) : fail(what);
+var incompleteOf = (v) => {
+  const m2 = known(v, ["device", "reason"], [], "error.incomplete");
+  const device = m2["device"];
+  if (typeof device !== "string" || device.length === 0)
+    return fail("error.incomplete");
+  return { device, reason: oneOf(ALIAS_INCOMPLETE_REASONS, m2["reason"], "error.incomplete") };
+};
+var aliasErrorFields = (code, m2) => {
+  const { candidates, incomplete } = m2;
+  if (candidates !== undefined !== (code === "session_ambiguous"))
+    return fail("error.candidates");
+  if (incomplete !== undefined && code !== "session_not_found")
+    return fail("error.incomplete");
+  return {
+    ...candidates === undefined ? {} : {
+      candidates: listOf(candidates, (c3) => refOf(c3, "error.candidates"), "error.candidates")
+    },
+    ...incomplete === undefined ? {} : { incomplete: listOf(incomplete, incompleteOf, "error.incomplete") }
+  };
+};
+
+// packages/device-service-core/src/local-api/validate-update.ts
+var READY_REASON_MAX_CHARS = 64;
+var statusUpdateOf = (v) => {
+  const m2 = known(v, ["update_id", "phase", "target_version", "ready", "ready_reason"], [], "status.update");
+  return {
+    update_id: localId(m2["update_id"], "status.update.update_id"),
+    phase: oneOf(STATUS_UPDATE_PHASES, m2["phase"], "status.update.phase"),
+    target_version: semver(m2["target_version"], "status.update.target_version"),
+    ready: bool(m2["ready"], "status.update.ready"),
+    ready_reason: nullable2(m2["ready_reason"], (r2) => text(r2, READY_REASON_MAX_CHARS, "status.update.ready_reason"))
+  };
+};
+var updateCommittedOf = (m2, id) => ({
+  id,
+  type: "owner.update_committed",
+  update_id: localId(m2["update_id"], "update_id")
+});
+
 // packages/device-service-core/src/local-api/validate-shapes.ts
 var CODE = /^[a-z_]{1,64}$/;
 var ATTACH_ID_MAX = 4294967295;
 var MILLIS_MAX = Number.MAX_SAFE_INTEGER;
 var deviceId = (v, what = "device") => text(v, SESSION_DEVICE_MAX_CHARS, what);
 var sessionId = (v) => text(v, SESSION_ID_MAX_CHARS, "session_id");
+var durableId = (v, what = "durable_id") => text(v, SESSION_ID_MAX_CHARS, what);
 var attachId = (v) => uint(v, 1, ATTACH_ID_MAX, "attach_id");
 var millis = (v, what) => uint(v, 0, MILLIS_MAX, what);
 var deviceRef = (v, what = "device", fields = exactly) => {
@@ -132026,9 +132397,8 @@ var policyOf = (v) => {
   };
 };
 var statusOf = (v) => {
-  const m2 = known(v, ["state", "since_ms", "device", "origin_configured", "enabled"], ["detail", "policy"], "status");
-  const detail = m2["detail"];
-  const policy = m2["policy"];
+  const m2 = known(v, ["state", "since_ms", "device", "origin_configured", "enabled"], ["detail", "policy", "update", "exe"], "status");
+  const { detail, policy, update, exe } = m2;
   return {
     state: oneOf(STATUS_STATES, m2["state"], "status.state"),
     since_ms: millis(m2["since_ms"], "status.since_ms"),
@@ -132036,60 +132406,41 @@ var statusOf = (v) => {
     device: nullable2(m2["device"], (d) => deviceRef(d, "status.device", known)),
     origin_configured: bool(m2["origin_configured"], "status.origin_configured"),
     enabled: bool(m2["enabled"], "status.enabled"),
-    ...policy === undefined ? {} : { policy: policyOf(policy) }
+    ...policy === undefined ? {} : { policy: policyOf(policy) },
+    ...update === undefined ? {} : { update: statusUpdateOf(update) },
+    ...exe === undefined ? {} : { exe: absolutePath(exe, "status.exe") }
   };
 };
 var detailOf = (v) => {
-  const m2 = known(v, ["code", "action"], [], "status.detail");
-  const code = m2["code"];
+  const m2 = known(v, ["code", "action"], ["sign_in_reason"], "status.detail");
+  const { code, sign_in_reason: reason2 } = m2;
   return {
     code: typeof code === "string" && CODE.test(code) ? code : fail("status.detail.code"),
-    action: nullable2(m2["action"], (a2) => text(a2, LABEL_MAX_CHARS, "status.detail.action"))
+    action: nullable2(m2["action"], (a2) => text(a2, LABEL_MAX_CHARS, "status.detail.action")),
+    ...reason2 === undefined ? {} : { sign_in_reason: oneOf(SIGN_IN_REASONS, reason2, "status.detail.sign_in_reason") }
   };
 };
 var deviceRowOf = (v) => {
-  const m2 = known(v, ["device", "label", "kind", "platform", "last_seen_ms", "online"], [], "device row");
+  const m2 = known(v, ["device", "label", "kind", "platform", "last_seen_ms", "online"], ["managed"], "device row");
+  const managed = m2["managed"];
   return {
     device: deviceId(m2["device"]),
     label: text(m2["label"], LABEL_MAX_CHARS, "label", 0),
     kind: text(m2["kind"], 64, "kind", 0),
     platform: text(m2["platform"], 64, "platform", 0),
     last_seen_ms: nullable2(m2["last_seen_ms"], (t2) => millis(t2, "last_seen_ms")),
-    online: bool(m2["online"], "online")
+    online: bool(m2["online"], "online"),
+    ...managed === undefined ? {} : { managed: bool(managed, "managed") }
   };
 };
-var ROW_FIELDS = ["device", "session_id", "title", "project", "path", "state", "updated_ms", "source", "as_of"];
-var ROW_KIND = new RegExp(`^[a-z][a-z0-9_-]{0,${SESSION_KIND_MAX_CHARS - 1}}$`);
-var rowLinks = (m2) => {
-  const kind = m2["kind"];
-  if (Object.hasOwn(m2, "parent") !== Object.hasOwn(m2, "parent_listed"))
-    fail("parent_listed");
-  return {
-    ...kind === undefined ? {} : { kind: typeof kind === "string" && ROW_KIND.test(kind) ? kind : fail("row kind") },
-    ...m2["parent"] === undefined ? {} : {
-      parent: sessionId(m2["parent"]),
-      parent_listed: bool(m2["parent_listed"], "parent_listed")
-    }
-  };
-};
-var listingRowOf = (v) => {
-  const m2 = known(v, ROW_FIELDS, ["kind", "parent", "parent_listed", "durable_id"], "listing row");
-  const durable = m2["durable_id"];
-  return {
-    ...rowLinks(m2),
-    ...durable === undefined ? {} : { durable_id: text(durable, SESSION_ID_MAX_CHARS, "durable_id") },
-    device: deviceId(m2["device"]),
-    session_id: sessionId(m2["session_id"]),
-    title: text(m2["title"], SESSION_SUMMARY_TITLE_MAX_CHARS, "title", 0),
-    project: text(m2["project"], SESSION_SUMMARY_PROJECT_MAX_CHARS, "project"),
-    path: text(m2["path"], SESSION_SUMMARY_PATH_MAX_CHARS, "path"),
-    state: oneOf(SESSION_ROW_STATES, m2["state"], "row state"),
-    updated_ms: millis(m2["updated_ms"], "updated_ms"),
-    source: oneOf(LISTING_SOURCES, m2["source"], "row source"),
-    as_of: millis(m2["as_of"], "as_of")
-  };
-};
-var BODY_FIELDS = ["attach_id", "cursor", "state", "entries", "history_truncated", "oldest_entry_id"];
+var BODY_FIELDS = [
+  "attach_id",
+  "cursor",
+  "state",
+  "entries",
+  "history_truncated",
+  "oldest_entry_id"
+];
 var snapshotBodyOf = (m2) => {
   const cursor3 = known(m2["cursor"], ["marker_id", "last_entry_id"], [], "cursor");
   const entries = m2["entries"];
@@ -132104,10 +132455,11 @@ var snapshotBodyOf = (m2) => {
     state: jsonObject(m2["state"], "state"),
     entries: entries.map((e) => jsonValue(e, "entries")),
     history_truncated: bool(m2["history_truncated"], "history_truncated"),
-    oldest_entry_id: nullable2(m2["oldest_entry_id"], (e) => entryId(e, "oldest_entry_id"))
+    oldest_entry_id: nullable2(m2["oldest_entry_id"], (e) => entryId(e, "oldest_entry_id")),
+    ...m2["from"] === undefined ? {} : { from: snapshotFromOf(m2["from"]) }
   };
 };
-var snapshotBlobOf = (v) => snapshotBodyOf(known(v, BODY_FIELDS, [], "snapshot"));
+var snapshotBlobOf = (v) => snapshotBodyOf(known(v, BODY_FIELDS, SNAPSHOT_OPTIONAL_FIELDS, "snapshot"));
 var SNAPSHOT_FIELDS = BODY_FIELDS;
 var readEntryOf = (v) => {
   const m2 = known(v, ["kind", "entry_id"], ["entry", "bytes", "sha256"], "read entry");
@@ -132134,8 +132486,11 @@ var pathRefusalOf = (v) => {
   };
 };
 var errorBodyOf = (v) => {
-  const m2 = known(v, ["code", "reason", "action"], ["limit_chars", "path_refusal"], "error");
+  const m2 = known(v, ["code", "reason", "action"], ["limit_chars", "path_refusal", "candidates", "incomplete", "sign_in_reason"], "error");
   const code = oneOf(ERROR_CODES, m2["code"], "error.code");
+  const reason2 = m2["sign_in_reason"];
+  if (reason2 !== undefined && code !== "sign_in_required")
+    return fail("error.sign_in_reason");
   const limit = m2["limit_chars"];
   if (code === "message_too_long" !== (limit !== undefined))
     return fail("error.limit_chars");
@@ -132147,76 +132502,10 @@ var errorBodyOf = (v) => {
     reason: text(m2["reason"], REASON_MAX_CHARS, "error.reason", 0),
     action: nullable2(m2["action"], (a2) => text(a2, LABEL_MAX_CHARS, "error.action")),
     ...limit === undefined ? {} : { limit_chars: uint(limit, 1, MILLIS_MAX, "error.limit_chars") },
-    ...refusal === undefined ? {} : { path_refusal: pathRefusalOf(refusal) }
+    ...refusal === undefined ? {} : { path_refusal: pathRefusalOf(refusal) },
+    ...reason2 === undefined ? {} : { sign_in_reason: oneOf(SIGN_IN_REASONS, reason2, "error.sign_in_reason") },
+    ...aliasErrorFields(code, m2)
   };
-};
-
-// packages/device-service-core/src/local-api/validate-command.ts
-var commandRpcOf = (v) => jsonObject(v, "rpc");
-var requestFields = (v, names, optional2 = []) => exactly(v, ["id", "type", ...names], optional2, "request");
-var commandIdField = (v) => v === undefined ? {} : { command_id: commandId(v) };
-var ROUTE_FIELDS = ["command_id", "delegated", "endpoint"];
-var routeFields = (m2) => {
-  const delegated = m2["delegated"];
-  if (delegated !== undefined && delegated !== true)
-    return fail("delegated");
-  return {
-    ...delegated === true ? { delegated: true } : {},
-    ...m2["endpoint"] === undefined ? {} : { endpoint: endpointKey(m2["endpoint"]) }
-  };
-};
-var COMMAND_REQUEST_VALIDATORS = {
-  "session.command": (v, id) => {
-    if (Object.hasOwn(v, "device")) {
-      const m3 = requestFields(v, ["device", "endpoint", "rpc"], ["command_id", "locate"]);
-      const locate = m3["locate"];
-      if (locate !== undefined && locate !== true)
-        return fail("locate");
-      return {
-        id,
-        type: "session.command",
-        device: deviceId(m3["device"]),
-        endpoint: endpointKey(m3["endpoint"]),
-        ...commandIdField(m3["command_id"]),
-        ...locate === true ? { locate: true } : {},
-        rpc: commandRpcOf(m3["rpc"])
-      };
-    }
-    if (Object.hasOwn(v, "upload_id")) {
-      const m3 = requestFields(v, ["attach", "upload_id"], ROUTE_FIELDS);
-      return {
-        id,
-        type: "session.command",
-        attach: localId(m3["attach"], "attach"),
-        ...commandIdField(m3["command_id"]),
-        upload_id: localId(m3["upload_id"], "upload_id"),
-        ...routeFields(m3)
-      };
-    }
-    const m2 = requestFields(v, ["attach", "rpc"], ROUTE_FIELDS);
-    return {
-      id,
-      type: "session.command",
-      attach: localId(m2["attach"], "attach"),
-      ...commandIdField(m2["command_id"]),
-      rpc: commandRpcOf(m2["rpc"]),
-      ...routeFields(m2)
-    };
-  },
-  "session.command_part": (v, id) => {
-    const m2 = requestFields(v, ["attach", "upload_id", "index", "count", "b"]);
-    const count = uint(m2["count"], 1, LOCAL_UPLOAD_PARTS_MAX, "count");
-    base64Bytes(m2["b"], LOCAL_CHUNK_MAX, "b");
-    return {
-      id,
-      type: "session.command_part",
-      attach: localId(m2["attach"], "attach"),
-      upload_id: localId(m2["upload_id"], "upload_id"),
-      index: uint(m2["index"], 0, count - 1, "index"),
-      count,
-      b: typeof m2["b"] === "string" ? m2["b"] : fail("b")
-    };
-  }
 };
 
 // packages/device-service-core/src/local-api/validate-stream-events.ts
@@ -132245,9 +132534,15 @@ var targetOf = (m2) => {
     }
   }
 };
+var seqsOf = (v, count) => {
+  if (!Array.isArray(v) || v.length !== count)
+    return fail("seqs");
+  const seqs = v.map((s) => uint(s, 1, Number.MAX_SAFE_INTEGER, "seq"));
+  return seqs.every((s, i2) => i2 === 0 || s > (seqs[i2 - 1] ?? s)) ? seqs : fail("seqs order");
+};
 var STREAM_EVENT_VALIDATORS = {
   "session.snapshot": (v) => {
-    const m2 = eventFields(v, ["attach", ...SNAPSHOT_FIELDS]);
+    const m2 = eventFields(v, ["attach", ...SNAPSHOT_FIELDS], SNAPSHOT_OPTIONAL_FIELDS);
     return { type: "event", kind: "session.snapshot", attach: attachOf(m2), ...snapshotBodyOf(m2) };
   },
   "session.snapshot_loading": (v) => {
@@ -132260,7 +132555,7 @@ var STREAM_EVENT_VALIDATORS = {
     };
   },
   "session.records": (v) => {
-    const m2 = eventFields(v, ["attach", "attach_id", "records"]);
+    const m2 = eventFields(v, ["attach", "attach_id", "records"], ["seqs"]);
     const records = m2["records"];
     if (!Array.isArray(records) || records.length === 0)
       return fail("records");
@@ -132270,7 +132565,8 @@ var STREAM_EVENT_VALIDATORS = {
       kind: "session.records",
       attach: attachOf(m2),
       attach_id,
-      records: records.map((r2) => jsonObject(r2, "record"))
+      records: records.map((r2) => jsonObject(r2, "record")),
+      ...m2["seqs"] === undefined ? {} : { seqs: seqsOf(m2["seqs"], records.length) }
     };
   },
   "session.blob_open": (v) => {
@@ -132334,32 +132630,97 @@ var STREAM_EVENT_VALIDATORS = {
 // packages/device-service-core/src/local-api/validate-delegated.ts
 var ENDPOINT_KEY = /^[A-Za-z0-9_-]{22}$/;
 var ENDPOINTS_MAX = 16;
+var ENVIRONMENTS_MAX = 4;
 var endpointKey = (v, what = "endpoint") => typeof v === "string" && ENDPOINT_KEY.test(v) ? v : fail(what);
-var ENGINE_ID_MAX_CHARS = 128;
-var engineId = (v) => typeof v === "string" && v.length >= 1 && v.length <= ENGINE_ID_MAX_CHARS && v.isWellFormed() ? v : fail("engine_id");
+var engineId = (v) => typeof v === "string" && v.length >= 1 && v.length <= SESSION_ID_MAX_CHARS && v.isWellFormed() ? v : fail("engine_id");
 var DELEGATED_REQUEST_VALIDATORS = {
-  "session.endpoints": (v, id) => ({
-    id,
-    type: "session.endpoints",
-    device: deviceId(requestFields(v, ["device"])["device"])
-  }),
+  "session.endpoints": (v, id) => {
+    const m2 = requestFields(v, ["device"], ["primary", "environments"]);
+    if (m2["primary"] !== undefined && m2["primary"] !== true)
+      return fail("primary");
+    if (m2["environments"] !== undefined && m2["environments"] !== true)
+      return fail("environments");
+    return {
+      id,
+      type: "session.endpoints",
+      device: deviceId(m2["device"]),
+      ...m2["primary"] === true ? { primary: true } : {},
+      ...m2["environments"] === true ? { environments: true } : {}
+    };
+  },
   "session.locate": (v, id) => {
-    const m2 = requestFields(v, ["device", "engine_id"]);
-    return { id, type: "session.locate", device: deviceId(m2["device"]), engine_id: engineId(m2["engine_id"]) };
+    const m2 = requestFields(v, ["device", "engine_id"], ["single"]);
+    if (m2["single"] !== undefined && m2["single"] !== true)
+      return fail("single");
+    return {
+      id,
+      type: "session.locate",
+      device: deviceId(m2["device"]),
+      engine_id: engineId(m2["engine_id"]),
+      ...m2["single"] === true ? { single: true } : {}
+    };
   }
 };
-var locateData = (v) => {
-  const m2 = known(v, ["device", "key", "session"], [], "data");
-  const device = deviceId(m2["device"]);
-  const key = endpointKey(m2["key"], "key");
-  return m2["session"] === `${device}.${key}` ? { device, key, session: `${device}.${key}` } : fail("session");
+var keysOf2 = (v, max, what) => {
+  if (!Array.isArray(v) || v.length > max)
+    return fail(what);
+  const keys = v.map((e) => endpointKey(e, what));
+  return new Set(keys).size === keys.length ? keys : fail(what);
 };
 var endpointsData = (v) => {
-  const endpoints = known(v, ["endpoints"], [], "data")["endpoints"];
-  if (!Array.isArray(endpoints) || endpoints.length > ENDPOINTS_MAX)
-    return fail("endpoints");
-  const keys = endpoints.map((e) => endpointKey(e, "endpoints"));
-  return new Set(keys).size === keys.length ? { endpoints: keys } : fail("endpoints");
+  const m2 = known(v, ["endpoints"], ["environments", "primary"], "data");
+  const endpoints = keysOf2(m2["endpoints"], ENDPOINTS_MAX, "endpoints");
+  const primary = m2["primary"] === undefined ? undefined : endpointKey(m2["primary"], "primary");
+  if (primary !== undefined && !endpoints.includes(primary))
+    return fail("primary");
+  return {
+    endpoints,
+    ...m2["environments"] === undefined ? {} : { environments: keysOf2(m2["environments"], ENVIRONMENTS_MAX, "environments") },
+    ...primary === undefined ? {} : { primary }
+  };
+};
+var agentDirOf = (v) => absolutePath(requestFields(v, ["agent_dir"])["agent_dir"], "agent_dir");
+var environmentOf = (v, required2) => {
+  const m2 = requestFields(v, required2);
+  return m2["kind"] === "environment" ? m2 : fail("kind");
+};
+var endpointsRegister = (v, id) => {
+  if (v["kind"] === undefined)
+    return { id, type: "endpoints.register", agent_dir: agentDirOf(v) };
+  const m2 = environmentOf(v, ["kind", "socket", "key_root"]);
+  return {
+    id,
+    type: "endpoints.register",
+    kind: "environment",
+    socket: absolutePath(m2["socket"], "socket"),
+    key_root: absolutePath(m2["key_root"], "key_root")
+  };
+};
+var endpointsUnregister = (v, id) => {
+  if (v["kind"] === undefined)
+    return { id, type: "endpoints.unregister", agent_dir: agentDirOf(v) };
+  const m2 = environmentOf(v, ["kind", "socket"]);
+  return {
+    id,
+    type: "endpoints.unregister",
+    kind: "environment",
+    socket: absolutePath(m2["socket"], "socket")
+  };
+};
+var endpointsList = (v, id) => {
+  requestFields(v, []);
+  return { id, type: "endpoints.list" };
+};
+var endpointsListData = (m2) => {
+  const dirs = m2["agent_dirs"];
+  if (!Array.isArray(dirs))
+    return fail("agent_dirs");
+  return { agent_dirs: dirs.map((d) => absolutePath(d, "agent_dirs")) };
+};
+var endpointRequests = {
+  "endpoints.register": endpointsRegister,
+  "endpoints.unregister": endpointsUnregister,
+  "endpoints.list": endpointsList
 };
 var blobId = (m2) => localId(m2["id"], "blob id");
 var blobRefOf = (v) => {
@@ -132372,7 +132733,9 @@ var blobRefOf = (v) => {
 };
 var locatedOf = (device, v) => {
   const m2 = known(v, ["key", "session"], [], "located");
-  const key = endpointKey(m2["key"], "located key");
+  const key = m2["key"];
+  if (typeof key !== "string" || !isStreamSessionKey(key))
+    return fail("located key");
   return m2["session"] === `${device}.${key}` ? { key, session: `${device}.${key}` } : fail("located session");
 };
 var COMMAND_EVENT_FIELDS = ["blob", "frame", "command_id", "response", "located"];
@@ -132429,20 +132792,684 @@ var DELEGATED_EVENT_VALIDATORS = {
   }
 };
 
+// packages/device-service-core/src/local-api/validate-command.ts
+var commandRpcOf = (v) => jsonObject(v, "rpc");
+var requestFields = (v, names, optional2 = []) => exactly(v, ["id", "type", ...names], optional2, "request");
+var acceptsField = (v) => {
+  if (v === undefined)
+    return {};
+  if (!Array.isArray(v) || v.length !== 1 || v[0] !== "session-wake:v1")
+    return fail("accepts");
+  return { accepts: ["session-wake:v1"] };
+};
+var commandIdField = (v) => v === undefined ? {} : { command_id: commandId(v) };
+var ROUTE_FIELDS = ["command_id", "delegated", "endpoint", "locate"];
+var routeFields = (m2) => {
+  const delegated = m2["delegated"];
+  if (delegated !== undefined && delegated !== true)
+    return fail("delegated");
+  const locate = m2["locate"];
+  if (locate !== undefined && locate !== true)
+    return fail("locate");
+  return {
+    ...delegated === true ? { delegated: true } : {},
+    ...locate === true ? { locate: true } : {},
+    ...m2["endpoint"] === undefined ? {} : { endpoint: endpointKey(m2["endpoint"]) }
+  };
+};
+var TARGETS = ["attach", "device", "session", "alias", "wake"];
+var targetField = (v) => {
+  const named = TARGETS.filter((f2) => Object.hasOwn(v, f2));
+  const [only] = named;
+  return named.length === 1 && only !== undefined ? only : fail("request names one target");
+};
+var TARGET_FIELDS = {
+  attach: ["attach"],
+  device: ["device", "endpoint"],
+  session: ["session"],
+  alias: ["alias"],
+  wake: ["wake"]
+};
+var sessionField = (v) => typeof v === "string" && parseSessionRef(v) !== undefined ? v : fail("session");
+var aliasField = (v) => typeof v === "string" && v.length >= 1 && v.length <= ALIAS_MAX_CHARS && v.isWellFormed() && !unsafeAlias(v) ? v : fail("alias");
+var wakeField = (v) => {
+  const m2 = exactly(v, ["device", "durable_id"], [], "wake");
+  return { device: deviceId(m2["device"], "wake.device"), durable_id: durableId(m2["durable_id"]) };
+};
+var oneField = (m2, field) => {
+  switch (field) {
+    case "attach":
+      return { attach: localId(m2["attach"], "attach") };
+    case "session":
+      return { session: sessionField(m2["session"]) };
+    case "alias":
+      return { alias: aliasField(m2["alias"]) };
+    case "wake":
+      return { wake: wakeField(m2["wake"]) };
+  }
+};
+var targetOf2 = (m2, field) => field === "device" ? { device: deviceId(m2["device"]), endpoint: endpointKey(m2["endpoint"]) } : oneField(m2, field);
+var partTargetOf = (m2, field) => field === "device" ? { device: deviceId(m2["device"]) } : oneField(m2, field);
+var COMMAND_REQUEST_VALIDATORS = {
+  "session.command": (v, id) => {
+    const field = targetField(v);
+    if (field !== "device" && Object.hasOwn(v, "locate"))
+      return fail("locate acts only on a device and endpoint command");
+    const target = TARGET_FIELDS[field];
+    const body = Object.hasOwn(v, "upload_id") ? "upload_id" : "rpc";
+    const delegated = field === "session" || field === "alias" || field === "wake";
+    const optional2 = [
+      ...delegated ? ["command_id"] : ROUTE_FIELDS.filter((f2) => !target.includes(f2)),
+      "accepts"
+    ];
+    const m2 = requestFields(v, [...target, body], optional2);
+    return {
+      id,
+      type: "session.command",
+      ...commandIdField(m2["command_id"]),
+      ...acceptsField(m2["accepts"]),
+      ...body === "upload_id" ? { upload_id: localId(m2["upload_id"], "upload_id") } : { rpc: commandRpcOf(m2["rpc"]) },
+      ...routeFields(m2),
+      ...targetOf2(m2, field)
+    };
+  },
+  "session.command_part": (v, id) => {
+    const target = targetField(v);
+    const m2 = requestFields(v, [target, "upload_id", "index", "count", "b"]);
+    const count = uint(m2["count"], 1, LOCAL_UPLOAD_PARTS_MAX, "count");
+    base64Bytes(m2["b"], LOCAL_CHUNK_MAX, "b");
+    return {
+      id,
+      type: "session.command_part",
+      ...partTargetOf(m2, target),
+      upload_id: localId(m2["upload_id"], "upload_id"),
+      index: uint(m2["index"], 0, count - 1, "index"),
+      count,
+      b: typeof m2["b"] === "string" ? m2["b"] : fail("b")
+    };
+  }
+};
+
+// packages/device-service-core/src/local-api/validate-machine.ts
+var MACHINE_OPS_MAX = 4096;
+var MACHINE_REF_MAX_CHARS = 128;
+var MACHINE_CREDIT_MAX_BYTES = SESSION_BLOB_MAX;
+var BASE64URL2 = /^[A-Za-z0-9_-]+$/;
+var machineId = (v, what) => typeof v === "string" && v.length === COMMAND_ID_CHARS && BASE64URL2.test(v) ? v : fail(what);
+var machineRef = (v, what) => text(v, MACHINE_REF_MAX_CHARS, what);
+var opName = (v) => {
+  try {
+    return methodOf(v, "op");
+  } catch (error62) {
+    if (error62 instanceof ProtoError)
+      return fail("op");
+    throw error62;
+  }
+};
+var opOf = (v) => {
+  const m2 = exactly(v, ["op_id", "op", "args"], ["deadline_ms", "constraints"], "op");
+  const deadline = m2["deadline_ms"];
+  const constraints = m2["constraints"];
+  return {
+    op_id: machineId(m2["op_id"], "op_id"),
+    op: opName(m2["op"]),
+    args: jsonObject(m2["args"], "args"),
+    ...deadline === undefined ? {} : { deadline_ms: uint(deadline, 1, Number.MAX_SAFE_INTEGER, "deadline_ms") },
+    ...constraints === undefined ? {} : { constraints: jsonObject(constraints, "constraints") }
+  };
+};
+var uniqueIds = (ids, what) => new Set(ids).size === ids.length ? ids : fail(`duplicate ${what}`);
+var machineOpsOf = (v) => {
+  if (!Array.isArray(v) || v.length === 0 || v.length > MACHINE_OPS_MAX)
+    return fail("ops");
+  const ops = v.map(opOf);
+  uniqueIds(ops.map((o2) => o2.op_id), "op_id");
+  return ops;
+};
+var refOf2 = (m2) => m2["session_ref"] === undefined ? {} : { session_ref: machineRef(m2["session_ref"], "session_ref") };
+var bare = (v) => {
+  requestFields(v, []);
+};
+var MACHINE_REQUEST_VALIDATORS = {
+  "machine.list": (v, id) => {
+    bare(v);
+    return { id, type: "machine.list" };
+  },
+  "machine.events.subscribe": (v, id) => {
+    bare(v);
+    return { id, type: "machine.events.subscribe" };
+  },
+  "machine.describe": (v, id) => ({
+    id,
+    type: "machine.describe",
+    device: deviceId(requestFields(v, ["device"])["device"])
+  }),
+  "machine.batch": (v, id) => {
+    if (Object.hasOwn(v, "upload_id")) {
+      const m3 = requestFields(v, ["device", "upload_id"], ["session_ref"]);
+      const upload_id = localId(m3["upload_id"], "upload_id");
+      return { id, type: "machine.batch", device: deviceId(m3["device"]), upload_id, ...refOf2(m3) };
+    }
+    const m2 = requestFields(v, ["device", "ops"], ["session_ref"]);
+    if (lineBytes(v) > LOCAL_INLINE_MAX)
+      return fail("an inline batch over LOCAL_INLINE_MAX is an upload");
+    return {
+      id,
+      type: "machine.batch",
+      device: deviceId(m2["device"]),
+      ops: machineOpsOf(m2["ops"]),
+      ...refOf2(m2)
+    };
+  },
+  "machine.batch_part": (v, id) => {
+    const m2 = requestFields(v, ["upload_id", "index", "count", "b"]);
+    const count = uint(m2["count"], 1, MACHINE_UPLOAD_PARTS_MAX, `count: ${MACHINE_UPLOAD_LIMIT}`);
+    base64Bytes(m2["b"], LOCAL_CHUNK_MAX, "b");
+    return {
+      id,
+      type: "machine.batch_part",
+      upload_id: localId(m2["upload_id"], "upload_id"),
+      index: uint(m2["index"], 0, count - 1, "index"),
+      count,
+      b: typeof m2["b"] === "string" ? m2["b"] : fail("b")
+    };
+  },
+  "machine.cancel": (v, id) => {
+    const ids = requestFields(v, ["op_ids"])["op_ids"];
+    if (!Array.isArray(ids) || ids.length === 0 || ids.length > MACHINE_OPS_MAX)
+      return fail("op_ids");
+    const op_ids = uniqueIds(ids.map((o2) => machineId(o2, "op_id")), "op_id");
+    return { id, type: "machine.cancel", op_ids };
+  },
+  "machine.credit": (v, id) => {
+    const m2 = requestFields(v, ["handle", "bytes"]);
+    return {
+      id,
+      type: "machine.credit",
+      handle: machineRef(m2["handle"], "handle"),
+      bytes: uint(m2["bytes"], 1, MACHINE_CREDIT_MAX_BYTES, "bytes")
+    };
+  },
+  "machine.result_of": (v, id) => ({
+    id,
+    type: "machine.result_of",
+    op_id: machineId(requestFields(v, ["op_id"])["op_id"], "op_id")
+  })
+};
+var empty = (v) => {
+  known(v, [], [], "data");
+  return {};
+};
+var fields = (v, names) => known(v, names, [], "data");
+var LEGACY_MACHINE_ROUTE_KINDS = ["internet", "lan"];
+var legacyRouteOf = (v) => {
+  const r2 = known(v, ["kind", "online"], [], "machine route");
+  const kind = oneOf(LEGACY_MACHINE_ROUTE_KINDS, r2["kind"], "machine route kind");
+  bool(r2["online"], "online");
+  return kind;
+};
+var machineRowOf = (v) => {
+  const m2 = known(v, ["device", "label", "state"], ["routes"], "machine row");
+  const routes = m2["routes"];
+  if (routes !== undefined && (!Array.isArray(routes) || routes.length > LEGACY_MACHINE_ROUTE_KINDS.length))
+    return fail("routes");
+  const listed = routes?.map(legacyRouteOf);
+  if (listed !== undefined && new Set(listed).size !== listed.length)
+    return fail("routes");
+  return {
+    device: deviceId(m2["device"]),
+    label: text(m2["label"], LABEL_MAX_CHARS, "label", 0),
+    state: oneOf(MACHINE_STATES, m2["state"], "machine state")
+  };
+};
+var MACHINE_DATA = {
+  "machine.list": (v) => {
+    const machines = fields(v, ["machines"])["machines"];
+    return Array.isArray(machines) ? { machines: machines.map(machineRowOf) } : fail("machines");
+  },
+  "machine.describe": (v) => {
+    const m2 = fields(v, ["device", "description"]);
+    if (!isRecord21(m2["description"]))
+      return fail("description");
+    return {
+      device: deviceId(m2["device"]),
+      description: jsonObject(m2["description"], "description")
+    };
+  },
+  "machine.batch": (v) => ({
+    batch_id: machineId(fields(v, ["batch_id"])["batch_id"], "batch_id")
+  }),
+  "machine.batch_part": (v) => ({
+    received: uint(fields(v, ["received"])["received"], 0, MACHINE_UPLOAD_PARTS_MAX - 1, "received")
+  }),
+  "machine.cancel": empty,
+  "machine.credit": empty,
+  "machine.result_of": (v) => ({
+    state: oneOf(MACHINE_LOOKUP_STATES, fields(v, ["state"])["state"], "lookup state")
+  }),
+  "machine.events.subscribe": empty
+};
+
+// packages/device-service-core/src/local-api/validate-machine-events.ts
+var MACHINE_OUTPUT_MAX_BYTES = STREAM_INLINE_MAX;
+var blobId2 = (m2) => localId(m2["id"], "blob id");
+var blobRefOf2 = (v) => {
+  const m2 = known(v, ["id", "bytes", "sha256"], [], "blob");
+  return {
+    id: blobId2(m2),
+    bytes: uint(m2["bytes"], 1, LOCAL_BLOB_MAX, "blob bytes"),
+    sha256: sha256Field(m2["sha256"], "blob sha256")
+  };
+};
+var base64Of = (v, max, what) => {
+  base64Bytes(v, max, what);
+  return typeof v === "string" ? v : fail(what);
+};
+var TIMING_FIELDS = [
+  "enqueued_ms",
+  "flushed_ms",
+  "confirmed_ms",
+  "dispatched_ms",
+  "settled_ms",
+  "applied_ms"
+];
+var timingOf = (v) => {
+  const m2 = known(v, [], TIMING_FIELDS, "timing");
+  return Object.fromEntries(TIMING_FIELDS.flatMap((k) => m2[k] === undefined ? [] : [[k, uint(m2[k], 0, Number.MAX_SAFE_INTEGER, k)]]));
+};
+var opResultOf = (v) => {
+  const head = { type: "event", kind: "machine.op_result" };
+  const all = eventFields(v, ["op_id"], ["blob", "response"]);
+  const shape = (name) => exactly(all, ["type", "kind", "op_id", name], [], "event");
+  if (Object.hasOwn(all, "blob")) {
+    const m3 = shape("blob");
+    return { ...head, op_id: machineId(m3["op_id"], "op_id"), blob: blobRefOf2(m3["blob"]) };
+  }
+  const m2 = shape("response");
+  if (lineBytes(v) > LOCAL_INLINE_MAX)
+    return fail("an inline result over LOCAL_INLINE_MAX is a blob");
+  return {
+    ...head,
+    op_id: machineId(m2["op_id"], "op_id"),
+    response: jsonObject(m2["response"], "response")
+  };
+};
+var MACHINE_EVENT_VALIDATORS = {
+  "machine.op_state": (v) => {
+    const m2 = eventFields(v, ["op_id", "state"], ["timing"]);
+    return {
+      type: "event",
+      kind: "machine.op_state",
+      op_id: machineId(m2["op_id"], "op_id"),
+      state: oneOf(MACHINE_OP_STATES, m2["state"], "op state"),
+      ...m2["timing"] === undefined ? {} : { timing: timingOf(m2["timing"]) }
+    };
+  },
+  "machine.op_result": opResultOf,
+  "machine.output": (v) => {
+    const m2 = eventFields(v, ["handle", "seq", "bytes"]);
+    return {
+      type: "event",
+      kind: "machine.output",
+      handle: machineRef(m2["handle"], "handle"),
+      seq: uint(m2["seq"], 0, Number.MAX_SAFE_INTEGER, "seq"),
+      bytes: base64Of(m2["bytes"], MACHINE_OUTPUT_MAX_BYTES, "bytes")
+    };
+  },
+  "machine.changed": (v) => {
+    const m2 = eventFields(v, ["device", "state"]);
+    return {
+      type: "event",
+      kind: "machine.changed",
+      device: deviceId(m2["device"]),
+      state: oneOf(MACHINE_STATES, m2["state"], "machine state")
+    };
+  },
+  "machine.blob_chunk": (v) => {
+    const m2 = eventFields(v, ["id", "off", "b"]);
+    return {
+      type: "event",
+      kind: "machine.blob_chunk",
+      id: blobId2(m2),
+      off: uint(m2["off"], 0, LOCAL_BLOB_MAX, "blob off"),
+      b: base64Of(m2["b"], LOCAL_CHUNK_MAX, "blob chunk")
+    };
+  },
+  "machine.blob_done": (v) => ({
+    type: "event",
+    kind: "machine.blob_done",
+    id: blobId2(eventFields(v, ["id"]))
+  }),
+  "machine.blob_abort": (v) => {
+    const m2 = eventFields(v, ["id", "reason"]);
+    return {
+      type: "event",
+      kind: "machine.blob_abort",
+      id: blobId2(m2),
+      reason: oneOf(MACHINE_BLOB_ABORT_REASONS, m2["reason"], "blob abort reason")
+    };
+  }
+};
+
+// packages/device-service-core/src/local-api/protocol-presenter.ts
+var PRESENTER_LOCAL_LANES = ["control", "delegated"];
+var PRESENTER_LOCAL_LINE_MAX = {
+  control: 16 * 1024,
+  delegated: 1024 * 1024
+};
+var PRESENTER_ENDED_REASONS = [
+  "viewer_closed",
+  "engine_closed",
+  "no_control_endpoint",
+  "no_delegated_connection",
+  "not_granted",
+  "conn_collision",
+  "busy",
+  "idle",
+  "event_lost",
+  "too_large",
+  "malformed",
+  "rate"
+];
+
+// packages/device-service-core/src/local-api/validate-presenter.ts
+var BASE64URL3 = /^[A-Za-z0-9_-]+$/;
+var presenterLineText = (v, lane) => {
+  const max = PRESENTER_LOCAL_LINE_MAX[lane];
+  if (typeof v !== "string" || v.length === 0 || v.length > Math.ceil(max * 4 / 3))
+    return fail("line too long");
+  if (!BASE64URL3.test(v))
+    return fail("line");
+  let bytes;
+  try {
+    bytes = fromBase64url(v);
+  } catch (error62) {
+    if (error62 instanceof Error)
+      return fail("line");
+    throw error62;
+  }
+  return bytes.length <= max && toBase64url(bytes) === v ? v : fail("line");
+};
+var laneOf = (v) => oneOf(PRESENTER_LOCAL_LANES, v["lane"], "lane");
+var PRESENTER_REQUEST_VALIDATORS = {
+  "session.presenter_open": (v, id) => {
+    const m2 = requestFields(v, ["device", "session"]);
+    return {
+      id,
+      type: "session.presenter_open",
+      device: deviceId(m2["device"]),
+      session: sessionId(m2["session"])
+    };
+  },
+  "session.presenter_send": (v, id) => {
+    const m2 = requestFields(v, ["device", "lane", "b"]);
+    const lane = laneOf(m2);
+    return {
+      id,
+      type: "session.presenter_send",
+      device: deviceId(m2["device"]),
+      lane,
+      b: presenterLineText(m2["b"], lane)
+    };
+  }
+};
+var frameOf = (v) => {
+  const m2 = eventFields(v, ["device", "lane", "b"]);
+  const lane = laneOf(m2);
+  return {
+    type: "event",
+    kind: "session.presenter_frame",
+    device: deviceId(m2["device"]),
+    lane,
+    b: presenterLineText(m2["b"], lane)
+  };
+};
+var PRESENTER_EVENT_VALIDATORS = {
+  "session.presenter_frame": frameOf,
+  "session.presenter_ended": (v) => {
+    const m2 = eventFields(v, ["device", "reason"]);
+    return {
+      type: "event",
+      kind: "session.presenter_ended",
+      device: deviceId(m2["device"]),
+      reason: oneOf(PRESENTER_ENDED_REASONS, m2["reason"], "presenter end reason")
+    };
+  }
+};
+
+// packages/device-service-core/src/local-api/validate-deliveries.ts
+var PROTOCOL_MAX = 1e6;
+var PAIRS_MAX = 4096;
+var pairOf = (m2) => ({
+  sender_device: deviceId(m2["sender_device"], "sender_device"),
+  session_id: durableId(m2["session_id"], "session_id"),
+  last_command_id: commandId(m2["last_command_id"])
+});
+var PAIR_FIELDS = ["sender_device", "session_id", "last_command_id"];
+var DELIVERIES_REQUEST_VALIDATORS = {
+  "delivery.pending": (v, id) => {
+    const pairs = requestFields(v, ["pairs"])["pairs"];
+    if (!Array.isArray(pairs) || pairs.length > PAIRS_MAX)
+      return fail("pairs");
+    return {
+      id,
+      type: "delivery.pending",
+      pairs: pairs.map((p2) => pairOf(exactly(p2, PAIR_FIELDS, [], "pair")))
+    };
+  },
+  "delivery.drained": (v, id) => ({
+    id,
+    type: "delivery.drained",
+    ...pairOf(requestFields(v, PAIR_FIELDS))
+  }),
+  "deliveries.serve": (v, id) => {
+    const m2 = requestFields(v, ["agent_dir", "v"]);
+    return {
+      id,
+      type: "deliveries.serve",
+      agent_dir: absolutePath(m2["agent_dir"], "agent_dir"),
+      v: uint(m2["v"], 0, PROTOCOL_MAX, "v")
+    };
+  },
+  "delivery.answer": (v, id) => {
+    const m2 = requestFields(v, ["sender_device", "command_id", "reply"]);
+    return {
+      id,
+      type: "delivery.answer",
+      sender_device: deviceId(m2["sender_device"], "sender_device"),
+      command_id: commandId(m2["command_id"]),
+      reply: jsonObject(m2["reply"], "reply")
+    };
+  },
+  "delivery.held": (v, id) => {
+    const m2 = requestFields(v, ["ask_id", "holds"]);
+    return {
+      id,
+      type: "delivery.held",
+      ask_id: localId(m2["ask_id"], "ask_id"),
+      holds: bool(m2["holds"], "holds")
+    };
+  },
+  "peer.admitted": (v, id) => ({
+    id,
+    type: "peer.admitted",
+    device: deviceId(requestFields(v, ["device"])["device"])
+  })
+};
+var empty2 = (v) => {
+  known(v, [], [], "data");
+  return {};
+};
+var DELIVERIES_DATA = {
+  "deliveries.serve": (v) => {
+    const m2 = known(v, ["wake"], [], "data");
+    return { wake: bool(m2["wake"], "wake") };
+  },
+  "delivery.answer": empty2,
+  "delivery.held": empty2,
+  "delivery.pending": empty2,
+  "delivery.drained": (v) => {
+    const m2 = known(v, ["kept"], ["expecting"], "data");
+    const kept = bool(m2["kept"], "kept");
+    if (!kept)
+      return m2["expecting"] === undefined ? { kept } : fail("expecting");
+    return { kept, expecting: commandId(m2["expecting"]) };
+  },
+  "peer.admitted": (v) => ({
+    admitted: bool(known(v, ["admitted"], [], "data")["admitted"], "admitted")
+  })
+};
+var DELIVERIES_EVENT_VALIDATORS = {
+  "delivery.wake": (v) => {
+    const m2 = eventFields(v, ["enabled"]);
+    return { type: "event", kind: "delivery.wake", enabled: bool(m2["enabled"], "enabled") };
+  },
+  "delivery.inbound": (v) => {
+    const m2 = eventFields(v, ["command_id", "sender_device", "durable_id", "record"]);
+    return {
+      type: "event",
+      kind: "delivery.inbound",
+      command_id: commandId(m2["command_id"]),
+      sender_device: deviceId(m2["sender_device"], "sender_device"),
+      durable_id: durableId(m2["durable_id"]),
+      record: jsonObject(m2["record"], "record")
+    };
+  },
+  "delivery.holds": (v) => {
+    const m2 = eventFields(v, ["ask_id", "durable_id"]);
+    return {
+      type: "event",
+      kind: "delivery.holds",
+      ask_id: localId(m2["ask_id"], "ask_id"),
+      durable_id: durableId(m2["durable_id"])
+    };
+  }
+};
+
+// packages/device-service-core/src/local-api/validate-listing-row.ts
+var ROW_FIELDS = [
+  "device",
+  "session_id",
+  "title",
+  "project",
+  "path",
+  "state",
+  "updated_ms",
+  "source",
+  "as_of"
+];
+var ROW_KIND = new RegExp(`^[a-z][a-z0-9_-]{0,${SESSION_KIND_MAX_CHARS - 1}}$`);
+var rowLinks = (m2) => {
+  const kind = m2["kind"];
+  if (Object.hasOwn(m2, "parent") !== Object.hasOwn(m2, "parent_listed"))
+    fail("parent_listed");
+  return {
+    ...kind === undefined ? {} : { kind: typeof kind === "string" && ROW_KIND.test(kind) ? kind : fail("row kind") },
+    ...m2["parent"] === undefined ? {} : {
+      parent: sessionId(m2["parent"]),
+      parent_listed: bool(m2["parent_listed"], "parent_listed")
+    }
+  };
+};
+var rowModel = (v) => {
+  if (v === undefined)
+    return {};
+  const m2 = known(v, ["provider", "id"], [], "model");
+  return {
+    model: {
+      provider: text(m2["provider"], SESSION_MODEL_PROVIDER_MAX_CHARS, "model provider"),
+      id: text(m2["id"], SESSION_MODEL_ID_MAX_CHARS, "model id")
+    }
+  };
+};
+var settledByOf = (v) => {
+  const named = known(v, ["kind"], [], "settled_by")["kind"];
+  if (typeof named !== "string")
+    return fail("settled_by kind");
+  const kind = LISTING_SETTLED_BY_KINDS.find((k) => k === named);
+  switch (kind) {
+    case undefined:
+      return;
+    case "user":
+      return { kind };
+    case "agent": {
+      const m2 = known(v, ["kind"], ["threadId", "threadTitle"], "settled_by");
+      const id = m2["threadId"];
+      const title = m2["threadTitle"];
+      return {
+        kind,
+        ...id === undefined ? {} : { threadId: text(id, SESSION_ID_MAX_CHARS, "settled_by threadId") },
+        ...title === undefined ? {} : {
+          threadTitle: text(title, SESSION_SETTLED_THREAD_TITLE_MAX_CHARS, "settled_by threadTitle", 0)
+        }
+      };
+    }
+    case "pr-merged":
+    case "pr-closed": {
+      const n3 = known(v, ["kind"], ["pullRequestNumber"], "settled_by")["pullRequestNumber"];
+      return {
+        kind,
+        ...n3 === undefined ? {} : {
+          pullRequestNumber: uint(n3, 0, Number.MAX_SAFE_INTEGER, "settled_by pullRequestNumber")
+        }
+      };
+    }
+    case "inactivity": {
+      const days = known(v, ["kind", "days"], [], "settled_by")["days"];
+      return { kind, days: uint(days, 0, SESSION_SETTLED_DAYS_MAX, "settled_by days") };
+    }
+    default:
+      return assertNever2(kind);
+  }
+};
+var rowSettled = (m2) => {
+  const reason2 = m2["settled_by"];
+  if (m2["settled"] === undefined)
+    return reason2 === undefined ? {} : fail("settled_by");
+  const settled = bool(m2["settled"], "settled");
+  if (reason2 === undefined)
+    return { settled };
+  if (!settled)
+    return fail("settled_by");
+  const by = settledByOf(reason2);
+  return by === undefined ? { settled } : { settled, settled_by: by };
+};
+var listingRowOf = (v) => {
+  const m2 = known(v, ROW_FIELDS, ["kind", "parent", "parent_listed", "durable_id", "model", "archived", "settled", "settled_by"], "listing row");
+  const durable = m2["durable_id"];
+  const archived = m2["archived"];
+  return {
+    ...rowLinks(m2),
+    ...rowModel(m2["model"]),
+    ...rowSettled(m2),
+    ...archived === undefined ? {} : { archived: archived === true ? true : fail("archived") },
+    ...durable === undefined ? {} : { durable_id: text(durable, SESSION_ID_MAX_CHARS, "durable_id") },
+    device: deviceId(m2["device"]),
+    session_id: sessionId(m2["session_id"]),
+    title: text(m2["title"], SESSION_SUMMARY_TITLE_MAX_CHARS, "title", 0),
+    project: text(m2["project"], SESSION_SUMMARY_PROJECT_MAX_CHARS, "project"),
+    path: text(m2["path"], SESSION_SUMMARY_PATH_MAX_CHARS, "path"),
+    state: oneOf(SESSION_ROW_STATES, m2["state"], "row state"),
+    updated_ms: millis(m2["updated_ms"], "updated_ms"),
+    source: oneOf(LISTING_SOURCES, m2["source"], "row source"),
+    as_of: millis(m2["as_of"], "as_of")
+  };
+};
+
 // packages/device-service-core/src/local-api/validate-events.ts
 var revisionOf = (m2) => uint(m2["revision"], 1, Number.MAX_SAFE_INTEGER, "revision");
 var devicesOf = (v) => {
   if (!isRecord21(v))
     return fail("round devices");
   const out = {};
-  for (const [device, state3] of Object.entries(v))
-    out[safeKey(deviceId(device), "round device")] = oneOf(ROUND_DEVICE_STATES, state3, "round device state");
+  for (const [device, state4] of Object.entries(v))
+    out[safeKey2(deviceId(device), "round device")] = oneOf(ROUND_DEVICE_STATES, state4, "round device state");
   return out;
 };
 var commandStateOf = (v) => {
   const m2 = eventFields(v, ["command_id", "state", "retryable"], ["reason", "receipt"]);
-  const state3 = oneOf(COMMAND_STATES, m2["state"], "command state");
-  if (bool(m2["retryable"], "retryable") !== RETRYABLE_STATES.includes(state3))
+  const state4 = oneOf(COMMAND_STATES, m2["state"], "command state");
+  if (bool(m2["retryable"], "retryable") !== RETRYABLE_STATES.includes(state4))
     return fail("retryable");
   const head = {
     type: "event",
@@ -132451,35 +133478,38 @@ var commandStateOf = (v) => {
     ...m2["receipt"] === undefined ? {} : { receipt: jsonObject(m2["receipt"], "receipt") }
   };
   const reason2 = m2["reason"];
-  switch (state3) {
+  switch (state4) {
     case "engine_refused":
       return {
         ...head,
-        state: state3,
+        state: state4,
         reason: oneOf(COMMAND_REFUSAL_REASONS, reason2, "refusal reason"),
         retryable: false
       };
     case "uncertain":
       return {
         ...head,
-        state: state3,
+        state: state4,
         reason: oneOf(COMMAND_UNCERTAIN_REASONS, reason2, "uncertain reason"),
         retryable: false
       };
     case "not confirmed":
     case "not delivered: never_sent":
-      return reason2 === undefined ? { ...head, state: state3, retryable: true } : fail("reason");
+      return reason2 === undefined ? { ...head, state: state4, retryable: true } : fail("reason");
     case "queued":
     case "transport_confirmed":
     case "engine_dispatched":
     case "engine_applied":
     case "engine_stale":
-      return reason2 === undefined ? { ...head, state: state3, retryable: false } : fail("reason");
+      return reason2 === undefined ? { ...head, state: state4, retryable: false } : fail("reason");
   }
 };
 var VALIDATORS = {
   ...STREAM_EVENT_VALIDATORS,
+  ...MACHINE_EVENT_VALIDATORS,
   ...DELEGATED_EVENT_VALIDATORS,
+  ...PRESENTER_EVENT_VALIDATORS,
+  ...DELIVERIES_EVENT_VALIDATORS,
   "status.changed": (v) => ({
     type: "event",
     kind: "status.changed",
@@ -132487,12 +133517,12 @@ var VALIDATORS = {
   }),
   "sessions.round": (v) => {
     const m2 = eventFields(v, ["query_id", "state", "devices"]);
-    const state3 = oneOf(ROUND_STATES, m2["state"], "round state");
+    const state4 = oneOf(ROUND_STATES, m2["state"], "round state");
     return {
       type: "event",
       kind: "sessions.round",
       query_id: queryOf(m2),
-      state: state3,
+      state: state4,
       devices: devicesOf(m2["devices"])
     };
   },
@@ -132516,6 +133546,15 @@ var VALIDATORS = {
       query_id: queryOf(m2),
       revision: revisionOf(m2),
       rows: rows.map(listingRowOf)
+    };
+  },
+  "sessions.listing_changed": (v) => {
+    const m2 = eventFields(v, ["device", "generation"]);
+    return {
+      type: "event",
+      kind: "sessions.listing_changed",
+      device: deviceId(m2["device"]),
+      generation: nullable2(m2["generation"], (g2) => uint(g2, 0, Number.MAX_SAFE_INTEGER, "generation"))
     };
   },
   "sessions.listing_end": (v) => {
@@ -132551,6 +133590,20 @@ var VALIDATORS = {
       next_before
     };
   },
+  "host.update_notice": (v) => {
+    const m2 = eventFields(v, ["target_version", "phase", "policy"], ["update_id", "deadline_ms"]);
+    const id = m2["update_id"];
+    const deadline = m2["deadline_ms"];
+    return {
+      type: "event",
+      kind: "host.update_notice",
+      ...id === undefined ? {} : { update_id: localId(id, "update_id") },
+      target_version: semver(m2["target_version"], "target_version"),
+      phase: oneOf(UPDATE_NOTICE_PHASES, m2["phase"], "update notice phase"),
+      ...deadline === undefined ? {} : { deadline_ms: millis(deadline, "deadline_ms") },
+      policy: oneOf(UPDATE_POLICIES, m2["policy"], "update policy")
+    };
+  },
   "session.upload_abort": (v) => {
     const m2 = eventFields(v, ["upload_id", "reason"]);
     const reason2 = oneOf(UPLOAD_ABORT_REASONS, m2["reason"], "upload abort reason");
@@ -132569,8 +133622,36 @@ var validateEventFields = (v) => {
   return VALIDATORS[oneOf(EVENT_KINDS, v["kind"], "event kind")](v);
 };
 
+// packages/device-service-core/src/local-api/validate-session-wake.ts
+var SESSION_WAKE_VALIDATORS = {
+  "control.session_wake.get": (v, id) => {
+    requestFields(v, []);
+    return { id, type: "control.session_wake.get" };
+  },
+  "control.session_wake.set": (v, id) => {
+    const raw = requestFields(v, ["enabled"])["enabled"];
+    return {
+      id,
+      type: "control.session_wake.set",
+      enabled: raw === null ? null : bool(raw, "enabled")
+    };
+  }
+};
+var storedOf = (v) => v === null || v === "unreadable" || typeof v === "boolean" ? v : fail("stored");
+var sessionWakeState = (v) => {
+  const m2 = known(v, ["enabled", "stored", "changedAt", "overridden"], [], "data");
+  const stored = m2["stored"];
+  const changedAt = m2["changedAt"];
+  return {
+    enabled: bool(m2["enabled"], "enabled"),
+    stored: storedOf(stored),
+    changedAt: typeof changedAt === "string" ? changedAt : fail("changedAt"),
+    overridden: bool(m2["overridden"], "overridden")
+  };
+};
+
 // packages/device-service-core/src/local-api/validate-requests.ts
-var ENVIRONMENTS_MAX = 1024;
+var ENVIRONMENTS_MAX2 = 1024;
 var PKCS8_KEY_BYTES = 48;
 var PKCS8_PREFIX = {
   ed25519: "302e020100300506032b657004220420",
@@ -132578,20 +133659,20 @@ var PKCS8_PREFIX = {
 };
 var pkcs8 = (v, algorithm, what) => {
   const bytes = base64Bytes(v, PKCS8_KEY_BYTES, what);
-  const prefix = Buffer.from(bytes.subarray(0, 16)).toString("hex");
+  const prefix = toHex(bytes.subarray(0, 16));
   const exact = bytes.length === PKCS8_KEY_BYTES && prefix === PKCS8_PREFIX[algorithm];
   return exact && typeof v === "string" ? v : fail(what);
 };
 var filterOf = (v) => {
-  const { device, project, state: state3 } = exactly(v, [], FILTER_KEYS, "filter");
+  const { device, project, state: state4 } = exactly(v, [], FILTER_KEYS, "filter");
   return {
     ...device === undefined ? {} : { device: deviceId(device, "filter.device") },
     ...project === undefined ? {} : { project: text(project, SESSION_PROJECT_MAX_CHARS, "filter.project") },
-    ...state3 === undefined ? {} : { state: SESSION_ROW_STATES.find((s) => s === state3) ?? fail("filter.state") }
+    ...state4 === undefined ? {} : { state: SESSION_ROW_STATES.find((s) => s === state4) ?? fail("filter.state") }
   };
 };
 var environmentsOf = (v) => {
-  if (!Array.isArray(v) || v.length > ENVIRONMENTS_MAX)
+  if (!Array.isArray(v) || v.length > ENVIRONMENTS_MAX2)
     return fail("environments");
   const rows = v.map((e) => {
     const m2 = exactly(e, ["environment_id", "revoked", "closed"], [], "environment");
@@ -132603,33 +133684,62 @@ var environmentsOf = (v) => {
   });
   return new Set(rows.map((r2) => r2.environment_id)).size === rows.length ? rows : fail("duplicate environment_id");
 };
-var bare = (v) => {
+var resumeOf = (v) => {
+  const m2 = exactly(v, ["attach_id", "seq"], [], "resume");
+  const seq = uint(m2["seq"], 0, Number.MAX_SAFE_INTEGER, "resume.seq");
+  return { attach_id: attachId(m2["attach_id"]), seq };
+};
+var fromOf = (v) => {
+  const m2 = exactly(v, ["last_entry_id"], [], "from");
+  return { last_entry_id: entryId(m2["last_entry_id"], "from.last_entry_id") };
+};
+var bare2 = (v) => {
   requestFields(v, []);
 };
-var agentDir = (v) => absolutePath(requestFields(v, ["agent_dir"])["agent_dir"], "agent_dir");
 var VALIDATORS2 = {
   ...COMMAND_REQUEST_VALIDATORS,
+  ...MACHINE_REQUEST_VALIDATORS,
   ...DELEGATED_REQUEST_VALIDATORS,
+  ...PRESENTER_REQUEST_VALIDATORS,
+  ...DELIVERIES_REQUEST_VALIDATORS,
   authenticate: (v, id) => {
     const m2 = requestFields(v, ["client_proof"]);
     return { id, type: "authenticate", client_proof: text(m2["client_proof"], 64, "client_proof") };
   },
   "status.get": (v, id) => {
-    bare(v);
-    return { id, type: "status.get" };
+    const { exe, sign_in_reason: reason2 } = requestFields(v, [], ["exe", "sign_in_reason"]);
+    if (exe !== undefined && exe !== true)
+      return fail("exe");
+    if (reason2 !== undefined && reason2 !== true)
+      return fail("sign_in_reason");
+    return {
+      id,
+      type: "status.get",
+      ...exe === true ? { exe } : {},
+      ...reason2 === true ? { sign_in_reason: reason2 } : {}
+    };
   },
   "status.subscribe": (v, id) => {
-    bare(v);
+    bare2(v);
     return { id, type: "status.subscribe" };
   },
   "control.attach.get": (v, id) => {
-    bare(v);
+    bare2(v);
     return { id, type: "control.attach.get" };
   },
   "control.attach.set": (v, id) => {
     const attached = bool(requestFields(v, ["attached"])["attached"], "attached");
     return { id, type: "control.attach.set", attached };
   },
+  "control.remote_commands.get": (v, id) => {
+    bare2(v);
+    return { id, type: "control.remote_commands.get" };
+  },
+  "control.remote_commands.set": (v, id) => {
+    const enabled = bool(requestFields(v, ["enabled"])["enabled"], "enabled");
+    return { id, type: "control.remote_commands.set", enabled };
+  },
+  ...SESSION_WAKE_VALIDATORS,
   "service.set_enabled": (v, id) => {
     const enabled = bool(requestFields(v, ["enabled"])["enabled"], "enabled");
     return { id, type: "service.set_enabled", enabled };
@@ -132645,32 +133755,42 @@ var VALIDATORS2 = {
     };
   },
   "device.adopt": (v, id) => {
-    const m2 = requestFields(v, ["device", "signing_private_key", "sealing_private_key"]);
+    const m2 = requestFields(v, ["device", "signing_private_key", "sealing_private_key"], ["account", "sign_in_reason"]);
+    const reason2 = m2["sign_in_reason"];
+    if (reason2 !== undefined && reason2 !== true)
+      return fail("sign_in_reason");
     return {
       id,
       type: "device.adopt",
       device: deviceRef(m2["device"]),
+      ...m2["account"] === undefined ? {} : { account: text(m2["account"], 256, "account") },
+      ...reason2 === true ? { sign_in_reason: reason2 } : {},
       signing_private_key: pkcs8(m2["signing_private_key"], "ed25519", "signing_private_key"),
       sealing_private_key: pkcs8(m2["sealing_private_key"], "x25519", "sealing_private_key")
     };
   },
   "device.forget": (v, id) => {
-    bare(v);
+    bare2(v);
     return { id, type: "device.forget" };
   },
   "device.info": (v, id) => {
-    bare(v);
+    bare2(v);
     return { id, type: "device.info" };
   },
-  "endpoints.register": (v, id) => ({ id, type: "endpoints.register", agent_dir: agentDir(v) }),
-  "endpoints.unregister": (v, id) => ({ id, type: "endpoints.unregister", agent_dir: agentDir(v) }),
+  ...endpointRequests,
   "devices.list": (v, id) => {
-    bare(v);
-    return { id, type: "devices.list" };
+    const { managed } = requestFields(v, [], ["managed"]);
+    if (managed !== undefined && managed !== true)
+      return fail("managed");
+    return { id, type: "devices.list", ...managed === undefined ? {} : { managed } };
+  },
+  "sessions.events.subscribe": (v, id) => {
+    bare2(v);
+    return { id, type: "sessions.events.subscribe" };
   },
   "sessions.list": (v, id) => {
     const { filter, rows } = requestFields(v, [], ["filter", "rows"]);
-    if (rows !== undefined && rows !== 2 && rows !== 3)
+    if (rows !== undefined && rows !== 2 && rows !== 3 && rows !== 4 && rows !== 5)
       return fail("rows");
     return {
       id,
@@ -132680,12 +133800,20 @@ var VALIDATORS2 = {
     };
   },
   "session.attach": (v, id) => {
-    const m2 = requestFields(v, ["device", "session_id"]);
+    const m2 = requestFields(v, ["device", "session_id"], ["seqs", "resume", "from"]);
+    const { seqs, resume, from: from2, session_id } = m2;
+    if (seqs !== undefined && seqs !== true)
+      return fail("seqs");
+    if (!isStreamSessionKey(session_id))
+      return fail("session_id");
     return {
       id,
       type: "session.attach",
       device: deviceId(m2["device"]),
-      session_id: sessionId(m2["session_id"])
+      session_id,
+      ...seqs === undefined ? {} : { seqs },
+      ...resume === undefined ? {} : { resume: resumeOf(resume) },
+      ...from2 === undefined ? {} : { from: fromOf(from2) }
     };
   },
   "session.detach": (v, id) => ({
@@ -132719,7 +133847,8 @@ var VALIDATORS2 = {
   "owner.shutdown_for_upgrade": (v, id) => {
     const target_version = semver(requestFields(v, ["target_version"])["target_version"], "target_version");
     return { id, type: "owner.shutdown_for_upgrade", target_version };
-  }
+  },
+  "owner.update_committed": (v, id) => updateCommittedOf(requestFields(v, ["update_id"]), id)
 };
 var REQUEST_TYPES = keysOf(VALIDATORS2);
 
@@ -132740,8 +133869,17 @@ var validateWelcome = (v) => asViolation(() => {
   }
   if (isRecord21(v) && v["type"] === "welcome" && v["v"] !== LOCAL_API_VERSION)
     return { type: "refused", reason: "version" };
-  const fields = ["type", "v", "service_version", "owner", "server_proof", "server_nonce", "capabilities", "state"];
-  const m2 = known(v, fields, [], "welcome");
+  const fields2 = [
+    "type",
+    "v",
+    "service_version",
+    "owner",
+    "server_proof",
+    "server_nonce",
+    "capabilities",
+    "state"
+  ];
+  const m2 = known(v, fields2, [], "welcome");
   const capabilities = m2["capabilities"];
   if (m2["type"] !== "welcome" || m2["owner"] !== "service")
     return fail("welcome");
@@ -132758,7 +133896,7 @@ var validateWelcome = (v) => asViolation(() => {
     state: statusOf(m2["state"])
   };
 });
-var empty = (v) => {
+var empty3 = (v) => {
   known(v, [], [], "data");
   return {};
 };
@@ -132771,37 +133909,57 @@ var attachState = (v) => {
     changedAt: typeof changedAt === "string" ? changedAt : fail("changedAt")
   };
 };
+var remoteCommandsState = (v) => {
+  const m2 = known(v, ["enabled", "changedAt", "overridden"], [], "data");
+  const changedAt = m2["changedAt"];
+  return {
+    enabled: bool(m2["enabled"], "enabled"),
+    changedAt: typeof changedAt === "string" ? changedAt : fail("changedAt"),
+    overridden: bool(m2["overridden"], "overridden")
+  };
+};
 var DATA = {
-  authenticate: empty,
+  authenticate: empty3,
   "status.get": statusOf,
-  "status.subscribe": empty,
+  "status.subscribe": empty3,
   "service.set_enabled": (v) => ({ enabled: bool(one(v, "enabled"), "enabled") }),
-  "refresher.register": empty,
+  "refresher.register": empty3,
   "device.adopt": (v) => ({ device: deviceRef(one(v, "device"), "device", known) }),
-  "device.forget": empty,
+  "device.forget": empty3,
   "device.info": (v) => ({
     device: nullable2(one(v, "device"), (d) => deviceRef(d, "device", known))
   }),
-  "endpoints.register": empty,
-  "endpoints.unregister": empty,
+  "endpoints.register": empty3,
+  "endpoints.unregister": empty3,
+  "endpoints.list": (v) => endpointsListData(known(v, ["agent_dirs"], [], "data")),
+  "session.presenter_open": empty3,
+  "session.presenter_send": empty3,
   "devices.list": (v) => {
     const devices = one(v, "devices");
     return Array.isArray(devices) ? { devices: devices.map(deviceRowOf) } : fail("devices");
   },
   "sessions.list": (v) => ({ query_id: localId(one(v, "query_id"), "query_id") }),
+  "sessions.events.subscribe": empty3,
   "session.attach": (v) => ({ attach: localId(one(v, "attach"), "attach") }),
-  "session.detach": empty,
-  "session.command": (v) => ({ command_id: commandId(one(v, "command_id")) }),
+  "session.detach": empty3,
+  "session.command": commandAnswerOf,
   "session.command_part": (v) => ({
     received: uint(one(v, "received"), 0, LOCAL_UPLOAD_PARTS_MAX - 1, "received")
   }),
   "session.read": (v) => ({ query_id: localId(one(v, "query_id"), "query_id") }),
-  "enforcement.report": empty,
-  "owner.shutdown_for_upgrade": empty,
-  "session.endpoints": endpointsData,
-  "session.locate": locateData,
+  "enforcement.report": empty3,
+  "owner.shutdown_for_upgrade": empty3,
+  "owner.update_committed": empty3,
   "control.attach.get": attachState,
-  "control.attach.set": attachState
+  "control.attach.set": attachState,
+  "control.remote_commands.get": remoteCommandsState,
+  "control.remote_commands.set": remoteCommandsState,
+  "control.session_wake.get": sessionWakeState,
+  "control.session_wake.set": sessionWakeState,
+  "session.endpoints": endpointsData,
+  "session.locate": (v) => refOf(v, "session.locate data"),
+  ...MACHINE_DATA,
+  ...DELIVERIES_DATA
 };
 var validateResponse = (v, type) => asViolation(() => {
   const m2 = known(v, ["id", "type", "ok"], ["data", "error"], "response");
@@ -132878,16 +134036,30 @@ class EventAssembler {
       case "session.detached":
         return this.#detached(event.attach);
       case "status.changed":
+      case "sessions.listing_changed":
       case "session.snapshot":
       case "session.snapshot_loading":
       case "session.records":
       case "session.attach_pending":
       case "session.command_state":
       case "session.upload_abort":
+      case "machine.op_state":
+      case "machine.op_result":
+      case "machine.output":
+      case "machine.changed":
+      case "machine.blob_chunk":
+      case "machine.blob_done":
+      case "machine.blob_abort":
       case "session.command_event":
       case "session.command_blob_chunk":
       case "session.command_blob_done":
       case "session.channel_closed":
+      case "session.presenter_frame":
+      case "session.presenter_ended":
+      case "host.update_notice":
+      case "delivery.inbound":
+      case "delivery.holds":
+      case "delivery.wake":
         return;
       default:
         return assertNever2(event);
@@ -132932,7 +134104,8 @@ class EventAssembler {
           kind: "session.records",
           attach,
           attach_id: open5.position.attach_id,
-          records
+          records,
+          seqs: [open5.position.seq]
         });
       }
       case "entry": {
@@ -133006,16 +134179,16 @@ var encodeLine = (value) => {
   return line;
 };
 var parseLine = (line) => {
-  let decoded2;
+  let decoded;
   try {
-    decoded2 = utf8.decode(line);
+    decoded = utf8.decode(line);
   } catch (error62) {
     if (error62 instanceof TypeError)
       throw new LocalApiError("protocol_violation", "a line is not UTF-8");
     throw error62;
   }
   try {
-    return JSON.parse(decoded2);
+    return JSON.parse(decoded);
   } catch (error62) {
     if (error62 instanceof SyntaxError)
       throw new LocalApiError("protocol_violation", "a line is not JSON");
@@ -133155,12 +134328,8 @@ class ClientConnection {
             throw error62;
           }
           if (!response.ok) {
-            const { code, reason: reason2, action, limit_chars, path_refusal } = response.error;
-            reject(new LocalApiError(code, reason2, {
-              action,
-              ...limit_chars === undefined ? {} : { limit_chars },
-              ...path_refusal === undefined ? {} : { path_refusal }
-            }));
+            const { code, reason: reason2, ...extra } = response.error;
+            reject(new LocalApiError(code, reason2, extra));
             return;
           }
           onAnswer?.(response.data);
@@ -133218,6 +134387,124 @@ class ClientConnection {
   }
 }
 
+// packages/device-service-core/src/local-api/client-open.ts
+var HANDSHAKE_TIMEOUT_MS = 1e4;
+var REQUEST_TIMEOUT_MS = 30000;
+var realTimer = (expire, ms) => {
+  const timer = setTimeout(expire, ms);
+  return () => clearTimeout(timer);
+};
+var proveAndAuthenticate = async (connection, options) => {
+  const nonce2 = mintNonce();
+  connection.send({
+    type: "hello",
+    v: LOCAL_API_VERSION,
+    client: options.client,
+    client_nonce: nonce2
+  });
+  try {
+    const welcome = validateWelcome(await connection.firstMessage());
+    if (welcome.type === "refused")
+      throw new LocalApiError("refused", welcome.reason);
+    const token = options.readToken();
+    if (!proofMatches(serverProof(token, nonce2, connection.endpoint), welcome.server_proof))
+      throw new LocalApiError("server_proof_invalid", "the owner did not prove the per-boot token");
+    await connection.request("authenticate", {
+      client_proof: clientProof(token, welcome.server_nonce, connection.endpoint)
+    });
+    return welcome;
+  } catch (error62) {
+    connection.destroy();
+    throw error62;
+  }
+};
+var handshake = (connection, options) => new Promise((resolve32, reject) => {
+  const cancel2 = (options.handshakeTimer ?? realTimer)(() => {
+    connection.destroy();
+    reject(new LocalApiError("handshake_timeout", "the owner did not complete the handshake"));
+  }, HANDSHAKE_TIMEOUT_MS);
+  proveAndAuthenticate(connection, options).then(resolve32, reject).finally(cancel2);
+});
+var sendCommand = async (connection, target, rpc, command_id, given = {}, mark = {}) => {
+  const marked = mark.accepts === undefined ? {} : { accepts: mark.accepts };
+  const route = {
+    ...given.delegated === true && (("attach" in target) || ("endpoint" in target)) ? { delegated: true } : {},
+    ...given.endpoint !== undefined && "attach" in target ? { endpoint: given.endpoint } : {},
+    ...given.locate === true && "endpoint" in target ? { locate: true } : {}
+  };
+  const sent = command_id ?? mintId();
+  const id = { command_id: sent };
+  const timedOut = (error62) => {
+    if (error62 instanceof LocalApiError && error62.code === "request_timeout")
+      throw new LocalApiError("request_timeout", `command ${sent} may have been dispatched; follow its command state`, {
+        command_id: sent
+      });
+    throw error62;
+  };
+  const draft = {
+    id: "x".repeat(REQUEST_ID_MAX_CHARS),
+    type: "session.command",
+    ...target,
+    ...id,
+    ...marked,
+    ...route,
+    rpc
+  };
+  if (lineBytes(draft) > LOCAL_INLINE_MAX) {
+    const json2 = JSON.stringify(rpc);
+    if (checkCommandText(json2) === "message_too_long")
+      throw new LocalApiError("message_too_long", "the command is over the engine limit", {
+        limit_chars: MESSAGE_LIMIT_CHARS
+      });
+    const upload_id = mintId();
+    const on = "device" in target ? { device: target.device } : target;
+    const parts = uploadParts(json2).map((part) => connection.request("session.command_part", { ...on, upload_id, ...part }));
+    await Promise.all(parts);
+    return (await connection.request("session.command", { ...target, ...id, ...marked, ...route, upload_id }).catch(timedOut)).command_id;
+  }
+  return (await connection.request("session.command", { ...target, ...id, ...marked, ...route, rpc }).catch(timedOut)).command_id;
+};
+var openLocalApiClient = async (transport, options) => {
+  const listeners = new Set;
+  const assembler = new EventAssembler((event) => {
+    for (const listener of [...listeners])
+      listener(event);
+  });
+  const connection = new ClientConnection(transport, (event) => assembler.accept(event), {
+    timer: options.requestTimer ?? realTimer,
+    ms: REQUEST_TIMEOUT_MS
+  });
+  connection.closed.then(() => assembler.failAll(new LocalApiError("closed", "the connection closed")));
+  const welcome = await handshake(connection, options);
+  return {
+    welcome,
+    request: (type, params) => connection.request(type, params),
+    onEvent: (listener) => {
+      listeners.add(listener);
+      return () => {
+        listeners.delete(listener);
+      };
+    },
+    command: (attach, rpc, command_id) => sendCommand(connection, { attach }, rpc, command_id),
+    commandTo: (target, rpc, command_id, route, mark) => sendCommand(connection, target, rpc, command_id, route, mark),
+    list: (filter, onRevision, rows) => new Promise((resolve32, reject) => {
+      const params = {
+        ...filter === undefined ? {} : { filter },
+        ...rows === undefined ? {} : { rows }
+      };
+      const watch = (data) => assembler.watchListing(data.query_id, { resolve: resolve32, reject }, onRevision);
+      connection.request("sessions.list", params, watch).catch(reject);
+    }),
+    read: (attach, options2 = {}) => new Promise((resolve32, reject) => {
+      const watch = (data) => assembler.watchRead(data.query_id, attach, { resolve: resolve32, reject });
+      connection.request("session.read", { attach, ...options2 }, watch).catch(reject);
+    }),
+    oversizedLines: () => connection.oversizedLines(),
+    close: () => connection.close(),
+    closed: connection.closed
+  };
+};
+
 // packages/device-service-core/src/local-api/transport.ts
 import { lstatSync as lstatSync6, readFileSync as readFileSync48, unlinkSync as unlinkSync10 } from "node:fs";
 import { createConnection, createServer as createServer4 } from "node:net";
@@ -133262,12 +134549,10 @@ var readEndpointPort = (stateDir) => {
     throw new LocalApiError("insecure_state_dir", "endpoint.json holds no port");
   return port;
 };
-var connectLocal = (stateDir, options = {}) => new Promise((resolve32, reject) => {
+var connectLocal = (stateDir) => new Promise((resolve32, reject) => {
   const port = process.platform === "win32" ? readEndpointPort(stateDir) : undefined;
   const endpoint = port === undefined ? UNIX_ENDPOINT : tcpEndpoint(port);
   const socket = port === undefined ? createConnection({ path: join120(stateDir, SOCKET_FILE) }) : createConnection({ host: "127.0.0.1", port });
-  if (options.background === true)
-    socket.unref();
   socket.once("error", reject);
   socket.once("connect", () => {
     socket.off("error", reject);
@@ -133276,134 +134561,77 @@ var connectLocal = (stateDir, options = {}) => new Promise((resolve32, reject) =
 });
 
 // packages/device-service-core/src/local-api/client.ts
-var HANDSHAKE_TIMEOUT_MS = 1e4;
-var REQUEST_TIMEOUT_MS = 30000;
-var realTimer = (expire, ms) => {
-  const timer = setTimeout(expire, ms);
-  return () => clearTimeout(timer);
-};
-var proveAndAuthenticate = async (connection, options) => {
-  const nonce2 = mintNonce();
-  connection.send({
-    type: "hello",
-    v: LOCAL_API_VERSION,
-    client: options.client,
-    client_nonce: nonce2
-  });
-  try {
-    const welcome = validateWelcome(await connection.firstMessage());
-    if (welcome.type === "refused")
-      throw new LocalApiError("refused", welcome.reason);
-    const token = (options.readToken ?? (() => readToken(options.stateDir)))();
-    if (!proofMatches(serverProof(token, nonce2, connection.endpoint), welcome.server_proof))
-      throw new LocalApiError("server_proof_invalid", "the owner did not prove the per-boot token");
-    await connection.request("authenticate", {
-      client_proof: clientProof(token, welcome.server_nonce, connection.endpoint)
-    });
-    return welcome;
-  } catch (error62) {
-    connection.destroy();
-    throw error62;
-  }
-};
-var handshake = (connection, options) => new Promise((resolve32, reject) => {
-  const cancel2 = (options.handshakeTimer ?? realTimer)(() => {
-    connection.destroy();
-    reject(new LocalApiError("handshake_timeout", "the owner did not complete the handshake"));
-  }, HANDSHAKE_TIMEOUT_MS);
-  proveAndAuthenticate(connection, options).then(resolve32, reject).finally(cancel2);
-});
-var sendCommand = async (connection, attach, rpc, command_id, route) => {
-  const sent = command_id ?? mintId();
-  const id = { command_id: sent };
-  const timedOut = (error62) => {
-    if (error62 instanceof LocalApiError && error62.code === "request_timeout")
-      throw new LocalApiError("request_timeout", `command ${sent} may have been dispatched; follow its command state`, {
-        command_id: sent
-      });
-    throw error62;
-  };
-  const draft = {
-    id: "x".repeat(REQUEST_ID_MAX_CHARS),
-    type: "session.command",
-    attach,
-    ...id,
-    ...route,
-    rpc
-  };
-  if (lineBytes(draft) > LOCAL_INLINE_MAX) {
-    const json2 = JSON.stringify(rpc);
-    if (checkCommandText(json2) === "message_too_long")
-      throw new LocalApiError("message_too_long", "the command is over the engine limit", {
-        limit_chars: MESSAGE_LIMIT_CHARS
-      });
-    const upload_id = mintId();
-    const parts = uploadParts(json2).map((part) => connection.request("session.command_part", { attach, upload_id, ...part }));
-    await Promise.all(parts);
-    return (await connection.request("session.command", { attach, ...id, ...route, upload_id }).catch(timedOut)).command_id;
-  }
-  return (await connection.request("session.command", { attach, ...id, ...route, rpc }).catch(timedOut)).command_id;
-};
-var sendEndpointCommand = async (connection, device, endpoint, rpc, command_id, locate) => {
-  const sent = command_id ?? mintId();
-  const params = { device, endpoint, command_id: sent, ...locate ? { locate: true } : {}, rpc };
-  if (lineBytes({ id: "x".repeat(REQUEST_ID_MAX_CHARS), type: "session.command", ...params }) > LOCAL_INLINE_MAX)
-    throw new LocalApiError("message_too_long", "an endpoint command travels inline only", {
-      limit_chars: MESSAGE_LIMIT_CHARS
-    });
-  try {
-    return (await connection.request("session.command", params)).command_id;
-  } catch (error62) {
-    if (error62 instanceof LocalApiError && error62.code === "request_timeout")
-      throw new LocalApiError("request_timeout", `command ${sent} may have been dispatched; follow its command state`, {
-        command_id: sent
-      });
-    throw error62;
-  }
-};
 var connectLocalApi = async (options) => {
   if (process.platform !== "win32")
     checkPosixAccess(options.stateDir);
   const transport = await (options.transport ?? (() => connectLocal(options.stateDir)))();
-  const listeners = new Set;
-  const assembler = new EventAssembler((event) => {
-    for (const listener of [...listeners])
-      listener(event);
+  return openLocalApiClient(transport, {
+    client: options.client,
+    readToken: options.readToken ?? (() => readToken(options.stateDir)),
+    ...options.handshakeTimer === undefined ? {} : { handshakeTimer: options.handshakeTimer },
+    ...options.requestTimer === undefined ? {} : { requestTimer: options.requestTimer }
   });
-  const connection = new ClientConnection(transport, (event) => assembler.accept(event), {
-    timer: options.requestTimer ?? realTimer,
-    ms: REQUEST_TIMEOUT_MS
+};
+
+// packages/device-service-core/src/background-transport.ts
+import { createConnection as createConnection2 } from "node:net";
+import { join as join121 } from "node:path";
+var wrap2 = (socket, endpoint) => {
+  const closeListeners = [];
+  let closed = false;
+  socket.on("close", () => {
+    closed = true;
+    for (const listener of closeListeners.splice(0))
+      listener();
   });
-  connection.closed.then(() => assembler.failAll(new LocalApiError("closed", "the connection closed")));
-  const welcome = await handshake(connection, options);
+  socket.on("error", () => {});
   return {
-    welcome,
-    request: (type, params) => connection.request(type, params),
-    onEvent: (listener) => {
-      listeners.add(listener);
-      return () => {
-        listeners.delete(listener);
-      };
+    endpoint,
+    write: (bytes) => {
+      if (!closed)
+        socket.write(bytes);
     },
-    command: (attach, rpc, command_id, route = {}) => sendCommand(connection, attach, rpc, command_id, route),
-    endpointCommand: (device, endpoint, rpc, command_id, options2) => sendEndpointCommand(connection, device, endpoint, rpc, command_id, options2?.locate === true),
-    list: (filter, onRevision, rows) => new Promise((resolve32, reject) => {
-      const params = {
-        ...filter === undefined ? {} : { filter },
-        ...rows === undefined ? {} : { rows }
-      };
-      const watch = (data) => assembler.watchListing(data.query_id, { resolve: resolve32, reject }, onRevision);
-      connection.request("sessions.list", params, watch).catch(reject);
-    }),
-    read: (attach, options2 = {}) => new Promise((resolve32, reject) => {
-      const watch = (data) => assembler.watchRead(data.query_id, attach, { resolve: resolve32, reject });
-      connection.request("session.read", { attach, ...options2 }, watch).catch(reject);
-    }),
-    oversizedLines: () => connection.oversizedLines(),
-    close: () => connection.close(),
-    closed: connection.closed
+    close: () => {
+      socket.end();
+    },
+    destroy: () => {
+      socket.destroy();
+    },
+    onData: (listener) => {
+      socket.on("data", (chunk) => listener(new Uint8Array(chunk.buffer, chunk.byteOffset, chunk.byteLength)));
+    },
+    onClose: (listener) => {
+      if (closed)
+        listener();
+      else
+        closeListeners.push(listener);
+    }
   };
 };
+var connectLocalBackground = (stateDir) => new Promise((resolve32, reject) => {
+  const port = process.platform === "win32" ? readEndpointPort(stateDir) : undefined;
+  const endpoint = port === undefined ? UNIX_ENDPOINT : tcpEndpoint(port);
+  const socket = port === undefined ? createConnection2({ path: join121(stateDir, SOCKET_FILE) }) : createConnection2({ host: "127.0.0.1", port });
+  socket.unref();
+  socket.once("error", reject);
+  socket.once("connect", () => {
+    socket.off("error", reject);
+    resolve32(wrap2(socket, endpoint));
+  });
+});
+
+// packages/device-service-core/src/not-sent-error.ts
+class NotSentError extends LocalApiError {
+  not_sent = true;
+}
+var markNotSent = (error62) => error62 instanceof LocalApiError ? new NotSentError(error62.code, error62.reason, {
+  action: error62.action,
+  ...error62.limit_chars === undefined ? {} : { limit_chars: error62.limit_chars },
+  ...error62.path_refusal === undefined ? {} : { path_refusal: error62.path_refusal },
+  ...error62.candidates === undefined ? {} : { candidates: error62.candidates },
+  ...error62.incomplete === undefined ? {} : { incomplete: error62.incomplete },
+  ...error62.sign_in_reason === undefined ? {} : { sign_in_reason: error62.sign_in_reason }
+}) : error62;
 
 // packages/device-service-core/src/remote-attach.ts
 import { randomBytes as randomBytes8 } from "node:crypto";
@@ -133517,6 +134745,17 @@ function followDelegatedChannel(device) {
   };
 }
 
+// packages/device-service-core/src/timers.ts
+var realTimers = {
+  after: (ms, fn) => {
+    const timer = setTimeout(fn, ms);
+    timer.unref?.();
+    return () => clearTimeout(timer);
+  },
+  now: () => Date.now()
+};
+var deadlineTimerOf = (timers) => (expire, ms) => timers.after(ms, expire);
+
 // packages/device-service-core/src/remote-attach.ts
 var attachEvent = (event) => {
   switch (event.kind) {
@@ -133542,14 +134781,19 @@ var toRemote = (event) => {
       return { kind: "snapshot", snapshot };
     }
     case "session.records":
-      return { kind: "records", attach_id: event.attach_id, records: event.records };
+      return {
+        kind: "records",
+        attach_id: event.attach_id,
+        records: event.records,
+        ...event.seqs === undefined ? {} : { seqs: event.seqs }
+      };
     case "session.attach_pending":
       return { kind: "pending", reason: event.reason };
     case "session.detached":
       return { kind: "detached", reason: event.reason };
   }
 };
-function openAttach(client3, device, sessionId2) {
+function openAttach(client3, device, sessionId2, timers = realTimers) {
   const early = [];
   const history = [];
   const listeners = new Set;
@@ -133569,13 +134813,13 @@ function openAttach(client3, device, sessionId2) {
   let failure3;
   const commands2 = new Set;
   let channel;
-  let drain;
+  let cancelDrain;
   let released = false;
   const release3 = () => {
     if (released)
       return;
     released = true;
-    clearTimeout(drain);
+    cancelDrain?.();
     stop2();
     channel?.stop();
   };
@@ -133593,8 +134837,7 @@ function openAttach(client3, device, sessionId2) {
     resolveDetached(reason2);
     if (reason2 === "closed" || commands2.size === 0)
       return endCommands(reason2);
-    drain = setTimeout(() => endCommands(reason2), ENDED_COMMAND_WAIT_MS);
-    drain.unref?.();
+    cancelDrain = timers.after(ENDED_COMMAND_WAIT_MS, () => endCommands(reason2));
   };
   const deliver = (event) => {
     const remote = toRemote(event);
@@ -133654,7 +134897,7 @@ function openAttach(client3, device, sessionId2) {
       failure: () => failure3,
       onFrame: (listener) => delegated.onFrame(listener),
       onChannelLoss: (listener) => delegated.onLoss(listener),
-      command: (rpc) => new Promise((resolve32, reject) => {
+      command: (rpc, options) => new Promise((resolve32, reject) => {
         if (ended)
           return reject(new Error("the attach has ended"));
         const commandId2 = randomBytes8(16).toString("base64url");
@@ -133678,7 +134921,7 @@ function openAttach(client3, device, sessionId2) {
           resolve32(response === undefined ? { outcome: event } : { outcome: event, response });
         });
         commands2.add(end);
-        client3.command(attach, rpc, commandId2, { delegated: true }).catch((error62) => {
+        client3.commandTo({ attach }, rpc, commandId2, { delegated: true }, options).catch((error62) => {
           settle2();
           reject(error62);
         });
@@ -133722,6 +134965,9 @@ function newestRowsListing(client3) {
 // packages/device-service-core/src/device-service.ts
 import { randomBytes as randomBytes9 } from "node:crypto";
 
+// packages/device-service-core/src/minimum-in-effect.ts
+var minimumInEffect = (option, key, shipped) => option === undefined ? shipped : option[key];
+
 // packages/device-service-core/src/release/version.ts
 var SEMVER2 = /^(\d+)\.(\d+)\.(\d+)(?:-([0-9A-Za-z.-]+))?(?:\+[0-9A-Za-z.-]+)?$/;
 var compareIdentifier = (a2, b2) => {
@@ -133758,9 +135004,49 @@ var compareVersions4 = (a2, b2) => {
   }
   return 0;
 };
+
+// packages/device-service-core/src/state-dir.ts
+import { readFileSync as readFileSync49, statSync as statSync9 } from "node:fs";
+import { homedir as homedir36 } from "node:os";
+import { dirname as dirname50, join as join122, posix as posix17, win32 as win3212 } from "node:path";
+var DEVICE_SERVICE_STATE_DIR_ENV = "OMO_DEVICE_SERVICE_STATE_DIR";
+var LOCATION_FILE = "device-service.location.json";
+var isAbsoluteOn = (platform2, path15) => (platform2 === "win32" ? win3212 : posix17).isAbsolute(path15);
+function defaultStateDir(platform2, env2, home) {
+  if (platform2 !== "win32")
+    return join122(home, ".omo", "device-service");
+  const localAppData = env2.LOCALAPPDATA ?? join122(home, "AppData", "Local");
+  return join122(localAppData, "OmO", "device-service");
+}
+function discoveredStateDir(platform2, defaultDir) {
+  try {
+    const parsed2 = JSON.parse(readFileSync49(join122(dirname50(defaultDir), LOCATION_FILE), "utf8"));
+    if (typeof parsed2 !== "object" || parsed2 === null || !("v" in parsed2) || !("state_dir" in parsed2))
+      return;
+    const { v, state_dir: stateDir } = parsed2;
+    if (v !== 1 || typeof stateDir !== "string" || !isAbsoluteOn(platform2, stateDir))
+      return;
+    return statSync9(stateDir).isDirectory() ? stateDir : undefined;
+  } catch {
+    return;
+  }
+}
+function deviceServiceStateDir(platform2 = process.platform, env2 = process.env, home = homedir36()) {
+  const explicit = env2[DEVICE_SERVICE_STATE_DIR_ENV];
+  if (explicit !== undefined && explicit !== "" && isAbsoluteOn(platform2, explicit))
+    return explicit;
+  const defaultDir = defaultStateDir(platform2, env2, home);
+  return discoveredStateDir(platform2, defaultDir) ?? defaultDir;
+}
 // packages/device-service-core/src/device-service.ts
 var ENDPOINT_COMMAND_WAIT_MS = 120000;
-function sendToEndpoint(client3, device, endpoint, rpc, locate) {
+function sendToEndpoint(client3, device, endpoint, rpc, locate, timers) {
+  return followDelegatedCommand(client3, device, timers, (commandId2) => {
+    const send2 = (asked) => client3.commandTo({ device, endpoint }, rpc, commandId2, asked ? { locate: true } : {});
+    return send2(locate).catch((error62) => locate && error62 instanceof LocalApiError && error62.code === "invalid_request" ? send2(false) : Promise.reject(error62));
+  });
+}
+function followDelegatedCommand(client3, device, timers, send2) {
   return new Promise((resolve32, reject) => {
     const commandId2 = randomBytes9(16).toString("base64url");
     const channel = followDelegatedChannel(device);
@@ -133769,7 +135055,7 @@ function sendToEndpoint(client3, device, endpoint, rpc, locate) {
       done = true;
       stop2();
       channel.stop();
-      clearTimeout(timer);
+      cancelTimer();
     };
     const fail2 = (error62) => {
       if (done)
@@ -133792,39 +135078,37 @@ function sendToEndpoint(client3, device, endpoint, rpc, locate) {
         ...located === undefined ? {} : { located }
       });
     });
-    const timer = setTimeout(() => fail2(new Error(`no final state for endpoint command ${commandId2} within ${ENDPOINT_COMMAND_WAIT_MS} ms`)), ENDPOINT_COMMAND_WAIT_MS);
-    timer.unref?.();
+    const cancelTimer = timers.after(ENDPOINT_COMMAND_WAIT_MS, () => fail2(new Error(`no final state for endpoint command ${commandId2} within ${ENDPOINT_COMMAND_WAIT_MS} ms`)));
     client3.closed.then(() => fail2(new Error("the connection closed before the endpoint command settled")));
-    const send2 = (asked) => client3.endpointCommand(device, endpoint, rpc, commandId2, { locate: asked });
-    send2(locate).catch((error62) => locate && error62 instanceof LocalApiError && error62.code === "invalid_request" ? send2(false).catch(fail2) : fail2(error62));
+    send2(commandId2).catch(fail2);
   });
 }
-var markNotSent = (error62) => error62 instanceof LocalApiError ? new LocalApiError(error62.code, error62.reason, {
-  action: error62.action,
-  ...error62.limit_chars === undefined ? {} : { limit_chars: error62.limit_chars },
-  ...error62.path_refusal === undefined ? {} : { path_refusal: error62.path_refusal },
-  not_sent: true
-}) : error62;
-function deviceServiceStateDir(platform2 = process.platform, env2 = process.env, home = homedir36()) {
-  if (platform2 !== "win32")
-    return join121(home, ".omo", "device-service");
-  const localAppData = env2.LOCALAPPDATA ?? join121(home, "AppData", "Local");
-  return join121(localAppData, "OmO", "device-service");
-}
 function deviceServiceEndpointPath(stateDir, platform2 = process.platform) {
-  return join121(stateDir, platform2 === "win32" ? ENDPOINT_FILE : SOCKET_FILE);
+  return join123(stateDir, platform2 === "win32" ? ENDPOINT_FILE : SOCKET_FILE);
 }
 var ADOPT_ACCOUNT_MIN_SERVICE_VERSION = "0.1.3";
 var acceptsAdoptAccount = (serviceVersion) => compareVersions4(serviceVersion, ADOPT_ACCOUNT_MIN_SERVICE_VERSION) >= 0;
+var WAKE_MARK_MIN_SERVICE_VERSION = "0.1.31";
+var LOCATE_SINGLE_MIN_SERVICE_VERSION = "0.1.13";
+var serviceAtLeast = (serviceVersion, minimum) => minimum !== null && compareVersions4(serviceVersion, minimum) >= 0;
 async function connectDeviceService(options) {
   const stateDir = options.stateDir ?? deviceServiceStateDir();
+  const timers = options.timers ?? realTimers;
+  const deadline = options.timers === undefined ? undefined : deadlineTimerOf(options.timers);
   const client3 = await (options.connect ?? connectLocalApi)({
     stateDir,
     client: { name: "omo", version: options.version },
-    ...options.background === true ? { transport: () => connectLocal(stateDir, { background: true }) } : {}
+    ...deadline === undefined ? {} : { handshakeTimer: deadline, requestTimer: deadline },
+    ...options.background === true ? { transport: () => connectLocalBackground(stateDir) } : {}
   });
+  const wakeMarkMinimum = minimumInEffect(options.minimums, "wakeMark", WAKE_MARK_MIN_SERVICE_VERSION);
+  const carriesWakeMark = serviceAtLeast(client3.welcome.service_version, wakeMarkMinimum);
+  const takesSingleLocate = serviceAtLeast(client3.welcome.service_version, minimumInEffect(options.minimums, "singleLocate", LOCATE_SINGLE_MIN_SERVICE_VERSION));
   return {
     serviceVersion: client3.welcome.service_version,
+    carriesWakeMark,
+    wakeMarkMinimum,
+    takesSingleLocate,
     capabilities: client3.welcome.capabilities,
     initialStatus: client3.welcome.state,
     status: () => client3.request("status.get", {}),
@@ -133842,6 +135126,8 @@ async function connectDeviceService(options) {
       return stop2;
     },
     setEnabled: async (enabled) => (await client3.request("service.set_enabled", { enabled })).enabled,
+    sessionWake: () => client3.request("control.session_wake.get", {}),
+    setSessionWake: (enabled) => client3.request("control.session_wake.set", { enabled }),
     attachControl: () => client3.request("control.attach.get", {}),
     setAttachControl: (attached) => client3.request("control.attach.set", { attached }),
     registerRefresher: async (binaryPath, version3) => {
@@ -133853,8 +135139,8 @@ async function connectDeviceService(options) {
       sealing_private_key: sealingPrivateKey,
       ...account !== undefined && acceptsAdoptAccount(client3.welcome.service_version) ? { account } : {}
     })).device,
-    registerEndpoints: async (agentDir2) => {
-      await client3.request("endpoints.register", { agent_dir: agentDir2 });
+    registerEndpoints: async (agentDir) => {
+      await client3.request("endpoints.register", { agent_dir: agentDir });
     },
     forget: async () => {
       await client3.request("device.forget", {});
@@ -133862,7 +135148,10 @@ async function connectDeviceService(options) {
     thisDevice: async () => (await client3.request("device.info", {})).device,
     devices: async () => (await client3.request("devices.list", {})).devices,
     sessions: newestRowsListing(client3),
-    attach: (device, sessionId2) => openAttach(client3, device, sessionId2),
+    attach: async (device, sessionId2) => {
+      const attached = await openAttach(client3, device, sessionId2, timers);
+      return carriesWakeMark ? attached : { ...attached, command: (rpc) => attached.command(rpc) };
+    },
     endpointCommand: async (device, rpc, options2) => {
       let endpoint;
       try {
@@ -133871,12 +135160,23 @@ async function connectDeviceService(options) {
         throw markNotSent(error62);
       }
       if (endpoint === undefined)
-        throw new LocalApiError("unsupported", "the device lists no engine endpoint", { not_sent: true });
-      return await sendToEndpoint(client3, device, endpoint, rpc, options2?.locate === true);
+        throw new NotSentError("unsupported", "the device lists no engine endpoint");
+      return await sendToEndpoint(client3, device, endpoint, rpc, options2?.locate === true, timers);
     },
     close: () => client3.close(),
     closed: client3.closed,
-    locate: (device, engineId2) => client3.request("session.locate", { device, engine_id: engineId2 })
+    locate: (device, engineId2, options2) => client3.request("session.locate", {
+      device,
+      engine_id: engineId2,
+      ...options2?.single === true && takesSingleLocate ? { single: true } : {}
+    }),
+    wakeCommand: async (device, durableId2, rpc) => {
+      if (!carriesWakeMark)
+        throw new NotSentError("unsupported", "this device service does not carry the wake target");
+      return await followDelegatedCommand(client3, device, timers, (commandId2) => client3.commandTo({ wake: { device, durable_id: durableId2 } }, rpc, commandId2).catch((error62) => {
+        throw error62 instanceof LocalApiError && error62.command_id === undefined ? markNotSent(error62) : error62;
+      }));
+    }
   };
 }
 // packages/device-service-core/src/bootstrap.ts
@@ -133939,6 +135239,66 @@ var forgetDeviceService = async (options) => {
   }
   return "forgotten";
 };
+// packages/device-service-core/src/cold-wake/service-table.ts
+var SERVICE_TABLE_ENV = "OMO_RELAYD_SERVICES";
+
+// packages/device-service-core/src/cold-wake/darwin.ts
+var TABLE_KEY = `EnvironmentVariables.${SERVICE_TABLE_ENV}`;
+// packages/device-service-core/src/release/windows-dacl.ts
+import { spawn as spawn7 } from "node:child_process";
+var SID_TOKEN_SCRIPT = String.raw`
+$ErrorActionPreference = 'Stop'
+(New-Object System.Security.AccessControl.RawSecurityDescriptor("O:$env:LA_SID")).GetSddlForm('Owner')
+`;
+var runPowerShell2 = async (script, env2) => {
+  const encoded = Buffer.from(script, "utf16le").toString("base64");
+  const proc = spawn7("powershell.exe", ["-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-EncodedCommand", encoded], { env: { ...process.env, ...env2 }, stdio: ["ignore", "pipe", "pipe"], windowsHide: true });
+  const chunks = [];
+  const errChunks = [];
+  proc.stdout.on("data", (chunk) => chunks.push(chunk));
+  proc.stderr.on("data", (chunk) => errChunks.push(chunk));
+  const code = await new Promise((resolve32, reject) => {
+    proc.once("error", reject);
+    proc.once("close", (exitCode) => resolve32(exitCode ?? -1));
+  });
+  return { code, out: Buffer.concat(chunks).toString("utf8"), err: Buffer.concat(errChunks).toString("utf8") };
+};
+var firstErrorLine = (err) => {
+  const line = (err ?? "").split(/\r?\n/).find((text2) => text2.trim() !== "" && !text2.startsWith("#< CLIXML"))?.trim() ?? "";
+  return line === "" ? "" : `: ${line.slice(0, 300)}`;
+};
+var userSidToken = async (userSid, run4 = runPowerShell2) => {
+  const { code, out } = await run4(SID_TOKEN_SCRIPT, { LA_SID: userSid });
+  const match = code === 0 ? /^O:(S-1-\d+(?:-\d+)+|[A-Z]{2})$/.exec(out.trim()) : null;
+  return match?.[1];
+};
+var aliasedDaclVerdict = (dacl, userSid, kind, userAlias) => {
+  const asSid = (token) => userAlias !== undefined && token === userAlias ? userSid : token;
+  return exactDaclVerdict({ ...dacl, owner: asSid(dacl.owner), aces: dacl.aces.map((ace) => ({ ...ace, sid: asSid(ace.sid) })) }, userSid, kind);
+};
+var applyExactDacl2 = async (path15, userSid, kind, run4 = runPowerShell2) => {
+  const { code, err } = await run4(APPLY_DACL_SCRIPT, { LA_PATH: path15, LA_SID: userSid, LA_KIND: kind });
+  if (code !== 0)
+    throw new LocalApiError("insecure_state_dir", `the exact DACL could not be applied${firstErrorLine(err)}`);
+};
+var verifyExactDacl2 = async (path15, userSid, kind, run4 = runPowerShell2) => {
+  let dacl;
+  try {
+    dacl = await describeDacl(path15, run4);
+  } catch (error62) {
+    if (error62 instanceof LocalApiError)
+      return false;
+    throw error62;
+  }
+  return aliasedDaclVerdict(dacl, userSid, kind, await userSidToken(userSid, run4));
+};
+var windowsSecureFile2 = (userSid, run4 = runPowerShell2) => async (path15, kind) => {
+  const target = kind === "dir" ? "dir" : "file";
+  await applyExactDacl2(path15, userSid, target, run4);
+  if (!await verifyExactDacl2(path15, userSid, target, run4))
+    throw new LocalApiError("insecure_state_dir", "the DACL is not exactly one ACE for the user");
+};
+
 // packages/device-service-core/src/release/release-assets.ts
 var MANIFEST = "latest.json";
 var CHECKSUMS_MAX_BYTES = 64 * 1024;
@@ -134004,13 +135364,13 @@ var parseReleaseKeySet = (value) => {
 };
 var DEVICE_SERVICE_RELEASE_KEYS = parseReleaseKeySet(release_key_default);
 // packages/device-service-core/src/release/acquire.ts
-var platformSecure = process.platform === "win32" ? async (path15, kind) => windowsSecureFile(await currentUserSid())(path15, kind) : posixSecureFile;
+var platformSecure = process.platform === "win32" ? async (path15, kind) => windowsSecureFile2(await currentUserSid())(path15, kind) : posixSecureFile;
 // packages/device-service-core/src/registrant.ts
 var NONE2 = Symbol("none registered");
 // packages/omo-native/package.json
 var package_default4 = {
   name: "omo-ai",
-  version: "5.1.69",
+  version: "5.1.72",
   type: "module",
   description: "OmO Native - the standalone omo command with the OMO extension built in: bun add -g omo-ai",
   bin: {
@@ -134027,7 +135387,7 @@ var package_default4 = {
     postinstall: "node bin/senpi-patch.mjs"
   },
   dependencies: {
-    "@code-yeongyu/senpi": "2026.11.12"
+    "@code-yeongyu/senpi": "2026.11.15-2"
   },
   repository: {
     type: "git",
@@ -134040,6 +135400,7 @@ var isRecord22 = (value) => typeof value === "object" && value !== null;
 async function accountOf(api2, credentials, doFetch) {
   if (credentials.accountId !== undefined)
     return credentials.accountId;
+  refuseIfLocalOnly("omo-native/device-service-handoff.ts accountOf");
   const response = await doFetch(`${api2}/v1/me`, { headers: { authorization: `Bearer ${credentials.accessToken}` } });
   if (!response.ok)
     throw new Error(`the account read failed (${response.status})`);
@@ -134084,12 +135445,12 @@ function cliDeviceServiceHandoff(options) {
       let failure3;
       const service = await connectOrNotRunning(connect2, (line) => {
         failure3 = line;
-        options.log(line);
       });
       if (service === "not_running") {
         return {
           kind: "unknown",
-          reason: failure3 ?? "the device service endpoint is present but nothing answered"
+          reason: failure3 ?? "the device service endpoint is present but nothing answered",
+          endpoint: deviceServiceEndpointPath(stateDir)
         };
       }
       try {
@@ -134110,6 +135471,5414 @@ function cliDeviceServiceHandoff(options) {
     }
   };
 }
+
+// packages/memory-core/src/journal/fsync.ts
+var SKIPPABLE_SYNC_CODES = new Set(["ENOENT", "EISDIR", "EPERM", "EACCES", "EINVAL"]);
+
+// packages/memory-core/src/sync/crypto/vendor/sync-format/keys.ts
+var hexBytes = (hex3) => {
+  const pairs = hex3.match(/../g);
+  return Uint8Array.from((pairs ?? []).map((pair) => Number.parseInt(pair, 16)));
+};
+var ED25519_PKCS8_PREFIX = hexBytes("302e020100300506032b657004220420");
+var ED25519_SPKI_PREFIX = hexBytes("302a300506032b6570032100");
+// packages/memory-core/src/sync/crypto/anchor.ts
+var anchors = new WeakSet;
+var candidates = new WeakSet;
+var bootstraps = new WeakSet;
+
+// packages/memory-core/src/sync/crypto/strict-ed25519/strict-ed25519.ts
+var P3 = (1n << 255n) - 19n;
+var L2 = (1n << 252n) + 27742317777372353535851937790883648493n;
+var mod2 = (n3) => {
+  const r2 = n3 % P3;
+  return r2 < 0n ? r2 + P3 : r2;
+};
+var power2 = (base, exponent) => {
+  let result = 1n;
+  let b2 = mod2(base);
+  for (let n3 = exponent;n3 > 0n; n3 >>= 1n) {
+    if (n3 & 1n)
+      result = mod2(result * b2);
+    b2 = mod2(b2 * b2);
+  }
+  return result;
+};
+var D2 = mod2(-121665n * power2(121666n, P3 - 2n));
+var SQRT_MINUS_ONE2 = power2(2n, (P3 - 1n) / 4n);
+var keyCache2 = new Map;
+
+// packages/memory-core/src/sync/crypto/trust-pin.ts
+var SOURCES = new Set(["pairing", "recovery", "creator"]);
+
+// packages/omo-native/remote-attach-presentation.ts
+import { randomUUID as randomUUID9 } from "node:crypto";
+
+// packages/omo-senpi/src/components/thread/errors.ts
+var THREAD_ERROR_CODES = [
+  "invalid_arguments",
+  "caller_context_missing",
+  "not_found",
+  "reply_target_mismatch",
+  "ambiguous_target",
+  "scope_denied",
+  "name_conflict",
+  "not_resumable",
+  "orphaned",
+  "foreign_live_owner",
+  "no_active_turn",
+  "turn_conflict",
+  "not_steerable",
+  "message_too_large",
+  "queue_full",
+  "cursor_invalid",
+  "cursor_stale",
+  "idempotency_conflict",
+  "idempotency_in_progress",
+  "idempotency_uncertain",
+  "approval_unavailable",
+  "approval_route_locked",
+  "partial_commit",
+  "unsupported",
+  "overloaded",
+  "transport_closed",
+  "host_unavailable",
+  "internal_error",
+  "model_not_found",
+  "model_ambiguous",
+  "thinking_level_unsupported",
+  "loop_detected",
+  "binding_conflict",
+  "binding_mismatch",
+  "binding_inactive",
+  "stale_revision",
+  "stale_token",
+  "already_answered",
+  "answer_in_progress",
+  "device_offline",
+  "relay_requires_paid_plan",
+  "alias_taken"
+];
+var CODE_SET = new Set(THREAD_ERROR_CODES);
+function isThreadErrorCode(value) {
+  return typeof value === "string" && CODE_SET.has(value);
+}
+function threadToolFailure(code, message, nextAction, details) {
+  if (!isThreadErrorCode(code)) {
+    throw new Error(`unknown thread error code: ${String(code)}`);
+  }
+  return { code, message, next_action: nextAction, ...details === undefined ? {} : { details } };
+}
+
+// packages/omo-senpi/src/components/thread/remote/outcome.ts
+var fail2 = (code, message, next, details) => ({ kind: "error", error: threadToolFailure(code, message, next, details) });
+function outcomeOf(result) {
+  const { outcome } = result;
+  if (outcome.state === "engine_refused") {
+    const detail = outcome.receipt?.["reason"];
+    return typeof detail === "string" && detail !== "" ? { kind: "refused", reason: outcome.reason, detail } : { kind: "refused", reason: outcome.reason };
+  }
+  if (outcome.state === "uncertain")
+    return { kind: "uncertain", reason: outcome.reason };
+  if (outcome.state === "engine_stale")
+    return { kind: "uncertain", reason: "engine_stale" };
+  const response = result.response ?? {};
+  if (response["success"] === false) {
+    const code = response["errorCode"];
+    const error62 = response["error"];
+    return {
+      kind: "refused",
+      reason: typeof code === "string" && code.length > 0 ? code : typeof error62 === "string" && error62.length > 0 ? error62 : "engine_failed"
+    };
+  }
+  return result.located === undefined ? { kind: "ok", response } : { kind: "ok", response, located: result.located.key };
+}
+var READ_UNCERTAIN = {
+  request_gone: "retry",
+  no_receipt: "retry",
+  engine_restarted: "retry",
+  recipient_revoked: "retry",
+  transport_expired: "retry",
+  unconfirmed: "retry",
+  lease_expired: "retry",
+  cancelled: "retry",
+  hand_restarted: "retry",
+  result_expired: "retry",
+  record_too_large: "too_large",
+  result_undecodable: "retry"
+};
+var UNANSWERED = new Set([
+  "closed",
+  "protocol_violation",
+  "internal",
+  "read_failed",
+  "request_timeout",
+  "handshake_timeout",
+  "attach_failed",
+  "reply_lost",
+  "host_not_answering",
+  "peer_not_found",
+  "engine_stale",
+  ...Object.entries(READ_UNCERTAIN).filter(([, answer]) => answer === "retry").map(([reason2]) => reason2)
+]);
+function outcomeFailure(outcome, device) {
+  if (outcome.kind === "uncertain")
+    return fail2("idempotency_uncertain", `The command to device ${device} may or may not have run (${outcome.reason}).`, "Read the thread before deciding whether to retry.", { device, reason: outcome.reason });
+  if (outcome.reason === "capability_missing")
+    return fail2("scope_denied", `Device ${device} does not grant this command.`, "Allow commands from this device on the other device, then retry.", { device, reason: outcome.reason });
+  if (outcome.reason === "host_detached")
+    return fail2("host_unavailable", `Device ${device} is not attached to the relay.`, "Retry when that device is signed in and online.", { device, reason: outcome.reason });
+  if (UNANSWERED.has(outcome.reason))
+    return fail2("host_unavailable", `Device ${device} did not answer (${outcome.reason}); this call changed nothing there.`, "Retry; nothing needs to be checked first.", { device, reason: outcome.reason });
+  if (outcome.reason === "record_too_large")
+    return fail2("unsupported", `The thread on device ${device} is too large to send back in one relay record (record_too_large).`, "Read it on that device, or ask that thread for a summary with thread_send.", { device, reason: outcome.reason });
+  return fail2("unsupported", `Device ${device} refused the command (${outcome.reason}).`, "Update omo on that device, or address a thread on this device.", { device, reason: outcome.reason });
+}
+
+// packages/omo-senpi/src/components/thread/remote/dialog-mirror.ts
+var raiserOnly = (request) => request["secret"] === true || request["grantSelect"] === true;
+
+// packages/omo-native/remote-attach-dialogs.ts
+var isObject5 = (value) => typeof value === "object" && value !== null && !Array.isArray(value);
+var SHOWN_KEPT = 1024;
+
+class MirroredDialogs {
+  #shown = new Set;
+  present(record3, sessionId2) {
+    const uiRequestId = record3["uiRequestId"];
+    if (typeof uiRequestId !== "string" || uiRequestId === "")
+      return;
+    if (record3["type"] === "ui_request_settled") {
+      this.#shown.delete(uiRequestId);
+      return {
+        type: "question_resolved",
+        id: uiRequestId,
+        outcome: record3["disposition"] === "answered" ? "answered" : "cancelled",
+        sessionId: sessionId2
+      };
+    }
+    if (record3["type"] !== "ui_request_pending")
+      return;
+    const request = record3["request"];
+    if (!isObject5(request) || raiserOnly(request))
+      return null;
+    this.#remember(uiRequestId);
+    return { ...request, type: "extension_ui_request", id: uiRequestId, sessionId: sessionId2 };
+  }
+  pending(requests, sessionId2) {
+    if (!Array.isArray(requests))
+      return [];
+    return requests.flatMap((request) => {
+      if (!isObject5(request) || typeof request["id"] !== "string" || request["id"] === "" || raiserOnly(request))
+        return [];
+      this.#remember(request["id"]);
+      return [{ ...request, type: "extension_ui_request", sessionId: sessionId2 }];
+    });
+  }
+  settledAway(pending, sessionId2) {
+    const still = new Set(pending.map((request) => request["id"]));
+    return [...this.#shown].flatMap((uiRequestId) => {
+      if (still.has(uiRequestId))
+        return [];
+      this.#shown.delete(uiRequestId);
+      return [{ type: "question_resolved", id: uiRequestId, outcome: "cancelled", sessionId: sessionId2 }];
+    });
+  }
+  #remember(uiRequestId) {
+    this.#shown.add(uiRequestId);
+    for (const oldest of this.#shown)
+      if (this.#shown.size > SHOWN_KEPT)
+        this.#shown.delete(oldest);
+  }
+  answer(record3) {
+    const id = record3["id"];
+    if (record3["type"] !== "extension_ui_response" || typeof id !== "string" || record3["uiRequestId"] !== undefined || !this.#shown.has(id))
+      return record3;
+    return { ...record3, uiRequestId: id };
+  }
+}
+
+// packages/omo-native/remote-attach-presentation.ts
+var LOCAL_SESSION_ID = "remote";
+var isRecord23 = (value) => typeof value === "object" && value !== null && !Array.isArray(value);
+var outcomeText = (outcome, device) => {
+  const mapped = outcomeOf({ outcome });
+  return mapped.kind === "ok" ? outcome.state : outcomeFailure(mapped, device).error.message;
+};
+function stateOf(snapshot) {
+  const state4 = isRecord23(snapshot.state) ? snapshot.state : {};
+  return { ...state4, sessionId: LOCAL_SESSION_ID, isStreaming: state4.isStreaming === true };
+}
+
+class Presentation {
+  snapshot;
+  streaming = false;
+  stopStream;
+  dialogs = new MirroredDialogs;
+  attach;
+  label;
+  socket;
+  constructor(attach, label, socket) {
+    this.attach = attach;
+    this.label = label;
+    this.socket = socket;
+  }
+  startStream() {
+    if (this.streaming)
+      return;
+    this.streaming = true;
+    this.notify(`Attached to ${this.label}`, "info");
+    const stopEvents = this.attach.onEvent((event) => this.event(event));
+    const stopFrames = this.attach.onFrame((frame) => this.send("sessionId" in frame ? { ...frame, sessionId: LOCAL_SESSION_ID } : frame));
+    const stopLosses = this.attach.onChannelLoss((reason2) => this.notify(`Lost a reply or event from the remote device: ${reason2}`, "warning"));
+    this.stopStream = () => {
+      stopEvents();
+      stopFrames();
+      stopLosses();
+    };
+  }
+  stop() {
+    this.stopStream?.();
+  }
+  send(value) {
+    if (this.socket.writable && !this.socket.destroyed)
+      this.socket.write(`${JSON.stringify(value)}
+`);
+  }
+  event(event) {
+    switch (event.kind) {
+      case "snapshot":
+        this.presentPending(event.snapshot);
+        this.snapshot = event.snapshot;
+        return;
+      case "records":
+        for (const record3 of event.records) {
+          const dialog = this.dialogs.present(record3, LOCAL_SESSION_ID);
+          if (dialog !== null)
+            this.send(dialog ?? { ...record3, sessionId: LOCAL_SESSION_ID });
+        }
+        return;
+      case "pending":
+        this.notify("Waiting for the remote device to share this session", "info");
+        return;
+      case "detached":
+        this.notify(`The remote session ended (${event.reason})`, "warning");
+        this.socket.end();
+        return;
+    }
+  }
+  pendingOf(snapshot) {
+    const state4 = isRecord23(snapshot.state) ? snapshot.state : {};
+    return {
+      pendingDialogs: this.dialogs.pending(state4.pendingDialogs, LOCAL_SESSION_ID),
+      pendingQuestions: this.dialogs.pending(state4.pendingQuestions, LOCAL_SESSION_ID)
+    };
+  }
+  presentPending(snapshot) {
+    const { pendingDialogs, pendingQuestions } = this.pendingOf(snapshot);
+    const pending = [...pendingDialogs, ...pendingQuestions];
+    for (const resolved of this.dialogs.settledAway(pending, LOCAL_SESSION_ID))
+      this.send(resolved);
+    for (const dialog of pending)
+      this.send(dialog);
+  }
+  notify(message, notifyType) {
+    this.send({
+      type: "extension_ui_request",
+      id: randomUUID9(),
+      method: "notify",
+      message,
+      notifyType,
+      sessionId: LOCAL_SESSION_ID
+    });
+  }
+  async answer(request) {
+    const type = String(request.type);
+    const reply = (data = {}) => this.send({ type: "response", id: request.id, command: type, success: true, data });
+    const refuse = (error62) => this.send({ type: "response", id: request.id, command: type, success: false, error: error62 });
+    try {
+      switch (type) {
+        case "set_client_info":
+        case "attach_session":
+        case "release_attachment":
+          return reply();
+        case "list_sessions":
+          return reply({
+            sessions: [
+              {
+                sessionId: LOCAL_SESSION_ID,
+                durableSessionId: this.attach.sessionId,
+                retain_on_disconnect: true,
+                sessionName: this.label
+              }
+            ]
+          });
+        case "subscribe_sessions":
+          reply({ subscriptionId: randomUUID9(), snapshot: [] });
+          return this.startStream();
+        case "get_state": {
+          const snapshot = this.snapshot ?? await this.attach.snapshot;
+          this.snapshot = snapshot;
+          return reply({ ...stateOf(snapshot), ...this.pendingOf(snapshot) });
+        }
+        case "get_entries":
+          return reply(await this.entries(request));
+        default:
+          return await this.forward(request, type);
+      }
+    } catch (error62) {
+      refuse(error62 instanceof Error ? error62.message : String(error62));
+    }
+  }
+  async forward(request, type) {
+    const named = this.dialogs.answer(request);
+    const rpc = named.sessionId === LOCAL_SESSION_ID ? { ...named, sessionId: this.attach.sessionId } : named;
+    const { outcome, response } = await this.attach.command(rpc);
+    if (response !== undefined) {
+      this.send({ ...response, id: request.id });
+      return;
+    }
+    if (outcome.state === "engine_applied") {
+      this.send({ type: "response", id: request.id, command: type, success: true });
+      return;
+    }
+    this.send({
+      type: "response",
+      id: request.id,
+      command: type,
+      success: false,
+      error: outcomeText(outcome, this.attach.device)
+    });
+  }
+  async entries(request) {
+    const before = typeof request.before === "string" ? request.before : undefined;
+    const tail = typeof request.tail === "number" ? Math.min(Math.max(Math.trunc(request.tail), 1), 200) : undefined;
+    if (before === undefined) {
+      const snapshot = this.snapshot ?? await this.attach.snapshot;
+      this.snapshot = snapshot;
+      const next = snapshot.history_truncated && snapshot.oldest_entry_id !== null ? { next_before: snapshot.oldest_entry_id } : {};
+      return { entries: snapshot.entries, leafId: null, ...next };
+    }
+    const page = await this.attach.read({ before, ...tail === undefined ? {} : { tail } });
+    const shown = page.entries.flatMap((entry) => ("entry" in entry) ? [entry.entry] : []);
+    const skipped2 = page.entries.length - shown.length;
+    if (skipped2 > 0)
+      this.notify(`${skipped2} older ${skipped2 === 1 ? "entry is" : "entries are"} too large to show`, "info");
+    return { entries: shown, leafId: null, ...page.next_before === null ? {} : { next_before: page.next_before } };
+  }
+}
+
+// packages/omo-native/remote-attach.ts
+var MAX_LINE_CHARS = 64 * 1024 * 1024;
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/system/memory/memory.mjs
+var exports_memory = {};
+__export(exports_memory, {
+  Update: () => Update,
+  Metrics: () => Metrics,
+  Discard: () => Discard,
+  Create: () => Create,
+  Clone: () => Clone,
+  Assign: () => Assign
+});
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/system/memory/metrics.mjs
+var Metrics = {
+  assign: 0,
+  create: 0,
+  clone: 0,
+  discard: 0,
+  update: 0
+};
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/system/settings/settings.mjs
+var exports_settings = {};
+__export(exports_settings, {
+  Set: () => Set2,
+  Reset: () => Reset,
+  Get: () => Get
+});
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/guard/guard.mjs
+var exports_guard = {};
+__export(exports_guard, {
+  Values: () => Values,
+  Symbols: () => Symbols,
+  SomeAll: () => SomeAll,
+  Some: () => Some,
+  ShiftLeft: () => ShiftLeft,
+  Keys: () => Keys,
+  IsValueLike: () => IsValueLike,
+  IsUnsafePropertyKey: () => IsUnsafePropertyKey,
+  IsUndefined: () => IsUndefined,
+  IsSymbol: () => IsSymbol,
+  IsString: () => IsString,
+  IsObjectNotArray: () => IsObjectNotArray,
+  IsObject: () => IsObject,
+  IsNumber: () => IsNumber,
+  IsNull: () => IsNull,
+  IsMultipleOf: () => IsMultipleOf,
+  IsMinLength: () => IsMinLength2,
+  IsMaxLength: () => IsMaxLength2,
+  IsLessThan: () => IsLessThan,
+  IsLessEqualThan: () => IsLessEqualThan,
+  IsInteger: () => IsInteger,
+  IsGreaterThan: () => IsGreaterThan,
+  IsGreaterEqualThan: () => IsGreaterEqualThan,
+  IsFunction: () => IsFunction,
+  IsEqual: () => IsEqual,
+  IsDeepEqual: () => IsDeepEqual,
+  IsConstructor: () => IsConstructor,
+  IsClassInstance: () => IsClassInstance,
+  IsBoolean: () => IsBoolean,
+  IsBigInt: () => IsBigInt,
+  IsArray: () => IsArray,
+  HasPropertyKey: () => HasPropertyKey,
+  GraphemeCount: () => GraphemeCount2,
+  EveryAll: () => EveryAll,
+  Every: () => Every,
+  EntriesRegExp: () => EntriesRegExp,
+  Entries: () => Entries,
+  Counted: () => Counted,
+  CodePointCount: () => CodePointCount2
+});
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/guard/unicode/unicode_segment.mjs
+function IsBetween(value, min, max) {
+  return value >= min && value <= max;
+}
+function IsZeroWidthJoiner(value) {
+  return value === 8205;
+}
+function IsRegionalIndicator(value) {
+  return IsBetween(value, 127462, 127487);
+}
+function IsVariationSelector(value) {
+  return IsBetween(value, 65024, 65039);
+}
+function IsCombiningMark(value) {
+  return IsBetween(value, 768, 879) || IsBetween(value, 6832, 6911) || IsBetween(value, 7616, 7679) || IsBetween(value, 65056, 65071);
+}
+function CodePointLength(value) {
+  return value > 65535 ? 2 : 1;
+}
+function ConsumeModifiers(value, index) {
+  while (index < value.length) {
+    const point = value.codePointAt(index);
+    if (IsCombiningMark(point) || IsVariationSelector(point)) {
+      index += CodePointLength(point);
+    } else {
+      break;
+    }
+  }
+  return index;
+}
+function NextGraphemeClusterIndex(value, clusterStart) {
+  const startCP = value.codePointAt(clusterStart);
+  let clusterEnd = clusterStart + CodePointLength(startCP);
+  clusterEnd = ConsumeModifiers(value, clusterEnd);
+  while (clusterEnd < value.length - 1 && IsZeroWidthJoiner(value.codePointAt(clusterEnd))) {
+    const nextCP = value.codePointAt(clusterEnd + 1);
+    clusterEnd += 1 + CodePointLength(nextCP);
+    clusterEnd = ConsumeModifiers(value, clusterEnd);
+  }
+  if (IsRegionalIndicator(startCP) && clusterEnd < value.length && IsRegionalIndicator(value.codePointAt(clusterEnd))) {
+    clusterEnd += CodePointLength(value.codePointAt(clusterEnd));
+  }
+  return clusterEnd;
+}
+function GraphemeCount(value) {
+  let count = 0, index = 0;
+  while (index < value.length) {
+    index = NextGraphemeClusterIndex(value, index);
+    count++;
+  }
+  return count;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/guard/unicode/unicode.mjs
+function CodePointCount(value) {
+  let result = 0, index = 0, prev = 0;
+  while (index < value.length) {
+    const next = value.charCodeAt(index++) >> 10;
+    result += +((prev << 8 | next) !== 13879);
+    prev = next;
+  }
+  return result;
+}
+function IsMaxLength(value, maxLength) {
+  return value.length <= maxLength || value.length <= maxLength << 1 && CodePointCount(value) <= maxLength;
+}
+function IsMinLength(value, minLength) {
+  return value.length >= minLength << 1 || value.length >= minLength && CodePointCount(value) >= minLength;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/guard/guard.mjs
+function IsArray(value) {
+  return Array.isArray(value);
+}
+function IsBigInt(value) {
+  return IsEqual(typeof value, "bigint");
+}
+function IsBoolean(value) {
+  return IsEqual(typeof value, "boolean");
+}
+function IsConstructor(value) {
+  if (IsUndefined(value) || !IsFunction(value))
+    return false;
+  const result = Function.prototype.toString.call(value);
+  if (/^class\s/.test(result))
+    return true;
+  if (/\[native code\]/.test(result))
+    return true;
+  return false;
+}
+function IsFunction(value) {
+  return IsEqual(typeof value, "function");
+}
+function IsInteger(value) {
+  return Number.isInteger(value);
+}
+function IsNull(value) {
+  return IsEqual(value, null);
+}
+function IsNumber(value) {
+  return Number.isFinite(value);
+}
+function IsObjectNotArray(value) {
+  return IsObject(value) && !IsArray(value);
+}
+function IsObject(value) {
+  return IsEqual(typeof value, "object") && !IsNull(value);
+}
+function IsString(value) {
+  return IsEqual(typeof value, "string");
+}
+function IsSymbol(value) {
+  return IsEqual(typeof value, "symbol");
+}
+function IsUndefined(value) {
+  return IsEqual(value, undefined);
+}
+function IsEqual(left, right) {
+  return left === right;
+}
+function IsGreaterThan(left, right) {
+  return left > right;
+}
+function IsLessThan(left, right) {
+  return left < right;
+}
+function IsLessEqualThan(left, right) {
+  return left <= right;
+}
+function IsGreaterEqualThan(left, right) {
+  return left >= right;
+}
+function IsMultipleOf(dividend, divisor) {
+  if (IsBigInt(dividend) || IsBigInt(divisor)) {
+    return BigInt(dividend) % BigInt(divisor) === 0n;
+  }
+  const tolerance = 0.0000000001;
+  if (!IsNumber(dividend))
+    return true;
+  if (IsInteger(dividend) && 1 / divisor % 1 === 0)
+    return true;
+  const mod3 = dividend % divisor;
+  return Math.min(Math.abs(mod3), Math.abs(mod3 - divisor), Math.abs(mod3 + divisor)) < tolerance;
+}
+function IsClassInstance(value) {
+  if (!IsObject(value))
+    return false;
+  const proto = globalThis.Object.getPrototypeOf(value);
+  if (IsNull(proto))
+    return false;
+  return IsEqual(typeof proto.constructor, "function") && !(IsEqual(proto.constructor, globalThis.Object) || IsEqual(proto.constructor.name, "Object"));
+}
+function IsValueLike(value) {
+  return IsBigInt(value) || IsBoolean(value) || IsNull(value) || IsNumber(value) || IsString(value) || IsUndefined(value);
+}
+function GraphemeCount2(value) {
+  return GraphemeCount(value);
+}
+function CodePointCount2(value) {
+  return CodePointCount(value);
+}
+function IsMaxLength2(value, maxLength) {
+  return IsMaxLength(value, maxLength);
+}
+function IsMinLength2(value, minLength) {
+  return IsMinLength(value, minLength);
+}
+function Every(value, offset, callback) {
+  return value.every((item, index) => index < offset || callback(item, index));
+}
+function EveryAll(value, offset, callback) {
+  let result = true;
+  value.forEach((item, index) => {
+    if (index >= offset && !callback(item, index))
+      result = false;
+  });
+  return result;
+}
+function Some(value, callback) {
+  return value.some((value2, index) => callback(value2, index));
+}
+function SomeAll(value, callback) {
+  let result = false;
+  value.forEach((item, index) => {
+    if (callback(item, index))
+      result = true;
+  });
+  return result;
+}
+function Counted(value, callback) {
+  return value.reduce((result, value2, index) => callback(value2, index) ? ++result : result, 0);
+}
+function ShiftLeft(array2, true_, false_) {
+  return IsEqual(array2.length, 0) ? false_() : true_(array2[0], array2.slice(1));
+}
+function IsUnsafePropertyKey(key) {
+  return IsEqual(key, "__proto__") || IsEqual(key, "constructor") || IsEqual(key, "prototype");
+}
+function HasPropertyKey(value, key) {
+  return IsUnsafePropertyKey(key) ? Object.prototype.hasOwnProperty.call(value, key) : (key in value);
+}
+function EntriesRegExp(value) {
+  return Keys(value).map((key) => [new RegExp(`^${key}$`), value[key]]);
+}
+function Entries(value) {
+  return Object.entries(value);
+}
+function Keys(value) {
+  return Object.getOwnPropertyNames(value);
+}
+function Symbols(value) {
+  return Object.getOwnPropertySymbols(value);
+}
+function Values(value) {
+  return Object.values(value);
+}
+function DeepEqualObject(left, right) {
+  if (!IsObject(right))
+    return false;
+  const keys = Keys(left);
+  return IsEqual(keys.length, Keys(right).length) && keys.every((key) => IsDeepEqual(left[key], right[key]));
+}
+function DeepEqualArray(left, right) {
+  return IsArray(right) && IsEqual(left.length, right.length) && left.every((_2, index) => IsDeepEqual(left[index], right[index]));
+}
+function IsDeepEqual(left, right) {
+  return IsArray(left) ? DeepEqualArray(left, right) : IsObject(left) ? DeepEqualObject(left, right) : IsEqual(left, right);
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/guard/globals.mjs
+var exports_globals = {};
+__export(exports_globals, {
+  IsUint8ClampedArray: () => IsUint8ClampedArray,
+  IsUint8Array: () => IsUint8Array,
+  IsUint32Array: () => IsUint32Array,
+  IsUint16Array: () => IsUint16Array,
+  IsTypeArray: () => IsTypeArray,
+  IsString: () => IsString2,
+  IsSet: () => IsSet,
+  IsRegExp: () => IsRegExp,
+  IsNumber: () => IsNumber2,
+  IsMap: () => IsMap,
+  IsInt8Array: () => IsInt8Array,
+  IsInt32Array: () => IsInt32Array,
+  IsInt16Array: () => IsInt16Array,
+  IsFloat64Array: () => IsFloat64Array,
+  IsFloat32Array: () => IsFloat32Array,
+  IsDate: () => IsDate,
+  IsBoolean: () => IsBoolean2,
+  IsBigUint64Array: () => IsBigUint64Array,
+  IsBigInt64Array: () => IsBigInt64Array
+});
+function IsBoolean2(value) {
+  return value instanceof Boolean;
+}
+function IsNumber2(value) {
+  return value instanceof Number;
+}
+function IsString2(value) {
+  return value instanceof String;
+}
+function IsTypeArray(value) {
+  return globalThis.ArrayBuffer.isView(value);
+}
+function IsInt8Array(value) {
+  return value instanceof globalThis.Int8Array;
+}
+function IsUint8Array(value) {
+  return value instanceof globalThis.Uint8Array;
+}
+function IsUint8ClampedArray(value) {
+  return value instanceof globalThis.Uint8ClampedArray;
+}
+function IsInt16Array(value) {
+  return value instanceof globalThis.Int16Array;
+}
+function IsUint16Array(value) {
+  return value instanceof globalThis.Uint16Array;
+}
+function IsInt32Array(value) {
+  return value instanceof globalThis.Int32Array;
+}
+function IsUint32Array(value) {
+  return value instanceof globalThis.Uint32Array;
+}
+function IsFloat32Array(value) {
+  return value instanceof globalThis.Float32Array;
+}
+function IsFloat64Array(value) {
+  return value instanceof globalThis.Float64Array;
+}
+function IsBigInt64Array(value) {
+  return value instanceof globalThis.BigInt64Array;
+}
+function IsBigUint64Array(value) {
+  return value instanceof globalThis.BigUint64Array;
+}
+function IsRegExp(value) {
+  return value instanceof globalThis.RegExp;
+}
+function IsDate(value) {
+  return value instanceof globalThis.Date;
+}
+function IsSet(value) {
+  return value instanceof globalThis.Set;
+}
+function IsMap(value) {
+  return value instanceof globalThis.Map;
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/system/settings/settings.mjs
+var settings2 = {
+  immutableTypes: false,
+  maxErrors: 8,
+  maxParseErrors: 1,
+  maxInstantiationCount: 128,
+  useAcceleration: true,
+  exactOptionalPropertyTypes: false,
+  enumerableKind: false,
+  correctiveParse: false,
+  unionPrioritySort: true
+};
+function Reset() {
+  settings2.immutableTypes = false;
+  settings2.maxErrors = 8;
+  settings2.maxParseErrors = 1;
+  settings2.maxInstantiationCount = 128;
+  settings2.useAcceleration = true;
+  settings2.exactOptionalPropertyTypes = false;
+  settings2.enumerableKind = false;
+  settings2.correctiveParse = false;
+  settings2.unionPrioritySort = true;
+}
+function Set2(options) {
+  for (const key of exports_guard.Keys(options)) {
+    const value = options[key];
+    if (value !== undefined) {
+      Object.defineProperty(settings2, key, { value });
+    }
+  }
+}
+function Get() {
+  return settings2;
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/system/memory/freeze.mjs
+function Freeze(value) {
+  return exports_settings.Get().immutableTypes ? Object.freeze(value) : value;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/system/memory/assign.mjs
+function Assign(left, right) {
+  Metrics.assign += 1;
+  return Freeze({ ...left, ...right });
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/system/memory/clone.mjs
+function FromClassInstance(value) {
+  return value;
+}
+function IsSchemaObject(value) {
+  return exports_guard.HasPropertyKey(value, "~kind") || exports_guard.HasPropertyKey(value, "~unsafe");
+}
+function FromSchemaObject(value) {
+  const result = {};
+  for (const key of exports_guard.Keys(value)) {
+    if (exports_guard.IsUnsafePropertyKey(key))
+      continue;
+    const descriptor = Object.getOwnPropertyDescriptor(value, key);
+    descriptor.value = FromValue(descriptor.value);
+    if (exports_guard.IsEqual(descriptor.enumerable, true)) {
+      result[key] = descriptor.value;
+    } else {
+      Object.defineProperty(result, key, descriptor);
+    }
+  }
+  return result;
+}
+function FromPlainObject(value) {
+  const result = {};
+  for (const key of exports_guard.Keys(value)) {
+    if (exports_guard.IsUnsafePropertyKey(key))
+      continue;
+    result[key] = FromValue(value[key]);
+  }
+  for (const key of exports_guard.Symbols(value)) {
+    result[key] = FromValue(value[key]);
+  }
+  return result;
+}
+function FromObject(value) {
+  return exports_guard.IsClassInstance(value) ? FromClassInstance(value) : IsSchemaObject(value) ? FromSchemaObject(value) : FromPlainObject(value);
+}
+function FromArray(value) {
+  return value.map((element) => FromValue(element));
+}
+function FromTypedArray(value) {
+  return value.slice();
+}
+function FromRegExp(value) {
+  return new RegExp(value.source, value.flags);
+}
+function FromMap(value) {
+  return new Map(FromValue([...value.entries()]));
+}
+function FromSet(value) {
+  return new Set(FromValue([...value.values()]));
+}
+function FromValue(value) {
+  return exports_globals.IsTypeArray(value) ? FromTypedArray(value) : exports_globals.IsRegExp(value) ? FromRegExp(value) : exports_globals.IsMap(value) ? FromMap(value) : exports_globals.IsSet(value) ? FromSet(value) : exports_guard.IsArray(value) ? FromArray(value) : exports_guard.IsObject(value) ? FromObject(value) : value;
+}
+function Clone(value) {
+  Metrics.clone += 1;
+  return FromValue(value);
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/system/memory/create.mjs
+function MergeHidden(left, right) {
+  for (const key of Object.keys(right)) {
+    Object.defineProperty(left, key, {
+      configurable: true,
+      writable: true,
+      enumerable: false,
+      value: right[key]
+    });
+  }
+  return left;
+}
+function Merge(left, right) {
+  return { ...left, ...right };
+}
+function Create(hidden, enumerable, options = {}) {
+  Metrics.create += 1;
+  const withOptions = Merge(enumerable, options);
+  const withHidden = exports_settings.Get().enumerableKind ? Merge(withOptions, hidden) : MergeHidden(withOptions, hidden);
+  return Freeze(withHidden);
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/system/memory/discard.mjs
+function Discard(value, propertyKeys) {
+  Metrics.discard += 1;
+  const result = {};
+  for (const key of exports_guard.Keys(value)) {
+    if (propertyKeys.includes(key))
+      continue;
+    const descriptor = Object.getOwnPropertyDescriptor(value, key);
+    descriptor.value = Clone(descriptor.value);
+    Object.defineProperty(result, key, descriptor);
+  }
+  return Freeze(result);
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/system/memory/update.mjs
+function Update(current, hidden, enumerable) {
+  Metrics.update += 1;
+  const settings3 = exports_settings.Get();
+  const result = Clone(current);
+  for (const key of Object.keys(hidden)) {
+    Object.defineProperty(result, key, {
+      configurable: true,
+      writable: true,
+      enumerable: settings3.enumerableKind,
+      value: hidden[key]
+    });
+  }
+  for (const key of Object.keys(enumerable)) {
+    Object.defineProperty(result, key, {
+      configurable: true,
+      enumerable: true,
+      writable: true,
+      value: enumerable[key]
+    });
+  }
+  return Freeze(result);
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/types/schema.mjs
+function IsKind(value, kind) {
+  return exports_guard.IsObject(value) && exports_guard.HasPropertyKey(value, "~kind") && exports_guard.IsEqual(value["~kind"], kind);
+}
+function IsSchema(value) {
+  return exports_guard.IsObject(value);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/types/deferred.mjs
+function Deferred(action, parameters, options) {
+  return exports_memory.Create({ "~kind": "Deferred" }, { type: "deferred", action, parameters, options }, {});
+}
+function IsDeferred(value) {
+  return IsKind(value, "Deferred");
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/readonly/instantiate_add.mjs
+function AddReadonlyOperation(type) {
+  return exports_memory.Update(type, { "~readonly": true }, {});
+}
+function AddReadonlyAction(type, options) {
+  const result = exports_memory.Update(AddReadonlyOperation(type), {}, options);
+  return result;
+}
+function AddReadonlyInstantiate(context, state4, type, options) {
+  const instantiatedType = InstantiateType(context, state4, type);
+  return AddReadonlyAction(instantiatedType, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/optional/instantiate_add.mjs
+function AddOptionalOperation(type) {
+  return exports_memory.Update(type, { "~optional": true }, {});
+}
+function AddOptionalAction(type, options) {
+  const result = exports_memory.Update(AddOptionalOperation(type), {}, options);
+  return result;
+}
+function AddOptionalInstantiate(context, state4, type, options) {
+  const instantiatedType = InstantiateType(context, state4, type);
+  return AddOptionalAction(instantiatedType, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/types/array.mjs
+function _Array_(items, options) {
+  return exports_memory.Create({ "~kind": "Array" }, { type: "array", items }, options);
+}
+function IsArray2(value) {
+  return IsKind(value, "Array");
+}
+function ArrayOptions(type) {
+  return exports_memory.Discard(type, ["~kind", "type", "items"]);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/types/constructor.mjs
+function Constructor(parameters, instanceType, options = {}) {
+  return exports_memory.Create({ "~kind": "Constructor" }, { type: "constructor", parameters, instanceType }, options);
+}
+function IsConstructor2(value) {
+  return IsKind(value, "Constructor");
+}
+function ConstructorOptions(type) {
+  return exports_memory.Discard(type, ["~kind", "type", "parameters", "instanceType"]);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/types/function.mjs
+function _Function_(parameters, returnType, options = {}) {
+  return exports_memory.Create({ ["~kind"]: "Function" }, { type: "function", parameters, returnType }, options);
+}
+function IsFunction2(value) {
+  return IsKind(value, "Function");
+}
+function FunctionOptions(type) {
+  return exports_memory.Discard(type, ["~kind", "type", "parameters", "returnType"]);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/types/ref.mjs
+function Ref(ref, options) {
+  return exports_memory.Create({ ["~kind"]: "Ref" }, { $ref: ref }, options);
+}
+function IsRef(value) {
+  return IsKind(value, "Ref");
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/types/generic.mjs
+function Generic(parameters, expression) {
+  return exports_memory.Create({ "~kind": "Generic" }, { type: "generic", parameters, expression });
+}
+function IsGeneric(value) {
+  return IsKind(value, "Generic");
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/types/any.mjs
+function Any(options) {
+  return exports_memory.Create({ ["~kind"]: "Any" }, {}, options);
+}
+function IsAny(value) {
+  return IsKind(value, "Any");
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/types/never.mjs
+var NeverPattern = "(?!)";
+function Never(options) {
+  return exports_memory.Create({ "~kind": "Never" }, { not: {} }, options);
+}
+function IsNever(value) {
+  return IsKind(value, "Never");
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/action/_add_optional.mjs
+function AddOptionalDeferred(type, options = {}) {
+  return Deferred("AddOptional", [type], options);
+}
+function AddOptional(type, options = {}) {
+  return AddOptionalAction(type, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/types/_optional.mjs
+function Optional(type) {
+  return AddOptional(type);
+}
+function IsOptional(value) {
+  return IsSchema(value) && exports_guard.HasPropertyKey(value, "~optional");
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/types/properties.mjs
+function RequiredArray(properties) {
+  return exports_guard.Keys(properties).filter((key) => !IsOptional(properties[key]));
+}
+function PropertyKeys(properties) {
+  return exports_guard.Keys(properties);
+}
+function PropertyValues(properties) {
+  return exports_guard.Values(properties);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/types/object.mjs
+function _Object_(properties, options = {}) {
+  const requiredKeys = RequiredArray(properties);
+  const required2 = requiredKeys.length > 0 ? { required: requiredKeys } : {};
+  return exports_memory.Create({ "~kind": "Object" }, { type: "object", ...required2, properties }, options);
+}
+function IsObject2(value) {
+  return IsKind(value, "Object");
+}
+function ObjectOptions(type) {
+  return exports_memory.Discard(type, ["~kind", "type", "properties", "required"]);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/types/unknown.mjs
+function Unknown(options) {
+  return exports_memory.Create({ ["~kind"]: "Unknown" }, {}, options);
+}
+function IsUnknown(value) {
+  return IsKind(value, "Unknown");
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/types/cyclic.mjs
+function Cyclic($defs, $ref, options) {
+  const defs = exports_guard.Keys($defs).reduce((result, key) => {
+    return { ...result, [key]: exports_memory.Update($defs[key], {}, { $id: key }) };
+  }, {});
+  return exports_memory.Create({ ["~kind"]: "Cyclic" }, { $defs: defs, $ref }, options);
+}
+function IsCyclic(value) {
+  return IsKind(value, "Cyclic");
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/types/unsafe.mjs
+function Unsafe(schema2) {
+  return exports_memory.Update(schema2, { ["~unsafe"]: null }, {});
+}
+function IsUnsafe(value) {
+  return exports_guard.IsObjectNotArray(value) && exports_guard.HasPropertyKey(value, "~unsafe") && exports_guard.IsNull(value["~unsafe"]);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/system/arguments/arguments.mjs
+var exports_arguments = {};
+__export(exports_arguments, {
+  Match: () => Match
+});
+function Match(args, match) {
+  return match[args.length]?.(...args) ?? (() => {
+    throw Error("Invalid Arguments");
+  })();
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/types/infer.mjs
+function Infer(...args) {
+  const [name, extends_] = exports_arguments.Match(args, {
+    2: (name2, extends_2) => [name2, extends_2, extends_2],
+    1: (name2) => [name2, Unknown(), Unknown()]
+  });
+  return exports_memory.Create({ ["~kind"]: "Infer" }, { type: "infer", name, extends: extends_ }, {});
+}
+function IsInfer(value) {
+  return IsKind(value, "Infer");
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/types/dependent.mjs
+function Dependent(if_, then_, else_, options = {}) {
+  return exports_memory.Create({ "~kind": "Dependent" }, { if: if_, then: then_, else: else_ }, options);
+}
+function IsDependent(value) {
+  return IsKind(value, "Dependent");
+}
+function DependentOptions(type) {
+  return exports_memory.Discard(type, ["~kind", "if", "then", "else"]);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/enum/typescript_enum_to_enum_values.mjs
+function IsTypeScriptEnumLike(value) {
+  return exports_guard.IsObjectNotArray(value);
+}
+function TypeScriptEnumToEnumValues(type) {
+  const keys = exports_guard.Keys(type).filter((key) => isNaN(key));
+  return keys.reduce((result, key) => [...result, type[key]], []);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/types/enum.mjs
+function IsEnumValue(value) {
+  return exports_guard.IsString(value) || exports_guard.IsNumber(value);
+}
+function Enum(value, options) {
+  const values = IsTypeScriptEnumLike(value) ? TypeScriptEnumToEnumValues(value) : value;
+  return exports_memory.Create({ "~kind": "Enum" }, { enum: values }, options);
+}
+function IsEnum(value) {
+  return IsKind(value, "Enum");
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/types/intersect.mjs
+function Intersect(types14, options = {}) {
+  return exports_memory.Create({ "~kind": "Intersect" }, { allOf: types14 }, options);
+}
+function IsIntersect(value) {
+  return IsKind(value, "Intersect");
+}
+function IntersectOptions(type) {
+  return exports_memory.Discard(type, ["~kind", "allOf"]);
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/system/unreachable/unreachable.mjs
+function Unreachable() {
+  throw new Error("Unreachable");
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/system/hashing/hash.mjs
+var ByteMarker;
+(function(ByteMarker2) {
+  ByteMarker2[ByteMarker2["Array"] = 0] = "Array";
+  ByteMarker2[ByteMarker2["BigInt"] = 1] = "BigInt";
+  ByteMarker2[ByteMarker2["Boolean"] = 2] = "Boolean";
+  ByteMarker2[ByteMarker2["Date"] = 3] = "Date";
+  ByteMarker2[ByteMarker2["Constructor"] = 4] = "Constructor";
+  ByteMarker2[ByteMarker2["Function"] = 5] = "Function";
+  ByteMarker2[ByteMarker2["Null"] = 6] = "Null";
+  ByteMarker2[ByteMarker2["Number"] = 7] = "Number";
+  ByteMarker2[ByteMarker2["Object"] = 8] = "Object";
+  ByteMarker2[ByteMarker2["RegExp"] = 9] = "RegExp";
+  ByteMarker2[ByteMarker2["String"] = 10] = "String";
+  ByteMarker2[ByteMarker2["Symbol"] = 11] = "Symbol";
+  ByteMarker2[ByteMarker2["TypeArray"] = 12] = "TypeArray";
+  ByteMarker2[ByteMarker2["Undefined"] = 13] = "Undefined";
+})(ByteMarker || (ByteMarker = {}));
+var Accumulator = BigInt("14695981039346656037");
+var [Prime, Size] = [BigInt("1099511628211"), BigInt("18446744073709551616")];
+var Bytes = Array.from({ length: 256 }).map((_2, i2) => BigInt(i2));
+var F64 = new Float64Array(1);
+var F64In = new DataView(F64.buffer);
+var F64Out = new Uint8Array(F64.buffer);
+var encoder4 = new TextEncoder;
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/types/_codec.mjs
+class EncodeBuilder {
+  constructor(type, decode3) {
+    this.type = type;
+    this.decode = decode3;
+  }
+  Encode(callback) {
+    const type = this.type;
+    const decode3 = IsCodec(type) ? (value) => this.decode(type["~codec"].decode(value)) : this.decode;
+    const encode3 = IsCodec(type) ? (value) => type["~codec"].encode(callback(value)) : callback;
+    const codec2 = { decode: decode3, encode: encode3 };
+    return exports_memory.Update(this.type, { "~codec": codec2 }, {});
+  }
+}
+
+class DecodeBuilder {
+  constructor(type) {
+    this.type = type;
+  }
+  Decode(callback) {
+    return new EncodeBuilder(this.type, callback);
+  }
+}
+function Codec(type) {
+  return new DecodeBuilder(type);
+}
+function Decode(type, callback) {
+  return Codec(type).Decode(callback).Encode(() => {
+    throw Error("Encode not implemented");
+  });
+}
+function Encode(type, callback) {
+  return Codec(type).Decode(() => {
+    throw Error("Decode not implemented");
+  }).Encode(callback);
+}
+function IsCodec(value) {
+  return IsSchema(value) && exports_guard.HasPropertyKey(value, "~codec") && exports_guard.IsObject(value["~codec"]) && exports_guard.HasPropertyKey(value["~codec"], "encode") && exports_guard.HasPropertyKey(value["~codec"], "decode");
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/types/_immutable.mjs
+function Immutable(type) {
+  return AddImmutable(type);
+}
+function IsImmutable(value) {
+  return IsSchema(value) && exports_guard.HasPropertyKey(value, "~immutable");
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/action/_add_readonly.mjs
+function AddReadonlyDeferred(type, options = {}) {
+  return Deferred("AddReadonly", [type], options);
+}
+function AddReadonly(type, options = {}) {
+  return AddReadonlyAction(type, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/types/_readonly.mjs
+function Readonly(type) {
+  return AddReadonly(type);
+}
+function IsReadonly(value) {
+  return IsSchema(value) && exports_guard.HasPropertyKey(value, "~readonly");
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/types/_refine.mjs
+function RefineAdd(type, refinement) {
+  const refinements = IsRefine(type) ? [...type["~refine"], refinement] : [refinement];
+  return exports_memory.Update(type, { "~refine": refinements }, {});
+}
+function Refine(...args) {
+  const [type, check2, error62] = exports_arguments.Match(args, {
+    3: (type2, check3, error63) => [type2, check3, error63],
+    2: (type2, check3) => [type2, check3, () => "Refine Error"]
+  });
+  return RefineAdd(type, { check: check2, error: error62 });
+}
+function IsRefinement(value) {
+  return exports_guard.IsObjectNotArray(value) && exports_guard.HasPropertyKey(value, "check") && exports_guard.HasPropertyKey(value, "error") && exports_guard.IsFunction(value.check) && exports_guard.IsFunction(value.error);
+}
+function IsRefine(value) {
+  return IsSchema(value) && exports_guard.HasPropertyKey(value, "~refine") && exports_guard.IsArray(value["~refine"]) && exports_guard.Every(value["~refine"], 0, (value2) => IsRefinement(value2));
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/types/bigint.mjs
+var BigIntPattern = "-?(?:0|[1-9][0-9]*)n";
+function BigInt2(options) {
+  return exports_memory.Create({ "~kind": "BigInt" }, { type: "bigint" }, options);
+}
+function IsBigInt2(value) {
+  return IsKind(value, "BigInt");
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/types/boolean.mjs
+function Boolean2(options) {
+  return exports_memory.Create({ "~kind": "Boolean" }, { type: "boolean" }, options);
+}
+function IsBoolean3(value) {
+  return IsKind(value, "Boolean");
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/types/identifier.mjs
+function Identifier(name) {
+  return exports_memory.Create({ "~kind": "Identifier" }, { name });
+}
+function IsIdentifier(value) {
+  return IsKind(value, "Identifier");
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/types/integer.mjs
+var IntegerPattern = "-?(?:0|[1-9][0-9]*)";
+function Integer(options) {
+  return exports_memory.Create({ "~kind": "Integer" }, { type: "integer" }, options);
+}
+function IsInteger2(value) {
+  return IsKind(value, "Integer");
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/types/literal.mjs
+class InvalidLiteralValue extends Error {
+  constructor(value) {
+    super(`Invalid Literal value`);
+    Object.defineProperty(this, "cause", {
+      value: { value },
+      writable: false,
+      configurable: false,
+      enumerable: false
+    });
+  }
+}
+function LiteralTypeName(value) {
+  return exports_guard.IsBigInt(value) ? "bigint" : exports_guard.IsBoolean(value) ? "boolean" : exports_guard.IsNumber(value) ? "number" : exports_guard.IsString(value) ? "string" : (() => {
+    throw new InvalidLiteralValue(value);
+  })();
+}
+function Literal(value, options) {
+  return exports_memory.Create({ "~kind": "Literal" }, { type: LiteralTypeName(value), const: value }, options);
+}
+function IsLiteralValue(value) {
+  return exports_guard.IsBigInt(value) || exports_guard.IsBoolean(value) || exports_guard.IsNumber(value) || exports_guard.IsString(value);
+}
+function IsLiteralNumber(value) {
+  return IsLiteral(value) && exports_guard.IsNumber(value.const);
+}
+function IsLiteralString(value) {
+  return IsLiteral(value) && exports_guard.IsString(value.const);
+}
+function IsLiteral(value) {
+  return IsKind(value, "Literal");
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/types/null.mjs
+function Null(options) {
+  return exports_memory.Create({ "~kind": "Null" }, { type: "null" }, options);
+}
+function IsNull2(value) {
+  return IsKind(value, "Null");
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/types/number.mjs
+var NumberPattern = "-?(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?";
+function Number2(options) {
+  return exports_memory.Create({ "~kind": "Number" }, { type: "number" }, options);
+}
+function IsNumber3(value) {
+  return IsKind(value, "Number");
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/types/symbol.mjs
+function Symbol2(options) {
+  return exports_memory.Create({ "~kind": "Symbol" }, { type: "symbol" }, options);
+}
+function IsSymbol2(value) {
+  return IsKind(value, "Symbol");
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/types/parameter.mjs
+function Parameter(...args) {
+  const [name, extends_, equals] = exports_arguments.Match(args, {
+    3: (name2, extends_2, equals2) => [name2, extends_2, equals2],
+    2: (name2, extends_2) => [name2, extends_2, extends_2],
+    1: (name2) => [name2, Unknown(), Unknown()]
+  });
+  return exports_memory.Create({ "~kind": "Parameter" }, { name, extends: extends_, equals }, {});
+}
+function IsParameter(value) {
+  return IsKind(value, "Parameter");
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/types/string.mjs
+var StringPattern = ".*";
+function String2(options) {
+  return exports_memory.Create({ "~kind": "String" }, { type: "string" }, options);
+}
+function IsString3(value) {
+  return IsKind(value, "String");
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/types/union.mjs
+function Union(anyOf, options = {}) {
+  return exports_memory.Create({ "~kind": "Union" }, { anyOf }, options);
+}
+function IsUnion(value) {
+  return IsKind(value, "Union");
+}
+function UnionOptions(type) {
+  return exports_memory.Discard(type, ["~kind", "anyOf"]);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/patterns/pattern.mjs
+function ParsePatternIntoTypes(pattern) {
+  const parsed2 = Pattern(pattern);
+  const result = exports_guard.IsEqual(parsed2.length, 2) ? parsed2[0] : [];
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/template_literal/is_finite.mjs
+function FromLiteral(_value) {
+  return true;
+}
+function FromTypesReduce(types14) {
+  return exports_guard.ShiftLeft(types14, (left, right) => FromType(left) ? FromTypesReduce(right) : false, () => true);
+}
+function FromTypes(types14) {
+  const result = exports_guard.IsEqual(types14.length, 0) ? false : FromTypesReduce(types14);
+  return result;
+}
+function FromType(type) {
+  return IsUnion(type) ? FromTypes(type.anyOf) : IsLiteral(type) ? FromLiteral(type.const) : false;
+}
+function IsTemplateLiteralFinite(types14) {
+  const result = FromTypes(types14);
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/template_literal/create.mjs
+function TemplateLiteralCreate(pattern) {
+  return exports_memory.Create({ ["~kind"]: "TemplateLiteral" }, { type: "string", pattern }, {});
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/template_literal/decode.mjs
+function FromLiteralPush(variants, value, result = []) {
+  return exports_guard.ShiftLeft(variants, (left, right) => FromLiteralPush(right, value, [...result, `${left}${value}`]), () => result);
+}
+function FromLiteral2(variants, value) {
+  return exports_guard.IsEqual(variants.length, 0) ? [`${value}`] : FromLiteralPush(variants, value);
+}
+function FromUnion(variants, types14, result = []) {
+  return exports_guard.ShiftLeft(types14, (left, right) => FromUnion(variants, right, [...result, ...FromType2(variants, left)]), () => result);
+}
+function FromType2(variants, type) {
+  const result = IsUnion(type) ? FromUnion(variants, type.anyOf) : IsLiteral(type) ? FromLiteral2(variants, type.const) : Unreachable();
+  return result;
+}
+function DecodeFromSpan(variants, types14) {
+  return exports_guard.ShiftLeft(types14, (left, right) => DecodeFromSpan(FromType2(variants, left), right), () => variants);
+}
+function VariantsToLiterals(variants) {
+  return variants.map((variant) => Literal(variant));
+}
+function DecodeTypesAsUnion(types14) {
+  const variants = DecodeFromSpan([], types14);
+  const literals = VariantsToLiterals(variants);
+  const result = Union(literals);
+  return result;
+}
+function DecodeTypes(types14) {
+  return exports_guard.IsEqual(types14.length, 0) ? Unreachable() : exports_guard.IsEqual(types14.length, 1) && IsLiteral(types14[0]) ? types14[0] : DecodeTypesAsUnion(types14);
+}
+function TemplateLiteralDecodeUnsafe(pattern) {
+  const types14 = ParsePatternIntoTypes(pattern);
+  const result = exports_guard.IsEqual(types14.length, 0) ? String2() : IsTemplateLiteralFinite(types14) ? DecodeTypes(types14) : TemplateLiteralCreate(pattern);
+  return result;
+}
+function TemplateLiteralDecode(pattern) {
+  const decoded = TemplateLiteralDecodeUnsafe(pattern);
+  const result = IsTemplateLiteral(decoded) ? String2() : decoded;
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/record/record_create.mjs
+function CreateRecord(key, value) {
+  const type = "object";
+  const patternProperties = { [key]: value };
+  return exports_memory.Create({ ["~kind"]: "Record" }, { type, patternProperties });
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/record/from_key_any.mjs
+function FromAnyKey(value) {
+  return CreateRecord(StringKey, value);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/record/from_key_boolean.mjs
+function FromBooleanKey(value) {
+  return _Object_({ true: value, false: value });
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/types/tuple.mjs
+function Tuple(types14, options = {}) {
+  const [items, minItems, additionalItems] = [types14, types14.length, false];
+  return exports_memory.Create({ ["~kind"]: "Tuple" }, { type: "array", additionalItems, items, minItems }, options);
+}
+function IsTuple(value) {
+  return IsKind(value, "Tuple");
+}
+function TupleOptions(type) {
+  return exports_memory.Discard(type, ["~kind", "type", "items", "minItems", "additionalItems"]);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/readonly/instantiate_remove.mjs
+function RemoveReadonlyOperation(type) {
+  return exports_memory.Discard(type, ["~readonly"]);
+}
+function RemoveReadonlyAction(type, options) {
+  const result = exports_memory.Update(RemoveReadonlyOperation(type), {}, options);
+  return result;
+}
+function RemoveReadonlyInstantiate(context, state4, type, options) {
+  const instantiatedType = InstantiateType(context, state4, type);
+  return RemoveReadonlyAction(instantiatedType, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/action/_remove_readonly.mjs
+function RemoveReadonlyDeferred(type, options = {}) {
+  return Deferred("RemoveReadonly", [type], options);
+}
+function RemoveReadonly(type, options = {}) {
+  return RemoveReadonlyAction(type, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/optional/instantiate_remove.mjs
+function RemoveOptionalOperation(type) {
+  return exports_memory.Discard(type, ["~optional"]);
+}
+function RemoveOptionalAction(type, options) {
+  const result = exports_memory.Update(RemoveOptionalOperation(type), {}, options);
+  return result;
+}
+function RemoveOptionalInstantiate(context, state4, type, options) {
+  const instantiatedType = InstantiateType(context, state4, type);
+  return RemoveOptionalAction(instantiatedType, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/action/_remove_optional.mjs
+function RemoveOptionalDeferred(type, options = {}) {
+  return Deferred("RemoveOptional", [type], options);
+}
+function RemoveOptional(type, options = {}) {
+  return RemoveOptionalAction(type, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/tuple/to_object.mjs
+function TupleElementsToProperties(types14) {
+  const result = types14.reduceRight((result2, right, index) => {
+    return { [index]: right, ...result2 };
+  }, {});
+  return result;
+}
+function TupleToObject(type) {
+  const properties = TupleElementsToProperties(type.items);
+  const result = _Object_(properties);
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/evaluate/composite.mjs
+function CanComposite(type) {
+  return IsObject2(type) || IsTuple(type);
+}
+function IsReadonlyProperty(left, right) {
+  return IsReadonly(left) ? IsReadonly(right) ? true : false : false;
+}
+function IsOptionalProperty(left, right) {
+  return IsOptional(left) ? IsOptional(right) ? true : false : false;
+}
+function CompositeProperty(left, right) {
+  const isReadonly = IsReadonlyProperty(left, right);
+  const isOptional = IsOptionalProperty(left, right);
+  const evaluated = EvaluateIntersect([left, right]);
+  const property = RemoveReadonly(RemoveOptional(evaluated));
+  return isReadonly && isOptional ? AddReadonly(AddOptional(property)) : isReadonly && !isOptional ? AddReadonly(property) : !isReadonly && isOptional ? AddOptional(property) : property;
+}
+function CompositePropertyKey(left, right, key) {
+  return key in left ? key in right ? CompositeProperty(left[key], right[key]) : left[key] : (key in right) ? right[key] : Never();
+}
+function CompositeProperties(left, right) {
+  const keys = new Set([...exports_guard.Keys(left), ...exports_guard.Keys(right)]);
+  const result = [...keys].reduce((result2, key) => {
+    return { ...result2, [key]: CompositePropertyKey(left, right, key) };
+  }, {});
+  return result;
+}
+function GetProperties(type) {
+  const result = IsObject2(type) ? type.properties : IsTuple(type) ? TupleElementsToProperties(type.items) : {};
+  return result;
+}
+function Composite(left, right) {
+  const leftProperties = GetProperties(left);
+  const rightProperties = GetProperties(right);
+  const properties = CompositeProperties(leftProperties, rightProperties);
+  const result = _Object_(properties);
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/evaluate/narrow.mjs
+function NarrowCompareRule(left, right) {
+  const result = Compare(left, right);
+  return exports_guard.IsEqual(result, CompareResultLeftInside) ? left : exports_guard.IsEqual(result, CompareResultRightInside) ? right : exports_guard.IsEqual(result, CompareResultEqual) ? right : Never();
+}
+function NarrowCompositeRule(left, right) {
+  const canCompositeLeft = CanComposite(left);
+  const canCompositeRight = CanComposite(right);
+  return canCompositeLeft && canCompositeRight ? Composite(left, right) : canCompositeLeft && !canCompositeRight ? left : !canCompositeLeft && canCompositeRight ? right : NarrowCompareRule(left, right);
+}
+function Narrow(left, right) {
+  return IsNever(left) ? left : IsAny(left) ? left : IsUnknown(left) ? right : IsNever(right) ? right : IsAny(right) ? right : IsUnknown(right) ? left : NarrowCompositeRule(left, right);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/evaluate/distribute.mjs
+function ShouldEvaluate(left, right) {
+  const result = IsUnion(left) || IsUnion(right);
+  return result;
+}
+function DistributeOperation(left, right) {
+  const evaluatedLeft = EvaluateType(left);
+  const evaluatedRight = EvaluateType(right);
+  const shouldEvaluate = ShouldEvaluate(evaluatedLeft, evaluatedRight);
+  const result = shouldEvaluate ? EvaluateIntersect([evaluatedLeft, evaluatedRight]) : Narrow(evaluatedLeft, evaluatedRight);
+  return result;
+}
+function DistributeType(type, types14, result = []) {
+  return exports_guard.ShiftLeft(types14, (left, right) => DistributeType(type, right, [...result, DistributeOperation(left, type)]), () => exports_guard.IsEqual(result.length, 0) ? [type] : result);
+}
+function DistributeUnion(types14, distribution, result = []) {
+  return exports_guard.ShiftLeft(types14, (left, right) => DistributeUnion(right, distribution, [...result, ...Distribute([left], distribution)]), () => result);
+}
+function Distribute(types14, result = []) {
+  return exports_guard.ShiftLeft(types14, (left, right) => IsUnion(left) ? Distribute(right, DistributeUnion(left.anyOf, result)) : Distribute(right, DistributeType(left, result)), () => result);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/exclude/operation.mjs
+function ExcludeType(left, right) {
+  const check2 = Extends({}, left, right);
+  const result = exports_result.IsExtendsTrueLike(check2) ? [] : [left];
+  return result;
+}
+function ExcludeUnion(left, right, result = []) {
+  return exports_guard.ShiftLeft(left, (head, tail) => ExcludeUnion(tail, right, [...result, ...ExcludeType(head, right)]), () => result);
+}
+function ExcludeOperation(left, right) {
+  const evaluated = EvaluateType(left);
+  const canonical = IsUnion(evaluated) ? evaluated.anyOf : [evaluated];
+  const remaining = ExcludeUnion(canonical, right);
+  const result = EvaluateUnion(remaining);
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/evaluate/evaluate.mjs
+function EvaluateDependent(if_, then_, else_) {
+  const intersected = EvaluateIntersect([if_, then_]);
+  const excluded = ExcludeOperation(else_, if_);
+  const result = EvaluateUnion([intersected, excluded]);
+  return result;
+}
+function EvaluateEnum(values, result = []) {
+  return exports_guard.ShiftLeft(values, (left, right) => EvaluateEnum(right, [...result, Literal(left)]), () => EvaluateUnion(result));
+}
+function EvaluateIntersect(types14) {
+  const distribution = Distribute(types14);
+  const broadend = Broaden(distribution);
+  const result = EvaluateUnion(broadend);
+  return result;
+}
+function EvaluateTemplateLiteral(pattern) {
+  const evaluated = TemplateLiteralDecode(pattern);
+  const result = EvaluateType(evaluated);
+  return result;
+}
+function EvaluateUnion(types14) {
+  const broadend = Broaden(types14);
+  const result = EvaluateUnionFast(broadend);
+  return result;
+}
+function EvaluateType(type) {
+  const result = IsDependent(type) ? EvaluateDependent(type.if, type.then, type.else) : IsEnum(type) ? EvaluateEnum(type.enum) : IsIntersect(type) ? EvaluateIntersect(type.allOf) : IsTemplateLiteral(type) ? EvaluateTemplateLiteral(type.pattern) : IsUnion(type) ? EvaluateUnion(type.anyOf) : type;
+  return result;
+}
+function EvaluateUnionFast(types14) {
+  const result = exports_guard.IsEqual(types14.length, 1) ? types14[0] : exports_guard.IsEqual(types14.length, 0) ? Never() : Union(types14);
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/record/from_key_enum.mjs
+function FromEnumKey(values, value) {
+  const unionKey = EvaluateEnum(values);
+  const result = FromKey(unionKey, value);
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/record/from_key_integer.mjs
+function FromIntegerKey(_key, value) {
+  const result = CreateRecord(IntegerKey, value);
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/record/from_key_intersect.mjs
+function FromIntersectKey(types14, value) {
+  const evaluatedKey = EvaluateIntersect(types14);
+  const result = FromKey(evaluatedKey, value);
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/record/from_key_literal.mjs
+function FromLiteralKey(key, value) {
+  return exports_guard.IsString(key) || exports_guard.IsNumber(key) ? _Object_({ [key]: value }) : exports_guard.IsEqual(key, false) ? _Object_({ false: value }) : exports_guard.IsEqual(key, true) ? _Object_({ true: value }) : _Object_({});
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/record/from_key_number.mjs
+function FromNumberKey(_key, value) {
+  const result = CreateRecord(NumberKey, value);
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/record/from_key_string.mjs
+function FromStringKey(key, value) {
+  return exports_guard.HasPropertyKey(key, "pattern") && (exports_guard.IsString(key.pattern) || key.pattern instanceof RegExp) ? CreateRecord(key.pattern.toString(), value) : CreateRecord(StringKey, value);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/record/from_key_template_literal.mjs
+function FromTemplateKey(pattern, value) {
+  const types14 = ParsePatternIntoTypes(pattern);
+  const finite = IsTemplateLiteralFinite(types14);
+  const result = finite ? FromKey(EvaluateTemplateLiteral(pattern), value) : CreateRecord(pattern, value);
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/evaluate/flatten.mjs
+function FlattenType(type) {
+  const result = IsUnion(type) ? Flatten(type.anyOf) : [type];
+  return result;
+}
+function Flatten(types14, result = []) {
+  return exports_guard.ShiftLeft(types14, (left, right) => Flatten(right, [...result, ...FlattenType(left)]), () => result);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/record/from_key_union.mjs
+function StringOrNumberCheck(types14) {
+  return types14.some((type) => IsString3(type) || IsNumber3(type) || IsInteger2(type));
+}
+function TryBuildRecord(types14, value) {
+  return exports_guard.IsEqual(StringOrNumberCheck(types14), true) ? CreateRecord(StringKey, value) : undefined;
+}
+function CreateProperties(types14, value) {
+  return types14.reduce((result, left) => {
+    return IsLiteral(left) && (exports_guard.IsString(left.const) || exports_guard.IsNumber(left.const)) ? { ...result, [left.const]: value } : result;
+  }, {});
+}
+function CreateObject(types14, value) {
+  const properties = CreateProperties(types14, value);
+  const result = _Object_(properties);
+  return result;
+}
+function FromUnionKey(types14, value) {
+  const flattened = Flatten(types14);
+  const record3 = TryBuildRecord(flattened, value);
+  return IsSchema(record3) ? record3 : CreateObject(flattened, value);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/record/from_key.mjs
+function FromKey(key, value) {
+  const result = IsAny(key) ? FromAnyKey(value) : IsBoolean3(key) ? FromBooleanKey(value) : IsEnum(key) ? FromEnumKey(key.enum, value) : IsInteger2(key) ? FromIntegerKey(key, value) : IsIntersect(key) ? FromIntersectKey(key.allOf, value) : IsLiteral(key) ? FromLiteralKey(key.const, value) : IsNumber3(key) ? FromNumberKey(key, value) : IsUnion(key) ? FromUnionKey(key.anyOf, value) : IsString3(key) ? FromStringKey(key, value) : IsTemplateLiteral(key) ? FromTemplateKey(key.pattern, value) : _Object_({});
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/record/instantiate.mjs
+function RecordAction(key, value, options) {
+  const result = CanInstantiate([key]) ? exports_memory.Update(FromKey(key, value), {}, options) : RecordDeferred(key, value, options);
+  return result;
+}
+function RecordInstantiate(context, state4, key, value, options) {
+  const instantiatedKey = InstantiateType(context, state4, key);
+  const instantiatedValue = InstantiateType(context, state4, value);
+  return RecordAction(instantiatedKey, instantiatedValue, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/types/record.mjs
+var IntegerKey = `^${IntegerPattern}$`;
+var NumberKey = `^${NumberPattern}$`;
+var StringKey = `^${StringPattern}$`;
+function RecordDeferred(key, value, options = {}) {
+  return Deferred("Record", [key, value], options);
+}
+function Record(key, value, options = {}) {
+  return RecordAction(key, value, options);
+}
+function RecordFromPattern(pattern, value) {
+  return CreateRecord(pattern, value);
+}
+function RecordPatternToType(pattern) {
+  const result = exports_guard.IsEqual(pattern, StringKey) ? String2() : exports_guard.IsEqual(pattern, IntegerKey) ? Integer() : exports_guard.IsEqual(pattern, NumberKey) ? Number2() : TemplateLiteralDecodeUnsafe(pattern);
+  return result;
+}
+function RecordPattern(type) {
+  return exports_guard.Keys(type.patternProperties)[0];
+}
+function RecordKey(type) {
+  const pattern = RecordPattern(type);
+  const result = RecordPatternToType(pattern);
+  return result;
+}
+function RecordValue(type) {
+  return type.patternProperties[RecordPattern(type)];
+}
+function IsRecord(value) {
+  return IsKind(value, "Record");
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/types/rest.mjs
+function Rest(type) {
+  return exports_memory.Create({ "~kind": "Rest" }, { type: "rest", items: type }, {});
+}
+function IsRest(value) {
+  return IsKind(value, "Rest");
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/types/this.mjs
+function This(options) {
+  return exports_memory.Create({ ["~kind"]: "This" }, { $ref: "#" }, options);
+}
+function IsThis(value) {
+  return IsKind(value, "This");
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/types/undefined.mjs
+function Undefined(options) {
+  return exports_memory.Create({ "~kind": "Undefined" }, { type: "undefined" }, options);
+}
+function IsUndefined2(value) {
+  return IsKind(value, "Undefined");
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/types/void.mjs
+function Void(options) {
+  return exports_memory.Create({ "~kind": "Void" }, { type: "void" }, options);
+}
+function IsVoid(value) {
+  return IsKind(value, "Void");
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/script/mapping.mjs
+function IntrinsicOrCall(ref2, parameters) {
+  return exports_guard.IsEqual(ref2, "Array") ? _Array_(parameters[0]) : exports_guard.IsEqual(ref2, "Capitalize") ? CapitalizeDeferred(parameters[0]) : exports_guard.IsEqual(ref2, "ConstructorParameters") ? ConstructorParametersDeferred(parameters[0]) : exports_guard.IsEqual(ref2, "Evaluate") ? EvaluateDeferred(parameters[0]) : exports_guard.IsEqual(ref2, "Exclude") ? ExcludeDeferred(parameters[0], parameters[1]) : exports_guard.IsEqual(ref2, "Extract") ? ExtractDeferred(parameters[0], parameters[1]) : exports_guard.IsEqual(ref2, "Index") ? IndexDeferred(parameters[0], parameters[1]) : exports_guard.IsEqual(ref2, "InstanceType") ? InstanceTypeDeferred(parameters[0]) : exports_guard.IsEqual(ref2, "Lowercase") ? LowercaseDeferred(parameters[0]) : exports_guard.IsEqual(ref2, "NonNullable") ? NonNullableDeferred(parameters[0]) : exports_guard.IsEqual(ref2, "Omit") ? OmitDeferred(parameters[0], parameters[1]) : exports_guard.IsEqual(ref2, "Parameters") ? ParametersDeferred(parameters[0]) : exports_guard.IsEqual(ref2, "Partial") ? PartialDeferred(parameters[0]) : exports_guard.IsEqual(ref2, "Pick") ? PickDeferred(parameters[0], parameters[1]) : exports_guard.IsEqual(ref2, "Readonly") ? ReadonlyObjectDeferred(parameters[0]) : exports_guard.IsEqual(ref2, "KeyOf") ? KeyOfDeferred(parameters[0]) : exports_guard.IsEqual(ref2, "Record") ? RecordDeferred(parameters[0], parameters[1]) : exports_guard.IsEqual(ref2, "Required") ? RequiredDeferred(parameters[0]) : exports_guard.IsEqual(ref2, "ReturnType") ? ReturnTypeDeferred(parameters[0]) : exports_guard.IsEqual(ref2, "Uncapitalize") ? UncapitalizeDeferred(parameters[0]) : exports_guard.IsEqual(ref2, "Uppercase") ? UppercaseDeferred(parameters[0]) : CallConstruct(Ref(ref2), parameters);
+}
+function Unreachable2() {
+  throw Error("Unreachable");
+}
+function DelimitedDecode(input2, result = []) {
+  return exports_guard.ShiftLeft(input2, (left, right) => DelimitedDecode(right, [...result, left[1]]), () => result);
+}
+function Delimited(input2) {
+  return exports_guard.IsEqual(input2.length, 3) ? [input2[0], ...DelimitedDecode(input2[1])] : [];
+}
+function GenericParameterExtendsEqualsMapping(input2) {
+  return Parameter(input2[0], input2[2], input2[4]);
+}
+function GenericParameterExtendsMapping(input2) {
+  return Parameter(input2[0], input2[2], input2[2]);
+}
+function GenericParameterEqualsMapping(input2) {
+  return Parameter(input2[0], Unknown(), input2[2]);
+}
+function GenericParameterIdentifierMapping(input2) {
+  return Parameter(input2, Unknown(), Unknown());
+}
+function GenericParameterMapping(input2) {
+  return input2;
+}
+function GenericParameterListMapping(input2) {
+  return Delimited(input2);
+}
+function GenericParametersMapping(input2) {
+  return input2[1];
+}
+function GenericCallArgumentListMapping(input2) {
+  return Delimited(input2);
+}
+function GenericCallArgumentsMapping(input2) {
+  return input2[1];
+}
+function GenericCallMapping(input2) {
+  return IntrinsicOrCall(input2[0], input2[1]);
+}
+function OptionalSemiColonMapping(input2) {
+  return null;
+}
+function KeywordStringMapping(input2) {
+  return String2();
+}
+function KeywordNumberMapping(input2) {
+  return Number2();
+}
+function KeywordBooleanMapping(input2) {
+  return Boolean2();
+}
+function KeywordUndefinedMapping(input2) {
+  return Undefined();
+}
+function KeywordNullMapping(input2) {
+  return Null();
+}
+function KeywordIntegerMapping(input2) {
+  return Integer();
+}
+function KeywordBigIntMapping(input2) {
+  return BigInt2();
+}
+function KeywordUnknownMapping(input2) {
+  return Unknown();
+}
+function KeywordAnyMapping(input2) {
+  return Any();
+}
+function KeywordObjectMapping(input2) {
+  return _Object_({});
+}
+function KeywordNeverMapping(input2) {
+  return Never();
+}
+function KeywordSymbolMapping(input2) {
+  return Symbol2();
+}
+function KeywordVoidMapping(input2) {
+  return Void();
+}
+function KeywordThisMapping(input2) {
+  return This();
+}
+function LiteralBigIntMapping(input2) {
+  return Literal(BigInt(input2));
+}
+function LiteralBooleanMapping(input2) {
+  return Literal(exports_guard.IsEqual(input2, "true"));
+}
+function LiteralNumberMapping(input2) {
+  return Literal(parseFloat(input2));
+}
+function LiteralStringMapping(input2) {
+  return Literal(input2);
+}
+function TemplateInterpolateMapping(input2) {
+  return input2[1];
+}
+function TemplateSpanMapping(input2) {
+  return Literal(input2);
+}
+function TemplateBodyMapping(input2) {
+  return exports_guard.IsEqual(input2.length, 3) ? [input2[0], input2[1], ...input2[2]] : [input2[0]];
+}
+function TemplateLiteralTypesMapping(input2) {
+  return input2[1];
+}
+function TemplateLiteralMapping(input2) {
+  return TemplateLiteralDeferred(input2);
+}
+function DependentMapping(input2) {
+  return exports_guard.IsEqual(input2.length, 6) ? Dependent(input2[1], input2[3], input2[5]) : Dependent(input2[1], input2[3], Unknown());
+}
+function KeyOfMapping(input2) {
+  return input2.length > 0;
+}
+function IndexArrayMapping(input2) {
+  return input2.reduce((result, current) => {
+    return exports_guard.IsEqual(current.length, 3) ? [...result, [current[1]]] : [...result, []];
+  }, []);
+}
+function ExtendsMapping(input2) {
+  return exports_guard.IsEqual(input2.length, 6) ? [input2[1], input2[3], input2[5]] : [];
+}
+function BaseMapping(input2) {
+  return exports_guard.IsArray(input2) && exports_guard.IsEqual(input2.length, 3) ? input2[1] : input2;
+}
+function WithMapping(input2) {
+  return exports_guard.IsEqual(input2.length, 2) ? input2[1] : [];
+}
+function FactorIndexArray(Type, indexArray) {
+  return indexArray.reduce((result, left) => {
+    const _left = left;
+    return exports_guard.IsEqual(_left.length, 1) ? IndexDeferred(result, _left[0]) : exports_guard.IsEqual(_left.length, 0) ? _Array_(result) : Unreachable2();
+  }, Type);
+}
+function FactorExtends(type, extend2) {
+  return exports_guard.IsEqual(extend2.length, 3) ? ConditionalDeferred(type, extend2[0], extend2[1], extend2[2]) : type;
+}
+function FactorWith(type, withClause) {
+  return exports_guard.IsArray(withClause) && exports_guard.IsEqual(withClause.length, 0) ? type : WithDeferred(type, withClause);
+}
+function FactorMapping(input2) {
+  const [keyOf, type, indexArray, extend2, withClause] = input2;
+  return FactorWith(keyOf ? FactorExtends(KeyOfDeferred(FactorIndexArray(type, indexArray)), extend2) : FactorExtends(FactorIndexArray(type, indexArray), extend2), withClause);
+}
+function ExprBinaryMapping(left, rest2) {
+  return exports_guard.IsEqual(rest2.length, 3) ? (() => {
+    const [operator, right, next] = rest2;
+    const Schema3 = ExprBinaryMapping(right, next);
+    if (exports_guard.IsEqual(operator, "&")) {
+      return IsIntersect(Schema3) ? Intersect([left, ...Schema3.allOf]) : Intersect([left, Schema3]);
+    }
+    if (exports_guard.IsEqual(operator, "|")) {
+      return IsUnion(Schema3) ? Union([left, ...Schema3.anyOf]) : Union([left, Schema3]);
+    }
+    Unreachable2();
+  })() : left;
+}
+function ExprTermTailMapping(input2) {
+  return input2;
+}
+function ExprTermMapping(input2) {
+  const [left, rest2] = input2;
+  return ExprBinaryMapping(left, rest2);
+}
+function ExprTailMapping(input2) {
+  return input2;
+}
+function ExprMapping(input2) {
+  const [left, rest2] = input2;
+  return ExprBinaryMapping(left, rest2);
+}
+function ExprReadonlyMapping(input2) {
+  return AddImmutableDeferred(input2[1]);
+}
+function ExprPipeMapping(input2) {
+  return input2[1];
+}
+function GenericTypeMapping(input2) {
+  return Generic(input2[0], input2[2]);
+}
+function InferTypeMapping(input2) {
+  return exports_guard.IsEqual(input2.length, 4) ? Infer(input2[1], input2[3]) : exports_guard.IsEqual(input2.length, 2) ? Infer(input2[1], Unknown()) : Unreachable2();
+}
+function TypeMapping(input2) {
+  return input2;
+}
+function PropertyKeyNumberMapping(input2) {
+  return `${input2}`;
+}
+function PropertyKeyIdentMapping(input2) {
+  return input2;
+}
+function PropertyKeyQuotedMapping(input2) {
+  return input2;
+}
+function PropertyKeyIndexMapping(input2) {
+  return IsInteger2(input2[3]) ? IntegerKey : IsNumber3(input2[3]) ? NumberKey : IsSymbol2(input2[3]) ? StringKey : IsString3(input2[3]) ? StringKey : Unreachable2();
+}
+function PropertyKeyMapping(input2) {
+  return input2;
+}
+function ReadonlyMapping(input2) {
+  return input2.length > 0;
+}
+function OptionalMapping(input2) {
+  return input2.length > 0;
+}
+function PropertyMapping(input2) {
+  const [isReadonly, key, isOptional, _colon, type] = input2;
+  return {
+    [key]: isReadonly && isOptional ? AddReadonlyDeferred(AddOptionalDeferred(type)) : isReadonly && !isOptional ? AddReadonlyDeferred(type) : !isReadonly && isOptional ? AddOptionalDeferred(type) : type
+  };
+}
+function PropertyDelimiterMapping(input2) {
+  return input2;
+}
+function PropertyListMapping(input2) {
+  return Delimited(input2);
+}
+function PropertiesReduce(propertyList) {
+  return propertyList.reduce((result, left) => {
+    const isPatternProperties = exports_guard.HasPropertyKey(left, IntegerKey) || exports_guard.HasPropertyKey(left, NumberKey) || exports_guard.HasPropertyKey(left, StringKey);
+    return isPatternProperties ? [result[0], exports_memory.Assign(result[1], left)] : [exports_memory.Assign(result[0], left), result[1]];
+  }, [{}, {}]);
+}
+function PropertiesMapping(input2) {
+  return PropertiesReduce(input2[1]);
+}
+function _Object_Mapping(input2) {
+  const [properties2, patternProperties] = input2;
+  const options = exports_guard.IsEqual(exports_guard.Keys(patternProperties).length, 0) ? {} : { patternProperties };
+  return _Object_(properties2, options);
+}
+function ElementNamedMapping(input2) {
+  return exports_guard.IsEqual(input2.length, 5) ? AddReadonlyDeferred(AddOptionalDeferred(input2[4])) : exports_guard.IsEqual(input2.length, 3) ? input2[2] : exports_guard.IsEqual(input2.length, 4) ? exports_guard.IsEqual(input2[2], "readonly") ? AddReadonlyDeferred(input2[3]) : AddOptionalDeferred(input2[3]) : Unreachable2();
+}
+function ElementBaseMapping(input2) {
+  if (!exports_guard.IsArray(input2) || !exports_guard.IsEqual(input2.length, 3))
+    return input2;
+  const [isReadonly, type, isOptional] = input2;
+  return isReadonly && isOptional ? AddReadonlyDeferred(AddOptionalDeferred(type)) : isReadonly && !isOptional ? AddReadonlyDeferred(type) : !isReadonly && isOptional ? AddOptionalDeferred(type) : type;
+}
+function ElementMapping(input2) {
+  return exports_guard.IsEqual(input2.length, 2) ? Rest(input2[1]) : exports_guard.IsEqual(input2.length, 1) ? input2[0] : Unreachable2();
+}
+function ElementListMapping(input2) {
+  return Delimited(input2);
+}
+function _Tuple_Mapping(input2) {
+  return Tuple(input2[1]);
+}
+function ParameterReadonlyOptionalMapping(input2) {
+  return AddReadonlyDeferred(AddOptionalDeferred(input2[4]));
+}
+function ParameterReadonlyMapping(input2) {
+  return AddReadonlyDeferred(input2[3]);
+}
+function ParameterOptionalMapping(input2) {
+  return AddOptionalDeferred(input2[3]);
+}
+function ParameterTypeMapping(input2) {
+  return input2[2];
+}
+function ParameterBaseMapping(input2) {
+  return input2;
+}
+function ParameterMapping(input2) {
+  return exports_guard.IsEqual(input2.length, 2) ? Rest(input2[1]) : exports_guard.IsEqual(input2.length, 1) ? input2[0] : Unreachable2();
+}
+function ParameterListMapping(input2) {
+  return Delimited(input2);
+}
+function _Function_Mapping(input2) {
+  return _Function_(input2[1], input2[4]);
+}
+function _Constructor_Mapping(input2) {
+  return Constructor(input2[2], input2[5]);
+}
+function ApplyReadonly(state4, type) {
+  return exports_guard.IsEqual(state4, "remove") ? RemoveReadonlyDeferred(type) : exports_guard.IsEqual(state4, "add") ? AddReadonlyDeferred(type) : type;
+}
+function MappedReadonlyMapping(input2) {
+  return exports_guard.IsEqual(input2.length, 2) && exports_guard.IsEqual(input2[0], "-") ? "remove" : exports_guard.IsEqual(input2.length, 2) && exports_guard.IsEqual(input2[0], "+") ? "add" : exports_guard.IsEqual(input2.length, 1) ? "add" : "none";
+}
+function ApplyOptional(state4, type) {
+  return exports_guard.IsEqual(state4, "remove") ? RemoveOptionalDeferred(type) : exports_guard.IsEqual(state4, "add") ? AddOptionalDeferred(type) : type;
+}
+function MappedOptionalMapping(input2) {
+  return exports_guard.IsEqual(input2.length, 2) && exports_guard.IsEqual(input2[0], "-") ? "remove" : exports_guard.IsEqual(input2.length, 2) && exports_guard.IsEqual(input2[0], "+") ? "add" : exports_guard.IsEqual(input2.length, 1) ? "add" : "none";
+}
+function MappedAsMapping(input2) {
+  return exports_guard.IsEqual(input2.length, 2) ? [input2[1]] : [];
+}
+function _Mapped_Mapping(input2) {
+  return exports_guard.IsArray(input2[6]) && exports_guard.IsEqual(input2[6].length, 1) ? MappedDeferred(Identifier(input2[3]), input2[5], input2[6][0], ApplyReadonly(input2[1], ApplyOptional(input2[8], input2[10]))) : MappedDeferred(Identifier(input2[3]), input2[5], Ref(input2[3]), ApplyReadonly(input2[1], ApplyOptional(input2[8], input2[10])));
+}
+function ReferenceMapping(input2) {
+  return Ref(input2);
+}
+function WithBigIntMapping(input2) {
+  return BigInt(input2);
+}
+function WithNumberMapping(input2) {
+  return parseFloat(input2);
+}
+function WithBooleanMapping(input2) {
+  return exports_guard.IsEqual(input2, "true");
+}
+function WithStringMapping(input2) {
+  return input2;
+}
+function WithNullMapping(input2) {
+  return null;
+}
+function WithUndefinedMapping(input2) {
+  return;
+}
+function WithPropertyMapping(input2) {
+  return { [input2[0]]: input2[2] };
+}
+function WithPropertyListMapping(input2) {
+  return Delimited(input2);
+}
+function WithObjectMappingReduce(propertyList) {
+  return propertyList.reduce((result, left) => {
+    return exports_memory.Assign(result, left);
+  }, {});
+}
+function WithObjectMapping(input2) {
+  return WithObjectMappingReduce(input2[1]);
+}
+function WithElementListMapping(input2) {
+  return Delimited(input2);
+}
+function WithArrayMapping(input2) {
+  return input2[1];
+}
+function WithValueMapping(input2) {
+  return input2;
+}
+function PatternBigIntMapping(input2) {
+  return BigInt2();
+}
+function PatternStringMapping(input2) {
+  return String2();
+}
+function PatternNumberMapping(input2) {
+  return Number2();
+}
+function PatternIntegerMapping(input2) {
+  return Integer();
+}
+function PatternNeverMapping(input2) {
+  return Never();
+}
+function PatternTextMapping(input2) {
+  return Literal(input2);
+}
+function PatternBaseMapping(input2) {
+  return input2;
+}
+function PatternGroupMapping(input2) {
+  return Union(input2[1]);
+}
+function PatternUnionMapping(input2) {
+  return input2.length === 3 ? [...input2[0], ...input2[2]] : input2.length === 1 ? [...input2[0]] : [];
+}
+function PatternTermMapping(input2) {
+  return [input2[0], ...input2[1]];
+}
+function PatternBodyMapping(input2) {
+  return input2;
+}
+function PatternMapping(input2) {
+  return input2[1];
+}
+function InterfaceDeclarationHeritageListMapping(input2) {
+  return Delimited(input2);
+}
+function InterfaceDeclarationHeritageMapping(input2) {
+  return exports_guard.IsEqual(input2.length, 2) ? input2[1] : [];
+}
+function InterfaceDeclarationGenericMapping(input2) {
+  const parameters = input2[2];
+  const heritage = input2[3];
+  const [properties2, patternProperties] = input2[4];
+  const options = exports_guard.IsEqual(exports_guard.Keys(patternProperties).length, 0) ? {} : { patternProperties };
+  return { [input2[1]]: Generic(parameters, InterfaceDeferred(heritage, properties2, options)) };
+}
+function InterfaceDeclarationMapping(input2) {
+  const heritage = input2[2];
+  const [properties2, patternProperties] = input2[3];
+  const options = exports_guard.IsEqual(exports_guard.Keys(patternProperties).length, 0) ? {} : { patternProperties };
+  return { [input2[1]]: InterfaceDeferred(heritage, properties2, options) };
+}
+function TypeAliasDeclarationGenericMapping(input2) {
+  return { [input2[1]]: Generic(input2[2], input2[4]) };
+}
+function TypeAliasDeclarationMapping(input2) {
+  return { [input2[1]]: input2[3] };
+}
+function ExportKeywordMapping(input2) {
+  return null;
+}
+function ModuleDeclarationDelimiterMapping(input2) {
+  return input2;
+}
+function ModuleDeclarationListMapping(input2) {
+  return Delimited(input2);
+}
+function ModuleDeclarationMapping(input2) {
+  return input2[1];
+}
+function ModuleMapping(input2) {
+  const [moduleDeclaration, moduleDeclarationList] = [input2[0], input2[1]];
+  return ModuleDeferred(exports_memory.Assign(moduleDeclaration, PropertiesReduce(moduleDeclarationList)[0]));
+}
+function ScriptMapping(input2) {
+  return input2;
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/script/token/internal/match.mjs
+function IsMatch(value) {
+  return IsEqual(value.length, 2);
+}
+function Match2(input2, ok, fail3) {
+  return IsMatch(input2) ? ok(input2[0], input2[1]) : fail3();
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/script/token/internal/take.mjs
+function TakeVariant(variant, input2) {
+  return IsEqual(input2.indexOf(variant), 0) ? [variant, input2.slice(variant.length)] : [];
+}
+function Take(variants, input2) {
+  for (let i2 = 0;i2 < variants.length; i2++) {
+    const result = TakeVariant(variants[i2], input2);
+    if (IsMatch(result))
+      return result;
+  }
+  return [];
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/script/token/internal/char.mjs
+function Range(start, end) {
+  return Array.from({ length: end - start + 1 }, (_2, i2) => String.fromCharCode(start + i2));
+}
+var Alpha = [
+  ...Range(97, 122),
+  ...Range(65, 90)
+];
+var Zero = "0";
+var NonZero = Range(49, 57);
+var Digit = [Zero, ...NonZero];
+var WhiteSpace = " ";
+var NewLine = `
+`;
+var UnderScore = "_";
+var Dot = ".";
+var DollarSign = "$";
+var Hyphen = "-";
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/script/token/internal/trim.mjs
+var LineComment = "//";
+var OpenComment = "/*";
+var CloseComment = "*/";
+function DiscardMultilineComment(input2) {
+  const index = input2.indexOf(CloseComment);
+  const result = IsEqual(index, -1) ? "" : input2.slice(index + 2);
+  return result;
+}
+function DiscardLineComment(input2) {
+  const index = input2.indexOf(NewLine);
+  const result = IsEqual(index, -1) ? "" : input2.slice(index);
+  return result;
+}
+function TrimStartUntilNewline(input2) {
+  return input2.replace(/^[ \t\r\f\v]+/, "");
+}
+function TrimWhitespace(input2) {
+  const trimmed = TrimStartUntilNewline(input2);
+  return trimmed.startsWith(OpenComment) ? TrimWhitespace(DiscardMultilineComment(trimmed.slice(2))) : trimmed.startsWith(LineComment) ? TrimWhitespace(DiscardLineComment(trimmed.slice(2))) : trimmed;
+}
+function Trim(input2) {
+  const trimmed = input2.trimStart();
+  return trimmed.startsWith(OpenComment) ? Trim(DiscardMultilineComment(trimmed.slice(2))) : trimmed.startsWith(LineComment) ? Trim(DiscardLineComment(trimmed.slice(2))) : trimmed;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/script/token/internal/optional.mjs
+function Optional2(value, input2) {
+  return Match2(Take([value], input2), (Optional3, Rest2) => [Optional3, Rest2], () => ["", input2]);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/script/token/internal/many.mjs
+function IsDiscard(discard2, input2) {
+  return discard2.includes(input2);
+}
+function Many(allowed, discard2, input2, result = "") {
+  return Match2(Take(allowed, input2), (Char, Rest2) => IsDiscard(discard2, Char) ? Many(allowed, discard2, Rest2, result) : Many(allowed, discard2, Rest2, `${result}${Char}`), () => [result, input2]);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/script/token/unsigned_integer.mjs
+function TakeNonZero(input2) {
+  return Take(NonZero, input2);
+}
+var AllowedDigits = [...Digit, UnderScore];
+function TakeDigits(input2) {
+  return Many(AllowedDigits, [UnderScore], input2);
+}
+function TakeUnsignedInteger(input2) {
+  return Match2(Take([Zero], input2), (Zero2, ZeroRest) => [Zero2, ZeroRest], () => Match2(TakeNonZero(input2), (NonZero2, NonZeroRest) => Match2(TakeDigits(NonZeroRest), (Digits, DigitsRest) => [`${NonZero2}${Digits}`, DigitsRest], () => []), () => []));
+}
+function UnsignedInteger(input2) {
+  return TakeUnsignedInteger(Trim(input2));
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/script/token/integer.mjs
+function TakeSign(input2) {
+  return Optional2(Hyphen, input2);
+}
+function TakeSignedInteger(input2) {
+  return Match2(TakeSign(input2), (Sign, SignRest) => Match2(UnsignedInteger(SignRest), (UnsignedInteger2, UnsignedIntegerRest) => [`${Sign}${UnsignedInteger2}`, UnsignedIntegerRest], () => []), () => []);
+}
+function Integer2(input2) {
+  return TakeSignedInteger(Trim(input2));
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/script/token/bigint.mjs
+function TakeBigInt(input2) {
+  return Match2(Integer2(input2), (Integer3, IntegerRest) => Match2(Take(["n"], IntegerRest), (_N, NRest) => [`${Integer3}`, NRest], () => []), () => []);
+}
+function BigInt3(input2) {
+  return TakeBigInt(input2);
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/script/token/const.mjs
+function TakeConst(const_, input2) {
+  return Take([const_], input2);
+}
+function Const(const_, input2) {
+  return IsEqual(const_, "") ? ["", input2] : const_.startsWith(NewLine) ? TakeConst(const_, TrimWhitespace(input2)) : const_.startsWith(WhiteSpace) ? TakeConst(const_, input2) : TakeConst(const_, Trim(input2));
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/script/token/ident.mjs
+var Initial = [...Alpha, UnderScore, DollarSign];
+function TakeInitial(input2) {
+  return Take(Initial, input2);
+}
+var Remaining = [...Initial, ...Digit];
+function TakeRemaining(input2, result = "") {
+  return Match2(Take(Remaining, input2), (Remaining2, RemainingRest) => TakeRemaining(RemainingRest, `${result}${Remaining2}`), () => [result, input2]);
+}
+function TakeIdent(input2) {
+  return Match2(TakeInitial(input2), (Initial2, InitialRest) => Match2(TakeRemaining(InitialRest), (Remaining2, RemainingRest) => [`${Initial2}${Remaining2}`, RemainingRest], () => []), () => []);
+}
+function Ident(input2) {
+  return TakeIdent(Trim(input2));
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/script/token/unsigned_number.mjs
+var AllowedDigits2 = [...Digit, UnderScore];
+function IsLeadingDot(input2) {
+  return IsMatch(Take([Dot], input2));
+}
+function TakeFractional(input2) {
+  return Match2(Many(AllowedDigits2, [UnderScore], input2), (Digits, DigitsRest) => IsEqual(Digits, "") ? [] : [Digits, DigitsRest], () => []);
+}
+function LeadingDot(input2) {
+  return Match2(Take([Dot], input2), (Dot2, DotRest) => Match2(TakeFractional(DotRest), (Fractional, FractionalRest) => [`0${Dot2}${Fractional}`, FractionalRest], () => []), () => []);
+}
+function LeadingInteger(input2) {
+  return Match2(UnsignedInteger(input2), (Integer3, IntegerRest) => Match2(Take([Dot], IntegerRest), (Dot2, DotRest) => Match2(TakeFractional(DotRest), (Fractional, FractionalRest) => [`${Integer3}${Dot2}${Fractional}`, FractionalRest], () => [`${Integer3}`, DotRest]), () => [`${Integer3}`, IntegerRest]), () => []);
+}
+function TakeUnsignedNumber(input2) {
+  return IsLeadingDot(input2) ? LeadingDot(input2) : LeadingInteger(input2);
+}
+function UnsignedNumber(input2) {
+  return TakeUnsignedNumber(Trim(input2));
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/script/token/number.mjs
+function TakeSign2(input2) {
+  return Optional2(Hyphen, input2);
+}
+function TakeSignedNumber(input2) {
+  return Match2(TakeSign2(input2), (Sign, SignRest) => Match2(UnsignedNumber(SignRest), (UnsignedInteger2, UnsignedIntegerRest) => [`${Sign}${UnsignedInteger2}`, UnsignedIntegerRest], () => []), () => []);
+}
+function Number3(input2) {
+  return TakeSignedNumber(Trim(input2));
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/script/token/until.mjs
+function TakeOne(input2) {
+  const result = IsEqual(input2, "") ? [] : [input2.slice(0, 1), input2.slice(1)];
+  return result;
+}
+function IsInputMatchSentinal(end, input2) {
+  return ShiftLeft(end, (left, right) => input2.startsWith(left) ? true : IsInputMatchSentinal(right, input2), () => false);
+}
+function Until(end, input2, result = "") {
+  return Match2(TakeOne(input2), (One, Rest2) => IsInputMatchSentinal(end, input2) ? [result, input2] : Until(end, Rest2, `${result}${One}`), () => []);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/script/token/span.mjs
+function MultiLine(start, end, input2) {
+  return Match2(Take([start], input2), (_2, Rest2) => Match2(Until([end], Rest2), (Until2, UntilRest) => Match2(Take([end], UntilRest), (_3, Rest3) => [`${Until2}`, Rest3], () => []), () => []), () => []);
+}
+function SingleLine(start, end, input2) {
+  return Match2(Take([start], input2), (_2, Rest2) => Match2(Until([NewLine, end], Rest2), (Until2, UntilRest) => Match2(Take([end], UntilRest), (_3, EndRest) => [`${Until2}`, EndRest], () => []), () => []), () => []);
+}
+function Span(start, end, multiLine, input2) {
+  return multiLine ? MultiLine(start, end, Trim(input2)) : SingleLine(start, end, Trim(input2));
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/script/token/string.mjs
+function TakeInitial2(quotes, input2) {
+  return Take(quotes, input2);
+}
+function TakeSpan(quote, input2) {
+  return Span(quote, quote, false, input2);
+}
+function TakeString(quotes, input2) {
+  return Match2(TakeInitial2(quotes, input2), (Initial2, InitialRest) => TakeSpan(Initial2, `${Initial2}${InitialRest}`), () => []);
+}
+function String3(quotes, input2) {
+  return TakeString(quotes, Trim(input2));
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/script/token/until_1.mjs
+function Until_1(end, input2) {
+  return Match2(Until(end, input2), (Until2, UntilRest) => IsEqual(Until2, "") ? [] : [Until2, UntilRest], () => []);
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/script/parser.mjs
+var If = (result, left, right = () => []) => result.length === 2 ? left(result) : right();
+var GenericParameterExtendsEquals = (input2) => If(If(Ident(input2), ([_0, input3]) => If(Const("extends", input3), ([_1, input4]) => If(Type(input4), ([_2, input5]) => If(Const("=", input5), ([_3, input6]) => If(Type(input6), ([_4, input7]) => [[_0, _1, _2, _3, _4], input7]))))), ([_0, input3]) => [GenericParameterExtendsEqualsMapping(_0), input3]);
+var GenericParameterExtends = (input2) => If(If(Ident(input2), ([_0, input3]) => If(Const("extends", input3), ([_1, input4]) => If(Type(input4), ([_2, input5]) => [[_0, _1, _2], input5]))), ([_0, input3]) => [GenericParameterExtendsMapping(_0), input3]);
+var GenericParameterEquals = (input2) => If(If(Ident(input2), ([_0, input3]) => If(Const("=", input3), ([_1, input4]) => If(Type(input4), ([_2, input5]) => [[_0, _1, _2], input5]))), ([_0, input3]) => [GenericParameterEqualsMapping(_0), input3]);
+var GenericParameterIdentifier = (input2) => If(Ident(input2), ([_0, input3]) => [GenericParameterIdentifierMapping(_0), input3]);
+var GenericParameter = (input2) => If(If(GenericParameterExtendsEquals(input2), ([_0, input3]) => [_0, input3], () => If(GenericParameterExtends(input2), ([_0, input3]) => [_0, input3], () => If(GenericParameterEquals(input2), ([_0, input3]) => [_0, input3], () => If(GenericParameterIdentifier(input2), ([_0, input3]) => [_0, input3], () => [])))), ([_0, input3]) => [GenericParameterMapping(_0), input3]);
+var GenericParameterList_0 = (input2, result = []) => If(If(Const(",", input2), ([_0, input3]) => If(GenericParameter(input3), ([_1, input4]) => [[_0, _1], input4])), ([_0, input3]) => GenericParameterList_0(input3, [...result, _0]), () => [result, input2]);
+var GenericParameterList = (input2) => If(If(If(GenericParameter(input2), ([_0, input3]) => If(GenericParameterList_0(input3), ([_1, input4]) => If(If(Const(",", input4), ([_02, input5]) => [[_02], input5], () => [[], input4]), ([_2, input5]) => [[_0, _1, _2], input5]))), ([_0, input3]) => [_0, input3], () => If([[], input2], ([_0, input3]) => [_0, input3], () => [])), ([_0, input3]) => [GenericParameterListMapping(_0), input3]);
+var GenericParameters = (input2) => If(If(Const("<", input2), ([_0, input3]) => If(GenericParameterList(input3), ([_1, input4]) => If(Const(">", input4), ([_2, input5]) => [[_0, _1, _2], input5]))), ([_0, input3]) => [GenericParametersMapping(_0), input3]);
+var GenericCallArgumentList_0 = (input2, result = []) => If(If(Const(",", input2), ([_0, input3]) => If(Type(input3), ([_1, input4]) => [[_0, _1], input4])), ([_0, input3]) => GenericCallArgumentList_0(input3, [...result, _0]), () => [result, input2]);
+var GenericCallArgumentList = (input2) => If(If(If(Type(input2), ([_0, input3]) => If(GenericCallArgumentList_0(input3), ([_1, input4]) => If(If(Const(",", input4), ([_02, input5]) => [[_02], input5], () => [[], input4]), ([_2, input5]) => [[_0, _1, _2], input5]))), ([_0, input3]) => [_0, input3], () => If([[], input2], ([_0, input3]) => [_0, input3], () => [])), ([_0, input3]) => [GenericCallArgumentListMapping(_0), input3]);
+var GenericCallArguments = (input2) => If(If(Const("<", input2), ([_0, input3]) => If(GenericCallArgumentList(input3), ([_1, input4]) => If(Const(">", input4), ([_2, input5]) => [[_0, _1, _2], input5]))), ([_0, input3]) => [GenericCallArgumentsMapping(_0), input3]);
+var GenericCall = (input2) => If(If(Ident(input2), ([_0, input3]) => If(GenericCallArguments(input3), ([_1, input4]) => [[_0, _1], input4])), ([_0, input3]) => [GenericCallMapping(_0), input3]);
+var OptionalSemiColon = (input2) => If(If(If(Const(";", input2), ([_0, input3]) => [[_0], input3]), ([_0, input3]) => [_0, input3], () => If([[], input2], ([_0, input3]) => [_0, input3], () => [])), ([_0, input3]) => [OptionalSemiColonMapping(_0), input3]);
+var KeywordString = (input2) => If(Const("string", input2), ([_0, input3]) => [KeywordStringMapping(_0), input3]);
+var KeywordNumber = (input2) => If(Const("number", input2), ([_0, input3]) => [KeywordNumberMapping(_0), input3]);
+var KeywordBoolean = (input2) => If(Const("boolean", input2), ([_0, input3]) => [KeywordBooleanMapping(_0), input3]);
+var KeywordUndefined = (input2) => If(Const("undefined", input2), ([_0, input3]) => [KeywordUndefinedMapping(_0), input3]);
+var KeywordNull = (input2) => If(Const("null", input2), ([_0, input3]) => [KeywordNullMapping(_0), input3]);
+var KeywordInteger = (input2) => If(Const("integer", input2), ([_0, input3]) => [KeywordIntegerMapping(_0), input3]);
+var KeywordBigInt = (input2) => If(Const("bigint", input2), ([_0, input3]) => [KeywordBigIntMapping(_0), input3]);
+var KeywordUnknown = (input2) => If(Const("unknown", input2), ([_0, input3]) => [KeywordUnknownMapping(_0), input3]);
+var KeywordAny = (input2) => If(Const("any", input2), ([_0, input3]) => [KeywordAnyMapping(_0), input3]);
+var KeywordObject = (input2) => If(Const("object", input2), ([_0, input3]) => [KeywordObjectMapping(_0), input3]);
+var KeywordNever = (input2) => If(Const("never", input2), ([_0, input3]) => [KeywordNeverMapping(_0), input3]);
+var KeywordSymbol = (input2) => If(Const("symbol", input2), ([_0, input3]) => [KeywordSymbolMapping(_0), input3]);
+var KeywordVoid = (input2) => If(Const("void", input2), ([_0, input3]) => [KeywordVoidMapping(_0), input3]);
+var KeywordThis = (input2) => If(Const("this", input2), ([_0, input3]) => [KeywordThisMapping(_0), input3]);
+var TemplateInterpolate = (input2) => If(If(Const("${", input2), ([_0, input3]) => If(Type(input3), ([_1, input4]) => If(Const("}", input4), ([_2, input5]) => [[_0, _1, _2], input5]))), ([_0, input3]) => [TemplateInterpolateMapping(_0), input3]);
+var TemplateSpan = (input2) => If(Until(["${", "`"], input2), ([_0, input3]) => [TemplateSpanMapping(_0), input3]);
+var TemplateBody = (input2) => If(If(If(TemplateSpan(input2), ([_0, input3]) => If(TemplateInterpolate(input3), ([_1, input4]) => If(TemplateBody(input4), ([_2, input5]) => [[_0, _1, _2], input5]))), ([_0, input3]) => [_0, input3], () => If(If(TemplateSpan(input2), ([_0, input3]) => [[_0], input3]), ([_0, input3]) => [_0, input3], () => If(If(TemplateSpan(input2), ([_0, input3]) => [[_0], input3]), ([_0, input3]) => [_0, input3], () => []))), ([_0, input3]) => [TemplateBodyMapping(_0), input3]);
+var TemplateLiteralTypes = (input2) => If(If(Const("`", input2), ([_0, input3]) => If(TemplateBody(input3), ([_1, input4]) => If(Const("`", input4), ([_2, input5]) => [[_0, _1, _2], input5]))), ([_0, input3]) => [TemplateLiteralTypesMapping(_0), input3]);
+var TemplateLiteral = (input2) => If(TemplateLiteralTypes(input2), ([_0, input3]) => [TemplateLiteralMapping(_0), input3]);
+var Dependent2 = (input2) => If(If(If(Const("if", input2), ([_0, input3]) => If(Type(input3), ([_1, input4]) => If(Const("then", input4), ([_2, input5]) => If(Type(input5), ([_3, input6]) => If(Const("else", input6), ([_4, input7]) => If(Type(input7), ([_5, input8]) => [[_0, _1, _2, _3, _4, _5], input8])))))), ([_0, input3]) => [_0, input3], () => If(If(Const("if", input2), ([_0, input3]) => If(Type(input3), ([_1, input4]) => If(Const("then", input4), ([_2, input5]) => If(Type(input5), ([_3, input6]) => [[_0, _1, _2, _3], input6])))), ([_0, input3]) => [_0, input3], () => [])), ([_0, input3]) => [DependentMapping(_0), input3]);
+var LiteralBigInt = (input2) => If(BigInt3(input2), ([_0, input3]) => [LiteralBigIntMapping(_0), input3]);
+var LiteralBoolean = (input2) => If(If(Const("true", input2), ([_0, input3]) => [_0, input3], () => If(Const("false", input2), ([_0, input3]) => [_0, input3], () => [])), ([_0, input3]) => [LiteralBooleanMapping(_0), input3]);
+var LiteralNumber = (input2) => If(Number3(input2), ([_0, input3]) => [LiteralNumberMapping(_0), input3]);
+var LiteralString = (input2) => If(String3(["'", '"'], input2), ([_0, input3]) => [LiteralStringMapping(_0), input3]);
+var KeyOf = (input2) => If(If(If(Const("keyof", input2), ([_0, input3]) => [[_0], input3]), ([_0, input3]) => [_0, input3], () => If([[], input2], ([_0, input3]) => [_0, input3], () => [])), ([_0, input3]) => [KeyOfMapping(_0), input3]);
+var IndexArray_0 = (input2, result = []) => If(If(If(Const("[", input2), ([_0, input3]) => If(Type(input3), ([_1, input4]) => If(Const("]", input4), ([_2, input5]) => [[_0, _1, _2], input5]))), ([_0, input3]) => [_0, input3], () => If(If(Const("[", input2), ([_0, input3]) => If(Const("]", input3), ([_1, input4]) => [[_0, _1], input4])), ([_0, input3]) => [_0, input3], () => [])), ([_0, input3]) => IndexArray_0(input3, [...result, _0]), () => [result, input2]);
+var IndexArray = (input2) => If(IndexArray_0(input2), ([_0, input3]) => [IndexArrayMapping(_0), input3]);
+var Extends2 = (input2) => If(If(If(Const("extends", input2), ([_0, input3]) => If(Type(input3), ([_1, input4]) => If(Const("?", input4), ([_2, input5]) => If(Type(input5), ([_3, input6]) => If(Const(":", input6), ([_4, input7]) => If(Type(input7), ([_5, input8]) => [[_0, _1, _2, _3, _4, _5], input8])))))), ([_0, input3]) => [_0, input3], () => If([[], input2], ([_0, input3]) => [_0, input3], () => [])), ([_0, input3]) => [ExtendsMapping(_0), input3]);
+var Base = (input2) => If(If(If(Const("(", input2), ([_0, input3]) => If(Type(input3), ([_1, input4]) => If(Const(")", input4), ([_2, input5]) => [[_0, _1, _2], input5]))), ([_0, input3]) => [_0, input3], () => If(KeywordString(input2), ([_0, input3]) => [_0, input3], () => If(KeywordNumber(input2), ([_0, input3]) => [_0, input3], () => If(KeywordBoolean(input2), ([_0, input3]) => [_0, input3], () => If(KeywordUndefined(input2), ([_0, input3]) => [_0, input3], () => If(KeywordNull(input2), ([_0, input3]) => [_0, input3], () => If(KeywordInteger(input2), ([_0, input3]) => [_0, input3], () => If(KeywordBigInt(input2), ([_0, input3]) => [_0, input3], () => If(KeywordUnknown(input2), ([_0, input3]) => [_0, input3], () => If(KeywordAny(input2), ([_0, input3]) => [_0, input3], () => If(KeywordObject(input2), ([_0, input3]) => [_0, input3], () => If(KeywordNever(input2), ([_0, input3]) => [_0, input3], () => If(KeywordSymbol(input2), ([_0, input3]) => [_0, input3], () => If(KeywordVoid(input2), ([_0, input3]) => [_0, input3], () => If(KeywordThis(input2), ([_0, input3]) => [_0, input3], () => If(LiteralBigInt(input2), ([_0, input3]) => [_0, input3], () => If(LiteralBoolean(input2), ([_0, input3]) => [_0, input3], () => If(LiteralNumber(input2), ([_0, input3]) => [_0, input3], () => If(LiteralString(input2), ([_0, input3]) => [_0, input3], () => If(TemplateLiteral(input2), ([_0, input3]) => [_0, input3], () => If(Dependent2(input2), ([_0, input3]) => [_0, input3], () => If(_Object_2(input2), ([_0, input3]) => [_0, input3], () => If(_Tuple_(input2), ([_0, input3]) => [_0, input3], () => If(_Constructor_(input2), ([_0, input3]) => [_0, input3], () => If(_Function_2(input2), ([_0, input3]) => [_0, input3], () => If(_Mapped_(input2), ([_0, input3]) => [_0, input3], () => If(GenericCall(input2), ([_0, input3]) => [_0, input3], () => If(Reference(input2), ([_0, input3]) => [_0, input3], () => [])))))))))))))))))))))))))))), ([_0, input3]) => [BaseMapping(_0), input3]);
+var With = (input2) => If(If(If(Const("with", input2), ([_0, input3]) => If(WithObject(input3), ([_1, input4]) => [[_0, _1], input4])), ([_0, input3]) => [_0, input3], () => If([[], input2], ([_0, input3]) => [_0, input3], () => [])), ([_0, input3]) => [WithMapping(_0), input3]);
+var Factor = (input2) => If(If(KeyOf(input2), ([_0, input3]) => If(Base(input3), ([_1, input4]) => If(IndexArray(input4), ([_2, input5]) => If(Extends2(input5), ([_3, input6]) => If(With(input6), ([_4, input7]) => [[_0, _1, _2, _3, _4], input7]))))), ([_0, input3]) => [FactorMapping(_0), input3]);
+var ExprTermTail = (input2) => If(If(If(Const("&", input2), ([_0, input3]) => If(Factor(input3), ([_1, input4]) => If(ExprTermTail(input4), ([_2, input5]) => [[_0, _1, _2], input5]))), ([_0, input3]) => [_0, input3], () => If([[], input2], ([_0, input3]) => [_0, input3], () => [])), ([_0, input3]) => [ExprTermTailMapping(_0), input3]);
+var ExprTerm = (input2) => If(If(Factor(input2), ([_0, input3]) => If(ExprTermTail(input3), ([_1, input4]) => [[_0, _1], input4])), ([_0, input3]) => [ExprTermMapping(_0), input3]);
+var ExprTail = (input2) => If(If(If(Const("|", input2), ([_0, input3]) => If(ExprTerm(input3), ([_1, input4]) => If(ExprTail(input4), ([_2, input5]) => [[_0, _1, _2], input5]))), ([_0, input3]) => [_0, input3], () => If([[], input2], ([_0, input3]) => [_0, input3], () => [])), ([_0, input3]) => [ExprTailMapping(_0), input3]);
+var Expr = (input2) => If(If(ExprTerm(input2), ([_0, input3]) => If(ExprTail(input3), ([_1, input4]) => [[_0, _1], input4])), ([_0, input3]) => [ExprMapping(_0), input3]);
+var ExprReadonly = (input2) => If(If(Const("readonly", input2), ([_0, input3]) => If(Expr(input3), ([_1, input4]) => [[_0, _1], input4])), ([_0, input3]) => [ExprReadonlyMapping(_0), input3]);
+var ExprPipe = (input2) => If(If(Const("|", input2), ([_0, input3]) => If(Expr(input3), ([_1, input4]) => [[_0, _1], input4])), ([_0, input3]) => [ExprPipeMapping(_0), input3]);
+var GenericType = (input2) => If(If(GenericParameters(input2), ([_0, input3]) => If(Const("=", input3), ([_1, input4]) => If(Type(input4), ([_2, input5]) => [[_0, _1, _2], input5]))), ([_0, input3]) => [GenericTypeMapping(_0), input3]);
+var InferType = (input2) => If(If(If(Const("infer", input2), ([_0, input3]) => If(Ident(input3), ([_1, input4]) => If(Const("extends", input4), ([_2, input5]) => If(Expr(input5), ([_3, input6]) => [[_0, _1, _2, _3], input6])))), ([_0, input3]) => [_0, input3], () => If(If(Const("infer", input2), ([_0, input3]) => If(Ident(input3), ([_1, input4]) => [[_0, _1], input4])), ([_0, input3]) => [_0, input3], () => [])), ([_0, input3]) => [InferTypeMapping(_0), input3]);
+var Type = (input2) => If(If(InferType(input2), ([_0, input3]) => [_0, input3], () => If(ExprPipe(input2), ([_0, input3]) => [_0, input3], () => If(ExprReadonly(input2), ([_0, input3]) => [_0, input3], () => If(Expr(input2), ([_0, input3]) => [_0, input3], () => [])))), ([_0, input3]) => [TypeMapping(_0), input3]);
+var PropertyKeyNumber = (input2) => If(Number3(input2), ([_0, input3]) => [PropertyKeyNumberMapping(_0), input3]);
+var PropertyKeyIdent = (input2) => If(Ident(input2), ([_0, input3]) => [PropertyKeyIdentMapping(_0), input3]);
+var PropertyKeyQuoted = (input2) => If(String3(["'", '"'], input2), ([_0, input3]) => [PropertyKeyQuotedMapping(_0), input3]);
+var PropertyKeyIndex = (input2) => If(If(Const("[", input2), ([_0, input3]) => If(Ident(input3), ([_1, input4]) => If(Const(":", input4), ([_2, input5]) => If(If(KeywordInteger(input5), ([_02, input6]) => [_02, input6], () => If(KeywordNumber(input5), ([_02, input6]) => [_02, input6], () => If(KeywordString(input5), ([_02, input6]) => [_02, input6], () => If(KeywordSymbol(input5), ([_02, input6]) => [_02, input6], () => [])))), ([_3, input6]) => If(Const("]", input6), ([_4, input7]) => [[_0, _1, _2, _3, _4], input7]))))), ([_0, input3]) => [PropertyKeyIndexMapping(_0), input3]);
+var PropertyKey = (input2) => If(If(PropertyKeyNumber(input2), ([_0, input3]) => [_0, input3], () => If(PropertyKeyIdent(input2), ([_0, input3]) => [_0, input3], () => If(PropertyKeyQuoted(input2), ([_0, input3]) => [_0, input3], () => If(PropertyKeyIndex(input2), ([_0, input3]) => [_0, input3], () => [])))), ([_0, input3]) => [PropertyKeyMapping(_0), input3]);
+var Readonly2 = (input2) => If(If(If(Const("readonly", input2), ([_0, input3]) => [[_0], input3]), ([_0, input3]) => [_0, input3], () => If([[], input2], ([_0, input3]) => [_0, input3], () => [])), ([_0, input3]) => [ReadonlyMapping(_0), input3]);
+var Optional3 = (input2) => If(If(If(Const("?", input2), ([_0, input3]) => [[_0], input3]), ([_0, input3]) => [_0, input3], () => If([[], input2], ([_0, input3]) => [_0, input3], () => [])), ([_0, input3]) => [OptionalMapping(_0), input3]);
+var Property = (input2) => If(If(Readonly2(input2), ([_0, input3]) => If(PropertyKey(input3), ([_1, input4]) => If(Optional3(input4), ([_2, input5]) => If(Const(":", input5), ([_3, input6]) => If(Type(input6), ([_4, input7]) => [[_0, _1, _2, _3, _4], input7]))))), ([_0, input3]) => [PropertyMapping(_0), input3]);
+var PropertyDelimiter = (input2) => If(If(If(Const(",", input2), ([_0, input3]) => If(Const(`
+`, input3), ([_1, input4]) => [[_0, _1], input4])), ([_0, input3]) => [_0, input3], () => If(If(Const(";", input2), ([_0, input3]) => If(Const(`
+`, input3), ([_1, input4]) => [[_0, _1], input4])), ([_0, input3]) => [_0, input3], () => If(If(Const(",", input2), ([_0, input3]) => [[_0], input3]), ([_0, input3]) => [_0, input3], () => If(If(Const(";", input2), ([_0, input3]) => [[_0], input3]), ([_0, input3]) => [_0, input3], () => If(If(Const(`
+`, input2), ([_0, input3]) => [[_0], input3]), ([_0, input3]) => [_0, input3], () => []))))), ([_0, input3]) => [PropertyDelimiterMapping(_0), input3]);
+var PropertyList_0 = (input2, result = []) => If(If(PropertyDelimiter(input2), ([_0, input3]) => If(Property(input3), ([_1, input4]) => [[_0, _1], input4])), ([_0, input3]) => PropertyList_0(input3, [...result, _0]), () => [result, input2]);
+var PropertyList = (input2) => If(If(If(Property(input2), ([_0, input3]) => If(PropertyList_0(input3), ([_1, input4]) => If(If(PropertyDelimiter(input4), ([_02, input5]) => [[_02], input5], () => [[], input4]), ([_2, input5]) => [[_0, _1, _2], input5]))), ([_0, input3]) => [_0, input3], () => If([[], input2], ([_0, input3]) => [_0, input3], () => [])), ([_0, input3]) => [PropertyListMapping(_0), input3]);
+var Properties = (input2) => If(If(Const("{", input2), ([_0, input3]) => If(PropertyList(input3), ([_1, input4]) => If(Const("}", input4), ([_2, input5]) => [[_0, _1, _2], input5]))), ([_0, input3]) => [PropertiesMapping(_0), input3]);
+var _Object_2 = (input2) => If(Properties(input2), ([_0, input3]) => [_Object_Mapping(_0), input3]);
+var ElementNamed = (input2) => If(If(If(Ident(input2), ([_0, input3]) => If(Const("?", input3), ([_1, input4]) => If(Const(":", input4), ([_2, input5]) => If(Const("readonly", input5), ([_3, input6]) => If(Type(input6), ([_4, input7]) => [[_0, _1, _2, _3, _4], input7]))))), ([_0, input3]) => [_0, input3], () => If(If(Ident(input2), ([_0, input3]) => If(Const(":", input3), ([_1, input4]) => If(Const("readonly", input4), ([_2, input5]) => If(Type(input5), ([_3, input6]) => [[_0, _1, _2, _3], input6])))), ([_0, input3]) => [_0, input3], () => If(If(Ident(input2), ([_0, input3]) => If(Const("?", input3), ([_1, input4]) => If(Const(":", input4), ([_2, input5]) => If(Type(input5), ([_3, input6]) => [[_0, _1, _2, _3], input6])))), ([_0, input3]) => [_0, input3], () => If(If(Ident(input2), ([_0, input3]) => If(Const(":", input3), ([_1, input4]) => If(Type(input4), ([_2, input5]) => [[_0, _1, _2], input5]))), ([_0, input3]) => [_0, input3], () => [])))), ([_0, input3]) => [ElementNamedMapping(_0), input3]);
+var ElementBase = (input2) => If(If(ElementNamed(input2), ([_0, input3]) => [_0, input3], () => If(If(Readonly2(input2), ([_0, input3]) => If(Type(input3), ([_1, input4]) => If(Optional3(input4), ([_2, input5]) => [[_0, _1, _2], input5]))), ([_0, input3]) => [_0, input3], () => [])), ([_0, input3]) => [ElementBaseMapping(_0), input3]);
+var Element = (input2) => If(If(If(Const("...", input2), ([_0, input3]) => If(ElementBase(input3), ([_1, input4]) => [[_0, _1], input4])), ([_0, input3]) => [_0, input3], () => If(If(ElementBase(input2), ([_0, input3]) => [[_0], input3]), ([_0, input3]) => [_0, input3], () => [])), ([_0, input3]) => [ElementMapping(_0), input3]);
+var ElementList_0 = (input2, result = []) => If(If(Const(",", input2), ([_0, input3]) => If(Element(input3), ([_1, input4]) => [[_0, _1], input4])), ([_0, input3]) => ElementList_0(input3, [...result, _0]), () => [result, input2]);
+var ElementList = (input2) => If(If(If(Element(input2), ([_0, input3]) => If(ElementList_0(input3), ([_1, input4]) => If(If(Const(",", input4), ([_02, input5]) => [[_02], input5], () => [[], input4]), ([_2, input5]) => [[_0, _1, _2], input5]))), ([_0, input3]) => [_0, input3], () => If([[], input2], ([_0, input3]) => [_0, input3], () => [])), ([_0, input3]) => [ElementListMapping(_0), input3]);
+var _Tuple_ = (input2) => If(If(Const("[", input2), ([_0, input3]) => If(ElementList(input3), ([_1, input4]) => If(Const("]", input4), ([_2, input5]) => [[_0, _1, _2], input5]))), ([_0, input3]) => [_Tuple_Mapping(_0), input3]);
+var ParameterReadonlyOptional = (input2) => If(If(Ident(input2), ([_0, input3]) => If(Const("?", input3), ([_1, input4]) => If(Const(":", input4), ([_2, input5]) => If(Const("readonly", input5), ([_3, input6]) => If(Type(input6), ([_4, input7]) => [[_0, _1, _2, _3, _4], input7]))))), ([_0, input3]) => [ParameterReadonlyOptionalMapping(_0), input3]);
+var ParameterReadonly = (input2) => If(If(Ident(input2), ([_0, input3]) => If(Const(":", input3), ([_1, input4]) => If(Const("readonly", input4), ([_2, input5]) => If(Type(input5), ([_3, input6]) => [[_0, _1, _2, _3], input6])))), ([_0, input3]) => [ParameterReadonlyMapping(_0), input3]);
+var ParameterOptional = (input2) => If(If(Ident(input2), ([_0, input3]) => If(Const("?", input3), ([_1, input4]) => If(Const(":", input4), ([_2, input5]) => If(Type(input5), ([_3, input6]) => [[_0, _1, _2, _3], input6])))), ([_0, input3]) => [ParameterOptionalMapping(_0), input3]);
+var ParameterType = (input2) => If(If(Ident(input2), ([_0, input3]) => If(Const(":", input3), ([_1, input4]) => If(Type(input4), ([_2, input5]) => [[_0, _1, _2], input5]))), ([_0, input3]) => [ParameterTypeMapping(_0), input3]);
+var ParameterBase = (input2) => If(If(ParameterReadonlyOptional(input2), ([_0, input3]) => [_0, input3], () => If(ParameterReadonly(input2), ([_0, input3]) => [_0, input3], () => If(ParameterOptional(input2), ([_0, input3]) => [_0, input3], () => If(ParameterType(input2), ([_0, input3]) => [_0, input3], () => [])))), ([_0, input3]) => [ParameterBaseMapping(_0), input3]);
+var Parameter2 = (input2) => If(If(If(Const("...", input2), ([_0, input3]) => If(ParameterBase(input3), ([_1, input4]) => [[_0, _1], input4])), ([_0, input3]) => [_0, input3], () => If(If(ParameterBase(input2), ([_0, input3]) => [[_0], input3]), ([_0, input3]) => [_0, input3], () => [])), ([_0, input3]) => [ParameterMapping(_0), input3]);
+var ParameterList_0 = (input2, result = []) => If(If(Const(",", input2), ([_0, input3]) => If(Parameter2(input3), ([_1, input4]) => [[_0, _1], input4])), ([_0, input3]) => ParameterList_0(input3, [...result, _0]), () => [result, input2]);
+var ParameterList = (input2) => If(If(If(Parameter2(input2), ([_0, input3]) => If(ParameterList_0(input3), ([_1, input4]) => If(If(Const(",", input4), ([_02, input5]) => [[_02], input5], () => [[], input4]), ([_2, input5]) => [[_0, _1, _2], input5]))), ([_0, input3]) => [_0, input3], () => If([[], input2], ([_0, input3]) => [_0, input3], () => [])), ([_0, input3]) => [ParameterListMapping(_0), input3]);
+var _Function_2 = (input2) => If(If(Const("(", input2), ([_0, input3]) => If(ParameterList(input3), ([_1, input4]) => If(Const(")", input4), ([_2, input5]) => If(Const("=>", input5), ([_3, input6]) => If(Type(input6), ([_4, input7]) => [[_0, _1, _2, _3, _4], input7]))))), ([_0, input3]) => [_Function_Mapping(_0), input3]);
+var _Constructor_ = (input2) => If(If(Const("new", input2), ([_0, input3]) => If(Const("(", input3), ([_1, input4]) => If(ParameterList(input4), ([_2, input5]) => If(Const(")", input5), ([_3, input6]) => If(Const("=>", input6), ([_4, input7]) => If(Type(input7), ([_5, input8]) => [[_0, _1, _2, _3, _4, _5], input8])))))), ([_0, input3]) => [_Constructor_Mapping(_0), input3]);
+var MappedReadonly = (input2) => If(If(If(Const("+", input2), ([_0, input3]) => If(Const("readonly", input3), ([_1, input4]) => [[_0, _1], input4])), ([_0, input3]) => [_0, input3], () => If(If(Const("-", input2), ([_0, input3]) => If(Const("readonly", input3), ([_1, input4]) => [[_0, _1], input4])), ([_0, input3]) => [_0, input3], () => If(If(Const("readonly", input2), ([_0, input3]) => [[_0], input3]), ([_0, input3]) => [_0, input3], () => If([[], input2], ([_0, input3]) => [_0, input3], () => [])))), ([_0, input3]) => [MappedReadonlyMapping(_0), input3]);
+var MappedOptional = (input2) => If(If(If(Const("+", input2), ([_0, input3]) => If(Const("?", input3), ([_1, input4]) => [[_0, _1], input4])), ([_0, input3]) => [_0, input3], () => If(If(Const("-", input2), ([_0, input3]) => If(Const("?", input3), ([_1, input4]) => [[_0, _1], input4])), ([_0, input3]) => [_0, input3], () => If(If(Const("?", input2), ([_0, input3]) => [[_0], input3]), ([_0, input3]) => [_0, input3], () => If([[], input2], ([_0, input3]) => [_0, input3], () => [])))), ([_0, input3]) => [MappedOptionalMapping(_0), input3]);
+var MappedAs = (input2) => If(If(If(Const("as", input2), ([_0, input3]) => If(Type(input3), ([_1, input4]) => [[_0, _1], input4])), ([_0, input3]) => [_0, input3], () => If([[], input2], ([_0, input3]) => [_0, input3], () => [])), ([_0, input3]) => [MappedAsMapping(_0), input3]);
+var _Mapped_ = (input2) => If(If(Const("{", input2), ([_0, input3]) => If(MappedReadonly(input3), ([_1, input4]) => If(Const("[", input4), ([_2, input5]) => If(Ident(input5), ([_3, input6]) => If(Const("in", input6), ([_4, input7]) => If(Type(input7), ([_5, input8]) => If(MappedAs(input8), ([_6, input9]) => If(Const("]", input9), ([_7, input10]) => If(MappedOptional(input10), ([_8, input11]) => If(Const(":", input11), ([_9, input12]) => If(Type(input12), ([_10, input13]) => If(OptionalSemiColon(input13), ([_11, input14]) => If(Const("}", input14), ([_12, input15]) => [[_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12], input15]))))))))))))), ([_0, input3]) => [_Mapped_Mapping(_0), input3]);
+var Reference = (input2) => If(Ident(input2), ([_0, input3]) => [ReferenceMapping(_0), input3]);
+var WithBigInt = (input2) => If(BigInt3(input2), ([_0, input3]) => [WithBigIntMapping(_0), input3]);
+var WithNumber = (input2) => If(Number3(input2), ([_0, input3]) => [WithNumberMapping(_0), input3]);
+var WithBoolean = (input2) => If(If(Const("true", input2), ([_0, input3]) => [_0, input3], () => If(Const("false", input2), ([_0, input3]) => [_0, input3], () => [])), ([_0, input3]) => [WithBooleanMapping(_0), input3]);
+var WithString = (input2) => If(String3(['"', "'"], input2), ([_0, input3]) => [WithStringMapping(_0), input3]);
+var WithNull = (input2) => If(Const("null", input2), ([_0, input3]) => [WithNullMapping(_0), input3]);
+var WithUndefined = (input2) => If(Const("undefined", input2), ([_0, input3]) => [WithUndefinedMapping(_0), input3]);
+var WithProperty = (input2) => If(If(PropertyKey(input2), ([_0, input3]) => If(Const(":", input3), ([_1, input4]) => If(WithValue(input4), ([_2, input5]) => [[_0, _1, _2], input5]))), ([_0, input3]) => [WithPropertyMapping(_0), input3]);
+var WithPropertyList_0 = (input2, result = []) => If(If(PropertyDelimiter(input2), ([_0, input3]) => If(WithProperty(input3), ([_1, input4]) => [[_0, _1], input4])), ([_0, input3]) => WithPropertyList_0(input3, [...result, _0]), () => [result, input2]);
+var WithPropertyList = (input2) => If(If(If(WithProperty(input2), ([_0, input3]) => If(WithPropertyList_0(input3), ([_1, input4]) => If(If(PropertyDelimiter(input4), ([_02, input5]) => [[_02], input5], () => [[], input4]), ([_2, input5]) => [[_0, _1, _2], input5]))), ([_0, input3]) => [_0, input3], () => If([[], input2], ([_0, input3]) => [_0, input3], () => [])), ([_0, input3]) => [WithPropertyListMapping(_0), input3]);
+var WithObject = (input2) => If(If(Const("{", input2), ([_0, input3]) => If(WithPropertyList(input3), ([_1, input4]) => If(Const("}", input4), ([_2, input5]) => [[_0, _1, _2], input5]))), ([_0, input3]) => [WithObjectMapping(_0), input3]);
+var WithElementList_0 = (input2, result = []) => If(If(Const(",", input2), ([_0, input3]) => If(WithValue(input3), ([_1, input4]) => [[_0, _1], input4])), ([_0, input3]) => WithElementList_0(input3, [...result, _0]), () => [result, input2]);
+var WithElementList = (input2) => If(If(If(WithValue(input2), ([_0, input3]) => If(WithElementList_0(input3), ([_1, input4]) => If(If(Const(",", input4), ([_02, input5]) => [[_02], input5], () => [[], input4]), ([_2, input5]) => [[_0, _1, _2], input5]))), ([_0, input3]) => [_0, input3], () => If([[], input2], ([_0, input3]) => [_0, input3], () => [])), ([_0, input3]) => [WithElementListMapping(_0), input3]);
+var WithArray = (input2) => If(If(Const("[", input2), ([_0, input3]) => If(WithElementList(input3), ([_1, input4]) => If(Const("]", input4), ([_2, input5]) => [[_0, _1, _2], input5]))), ([_0, input3]) => [WithArrayMapping(_0), input3]);
+var WithValue = (input2) => If(If(WithBigInt(input2), ([_0, input3]) => [_0, input3], () => If(WithNumber(input2), ([_0, input3]) => [_0, input3], () => If(WithBoolean(input2), ([_0, input3]) => [_0, input3], () => If(WithString(input2), ([_0, input3]) => [_0, input3], () => If(WithNull(input2), ([_0, input3]) => [_0, input3], () => If(WithUndefined(input2), ([_0, input3]) => [_0, input3], () => If(WithObject(input2), ([_0, input3]) => [_0, input3], () => If(WithArray(input2), ([_0, input3]) => [_0, input3], () => [])))))))), ([_0, input3]) => [WithValueMapping(_0), input3]);
+var PatternBigInt = (input2) => If(Const("-?(?:0|[1-9][0-9]*)n", input2), ([_0, input3]) => [PatternBigIntMapping(_0), input3]);
+var PatternString = (input2) => If(Const(".*", input2), ([_0, input3]) => [PatternStringMapping(_0), input3]);
+var PatternNumber = (input2) => If(Const("-?(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?", input2), ([_0, input3]) => [PatternNumberMapping(_0), input3]);
+var PatternInteger = (input2) => If(Const("-?(?:0|[1-9][0-9]*)", input2), ([_0, input3]) => [PatternIntegerMapping(_0), input3]);
+var PatternNever = (input2) => If(Const("(?!)", input2), ([_0, input3]) => [PatternNeverMapping(_0), input3]);
+var PatternText = (input2) => If(Until_1(["-?(?:0|[1-9][0-9]*)n", ".*", "-?(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?", "-?(?:0|[1-9][0-9]*)", "(?!)", "(", ")", "$", "|"], input2), ([_0, input3]) => [PatternTextMapping(_0), input3]);
+var PatternBase = (input2) => If(If(PatternBigInt(input2), ([_0, input3]) => [_0, input3], () => If(PatternString(input2), ([_0, input3]) => [_0, input3], () => If(PatternNumber(input2), ([_0, input3]) => [_0, input3], () => If(PatternInteger(input2), ([_0, input3]) => [_0, input3], () => If(PatternNever(input2), ([_0, input3]) => [_0, input3], () => If(PatternGroup(input2), ([_0, input3]) => [_0, input3], () => If(PatternText(input2), ([_0, input3]) => [_0, input3], () => []))))))), ([_0, input3]) => [PatternBaseMapping(_0), input3]);
+var PatternGroup = (input2) => If(If(Const("(", input2), ([_0, input3]) => If(PatternBody(input3), ([_1, input4]) => If(Const(")", input4), ([_2, input5]) => [[_0, _1, _2], input5]))), ([_0, input3]) => [PatternGroupMapping(_0), input3]);
+var PatternUnion = (input2) => If(If(If(PatternTerm(input2), ([_0, input3]) => If(Const("|", input3), ([_1, input4]) => If(PatternUnion(input4), ([_2, input5]) => [[_0, _1, _2], input5]))), ([_0, input3]) => [_0, input3], () => If(If(PatternTerm(input2), ([_0, input3]) => [[_0], input3]), ([_0, input3]) => [_0, input3], () => If([[], input2], ([_0, input3]) => [_0, input3], () => []))), ([_0, input3]) => [PatternUnionMapping(_0), input3]);
+var PatternTerm = (input2) => If(If(PatternBase(input2), ([_0, input3]) => If(PatternBody(input3), ([_1, input4]) => [[_0, _1], input4])), ([_0, input3]) => [PatternTermMapping(_0), input3]);
+var PatternBody = (input2) => If(If(PatternUnion(input2), ([_0, input3]) => [_0, input3], () => If(PatternTerm(input2), ([_0, input3]) => [_0, input3], () => [])), ([_0, input3]) => [PatternBodyMapping(_0), input3]);
+var Pattern = (input2) => If(If(Const("^", input2), ([_0, input3]) => If(PatternBody(input3), ([_1, input4]) => If(Const("$", input4), ([_2, input5]) => [[_0, _1, _2], input5]))), ([_0, input3]) => [PatternMapping(_0), input3]);
+var InterfaceDeclarationHeritageList_0 = (input2, result = []) => If(If(Const(",", input2), ([_0, input3]) => If(Type(input3), ([_1, input4]) => [[_0, _1], input4])), ([_0, input3]) => InterfaceDeclarationHeritageList_0(input3, [...result, _0]), () => [result, input2]);
+var InterfaceDeclarationHeritageList = (input2) => If(If(If(Type(input2), ([_0, input3]) => If(InterfaceDeclarationHeritageList_0(input3), ([_1, input4]) => If(If(Const(",", input4), ([_02, input5]) => [[_02], input5], () => [[], input4]), ([_2, input5]) => [[_0, _1, _2], input5]))), ([_0, input3]) => [_0, input3], () => If([[], input2], ([_0, input3]) => [_0, input3], () => [])), ([_0, input3]) => [InterfaceDeclarationHeritageListMapping(_0), input3]);
+var InterfaceDeclarationHeritage = (input2) => If(If(If(Const("extends", input2), ([_0, input3]) => If(InterfaceDeclarationHeritageList(input3), ([_1, input4]) => [[_0, _1], input4])), ([_0, input3]) => [_0, input3], () => If([[], input2], ([_0, input3]) => [_0, input3], () => [])), ([_0, input3]) => [InterfaceDeclarationHeritageMapping(_0), input3]);
+var InterfaceDeclarationGeneric = (input2) => If(If(Const("interface", input2), ([_0, input3]) => If(Ident(input3), ([_1, input4]) => If(GenericParameters(input4), ([_2, input5]) => If(InterfaceDeclarationHeritage(input5), ([_3, input6]) => If(Properties(input6), ([_4, input7]) => [[_0, _1, _2, _3, _4], input7]))))), ([_0, input3]) => [InterfaceDeclarationGenericMapping(_0), input3]);
+var InterfaceDeclaration = (input2) => If(If(Const("interface", input2), ([_0, input3]) => If(Ident(input3), ([_1, input4]) => If(InterfaceDeclarationHeritage(input4), ([_2, input5]) => If(Properties(input5), ([_3, input6]) => [[_0, _1, _2, _3], input6])))), ([_0, input3]) => [InterfaceDeclarationMapping(_0), input3]);
+var TypeAliasDeclarationGeneric = (input2) => If(If(Const("type", input2), ([_0, input3]) => If(Ident(input3), ([_1, input4]) => If(GenericParameters(input4), ([_2, input5]) => If(Const("=", input5), ([_3, input6]) => If(Type(input6), ([_4, input7]) => [[_0, _1, _2, _3, _4], input7]))))), ([_0, input3]) => [TypeAliasDeclarationGenericMapping(_0), input3]);
+var TypeAliasDeclaration = (input2) => If(If(Const("type", input2), ([_0, input3]) => If(Ident(input3), ([_1, input4]) => If(Const("=", input4), ([_2, input5]) => If(Type(input5), ([_3, input6]) => [[_0, _1, _2, _3], input6])))), ([_0, input3]) => [TypeAliasDeclarationMapping(_0), input3]);
+var ExportKeyword = (input2) => If(If(If(Const("export", input2), ([_0, input3]) => [[_0], input3]), ([_0, input3]) => [_0, input3], () => If([[], input2], ([_0, input3]) => [_0, input3], () => [])), ([_0, input3]) => [ExportKeywordMapping(_0), input3]);
+var ModuleDeclarationDelimiter = (input2) => If(If(If(Const(";", input2), ([_0, input3]) => If(Const(`
+`, input3), ([_1, input4]) => [[_0, _1], input4])), ([_0, input3]) => [_0, input3], () => If(If(Const(";", input2), ([_0, input3]) => [[_0], input3]), ([_0, input3]) => [_0, input3], () => If(If(Const(`
+`, input2), ([_0, input3]) => [[_0], input3]), ([_0, input3]) => [_0, input3], () => []))), ([_0, input3]) => [ModuleDeclarationDelimiterMapping(_0), input3]);
+var ModuleDeclarationList_0 = (input2, result = []) => If(If(ModuleDeclarationDelimiter(input2), ([_0, input3]) => If(ModuleDeclaration(input3), ([_1, input4]) => [[_0, _1], input4])), ([_0, input3]) => ModuleDeclarationList_0(input3, [...result, _0]), () => [result, input2]);
+var ModuleDeclarationList = (input2) => If(If(If(ModuleDeclaration(input2), ([_0, input3]) => If(ModuleDeclarationList_0(input3), ([_1, input4]) => If(If(ModuleDeclarationDelimiter(input4), ([_02, input5]) => [[_02], input5], () => [[], input4]), ([_2, input5]) => [[_0, _1, _2], input5]))), ([_0, input3]) => [_0, input3], () => If([[], input2], ([_0, input3]) => [_0, input3], () => [])), ([_0, input3]) => [ModuleDeclarationListMapping(_0), input3]);
+var ModuleDeclaration = (input2) => If(If(ExportKeyword(input2), ([_0, input3]) => If(If(InterfaceDeclarationGeneric(input3), ([_02, input4]) => [_02, input4], () => If(InterfaceDeclaration(input3), ([_02, input4]) => [_02, input4], () => If(TypeAliasDeclarationGeneric(input3), ([_02, input4]) => [_02, input4], () => If(TypeAliasDeclaration(input3), ([_02, input4]) => [_02, input4], () => [])))), ([_1, input4]) => If(OptionalSemiColon(input4), ([_2, input5]) => [[_0, _1, _2], input5]))), ([_0, input3]) => [ModuleDeclarationMapping(_0), input3]);
+var Module = (input2) => If(If(ModuleDeclaration(input2), ([_0, input3]) => If(ModuleDeclarationList(input3), ([_1, input4]) => [[_0, _1], input4])), ([_0, input3]) => [ModuleMapping(_0), input3]);
+var Script = (input2) => If(If(Module(input2), ([_0, input3]) => [_0, input3], () => If(GenericType(input2), ([_0, input3]) => [_0, input3], () => If(Type(input2), ([_0, input3]) => [_0, input3], () => []))), ([_0, input3]) => [ScriptMapping(_0), input3]);
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/patterns/template.mjs
+function ParseTemplateIntoTypes(template) {
+  const parsed2 = TemplateLiteralTypes(`\`${template}\``);
+  const result = exports_guard.IsEqual(parsed2.length, 2) ? parsed2[0] : Unreachable();
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/template_literal/encode.mjs
+function JoinString(input2) {
+  return input2.join("|");
+}
+function UnwrapTemplateLiteralPattern(pattern) {
+  return pattern.slice(1, pattern.length - 1);
+}
+function EncodeLiteral(value, right, pattern) {
+  return EncodeTypes(right, `${pattern}${value}`);
+}
+function EncodeBigInt(right, pattern) {
+  return EncodeTypes(right, `${pattern}${BigIntPattern}`);
+}
+function EncodeInteger(right, pattern) {
+  return EncodeTypes(right, `${pattern}${IntegerPattern}`);
+}
+function EncodeNumber(right, pattern) {
+  return EncodeTypes(right, `${pattern}${NumberPattern}`);
+}
+function EncodeBoolean(right, pattern) {
+  return EncodeType(Union([Literal("false"), Literal("true")]), right, pattern);
+}
+function EncodeString(right, pattern) {
+  return EncodeTypes(right, `${pattern}${StringPattern}`);
+}
+function EncodeTemplateLiteral(templatePattern, right, pattern) {
+  return EncodeTypes(right, `${pattern}${UnwrapTemplateLiteralPattern(templatePattern)}`);
+}
+function EncodeTemplateLiteralDeferred(types14, right, pattern) {
+  const templateLiteral2 = TemplateLiteralAction(types14, {});
+  const result = EncodeType(templateLiteral2, right, pattern);
+  return result;
+}
+function EncodeEnum(values, right, pattern) {
+  const evaluated = EvaluateEnum(values);
+  return EncodeType(evaluated, right, pattern);
+}
+function EncodeUnion(types14, right, pattern, result = []) {
+  return exports_guard.ShiftLeft(types14, (head, tail) => EncodeUnion(tail, right, pattern, [...result, EncodeType(head, [], "")]), () => EncodeTypes(right, `${pattern}(${JoinString(result)})`));
+}
+function EncodeType(type, right, pattern) {
+  return IsEnum(type) ? EncodeEnum(type.enum, right, pattern) : IsInteger2(type) ? EncodeInteger(right, pattern) : IsLiteral(type) ? EncodeLiteral(type.const, right, pattern) : IsBigInt2(type) ? EncodeBigInt(right, pattern) : IsBoolean3(type) ? EncodeBoolean(right, pattern) : IsNumber3(type) ? EncodeNumber(right, pattern) : IsString3(type) ? EncodeString(right, pattern) : IsTemplateLiteral(type) ? EncodeTemplateLiteral(type.pattern, right, pattern) : IsTemplateLiteralDeferred(type) ? EncodeTemplateLiteralDeferred(type.parameters[0], right, pattern) : IsUnion(type) ? EncodeUnion(type.anyOf, right, pattern) : NeverPattern;
+}
+function EncodeTypes(types14, pattern) {
+  return exports_guard.ShiftLeft(types14, (left, right) => EncodeType(left, right, pattern), () => pattern);
+}
+function EncodePattern(types14) {
+  const encoded = EncodeTypes(types14, "");
+  const result = `^${encoded}$`;
+  return result;
+}
+function TemplateLiteralEncode(types14) {
+  const pattern = EncodePattern(types14);
+  const result = TemplateLiteralCreate(pattern);
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/template_literal/instantiate.mjs
+function TemplateLiteralAction(types14, options) {
+  const result = CanInstantiate(types14) ? exports_memory.Update(TemplateLiteralEncode(types14), {}, options) : TemplateLiteralDeferred(types14, options);
+  return result;
+}
+function TemplateLiteralInstantiate(context, state4, types14, options) {
+  const instantiatedTypes = InstantiateTypes(context, state4, types14);
+  return TemplateLiteralAction(instantiatedTypes, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/types/template_literal.mjs
+function TemplateLiteralDeferred(types14, options = {}) {
+  return Deferred("TemplateLiteral", [types14], options);
+}
+function IsTemplateLiteralDeferred(value) {
+  return IsSchema(value) && exports_guard.HasPropertyKey(value, "action") && exports_guard.IsEqual(value.action, "TemplateLiteral");
+}
+function TemplateLiteralFromTypes(types14) {
+  return TemplateLiteralAction(types14, {});
+}
+function TemplateLiteralFromString(template) {
+  const types14 = ParseTemplateIntoTypes(template);
+  return TemplateLiteralFromTypes(types14);
+}
+function TemplateLiteral2(input2, options = {}) {
+  const type = exports_guard.IsString(input2) ? TemplateLiteralFromString(input2) : TemplateLiteralFromTypes(input2);
+  return exports_memory.Update(type, {}, options);
+}
+function IsTemplateLiteral(value) {
+  return IsKind(value, "TemplateLiteral");
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/result.mjs
+var exports_result = {};
+__export(exports_result, {
+  Match: () => Match3,
+  IsExtendsUnion: () => IsExtendsUnion,
+  IsExtendsTrueLike: () => IsExtendsTrueLike,
+  IsExtendsTrue: () => IsExtendsTrue,
+  IsExtendsFalse: () => IsExtendsFalse,
+  ExtendsUnion: () => ExtendsUnion,
+  ExtendsTrue: () => ExtendsTrue,
+  ExtendsFalse: () => ExtendsFalse
+});
+function ExtendsUnion(inferred) {
+  return exports_memory.Create({ ["~kind"]: "ExtendsUnion" }, { inferred });
+}
+function IsExtendsUnion(value) {
+  return exports_guard.IsObject(value) && exports_guard.HasPropertyKey(value, "~kind") && exports_guard.HasPropertyKey(value, "inferred") && exports_guard.IsEqual(value["~kind"], "ExtendsUnion") && exports_guard.IsObject(value.inferred);
+}
+function ExtendsTrue(inferred) {
+  return exports_memory.Create({ ["~kind"]: "ExtendsTrue" }, { inferred });
+}
+function IsExtendsTrue(value) {
+  return exports_guard.IsObject(value) && exports_guard.HasPropertyKey(value, "~kind") && exports_guard.HasPropertyKey(value, "inferred") && exports_guard.IsEqual(value["~kind"], "ExtendsTrue") && exports_guard.IsObject(value.inferred);
+}
+function ExtendsFalse() {
+  return exports_memory.Create({ ["~kind"]: "ExtendsFalse" }, {});
+}
+function IsExtendsFalse(value) {
+  return exports_guard.IsObject(value) && exports_guard.HasPropertyKey(value, "~kind") && exports_guard.IsEqual(value["~kind"], "ExtendsFalse");
+}
+function IsExtendsTrueLike(value) {
+  return IsExtendsUnion(value) || IsExtendsTrue(value);
+}
+function Match3(result, true_, false_) {
+  return IsExtendsTrueLike(result) ? true_(result.inferred) : false_();
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/extends_right.mjs
+function ExtendsRightInfer(inferred, name, left, right) {
+  return Match3(ExtendsLeft(inferred, left, right), (checkInferred) => ExtendsTrue(exports_memory.Assign(exports_memory.Assign(inferred, checkInferred), { [name]: left })), () => ExtendsFalse());
+}
+function ExtendsRightAny(inferred, _left) {
+  return ExtendsTrue(inferred);
+}
+function ExtendsRightDependent(inferred, left, if_, then_, else_) {
+  return Match3(ExtendsLeft(inferred, left, if_), (inferred2) => Match3(ExtendsLeft(inferred2, left, then_), (inferred3) => ExtendsTrue(inferred3), () => ExtendsFalse()), () => Match3(ExtendsLeft(inferred, left, else_), (inferred2) => ExtendsTrue(inferred2), () => ExtendsFalse()));
+}
+function ExtendsRightEnum(inferred, left, right) {
+  const evaluated = EvaluateEnum(right);
+  return ExtendsLeft(inferred, left, evaluated);
+}
+function ExtendsRightIntersect(inferred, left, right) {
+  return exports_guard.ShiftLeft(right, (head, tail) => Match3(ExtendsLeft(inferred, left, head), (inferred2) => ExtendsRightIntersect(inferred2, left, tail), () => ExtendsFalse()), () => ExtendsTrue(inferred));
+}
+function ExtendsRightTemplateLiteral(inferred, left, right) {
+  const evaluated = EvaluateTemplateLiteral(right);
+  return ExtendsLeft(inferred, left, evaluated);
+}
+function ExtendsRightUnion(inferred, left, right) {
+  return exports_guard.ShiftLeft(right, (head, tail) => Match3(ExtendsLeft(inferred, left, head), (inferred2) => ExtendsTrue(inferred2), () => ExtendsRightUnion(inferred, left, tail)), () => ExtendsFalse());
+}
+function ExtendsRight(inferred, left, right) {
+  return IsAny(right) ? ExtendsRightAny(inferred, left) : IsDependent(right) ? ExtendsRightDependent(inferred, left, right.if, right.then, right.else) : IsEnum(right) ? ExtendsRightEnum(inferred, left, right.enum) : IsInfer(right) ? ExtendsRightInfer(inferred, right.name, left, right.extends) : IsIntersect(right) ? ExtendsRightIntersect(inferred, left, right.allOf) : IsTemplateLiteral(right) ? ExtendsRightTemplateLiteral(inferred, left, right.pattern) : IsUnion(right) ? ExtendsRightUnion(inferred, left, right.anyOf) : IsUnknown(right) ? ExtendsTrue(inferred) : ExtendsFalse();
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/any.mjs
+function ExtendsAny(inferred, left, right) {
+  return IsInfer(right) ? ExtendsRight(inferred, left, right) : IsAny(right) ? ExtendsTrue(inferred) : IsUnknown(right) ? ExtendsTrue(inferred) : ExtendsUnion(inferred);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/array.mjs
+function ExtendsImmutable(left, right) {
+  const isImmutableLeft = IsImmutable(left);
+  const isImmutableRight = IsImmutable(right);
+  return isImmutableLeft && isImmutableRight ? true : !isImmutableLeft && isImmutableRight ? true : isImmutableLeft && !isImmutableRight ? false : true;
+}
+function ExtendsArray(inferred, arrayLeft, left, right) {
+  return IsArray2(right) ? ExtendsImmutable(arrayLeft, right) ? ExtendsLeft(inferred, left, right.items) : ExtendsFalse() : ExtendsRight(inferred, arrayLeft, right);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/bigint.mjs
+function ExtendsBigInt(inferred, left, right) {
+  return IsBigInt2(right) ? ExtendsTrue(inferred) : ExtendsRight(inferred, left, right);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/boolean.mjs
+function ExtendsBoolean(inferred, left, right) {
+  return IsBoolean3(right) ? ExtendsTrue(inferred) : ExtendsRight(inferred, left, right);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/parameters.mjs
+function ParameterCompare(inferred, left, leftRest, right, rightRest) {
+  const checkLeft = IsInfer(right) ? left : right;
+  const checkRight = IsInfer(right) ? right : left;
+  const isLeftOptional = IsOptional(left);
+  const isRightOptional = IsOptional(right);
+  return !isLeftOptional && isRightOptional ? ExtendsFalse() : Match3(ExtendsLeft(inferred, checkLeft, checkRight), (inferred2) => ExtendsParameters(inferred2, leftRest, rightRest), () => ExtendsFalse());
+}
+function ParameterRight(inferred, left, leftRest, rightRest) {
+  return exports_guard.ShiftLeft(rightRest, (head, tail) => ParameterCompare(inferred, left, leftRest, head, tail), () => IsOptional(left) ? ExtendsTrue(inferred) : ExtendsFalse());
+}
+function ParametersLeft(inferred, left, rightRest) {
+  return exports_guard.ShiftLeft(left, (head, tail) => ParameterRight(inferred, head, tail, rightRest), () => ExtendsTrue(inferred));
+}
+function ExtendsParameters(inferred, left, right) {
+  return ParametersLeft(inferred, left, right);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/return_type.mjs
+function ExtendsReturnType(inferred, left, right) {
+  return IsVoid(right) ? ExtendsTrue(inferred) : ExtendsLeft(inferred, left, right);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/constructor.mjs
+function ExtendsConstructor(inferred, parameters, returnType, right) {
+  return IsAny(right) ? ExtendsTrue(inferred) : IsUnknown(right) ? ExtendsTrue(inferred) : IsConstructor2(right) ? Match3(ExtendsParameters(inferred, parameters, right["parameters"]), (inferred2) => ExtendsReturnType(inferred2, returnType, right["instanceType"]), () => ExtendsFalse()) : ExtendsFalse();
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/dependent.mjs
+function ExtendsDependent(inferred, if_, then_, else_, right) {
+  return Match3(ExtendsLeft(inferred, if_, right), () => ExtendsLeft(inferred, then_, right), () => ExtendsLeft(inferred, else_, right));
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/enum.mjs
+function ExtendsEnum(inferred, left, right) {
+  const evaluated = EvaluateEnum(left);
+  return ExtendsLeft(inferred, evaluated, right);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/function.mjs
+function ExtendsFunction(inferred, parameters, returnType, right) {
+  return IsAny(right) ? ExtendsTrue(inferred) : IsUnknown(right) ? ExtendsTrue(inferred) : IsFunction2(right) ? Match3(ExtendsParameters(inferred, parameters, right["parameters"]), (inferred2) => ExtendsReturnType(inferred2, returnType, right["returnType"]), () => ExtendsFalse()) : ExtendsFalse();
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/integer.mjs
+function ExtendsInteger(inferred, left, right) {
+  return IsInteger2(right) ? ExtendsTrue(inferred) : IsNumber3(right) ? ExtendsTrue(inferred) : ExtendsRight(inferred, left, right);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/intersect.mjs
+function ExtendsIntersect(inferred, left, right) {
+  const evaluated = EvaluateIntersect(left);
+  return ExtendsLeft(inferred, evaluated, right);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/literal.mjs
+function ExtendsLiteralValue(inferred, left, right) {
+  return left === right ? ExtendsTrue(inferred) : ExtendsFalse();
+}
+function ExtendsLiteralBigInt(inferred, left, right) {
+  return IsLiteral(right) ? ExtendsLiteralValue(inferred, left, right.const) : IsBigInt2(right) ? ExtendsTrue(inferred) : ExtendsRight(inferred, Literal(left), right);
+}
+function ExtendsLiteralBoolean(inferred, left, right) {
+  return IsLiteral(right) ? ExtendsLiteralValue(inferred, left, right.const) : IsBoolean3(right) ? ExtendsTrue(inferred) : ExtendsRight(inferred, Literal(left), right);
+}
+function ExtendsLiteralNumber(inferred, left, right) {
+  return IsLiteral(right) ? ExtendsLiteralValue(inferred, left, right.const) : IsNumber3(right) ? ExtendsTrue(inferred) : ExtendsRight(inferred, Literal(left), right);
+}
+function ExtendsLiteralString(inferred, left, right) {
+  return IsLiteral(right) ? ExtendsLiteralValue(inferred, left, right.const) : IsString3(right) ? ExtendsTrue(inferred) : ExtendsRight(inferred, Literal(left), right);
+}
+function ExtendsLiteral(inferred, left, right) {
+  return exports_guard.IsBigInt(left.const) ? ExtendsLiteralBigInt(inferred, left.const, right) : exports_guard.IsBoolean(left.const) ? ExtendsLiteralBoolean(inferred, left.const, right) : exports_guard.IsNumber(left.const) ? ExtendsLiteralNumber(inferred, left.const, right) : exports_guard.IsString(left.const) ? ExtendsLiteralString(inferred, left.const, right) : Unreachable();
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/never.mjs
+function ExtendsNever(inferred, left, right) {
+  return IsInfer(right) ? ExtendsRight(inferred, left, right) : ExtendsTrue(inferred);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/null.mjs
+function ExtendsNull(inferred, left, right) {
+  return IsNull2(right) ? ExtendsTrue(inferred) : ExtendsRight(inferred, left, right);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/number.mjs
+function ExtendsNumber(inferred, left, right) {
+  return IsNumber3(right) ? ExtendsTrue(inferred) : ExtendsRight(inferred, left, right);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/object.mjs
+function ExtendsPropertyOptional(inferred, left, right) {
+  return IsOptional(left) ? IsOptional(right) ? ExtendsTrue(inferred) : ExtendsFalse() : ExtendsTrue(inferred);
+}
+function ExtendsProperty(inferred, left, right) {
+  return IsInfer(right) && IsNever(right.extends) ? ExtendsFalse() : Match3(ExtendsLeft(inferred, left, right), (inferred2) => ExtendsPropertyOptional(inferred2, left, right), () => ExtendsFalse());
+}
+function ExtractInferredProperties(keys, properties2) {
+  return keys.reduce((result, key) => {
+    return key in properties2 ? IsExtendsTrueLike(properties2[key]) ? { ...result, ...properties2[key].inferred } : Unreachable() : Unreachable();
+  }, {});
+}
+function ExtendsPropertiesComparer(inferred, left, right) {
+  const properties2 = {};
+  for (const rightKey of exports_guard.Keys(right)) {
+    properties2[rightKey] = rightKey in left ? ExtendsProperty({}, left[rightKey], right[rightKey]) : IsOptional(right[rightKey]) ? IsInfer(right[rightKey]) ? ExtendsTrue(exports_memory.Assign(inferred, { [right[rightKey].name]: right[rightKey].extends })) : ExtendsTrue(inferred) : ExtendsFalse();
+  }
+  const checked2 = exports_guard.Values(properties2).every((result) => IsExtendsTrueLike(result));
+  const extracted = checked2 ? ExtractInferredProperties(exports_guard.Keys(properties2), properties2) : {};
+  return checked2 ? ExtendsTrue(extracted) : ExtendsFalse();
+}
+function ExtendsProperties(inferred, left, right) {
+  const compared = ExtendsPropertiesComparer(inferred, left, right);
+  return IsExtendsTrueLike(compared) ? ExtendsTrue(exports_memory.Assign(inferred, compared.inferred)) : ExtendsFalse();
+}
+function ExtendsObjectToObject(inferred, left, right) {
+  return ExtendsProperties(inferred, left, right);
+}
+function RecordMergeInferred(left, right) {
+  return exports_guard.Keys(right).reduce((result, key) => {
+    return {
+      ...result,
+      [key]: exports_guard.HasPropertyKey(left, key) ? IsUnion(result[key]) ? Union([...result[key].anyOf, right[key]]) : Union([left[key], right[key]]) : right[key]
+    };
+  }, left);
+}
+function ExtendsRecordComparer(properties2, keys, type, result) {
+  return exports_guard.ShiftLeft(keys, (left, right) => Match3(ExtendsLeft({}, properties2[left], type), (inferred) => ExtendsRecordComparer(properties2, right, type, RecordMergeInferred(result, inferred)), () => ExtendsFalse()), () => ExtendsTrue(result));
+}
+function ExtendsObjectToRecord(inferred, properties2, _pattern, value) {
+  const keys = exports_guard.Keys(properties2);
+  const result = ExtendsRecordComparer(properties2, keys, value, inferred);
+  return result;
+}
+function ExtendsObject(inferred, left, right) {
+  return IsRecord(right) ? ExtendsObjectToRecord(inferred, left, RecordPattern(right), RecordValue(right)) : IsObject2(right) ? ExtendsObjectToObject(inferred, left, right.properties) : ExtendsRight(inferred, _Object_(left), right);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/record.mjs
+function FromObject2(inferred, properties2) {
+  return exports_guard.IsEqual(exports_guard.Keys(properties2).length, 0) ? ExtendsTrue(inferred) : ExtendsFalse();
+}
+function FromRecord(inferred, _leftKey, leftValue, _rightKey, rightValue) {
+  return ExtendsLeft(inferred, leftValue, rightValue);
+}
+function ExtendsRecord(inferred, leftPattern, leftValue, right) {
+  return IsRecord(right) ? FromRecord(inferred, RecordPatternToType(leftPattern), leftValue, RecordPatternToType(RecordPattern(right)), RecordValue(right)) : IsObject2(right) ? FromObject2(inferred, right.properties) : IsAny(right) ? ExtendsTrue(inferred) : IsUnknown(right) ? ExtendsTrue(inferred) : ExtendsFalse();
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/string.mjs
+function ExtendsString(inferred, left, right) {
+  return IsString3(right) ? ExtendsTrue(inferred) : ExtendsRight(inferred, left, right);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/symbol.mjs
+function ExtendsSymbol(inferred, left, right) {
+  return IsSymbol2(right) ? ExtendsTrue(inferred) : ExtendsRight(inferred, left, right);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/template_literal.mjs
+function ExtendsTemplateLiteral(inferred, left, right) {
+  const evaluated = EvaluateTemplateLiteral(left);
+  return ExtendsLeft(inferred, evaluated, right);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/inference.mjs
+function Inferrable(name, type) {
+  return exports_memory.Create({ "~kind": "Inferrable" }, { name, type }, {});
+}
+function IsInferable(value) {
+  return exports_guard.IsObject(value) && exports_guard.HasPropertyKey(value, "~kind") && exports_guard.HasPropertyKey(value, "name") && exports_guard.HasPropertyKey(value, "type") && exports_guard.IsEqual(value["~kind"], "Inferrable") && exports_guard.IsString(value.name) && exports_guard.IsObject(value.type);
+}
+function TryRestInferable(type) {
+  return IsRest(type) ? IsInfer(type.items) ? IsArray2(type.items.extends) ? Inferrable(type.items.name, type.items.extends.items) : IsUnknown(type.items.extends) ? Inferrable(type.items.name, type.items.extends) : undefined : Unreachable() : undefined;
+}
+function TryInferable(type) {
+  return IsInfer(type) ? Inferrable(type.name, type.extends) : undefined;
+}
+function TryInferResults(rest3, right) {
+  const result = [];
+  for (const head of rest3) {
+    if (!IsExtendsTrueLike(ExtendsLeft({}, head, right)))
+      return;
+    result.push(head);
+  }
+  return result;
+}
+function InferTupleResult(inferred, name, left, right) {
+  const results = TryInferResults(left, right);
+  return exports_guard.IsArray(results) ? ExtendsTrue(exports_memory.Assign(inferred, { [name]: Tuple(results) })) : ExtendsFalse();
+}
+function InferUnionResult(inferred, name, left, right) {
+  const results = TryInferResults(left, right);
+  return exports_guard.IsArray(results) ? ExtendsTrue(exports_memory.Assign(inferred, { [name]: Union(results) })) : ExtendsFalse();
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/tuple.mjs
+function Reverse(types14) {
+  return [...types14].reverse();
+}
+function ApplyReverse(types14, reversed) {
+  return reversed ? Reverse(types14) : types14;
+}
+function Reversed(types14) {
+  const first = types14.length > 0 ? types14[0] : undefined;
+  const inferrable = IsSchema(first) ? TryRestInferable(first) : undefined;
+  return IsSchema(inferrable);
+}
+function ElementsCompare(inferred, reversed, left, leftRest, right, rightRest) {
+  return Match3(ExtendsLeft(inferred, left, right), (checkInferred) => Elements(checkInferred, reversed, leftRest, rightRest), () => ExtendsFalse());
+}
+function ElementsLeft(inferred, reversed, leftRest, right, rightRest) {
+  const inferable = TryRestInferable(right);
+  return IsInferable(inferable) ? InferTupleResult(inferred, inferable["name"], ApplyReverse(leftRest, reversed), inferable["type"]) : exports_guard.ShiftLeft(leftRest, (head, tail) => ElementsCompare(inferred, reversed, head, tail, right, rightRest), () => ExtendsFalse());
+}
+function ElementsRight(inferred, reversed, leftRest, rightRest) {
+  return exports_guard.ShiftLeft(rightRest, (head, tail) => ElementsLeft(inferred, reversed, leftRest, head, tail), () => exports_guard.IsEqual(leftRest.length, 0) ? ExtendsTrue(inferred) : ExtendsFalse());
+}
+function Elements(inferred, reversed, leftRest, rightRest) {
+  return ElementsRight(inferred, reversed, leftRest, rightRest);
+}
+function ExtendsTupleToTuple(inferred, left, right) {
+  const instantiatedRight = InstantiateElements(inferred, State([], []), right);
+  const reversed = Reversed(instantiatedRight);
+  return Elements(inferred, reversed, ApplyReverse(left, reversed), ApplyReverse(instantiatedRight, reversed));
+}
+function ExtendsTupleToArrayReduce(inferred, left, right) {
+  for (const head of left) {
+    const result = ExtendsLeft(inferred, head, right);
+    if (!IsExtendsTrueLike(result))
+      return result;
+    inferred = result.inferred;
+  }
+  return ExtendsTrue(inferred);
+}
+function ExtendsTupleToArray(inferred, left, right) {
+  const inferrable = TryInferable(right);
+  return IsInferable(inferrable) ? InferUnionResult(inferred, inferrable["name"], left, inferrable["type"]) : ExtendsTupleToArrayReduce(inferred, left, right);
+}
+function ExtendsTuple(inferred, left, right) {
+  const instantiatedLeft = InstantiateElements(inferred, State([], []), left);
+  return IsTuple(right) ? ExtendsTupleToTuple(inferred, instantiatedLeft, right.items) : IsArray2(right) ? ExtendsTupleToArray(inferred, instantiatedLeft, right.items) : ExtendsRight(inferred, Tuple(instantiatedLeft), right);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/undefined.mjs
+function ExtendsUndefined(inferred, left, right) {
+  return IsVoid(right) ? ExtendsTrue(inferred) : IsUndefined2(right) ? ExtendsTrue(inferred) : ExtendsRight(inferred, left, right);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/union.mjs
+function ExtendsUnionSome(inferred, type, unionTypes) {
+  return exports_guard.ShiftLeft(unionTypes, (head, tail) => Match3(ExtendsLeft(inferred, type, head), (inferred2) => ExtendsTrue(inferred2), () => ExtendsUnionSome(inferred, type, tail)), () => ExtendsFalse());
+}
+function ExtendsUnionLeft(inferred, left, right) {
+  return exports_guard.ShiftLeft(left, (head, tail) => Match3(ExtendsUnionSome(inferred, head, right), (inferred2) => ExtendsUnionLeft(inferred2, tail, right), () => ExtendsFalse()), () => ExtendsTrue(inferred));
+}
+function ExtendsUnion2(inferred, left, right) {
+  const inferrable = TryInferable(right);
+  return IsInferable(inferrable) ? InferUnionResult(inferred, inferrable.name, left, inferrable.type) : IsUnion(right) ? ExtendsUnionLeft(inferred, left, right.anyOf) : ExtendsUnionLeft(inferred, left, [right]);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/unknown.mjs
+function ExtendsUnknown(inferred, left, right) {
+  return IsInfer(right) ? ExtendsRight(inferred, left, right) : IsAny(right) ? ExtendsTrue(inferred) : IsUnknown(right) ? ExtendsTrue(inferred) : ExtendsFalse();
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/void.mjs
+function ExtendsVoid(inferred, left, right) {
+  return IsVoid(right) ? ExtendsTrue(inferred) : ExtendsRight(inferred, left, right);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/extends_left.mjs
+function ExtendsLeft(inferred, left, right) {
+  return IsAny(left) ? ExtendsAny(inferred, left, right) : IsArray2(left) ? ExtendsArray(inferred, left, left.items, right) : IsBigInt2(left) ? ExtendsBigInt(inferred, left, right) : IsBoolean3(left) ? ExtendsBoolean(inferred, left, right) : IsConstructor2(left) ? ExtendsConstructor(inferred, left.parameters, left.instanceType, right) : IsDependent(left) ? ExtendsDependent(inferred, left.if, left.then, left.else, right) : IsEnum(left) ? ExtendsEnum(inferred, left.enum, right) : IsFunction2(left) ? ExtendsFunction(inferred, left.parameters, left.returnType, right) : IsInteger2(left) ? ExtendsInteger(inferred, left, right) : IsIntersect(left) ? ExtendsIntersect(inferred, left.allOf, right) : IsLiteral(left) ? ExtendsLiteral(inferred, left, right) : IsNever(left) ? ExtendsNever(inferred, left, right) : IsNull2(left) ? ExtendsNull(inferred, left, right) : IsNumber3(left) ? ExtendsNumber(inferred, left, right) : IsObject2(left) ? ExtendsObject(inferred, left.properties, right) : IsRecord(left) ? ExtendsRecord(inferred, RecordPattern(left), RecordValue(left), right) : IsString3(left) ? ExtendsString(inferred, left, right) : IsSymbol2(left) ? ExtendsSymbol(inferred, left, right) : IsTemplateLiteral(left) ? ExtendsTemplateLiteral(inferred, left.pattern, right) : IsTuple(left) ? ExtendsTuple(inferred, left.items, right) : IsUndefined2(left) ? ExtendsUndefined(inferred, left, right) : IsUnion(left) ? ExtendsUnion2(inferred, left.anyOf, right) : IsUnknown(left) ? ExtendsUnknown(inferred, left, right) : IsVoid(left) ? ExtendsVoid(inferred, left, right) : ExtendsFalse();
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/interface/instantiate.mjs
+function InterfaceOperation(heritage, properties2) {
+  const result = EvaluateIntersect([...heritage, _Object_(properties2)]);
+  return result;
+}
+function InterfaceAction(heritage, properties2, options) {
+  const result = CanInstantiate(heritage) ? exports_memory.Update(InterfaceOperation(heritage, properties2), {}, options) : InterfaceDeferred(heritage, properties2, options);
+  return result;
+}
+function InterfaceInstantiate(context, state4, heritage, properties2, options) {
+  const instantiatedHeritage = InstantiateTypes(context, state4, heritage);
+  const instantiatedProperties = InstantiateProperties(context, state4, properties2);
+  return InterfaceAction(instantiatedHeritage, instantiatedProperties, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/action/interface.mjs
+function InterfaceDeferred(heritage, properties2, options = {}) {
+  return Deferred("Interface", [heritage, properties2], options);
+}
+function IsInterfaceDeferred(value) {
+  return IsSchema(value) && exports_guard.HasPropertyKey(value, "action") && exports_guard.IsEqual(value.action, "Interface");
+}
+function Interface(heritage, properties2, options = {}) {
+  return InterfaceAction(heritage, properties2, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/cyclic/check.mjs
+function FromRef(stack, context, ref2) {
+  return stack.includes(ref2) ? true : FromType3([...stack, ref2], context, context[ref2]);
+}
+function FromProperties(stack, context, properties2) {
+  const types14 = PropertyValues(properties2);
+  return FromTypes2(stack, context, types14);
+}
+function FromTypes2(stack, context, types14) {
+  return exports_guard.ShiftLeft(types14, (left, right) => FromType3(stack, context, left) ? true : FromTypes2(stack, context, right), () => false);
+}
+function FromType3(stack, context, type) {
+  return IsRef(type) ? FromRef(stack, context, type.$ref) : IsArray2(type) ? FromType3(stack, context, type.items) : IsConstructor2(type) ? FromTypes2(stack, context, [...type.parameters, type.instanceType]) : IsFunction2(type) ? FromTypes2(stack, context, [...type.parameters, type.returnType]) : IsInterfaceDeferred(type) ? FromProperties(stack, context, type.parameters[1]) : IsIntersect(type) ? FromTypes2(stack, context, type.allOf) : IsObject2(type) ? FromProperties(stack, context, type.properties) : IsUnion(type) ? FromTypes2(stack, context, type.anyOf) : IsTuple(type) ? FromTypes2(stack, context, type.items) : IsRecord(type) ? FromType3(stack, context, RecordValue(type)) : false;
+}
+function CyclicCheck(stack, context, type) {
+  const result = FromType3(stack, context, type);
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/cyclic/candidates.mjs
+function ResolveCandidateKeys(context, keys) {
+  return keys.reduce((result, left) => {
+    return CyclicCheck([left], context, context[left]) ? [...result, left] : result;
+  }, []);
+}
+function CyclicCandidates(context) {
+  const keys = PropertyKeys(context);
+  const result = ResolveCandidateKeys(context, keys);
+  return result;
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/cyclic/dependencies.mjs
+function FromRef2(context, ref2, result) {
+  return result.includes(ref2) ? result : (ref2 in context) ? FromType4(context, context[ref2], [...result, ref2]) : Unreachable();
+}
+function FromProperties2(context, properties2, result) {
+  const types14 = PropertyValues(properties2);
+  return FromTypes3(context, types14, result);
+}
+function FromTypes3(context, types14, result) {
+  return types14.reduce((result2, left) => {
+    return FromType4(context, left, result2);
+  }, result);
+}
+function FromType4(context, type, result) {
+  return IsRef(type) ? FromRef2(context, type.$ref, result) : IsArray2(type) ? FromType4(context, type.items, result) : IsConstructor2(type) ? FromTypes3(context, [...type.parameters, type.instanceType], result) : IsFunction2(type) ? FromTypes3(context, [...type.parameters, type.returnType], result) : IsInterfaceDeferred(type) ? FromProperties2(context, type.parameters[1], result) : IsIntersect(type) ? FromTypes3(context, type.allOf, result) : IsObject2(type) ? FromProperties2(context, type.properties, result) : IsUnion(type) ? FromTypes3(context, type.anyOf, result) : IsTuple(type) ? FromTypes3(context, type.items, result) : IsRecord(type) ? FromType4(context, RecordValue(type), result) : result;
+}
+function CyclicDependencies(context, key, type) {
+  const result = FromType4(context, type, [key]);
+  return result;
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/cyclic/extends.mjs
+function FromRef3(_ref) {
+  return Any();
+}
+function FromProperties3(properties2) {
+  return exports_guard.Keys(properties2).reduce((result, key) => {
+    return { ...result, [key]: FromType5(properties2[key]) };
+  }, {});
+}
+function FromTypes4(types14) {
+  return types14.reduce((result, left) => {
+    return [...result, FromType5(left)];
+  }, []);
+}
+function FromType5(type) {
+  return IsRef(type) ? FromRef3(type.$ref) : IsArray2(type) ? _Array_(FromType5(type.items), ArrayOptions(type)) : IsConstructor2(type) ? Constructor(FromTypes4(type.parameters), FromType5(type.instanceType)) : IsFunction2(type) ? _Function_(FromTypes4(type.parameters), FromType5(type.returnType)) : IsIntersect(type) ? Intersect(FromTypes4(type.allOf)) : IsObject2(type) ? _Object_(FromProperties3(type.properties)) : IsRecord(type) ? Record(RecordKey(type), FromType5(RecordValue(type))) : IsUnion(type) ? Union(FromTypes4(type.anyOf)) : IsTuple(type) ? Tuple(FromTypes4(type.items)) : type;
+}
+function CyclicAnyFromParameters(defs, ref2) {
+  return ref2 in defs ? FromType5(defs[ref2]) : Unknown();
+}
+function CyclicExtends(type) {
+  return CyclicAnyFromParameters(type.$defs, type.$ref);
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/cyclic/instantiate.mjs
+function CyclicInterface(context, heritage, properties2) {
+  const instantiatedHeritage = InstantiateTypes(context, State([], []), heritage);
+  const instantiatedProperties = InstantiateProperties({}, State([], []), properties2);
+  const evaluatedInterface = EvaluateIntersect([...instantiatedHeritage, _Object_(instantiatedProperties)]);
+  return evaluatedInterface;
+}
+function CyclicDefinitions(context, dependencies) {
+  const keys = exports_guard.Keys(context).filter((key) => dependencies.includes(key));
+  return keys.reduce((result, key) => {
+    const type = context[key];
+    const instantiatedType = IsInterfaceDeferred(type) ? CyclicInterface(context, type.parameters[0], type.parameters[1]) : type;
+    return { ...result, [key]: instantiatedType };
+  }, {});
+}
+function InstantiateCyclic(context, ref2, type) {
+  const dependencies = CyclicDependencies(context, ref2, type);
+  const definitions = CyclicDefinitions(context, dependencies);
+  const result = Cyclic(definitions, ref2);
+  return result;
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/cyclic/target.mjs
+function Resolve(defs, ref2) {
+  return ref2 in defs ? IsRef(defs[ref2]) ? Resolve(defs, defs[ref2].$ref) : defs[ref2] : Never();
+}
+function CyclicTarget(defs, ref2) {
+  const result = Resolve(defs, ref2);
+  return result;
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/extends.mjs
+function Canonical(type) {
+  return IsCyclic(type) ? CyclicExtends(type) : IsUnsafe(type) ? Unknown() : type;
+}
+function Extends(inferred, left, right) {
+  const canonicalLeft = Canonical(left);
+  const canonicalRight = Canonical(right);
+  return ExtendsLeft(inferred, canonicalLeft, canonicalRight);
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/evaluate/compare.mjs
+var CompareResultEqual = 0;
+var CompareResultDisjoint = 1;
+var CompareResultLeftInside = 2;
+var CompareResultRightInside = 3;
+function Compare(left, right) {
+  const extendsCheck = [Extends({}, left, right), Extends({}, right, left)];
+  return exports_result.IsExtendsTrueLike(extendsCheck[0]) && exports_result.IsExtendsTrueLike(extendsCheck[1]) ? CompareResultEqual : exports_result.IsExtendsTrueLike(extendsCheck[0]) && exports_result.IsExtendsFalse(extendsCheck[1]) ? CompareResultLeftInside : exports_result.IsExtendsFalse(extendsCheck[0]) && exports_result.IsExtendsTrueLike(extendsCheck[1]) ? CompareResultRightInside : CompareResultDisjoint;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/evaluate/broaden.mjs
+function BroadenFilter(type, types14, result = [], all = types14) {
+  return exports_guard.ShiftLeft(types14, (left, right) => {
+    const compare = Compare(type, left);
+    return exports_guard.IsEqual(compare, CompareResultLeftInside) || exports_guard.IsEqual(compare, CompareResultEqual) ? all : exports_guard.IsEqual(compare, CompareResultDisjoint) ? BroadenFilter(type, right, [...result, left], all) : BroadenFilter(type, right, result, all);
+  }, () => [...result, type]);
+}
+function BroadenType(type, types14, result) {
+  const evaluated = EvaluateType(type);
+  return IsAny(evaluated) ? [evaluated] : IsUnknown(evaluated) ? [evaluated] : IsNever(evaluated) ? BroadenTypes(types14, result) : IsObject2(evaluated) ? BroadenTypes(types14, [...result, evaluated]) : BroadenTypes(types14, BroadenFilter(evaluated, result));
+}
+function BroadenTypes(types14, result = []) {
+  return exports_guard.ShiftLeft(types14, (left, right) => BroadenType(left, right, result), () => result);
+}
+function Broaden(types14) {
+  const broadened = BroadenTypes(types14);
+  const flattened = Flatten(broadened);
+  return flattened;
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/evaluate/instantiate.mjs
+function EvaluateAction(type, options) {
+  const result = exports_memory.Update(EvaluateType(type), {}, options);
+  return result;
+}
+function EvaluateInstantiate(context, state4, type, options) {
+  const instantiatedType = InstantiateType(context, state4, type);
+  return EvaluateAction(instantiatedType, options);
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/call/distribute_arguments.mjs
+function CollectDistributionNames(expression, result = []) {
+  return IsDeferred(expression) && exports_guard.IsEqual(expression.action, "Conditional") ? IsRef(expression.parameters[0]) ? CollectDistributionNames(expression.parameters[2], CollectDistributionNames(expression.parameters[3], [...result, expression.parameters[0]["$ref"]])) : CollectDistributionNames(expression.parameters[2], CollectDistributionNames(expression.parameters[3], result)) : IsDeferred(expression) && exports_guard.IsEqual(expression.action, "Mapped") ? IsDeferred(expression.parameters[1]) && exports_guard.IsEqual(expression.parameters[1].action, "KeyOf") && IsRef(expression.parameters[1].parameters[0]) ? [...result, expression.parameters[1].parameters[0]["$ref"]] : result : result;
+}
+function BuildDistributionArray(parameters, names) {
+  return parameters.reduce((result, left) => [...result, names.includes(left.name)], []);
+}
+function ZipDistributionArray(arguments_, distributionArray, result = []) {
+  return exports_guard.ShiftLeft(arguments_, (argumentLeft, argumentRight) => exports_guard.ShiftLeft(distributionArray, (booleanLeft, booleanRight) => ZipDistributionArray(argumentRight, booleanRight, [...result, [booleanLeft, argumentLeft]]), () => result), () => result);
+}
+function CanonicalArgument(type) {
+  return IsTemplateLiteral(type) ? EvaluateTemplateLiteral(type.pattern) : IsEnum(type) ? EvaluateEnum(type.enum) : type;
+}
+function Expand(type) {
+  const canonicalArgument = CanonicalArgument(type);
+  return IsUnion(canonicalArgument) ? [...canonicalArgument.anyOf] : [canonicalArgument];
+}
+function Append(current, type) {
+  return current.reduce((result, left) => [...result, [...left, type]], []);
+}
+function Cross(current, variants) {
+  return variants.reduce((result, left) => {
+    return [...result, ...Append(current, left)];
+  }, []);
+}
+function Distribute2(zipped) {
+  return zipped.reduce((result, left) => {
+    return exports_guard.IsEqual(left[0], true) ? Cross(result, Expand(left[1])) : Cross(result, [left[1]]);
+  }, [[]]);
+}
+function DistributeArguments(parameters, arguments_, expression) {
+  const distributionNames = CollectDistributionNames(expression);
+  const distributionArray = BuildDistributionArray(parameters, distributionNames);
+  const zippedArguments = ZipDistributionArray(arguments_, distributionArray);
+  return IsDeferred(expression) && exports_guard.IsEqual(expression.action, "Conditional") ? Distribute2(zippedArguments) : IsDeferred(expression) && exports_guard.IsEqual(expression.action, "Mapped") ? Distribute2(zippedArguments) : [arguments_];
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/call/resolve_target.mjs
+function FromNotResolvable() {
+  return ["(not-resolvable)", Never()];
+}
+function FromNotGeneric() {
+  return ["(not-generic)", Never()];
+}
+function FromGeneric(name, parameters, expression) {
+  return [name, Generic(parameters, expression)];
+}
+function FromRef4(context, ref2, arguments_) {
+  return ref2 in context ? FromType6(context, ref2, context[ref2], arguments_) : FromNotResolvable();
+}
+function FromType6(context, name, target2, arguments_) {
+  return IsGeneric(target2) ? FromGeneric(name, target2.parameters, target2.expression) : IsRef(target2) ? FromRef4(context, target2.$ref, arguments_) : FromNotGeneric();
+}
+function ResolveTarget(context, target2, arguments_) {
+  return FromType6(context, "(anonymous)", target2, arguments_);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/call/resolve_arguments.mjs
+function AssertArgumentExtends(name, type, extends_) {
+  if (IsInfer(type) || IsCall(type) || exports_result.IsExtendsTrueLike(Extends({}, type, extends_)))
+    return;
+  const cause = { parameter: name, expect: extends_, actual: type };
+  throw new Error(`Argument for parameter ${name} does not satisfy constraint`, { cause });
+}
+function BindArgument(context, state4, name, extends_, type) {
+  const instantiatedArgument = InstantiateType(context, state4, type);
+  AssertArgumentExtends(name, instantiatedArgument, extends_);
+  return exports_memory.Assign(context, { [name]: instantiatedArgument });
+}
+function BindArguments(context, state4, parameterLeft, parameterRight, arguments_) {
+  const instantiatedExtends = InstantiateType(context, state4, parameterLeft.extends);
+  const instantiatedEquals = InstantiateType(context, state4, parameterLeft.equals);
+  return exports_guard.ShiftLeft(arguments_, (left, right) => BindParameters(BindArgument(context, state4, parameterLeft["name"], instantiatedExtends, left), state4, parameterRight, right), () => BindParameters(BindArgument(context, state4, parameterLeft["name"], instantiatedExtends, instantiatedEquals), state4, parameterRight, []));
+}
+function BindParameters(context, state4, parameters, arguments_) {
+  return exports_guard.ShiftLeft(parameters, (left, right) => BindArguments(context, state4, left, right, arguments_), () => context);
+}
+function ResolveArgumentsContext(context, state4, parameters, arguments_) {
+  return BindParameters(context, state4, parameters, arguments_);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/call/instantiate.mjs
+var instantiationDepth = 0;
+var instantiationCount = 0;
+function InstantiationAssert() {
+  if (exports_guard.IsLessThan(instantiationCount, exports_settings.Get().maxInstantiationCount))
+    return;
+  throw Error("Type instantiation is excessively deep and possibly infinite");
+}
+function InstantiationIncrement() {
+  InstantiationAssert();
+  instantiationCount++;
+  instantiationDepth++;
+}
+function InstantiationDecrement() {
+  instantiationDepth--;
+  if (exports_guard.IsEqual(instantiationDepth, 0))
+    instantiationCount = 0;
+}
+function Peek(state4) {
+  const result = exports_guard.IsGreaterThan(state4.callstack.length, 0) ? state4.callstack[state4.callstack.length - 1] : "";
+  return result;
+}
+function IsTailCall(state4, name) {
+  const result = exports_guard.IsEqual(Peek(state4), name);
+  return result;
+}
+function CallDispatch(context, state4, target2, parameters, expression, arguments_) {
+  InstantiationIncrement();
+  try {
+    const argumentsContext = ResolveArgumentsContext(context, state4, parameters, arguments_);
+    const returnType = InstantiateType(argumentsContext, State([...state4["callstack"], target2["$ref"]], state4["visited"]), expression);
+    return InstantiateType(argumentsContext, State([], []), returnType);
+  } finally {
+    InstantiationDecrement();
+  }
+}
+function CallDistributed(context, state4, target2, parameters, expression, distributedArguments) {
+  return distributedArguments.reduce((result, arguments_) => {
+    const returnType = CallDispatch(context, state4, target2, parameters, expression, arguments_);
+    return [...result, returnType];
+  }, []);
+}
+function CallImmediate(context, state4, target2, parameters, expression, arguments_) {
+  const distributedArguments = DistributeArguments(parameters, arguments_, expression);
+  const returnTypes = CallDistributed(context, state4, target2, parameters, expression, distributedArguments);
+  const result = exports_guard.IsEqual(returnTypes.length, 1) ? returnTypes[0] : EvaluateUnion(returnTypes);
+  return result;
+}
+function CallInstantiate(context, state4, target2, arguments_) {
+  const instantiatedArguments = InstantiateTypes(context, state4, arguments_);
+  const resolved = ResolveTarget(context, target2, arguments_);
+  const name = resolved[0];
+  const type = resolved[1];
+  const result = IsGeneric(type) ? IsTailCall(state4, name) ? CallConstruct(Ref(name), instantiatedArguments) : CallImmediate(context, state4, Ref(name), type.parameters, type.expression, instantiatedArguments) : CallConstruct(target2, instantiatedArguments);
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/types/call.mjs
+function CallConstruct(target2, arguments_) {
+  return exports_memory.Create({ ["~kind"]: "Call" }, { type: "call", target: target2, arguments: arguments_ }, {});
+}
+function Call(target2, arguments_) {
+  return CallInstantiate({}, State([], []), target2, arguments_);
+}
+function IsCall(value) {
+  return IsKind(value, "Call");
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/immutable/instantiate_remove.mjs
+function RemoveImmutableOperation(type) {
+  return exports_memory.Discard(type, ["~immutable"]);
+}
+function RemoveImmutableAction(type, options) {
+  const result = exports_memory.Update(RemoveImmutableOperation(type), {}, options);
+  return result;
+}
+function RemoveImmutableInstantiate(context, state4, type, options) {
+  const instantiatedType = InstantiateType(context, state4, type);
+  return RemoveImmutableAction(instantiatedType, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/intrinsics/mapping.mjs
+function ApplyMapping(mapping, value) {
+  return mapping(value);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/intrinsics/from_literal.mjs
+function FromLiteral3(mapping, value) {
+  return exports_guard.IsString(value) ? Literal(ApplyMapping(mapping, value)) : Literal(value);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/intrinsics/from_template_literal.mjs
+function FromTemplateLiteral(mapping, pattern) {
+  const evaluated = EvaluateTemplateLiteral(pattern);
+  const result = FromType7(mapping, evaluated);
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/intrinsics/from_union.mjs
+function FromUnion2(mapping, types14) {
+  const result = types14.map((type) => FromType7(mapping, type));
+  return Union(result);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/intrinsics/from_type.mjs
+function FromType7(mapping, type) {
+  return IsLiteral(type) ? FromLiteral3(mapping, type.const) : IsTemplateLiteral(type) ? FromTemplateLiteral(mapping, type.pattern) : IsUnion(type) ? FromUnion2(mapping, type.anyOf) : type;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/action/capitalize.mjs
+function CapitalizeDeferred(type, options = {}) {
+  return Deferred("Capitalize", [type], options);
+}
+function Capitalize(type, options = {}) {
+  return CapitalizeAction(type, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/action/lowercase.mjs
+function LowercaseDeferred(type, options = {}) {
+  return Deferred("Lowercase", [type], options);
+}
+function Lowercase(type, options = {}) {
+  return LowercaseAction(type, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/action/uncapitalize.mjs
+function UncapitalizeDeferred(type, options = {}) {
+  return Deferred("Uncapitalize", [type], options);
+}
+function Uncapitalize(type, options = {}) {
+  return UncapitalizeAction(type, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/action/uppercase.mjs
+function UppercaseDeferred(type, options = {}) {
+  return Deferred("Uppercase", [type], options);
+}
+function Uppercase(type, options = {}) {
+  return UppercaseAction(type, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/intrinsics/instantiate.mjs
+var CapitalizeMapping = (input2) => input2[0].toUpperCase() + input2.slice(1);
+var LowercaseMapping = (input2) => input2.toLowerCase();
+var UncapitalizeMapping = (input2) => input2[0].toLowerCase() + input2.slice(1);
+var UppercaseMapping = (input2) => input2.toUpperCase();
+function CapitalizeAction(type, options) {
+  const result = CanInstantiate([type]) ? exports_memory.Update(FromType7(CapitalizeMapping, type), {}, options) : CapitalizeDeferred(type, options);
+  return result;
+}
+function LowercaseAction(type, options) {
+  const result = CanInstantiate([type]) ? exports_memory.Update(FromType7(LowercaseMapping, type), {}, options) : LowercaseDeferred(type, options);
+  return result;
+}
+function UncapitalizeAction(type, options) {
+  const result = CanInstantiate([type]) ? exports_memory.Update(FromType7(UncapitalizeMapping, type), {}, options) : UncapitalizeDeferred(type, options);
+  return result;
+}
+function UppercaseAction(type, options) {
+  const result = CanInstantiate([type]) ? exports_memory.Update(FromType7(UppercaseMapping, type), {}, options) : UppercaseDeferred(type, options);
+  return result;
+}
+function CapitalizeInstantiate(context, state4, type, options) {
+  const instantiatedType = InstantiateType(context, state4, type);
+  return CapitalizeAction(instantiatedType, options);
+}
+function LowercaseInstantiate(context, state4, type, options) {
+  const instantiatedType = InstantiateType(context, state4, type);
+  return LowercaseAction(instantiatedType, options);
+}
+function UncapitalizeInstantiate(context, state4, type, options) {
+  const instantiatedType = InstantiateType(context, state4, type);
+  return UncapitalizeAction(instantiatedType, options);
+}
+function UppercaseInstantiate(context, state4, type, options) {
+  const instantiatedType = InstantiateType(context, state4, type);
+  return UppercaseAction(instantiatedType, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/action/conditional.mjs
+function ConditionalDeferred(left, right, true_, false_, options = {}) {
+  return Deferred("Conditional", [left, right, true_, false_], options);
+}
+function Conditional(left, right, true_, false_, options = {}) {
+  return ConditionalAction({}, State([], []), left, right, true_, false_, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/conditional/instantiate.mjs
+function ConditionalOperation(context, state4, left, right, true_, false_) {
+  const extendsResult = Extends(context, left, right);
+  return exports_result.IsExtendsUnion(extendsResult) ? Union([InstantiateType(extendsResult.inferred, state4, true_), InstantiateType(context, state4, false_)]) : exports_result.IsExtendsTrue(extendsResult) ? InstantiateType(extendsResult.inferred, state4, true_) : InstantiateType(context, state4, false_);
+}
+function ConditionalAction(context, state4, left, right, true_, false_, options) {
+  const result = CanInstantiate([left, right]) ? exports_memory.Update(ConditionalOperation(context, state4, left, right, true_, false_), {}, options) : ConditionalDeferred(left, right, true_, false_, options);
+  return result;
+}
+function ConditionalInstantiate(context, state4, left, right, true_, false_, options) {
+  const instantiatedLeft = InstantiateType(context, state4, left);
+  const instantiatedRight = InstantiateType(context, state4, right);
+  return ConditionalAction(context, state4, instantiatedLeft, instantiatedRight, true_, false_, options);
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/action/constructor_parameters.mjs
+function ConstructorParametersDeferred(type, options = {}) {
+  return Deferred("ConstructorParameters", [type], options);
+}
+function ConstructorParameters(type, options = {}) {
+  return ConstructorParametersAction(type, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/constructor_parameters/instantiate.mjs
+function ConstructorParametersOperation(type) {
+  const parameters = IsConstructor2(type) ? type["parameters"] : [];
+  const instantiatedParameters = InstantiateElements({}, State([], []), parameters);
+  const result = Tuple(instantiatedParameters);
+  return result;
+}
+function ConstructorParametersAction(type, options) {
+  const result = CanInstantiate([type]) ? exports_memory.Update(ConstructorParametersOperation(type), {}, options) : ConstructorParametersDeferred(type, options);
+  return result;
+}
+function ConstructorParametersInstantiate(context, state4, type, options) {
+  const instantiatedType = InstantiateType(context, state4, type);
+  return ConstructorParametersAction(instantiatedType, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/action/exclude.mjs
+function ExcludeDeferred(left, right, options = {}) {
+  return Deferred("Exclude", [left, right], options);
+}
+function Exclude(left, right, options = {}) {
+  return ExcludeAction(left, right, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/exclude/instantiate.mjs
+function ExcludeAction(left, right, options) {
+  const result = CanInstantiate([left, right]) ? exports_memory.Update(ExcludeOperation(left, right), {}, options) : ExcludeDeferred(left, right, options);
+  return result;
+}
+function ExcludeInstantiate(context, state4, left, right, options) {
+  const instantiatedLeft = InstantiateType(context, state4, left);
+  const instantiatedRight = InstantiateType(context, state4, right);
+  return ExcludeAction(instantiatedLeft, instantiatedRight, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/action/extract.mjs
+function ExtractDeferred(left, right, options = {}) {
+  return Deferred("Extract", [left, right], options);
+}
+function Extract(left, right, options = {}) {
+  return ExtractAction(left, right, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/extract/operation.mjs
+function ExtractType(left, right) {
+  const check3 = Extends({}, left, right);
+  const result = exports_result.IsExtendsTrueLike(check3) ? [left] : [];
+  return result;
+}
+function ExtractUnion(left, right, result = []) {
+  return exports_guard.ShiftLeft(left, (head, tail) => ExtractUnion(tail, right, [...result, ...ExtractType(head, right)]), () => result);
+}
+function ExtractOperation(left, right) {
+  const evaluated = EvaluateType(left);
+  const canonical = IsUnion(evaluated) ? evaluated.anyOf : [evaluated];
+  const remaining = ExtractUnion(canonical, right);
+  const result = EvaluateUnion(remaining);
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/extract/instantiate.mjs
+function ExtractAction(left, right, options) {
+  const result = CanInstantiate([left, right]) ? exports_memory.Update(ExtractOperation(left, right), {}, options) : ExtractDeferred(left, right, options);
+  return result;
+}
+function ExtractInstantiate(context, state4, left, right, options) {
+  const instantiatedLeft = InstantiateType(context, state4, left);
+  const instantiatedRight = InstantiateType(context, state4, right);
+  return ExtractAction(instantiatedLeft, instantiatedRight, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/helpers/keys_to_indexer.mjs
+function KeysToLiterals(keys) {
+  return keys.reduce((result, left) => {
+    return IsLiteralValue(left) ? [...result, Literal(left)] : result;
+  }, []);
+}
+function KeysToIndexer(keys) {
+  const literals = KeysToLiterals(keys);
+  const result = Union(literals);
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/action/indexed.mjs
+function IndexDeferred(type, indexer, options = {}) {
+  return Deferred("Index", [type, indexer], options);
+}
+function Index(type, indexer_or_keys, options = {}) {
+  const indexer = exports_guard.IsArray(indexer_or_keys) ? KeysToIndexer(indexer_or_keys) : indexer_or_keys;
+  return IndexAction(type, indexer, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/object/from_cyclic.mjs
+function FromCyclic(defs, ref2) {
+  const target2 = CyclicTarget(defs, ref2);
+  const result = FromType8(target2);
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/object/from_dependent.mjs
+function FromDependent(if_, then_, else_) {
+  const evaluated = EvaluateDependent(if_, then_, else_);
+  const result = FromType8(evaluated);
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/object/from_intersect.mjs
+function CollapseIntersectProperties(left, right) {
+  const leftKeys = exports_guard.Keys(left).filter((key) => !exports_guard.HasPropertyKey(right, key));
+  const rightKeys = exports_guard.Keys(right).filter((key) => !exports_guard.HasPropertyKey(left, key));
+  const sharedKeys = exports_guard.Keys(left).filter((key) => exports_guard.HasPropertyKey(right, key));
+  const leftProperties = leftKeys.reduce((result, key) => ({ ...result, [key]: left[key] }), {});
+  const rightProperties = rightKeys.reduce((result, key) => ({ ...result, [key]: right[key] }), {});
+  const sharedProperties = sharedKeys.reduce((result, key) => ({ ...result, [key]: EvaluateIntersect([left[key], right[key]]) }), {});
+  const unique = exports_memory.Assign(leftProperties, rightProperties);
+  const shared = exports_memory.Assign(unique, sharedProperties);
+  return shared;
+}
+function FromIntersect(types14) {
+  return types14.reduce((result, left) => {
+    return CollapseIntersectProperties(result, FromType8(left));
+  }, {});
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/object/from_object.mjs
+function FromObject3(properties2) {
+  return properties2;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/object/from_tuple.mjs
+function FromTuple(types14) {
+  const object3 = TupleToObject(Tuple(types14));
+  const result = FromType8(object3);
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/object/from_union.mjs
+function CollapseUnionProperties(left, right) {
+  const sharedKeys = exports_guard.Keys(left).filter((key) => (key in right));
+  const result = sharedKeys.reduce((result2, key) => {
+    return { ...result2, [key]: EvaluateUnion([left[key], right[key]]) };
+  }, {});
+  return result;
+}
+function ReduceVariants(types14, result) {
+  return exports_guard.ShiftLeft(types14, (left, right) => ReduceVariants(right, CollapseUnionProperties(result, FromType8(left))), () => result);
+}
+function FromUnion3(types14) {
+  return exports_guard.ShiftLeft(types14, (left, right) => ReduceVariants(right, FromType8(left)), () => Unreachable());
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/object/from_type.mjs
+function FromType8(type) {
+  return IsCyclic(type) ? FromCyclic(type.$defs, type.$ref) : IsDependent(type) ? FromDependent(type.if, type.then, type.else) : IsIntersect(type) ? FromIntersect(type.allOf) : IsUnion(type) ? FromUnion3(type.anyOf) : IsTuple(type) ? FromTuple(type.items) : IsObject2(type) ? FromObject3(type.properties) : {};
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/object/collapse.mjs
+function CollapseToObject(type) {
+  const properties2 = FromType8(type);
+  const result = _Object_(properties2);
+  return result;
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/helpers/keys.mjs
+var integerKeyPattern = new RegExp("^(?:0|[1-9][0-9]*)$");
+function ConvertToIntegerKey(value) {
+  const normal = `${value}`;
+  return integerKeyPattern.test(normal) ? parseInt(normal) : value;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/indexed/from_array.mjs
+function NormalizeLiteral(value) {
+  return Literal(ConvertToIntegerKey(value));
+}
+function NormalizeIndexerTypes(types14) {
+  return types14.map((type) => NormalizeIndexer(type));
+}
+function NormalizeIndexer(type) {
+  return IsIntersect(type) ? Intersect(NormalizeIndexerTypes(type.allOf)) : IsUnion(type) ? Union(NormalizeIndexerTypes(type.anyOf)) : IsLiteral(type) ? NormalizeLiteral(type.const) : type;
+}
+function FromArray2(type, indexer) {
+  const normalizedIndexer = NormalizeIndexer(indexer);
+  const check3 = Extends({}, normalizedIndexer, Number2());
+  const result = exports_result.IsExtendsTrueLike(check3) ? type : IsLiteral(indexer) && exports_guard.IsEqual(indexer.const, "length") ? Number2() : Never();
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/indexable/from_cyclic.mjs
+function FromCyclic2(defs, ref2) {
+  const target2 = CyclicTarget(defs, ref2);
+  const result = FromType9(target2);
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/indexable/from_dependent.mjs
+function FromDependent2(if_, then_, else_) {
+  const evaluated = EvaluateDependent(if_, then_, else_);
+  const result = FromType9(evaluated);
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/indexable/from_enum.mjs
+function FromEnum(values) {
+  const evaluated = EvaluateEnum(values);
+  const result = FromType9(evaluated);
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/indexable/from_intersect.mjs
+function FromIntersect2(types14) {
+  const evaluated = EvaluateIntersect(types14);
+  const result = FromType9(evaluated);
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/indexable/from_literal.mjs
+function FromLiteral4(value) {
+  const result = [`${value}`];
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/indexable/from_template_literal.mjs
+function FromTemplateLiteral2(pattern) {
+  const evaluated = EvaluateTemplateLiteral(pattern);
+  const result = FromType9(evaluated);
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/indexable/from_union.mjs
+function FromUnion4(types14) {
+  return types14.reduce((result, left) => {
+    return [...result, ...FromType9(left)];
+  }, []);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/indexable/from_type.mjs
+function FromType9(type) {
+  return IsCyclic(type) ? FromCyclic2(type.$defs, type.$ref) : IsDependent(type) ? FromDependent2(type.if, type.then, type.else) : IsEnum(type) ? FromEnum(type.enum) : IsIntersect(type) ? FromIntersect2(type.allOf) : IsLiteral(type) ? FromLiteral4(type.const) : IsTemplateLiteral(type) ? FromTemplateLiteral2(type.pattern) : IsUnion(type) ? FromUnion4(type.anyOf) : [];
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/indexable/to_indexable_keys.mjs
+function ToIndexableKeys(type) {
+  const result = FromType9(type);
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/this/expand_this.mjs
+function FromTypes5(properties2, types14) {
+  return types14.map((type) => FromType10(properties2, type));
+}
+function FromType10(properties2, type) {
+  return IsArray2(type) ? _Array_(FromType10(properties2, type.items)) : IsConstructor2(type) ? Constructor(FromTypes5(properties2, type.parameters), FromType10(properties2, type.instanceType)) : IsFunction2(type) ? _Function_(FromTypes5(properties2, type.parameters), FromType10(properties2, type.returnType)) : IsTuple(type) ? Tuple(FromTypes5(properties2, type.items)) : IsUnion(type) ? Union(FromTypes5(properties2, type.anyOf)) : IsIntersect(type) ? Intersect(FromTypes5(properties2, type.allOf)) : IsThis(type) ? _Object_(properties2) : type;
+}
+function ExpandThis(properties2, type) {
+  const result = FromType10(properties2, type);
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/indexed/from_object.mjs
+function IndexProperty(properties2, key) {
+  const selectedType = key in properties2 ? properties2[key] : Never();
+  const result = ExpandThis(properties2, selectedType);
+  return result;
+}
+function IndexProperties(properties2, keys) {
+  return keys.reduce((result, left) => {
+    return [...result, IndexProperty(properties2, left)];
+  }, []);
+}
+function FromIndexer(properties2, indexer) {
+  const keys = ToIndexableKeys(indexer);
+  const variants = IndexProperties(properties2, keys);
+  const result = EvaluateUnion(variants);
+  return result;
+}
+var NumericKeyPattern = new RegExp(IntegerKey);
+function NumericKeys(keys) {
+  const result = keys.filter((key) => NumericKeyPattern.test(key));
+  return result;
+}
+function FromIndexerNumber(properties2) {
+  const keys = PropertyKeys(properties2);
+  const numericKeys = NumericKeys(keys);
+  const variants = IndexProperties(properties2, numericKeys);
+  const result = EvaluateUnion(variants);
+  return result;
+}
+function FromObject4(properties2, indexer) {
+  const result = IsNumber3(indexer) ? FromIndexerNumber(properties2) : FromIndexer(properties2, indexer);
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/indexed/array_indexer.mjs
+function ConvertLiteral(value) {
+  return Literal(ConvertToIntegerKey(value));
+}
+function ArrayIndexerTypes(types14) {
+  return types14.map((type) => FormatArrayIndexer(type));
+}
+function FormatArrayIndexer(type) {
+  return IsIntersect(type) ? Intersect(ArrayIndexerTypes(type.allOf)) : IsUnion(type) ? Union(ArrayIndexerTypes(type.anyOf)) : IsLiteral(type) ? ConvertLiteral(type.const) : type;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/indexed/from_tuple.mjs
+function IndexElementsWithIndexer(types14, indexer) {
+  return types14.reduceRight((result, right, index) => {
+    const check3 = Extends({}, Literal(index), indexer);
+    return exports_result.IsExtendsTrueLike(check3) ? [right, ...result] : result;
+  }, []);
+}
+function FromTupleWithIndexer(types14, indexer) {
+  const formattedArrayIndexer = FormatArrayIndexer(indexer);
+  const elements = IndexElementsWithIndexer(types14, formattedArrayIndexer);
+  return EvaluateUnionFast(elements);
+}
+function FromTupleWithoutIndexer(types14) {
+  return EvaluateUnionFast(types14);
+}
+function FromTuple2(types14, indexer) {
+  return IsLiteral(indexer) && exports_guard.IsEqual(indexer.const, "length") ? Literal(types14.length) : IsNumber3(indexer) || IsInteger2(indexer) ? FromTupleWithoutIndexer(types14) : FromTupleWithIndexer(types14, indexer);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/indexed/from_type.mjs
+function FromType11(type, indexer) {
+  return IsArray2(type) ? FromArray2(type.items, indexer) : IsObject2(type) ? FromObject4(type.properties, indexer) : IsTuple(type) ? FromTuple2(type.items, indexer) : Never();
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/indexed/instantiate.mjs
+function NormalizeType(type) {
+  const result = IsCyclic(type) || IsDependent(type) || IsIntersect(type) || IsUnion(type) ? CollapseToObject(type) : type;
+  return result;
+}
+function IndexAction(type, indexer, options) {
+  const result = CanInstantiate([type, indexer]) ? exports_memory.Update(FromType11(NormalizeType(type), indexer), {}, options) : IndexDeferred(type, indexer, options);
+  return result;
+}
+function IndexInstantiate(context, state4, type, indexer, options) {
+  const instantiatedType = InstantiateType(context, state4, type);
+  const instantiatedIndexer = InstantiateType(context, state4, indexer);
+  return IndexAction(instantiatedType, instantiatedIndexer, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/action/instance_type.mjs
+function InstanceTypeDeferred(type, options = {}) {
+  return Deferred("InstanceType", [type], options);
+}
+function InstanceType(type, options = {}) {
+  return InstanceTypeAction(type, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/instance_type/instantiate.mjs
+function InstanceTypeOperation(type) {
+  return IsConstructor2(type) ? type["instanceType"] : Never();
+}
+function InstanceTypeAction(type, options) {
+  const result = CanInstantiate([type]) ? exports_memory.Update(InstanceTypeOperation(type), {}, options) : InstanceTypeDeferred(type, options);
+  return result;
+}
+function InstanceTypeInstantiate(context, state4, type, options = {}) {
+  const instantiatedType = InstantiateType(context, state4, type);
+  return InstanceTypeAction(instantiatedType, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/action/keyof.mjs
+function KeyOfDeferred(type, options = {}) {
+  return Deferred("KeyOf", [type], options);
+}
+function KeyOf2(type, options = {}) {
+  return KeyOfAction(type, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/keyof/from_any.mjs
+function FromAny() {
+  return Union([Number2(), String2(), Symbol2()]);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/keyof/from_array.mjs
+function FromArray3(_type) {
+  return Number2();
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/keyof/from_object.mjs
+function FromPropertyKeys(keys) {
+  const result = keys.reduce((result2, left) => {
+    return IsLiteralValue(left) ? [...result2, Literal(ConvertToIntegerKey(left))] : Unreachable();
+  }, []);
+  return result;
+}
+function FromObject5(properties2) {
+  const propertyKeys = exports_guard.Keys(properties2);
+  const variants = FromPropertyKeys(propertyKeys);
+  const result = EvaluateUnionFast(variants);
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/keyof/from_record.mjs
+function FromRecord2(type) {
+  return RecordKey(type);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/keyof/from_tuple.mjs
+function FromTuple3(types14) {
+  const result = types14.map((_2, index) => Literal(index));
+  return EvaluateUnionFast(result);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/keyof/from_type.mjs
+function FromType12(type) {
+  return IsAny(type) ? FromAny() : IsArray2(type) ? FromArray3(type.items) : IsObject2(type) ? FromObject5(type.properties) : IsRecord(type) ? FromRecord2(type) : IsTuple(type) ? FromTuple3(type.items) : Never();
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/keyof/instantiate.mjs
+function NormalizeType2(type) {
+  const result = IsCyclic(type) || IsDependent(type) || IsIntersect(type) || IsUnion(type) ? CollapseToObject(type) : type;
+  return result;
+}
+function KeyOfAction(type, options) {
+  return CanInstantiate([type]) ? exports_memory.Update(FromType12(NormalizeType2(type)), {}, options) : KeyOfDeferred(type, options);
+}
+function KeyOfInstantiate(context, state4, type, options) {
+  const instantiatedType = InstantiateType(context, state4, type);
+  return KeyOfAction(instantiatedType, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/action/mapped.mjs
+function MappedDeferred(identifier2, type, as, property, options = {}) {
+  return Deferred("Mapped", [identifier2, type, as, property], options);
+}
+function Mapped(identifier2, type, as, property, options = {}) {
+  return MappedAction({}, State([], []), identifier2, type, as, property, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/mapped/mapped_variants.mjs
+function FromTemplateLiteral3(pattern) {
+  const evaluated = EvaluateTemplateLiteral(pattern);
+  const result = FromType13(evaluated);
+  return result;
+}
+function FromUnion5(types14) {
+  return types14.reduce((result, left) => {
+    return [...result, ...FromType13(left)];
+  }, []);
+}
+function FromEnum2(values) {
+  const evaluated = EvaluateEnum(values);
+  const result = FromType13(evaluated);
+  return result;
+}
+function FromLiteral5(value) {
+  const result = exports_guard.IsNumber(value) ? [Literal(`${value}`)] : [Literal(value)];
+  return result;
+}
+function FromType13(type) {
+  const result = IsEnum(type) ? FromEnum2(type.enum) : IsLiteral(type) ? FromLiteral5(type.const) : IsTemplateLiteral(type) ? FromTemplateLiteral3(type.pattern) : IsUnion(type) ? FromUnion5(type.anyOf) : [type];
+  return result;
+}
+function MappedVariants(type) {
+  const result = FromType13(type);
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/mapped/mapped_operation.mjs
+function CanonicalAs(instantiatedAs) {
+  const result = IsTemplateLiteral(instantiatedAs) ? EvaluateTemplateLiteral(instantiatedAs.pattern) : instantiatedAs;
+  return result;
+}
+function MappedVariant(context, state4, identifier2, variant, as, property) {
+  const variantContext = exports_memory.Assign(context, { [identifier2["name"]]: variant });
+  const instantiatedAs = InstantiateType(variantContext, state4, as);
+  const canonicalAs = CanonicalAs(instantiatedAs);
+  const instantiatedProperty = InstantiateType(variantContext, state4, property);
+  return IsLiteralNumber(canonicalAs) || IsLiteralString(canonicalAs) ? { [canonicalAs.const]: instantiatedProperty } : {};
+}
+function MappedProperties(context, state4, identifier2, variants, as, property) {
+  return variants.reduce((result, left) => {
+    return [...result, MappedVariant(context, state4, identifier2, left, as, property)];
+  }, []);
+}
+function MappedObjects(properties2) {
+  return properties2.reduce((result, left) => {
+    return [...result, _Object_(left)];
+  }, []);
+}
+function MappedOperation(context, state4, identifier2, type, as, property) {
+  const variants = MappedVariants(type);
+  const mappedProperties = MappedProperties(context, state4, identifier2, variants, as, property);
+  const mappedObjects = MappedObjects(mappedProperties);
+  const result = EvaluateIntersect(mappedObjects);
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/mapped/instantiate.mjs
+function MappedAction(context, state4, identifier2, type, as, property, options) {
+  const result = CanInstantiate([type]) ? exports_memory.Update(MappedOperation(context, state4, identifier2, type, as, property), {}, options) : MappedDeferred(identifier2, type, as, property, options);
+  return result;
+}
+function MappedInstantiate(context, state4, identifier2, type, as, property, options) {
+  const instantiatedType = InstantiateType(context, state4, type);
+  return MappedAction(context, state4, identifier2, instantiatedType, as, property, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/module/instantiate.mjs
+function InstantiateCyclics(context, declarations, cyclicKeys) {
+  const declarationContext = exports_memory.Assign(context, declarations);
+  const declarationKeys = exports_guard.Keys(declarations).filter((key) => cyclicKeys.includes(key));
+  return declarationKeys.reduce((result, key) => {
+    return { ...result, [key]: InstantiateCyclic(declarationContext, key, declarations[key]) };
+  }, {});
+}
+function InstantiateNonCyclics(context, declarations, cyclicKeys) {
+  const declarationContext = exports_memory.Assign(context, declarations);
+  const declarationKeys = exports_guard.Keys(declarations).filter((key) => !cyclicKeys.includes(key));
+  return declarationKeys.reduce((result, key) => {
+    return { ...result, [key]: InstantiateType(declarationContext, State([], []), declarations[key]) };
+  }, {});
+}
+function InstantiateModule(context, declarations, options) {
+  const cyclicCandidates = CyclicCandidates(declarations);
+  const instantiatedCyclics = InstantiateCyclics(context, declarations, cyclicCandidates);
+  const instantiatedNonCyclics = InstantiateNonCyclics(context, declarations, cyclicCandidates);
+  const instantiatedModule = { ...instantiatedCyclics, ...instantiatedNonCyclics };
+  return exports_memory.Update(instantiatedModule, {}, options);
+}
+function ModuleInstantiate(context, _state, declarations, options) {
+  const instantiatedModule = InstantiateModule(context, declarations, options);
+  return instantiatedModule;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/action/non_nullable.mjs
+function NonNullableDeferred(type, options = {}) {
+  return Deferred("NonNullable", [type], options);
+}
+function NonNullable(type, options = {}) {
+  return NonNullableAction(type, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/non_nullable/instantiate.mjs
+function NonNullableOperation(type) {
+  const excluded = Union([Null(), Undefined()]);
+  return ExcludeAction(type, excluded, {});
+}
+function NonNullableAction(type, options) {
+  const result = CanInstantiate([type]) ? exports_memory.Update(NonNullableOperation(type), {}, options) : NonNullableDeferred(type, options);
+  return result;
+}
+function NonNullableInstantiate(context, state4, type, options) {
+  const instantiatedType = InstantiateType(context, state4, type);
+  return NonNullableAction(instantiatedType, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/action/omit.mjs
+function OmitDeferred(type, indexer, options = {}) {
+  return Deferred("Omit", [type, indexer], options);
+}
+function Omit(type, indexer_or_keys, options = {}) {
+  const indexer = exports_guard.IsArray(indexer_or_keys) ? KeysToIndexer(indexer_or_keys) : indexer_or_keys;
+  return OmitAction(type, indexer, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/indexable/to_indexable.mjs
+function ToIndexable(type) {
+  const collapsed = CollapseToObject(type);
+  const result = IsObject2(collapsed) ? collapsed.properties : Unreachable();
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/omit/from_type.mjs
+function FromKeys(properties2, keys) {
+  const result = exports_guard.Keys(properties2).reduce((result2, key) => {
+    return keys.includes(key) ? result2 : { ...result2, [key]: properties2[key] };
+  }, {});
+  return result;
+}
+function FromType14(type, indexer) {
+  const indexable = ToIndexable(type);
+  const indexableKeys = ToIndexableKeys(indexer);
+  const omitted = FromKeys(indexable, indexableKeys);
+  const result = _Object_(omitted);
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/omit/instantiate.mjs
+function OmitAction(type, indexer, options) {
+  const result = CanInstantiate([type, indexer]) ? exports_memory.Update(FromType14(type, indexer), {}, options) : OmitDeferred(type, indexer, options);
+  return result;
+}
+function OmitInstantiate(context, state4, type, indexer, options) {
+  const instantiatedType = InstantiateType(context, state4, type);
+  const instantiatedIndexer = InstantiateType(context, state4, indexer);
+  return OmitAction(instantiatedType, instantiatedIndexer, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/action/parameters.mjs
+function ParametersDeferred(type, options = {}) {
+  return Deferred("Parameters", [type], options);
+}
+function Parameters(type, options = {}) {
+  return ParametersAction(type, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/parameters/instantiate.mjs
+function ParametersOperation(type) {
+  const parameters = IsFunction2(type) ? type["parameters"] : [];
+  const instantiatedParameters = InstantiateElements({}, State([], []), parameters);
+  const result = Tuple(instantiatedParameters);
+  return result;
+}
+function ParametersAction(type, options) {
+  const result = CanInstantiate([type]) ? exports_memory.Update(ParametersOperation(type), {}, options) : ParametersDeferred(type, options);
+  return result;
+}
+function ParametersInstantiate(context, state4, type, options) {
+  const instantiatedType = InstantiateType(context, state4, type);
+  return ParametersAction(instantiatedType, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/action/partial.mjs
+function PartialDeferred(type, options = {}) {
+  return Deferred("Partial", [type], options);
+}
+function Partial(type, options = {}) {
+  return PartialAction(type, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/partial/from_cyclic.mjs
+function FromCyclic3(defs, ref2) {
+  const target2 = CyclicTarget(defs, ref2);
+  const partial2 = FromType15(target2);
+  const result = Cyclic(exports_memory.Assign(defs, { [ref2]: partial2 }), ref2);
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/partial/from_dependent.mjs
+function FromDependent3(if_, then_, else_) {
+  const evaluated = EvaluateDependent(if_, then_, else_);
+  const result = FromType15(evaluated);
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/partial/from_intersect.mjs
+function FromIntersect3(types14) {
+  const evaluated = EvaluateIntersect(types14);
+  const result = FromType15(evaluated);
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/partial/from_union.mjs
+function FromUnion6(types14) {
+  const result = types14.map((type) => FromType15(type));
+  return Union(result);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/partial/from_object.mjs
+function FromObject6(properties2) {
+  const mapped = exports_guard.Keys(properties2).reduce((result2, left) => {
+    return { ...result2, [left]: AddOptional(properties2[left]) };
+  }, {});
+  const result = _Object_(mapped);
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/partial/from_type.mjs
+function FromType15(type) {
+  return IsCyclic(type) ? FromCyclic3(type.$defs, type.$ref) : IsDependent(type) ? FromDependent3(type.if, type.then, type.else) : IsIntersect(type) ? FromIntersect3(type.allOf) : IsUnion(type) ? FromUnion6(type.anyOf) : IsObject2(type) ? FromObject6(type.properties) : _Object_({});
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/partial/instantiate.mjs
+function PartialAction(type, options) {
+  const result = CanInstantiate([type]) ? exports_memory.Update(FromType15(type), {}, options) : PartialDeferred(type, options);
+  return result;
+}
+function PartialInstantiate(context, state4, type, options) {
+  const instantiatedType = InstantiateType(context, state4, type);
+  return PartialAction(instantiatedType, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/action/pick.mjs
+function PickDeferred(type, indexer, options = {}) {
+  return Deferred("Pick", [type, indexer], options);
+}
+function Pick(type, indexer_or_keys, options = {}) {
+  const indexer = exports_guard.IsArray(indexer_or_keys) ? KeysToIndexer(indexer_or_keys) : indexer_or_keys;
+  return PickAction(type, indexer, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/pick/from_type.mjs
+function FromKeys2(properties2, keys) {
+  const result = exports_guard.Keys(properties2).reduce((result2, key) => {
+    return keys.includes(key) ? exports_memory.Assign(result2, { [key]: properties2[key] }) : result2;
+  }, {});
+  return result;
+}
+function FromType16(type, indexer) {
+  const indexable = ToIndexable(type);
+  const keys = ToIndexableKeys(indexer);
+  const applied = FromKeys2(indexable, keys);
+  const result = _Object_(applied);
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/pick/instantiate.mjs
+function PickAction(type, indexer, options) {
+  const result = CanInstantiate([type, indexer]) ? exports_memory.Update(FromType16(type, indexer), {}, options) : PickDeferred(type, indexer, options);
+  return result;
+}
+function PickInstantiate(context, state4, type, indexer, options) {
+  const instantiatedType = InstantiateType(context, state4, type);
+  const instantiatedIndexer = InstantiateType(context, state4, indexer);
+  return PickAction(instantiatedType, instantiatedIndexer, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/action/readonly_object.mjs
+function ReadonlyObjectDeferred(type, options = {}) {
+  return Deferred("ReadonlyObject", [type], options);
+}
+function ReadonlyObject(type, options = {}) {
+  return ReadonlyObjectAction(type, options);
+}
+var ReadonlyType = ReadonlyObject;
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/readonly_object/from_array.mjs
+function FromArray4(type) {
+  const result = AddImmutable(_Array_(type));
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/readonly_object/from_cyclic.mjs
+function FromCyclic4(defs, ref2) {
+  const target2 = CyclicTarget(defs, ref2);
+  const partial2 = FromType17(target2);
+  const result = Cyclic(exports_memory.Assign(defs, { [ref2]: partial2 }), ref2);
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/readonly_object/from_dependent.mjs
+function FromDependent4(if_, then_, else_) {
+  const evaluated = EvaluateDependent(if_, then_, else_);
+  const result = FromType17(evaluated);
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/readonly_object/from_intersect.mjs
+function FromIntersect4(types14) {
+  const evaluated = EvaluateIntersect(types14);
+  const result = FromType17(evaluated);
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/readonly_object/from_object.mjs
+function FromObject7(properties2) {
+  const mapped = exports_guard.Keys(properties2).reduce((result2, left) => {
+    return { ...result2, [left]: AddReadonly(properties2[left]) };
+  }, {});
+  const result = _Object_(mapped);
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/readonly_object/from_tuple.mjs
+function FromTuple4(types14) {
+  const result = AddImmutable(Tuple(types14));
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/readonly_object/from_union.mjs
+function FromUnion7(types14) {
+  const result = types14.map((type) => FromType17(type));
+  return Union(result);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/readonly_object/from_type.mjs
+function FromType17(type) {
+  return IsArray2(type) ? FromArray4(type.items) : IsCyclic(type) ? FromCyclic4(type.$defs, type.$ref) : IsDependent(type) ? FromDependent4(type.if, type.then, type.else) : IsIntersect(type) ? FromIntersect4(type.allOf) : IsObject2(type) ? FromObject7(type.properties) : IsTuple(type) ? FromTuple4(type.items) : IsUnion(type) ? FromUnion7(type.anyOf) : type;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/readonly_object/instantiate.mjs
+function ReadonlyObjectAction(type, options) {
+  const result = CanInstantiate([type]) ? exports_memory.Update(FromType17(type), {}, options) : ReadonlyObjectDeferred(type);
+  return result;
+}
+function ReadonlyObjectInstantiate(context, state4, type, options) {
+  const instantiatedType = InstantiateType(context, state4, type);
+  return ReadonlyObjectAction(instantiatedType, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/ref/instantiate.mjs
+function RefInstantiate(context, state4, type, ref2) {
+  return state4.visited.includes(ref2) ? type : (ref2 in context) ? InstantiateType(context, State(state4["callstack"], [...state4["visited"], ref2]), context[ref2]) : type;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/required/from_cyclic.mjs
+function FromCyclic5(defs, ref2) {
+  const target2 = CyclicTarget(defs, ref2);
+  const partial2 = FromType18(target2);
+  const result = Cyclic(exports_memory.Assign(defs, { [ref2]: partial2 }), ref2);
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/required/from_dependent.mjs
+function FromDependent5(if_, then_, else_) {
+  const evaluated = EvaluateDependent(if_, then_, else_);
+  const result = FromType18(evaluated);
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/required/from_intersect.mjs
+function FromIntersect5(types14) {
+  const evaluated = EvaluateIntersect(types14);
+  const result = FromType18(evaluated);
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/required/from_union.mjs
+function FromUnion8(types14) {
+  const result = types14.map((type) => FromType18(type));
+  return Union(result);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/required/from_object.mjs
+function FromObject8(properties2) {
+  const mapped = exports_guard.Keys(properties2).reduce((result2, left) => {
+    return { ...result2, [left]: RemoveOptional(properties2[left]) };
+  }, {});
+  const result = _Object_(mapped);
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/required/from_type.mjs
+function FromType18(type) {
+  return IsCyclic(type) ? FromCyclic5(type.$defs, type.$ref) : IsDependent(type) ? FromDependent5(type.if, type.then, type.else) : IsIntersect(type) ? FromIntersect5(type.allOf) : IsUnion(type) ? FromUnion8(type.anyOf) : IsObject2(type) ? FromObject8(type.properties) : _Object_({});
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/action/required.mjs
+function RequiredDeferred(type, options = {}) {
+  return Deferred("Required", [type], options);
+}
+function Required(type, options = {}) {
+  return RequiredAction(type, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/required/instantiate.mjs
+function RequiredAction(type, options) {
+  const result = CanInstantiate([type]) ? exports_memory.Update(FromType18(type), {}, options) : RequiredDeferred(type, options);
+  return result;
+}
+function RequiredInstantiate(context, state4, type, options) {
+  const instaniatedType = InstantiateType(context, state4, type);
+  return RequiredAction(instaniatedType, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/action/return_type.mjs
+function ReturnTypeDeferred(type, options = {}) {
+  return Deferred("ReturnType", [type], options);
+}
+function ReturnType(type, options = {}) {
+  return ReturnTypeAction(type, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/return_type/instantiate.mjs
+function ReturnTypeOperation(type) {
+  return IsFunction2(type) ? type["returnType"] : Never();
+}
+function ReturnTypeAction(type, options) {
+  const result = CanInstantiate([type]) ? exports_memory.Update(ReturnTypeOperation(type), {}, options) : ReturnTypeDeferred(type, options);
+  return result;
+}
+function ReturnTypeInstantiate(context, state4, type, options = {}) {
+  const instantiatedType = InstantiateType(context, state4, type);
+  return ReturnTypeAction(instantiatedType, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/action/with.mjs
+function WithDeferred(type, options) {
+  return Deferred("With", [type, options], {});
+}
+function With2(type, options) {
+  return WithAction(type, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/with/instantiate.mjs
+function WithAction(type, options) {
+  const result = CanInstantiate([type]) ? exports_memory.Update(type, {}, options) : WithDeferred(type, options);
+  return result;
+}
+function WithInstantiate(context, state4, type, options) {
+  const instaniatedType = InstantiateType(context, state4, type);
+  return WithAction(instaniatedType, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/rest/spread.mjs
+function SpreadElement(type) {
+  const result = IsRest(type) ? IsTuple(type.items) ? RestSpread(type.items.items) : IsInfer(type.items) ? [type] : IsRef(type.items) ? [type] : [Never()] : [type];
+  return result;
+}
+function RestSpread(types14) {
+  const result = types14.reduce((result2, left) => {
+    return [...result2, ...SpreadElement(left)];
+  }, []);
+  return result;
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/instantiate.mjs
+function State(callstack, visited) {
+  return { callstack, visited };
+}
+function CanInstantiate(types14) {
+  return exports_guard.ShiftLeft(types14, (left, right) => IsRef(left) ? false : CanInstantiate(right), () => true);
+}
+function InstantiateProperties(context, state4, properties2) {
+  return exports_guard.Keys(properties2).reduce((result, key) => {
+    return { ...result, [key]: InstantiateType(context, state4, properties2[key]) };
+  }, {});
+}
+function InstantiateElements(context, state4, types14) {
+  const elements = InstantiateTypes(context, state4, types14);
+  const result = RestSpread(elements);
+  return result;
+}
+function InstantiateTypes(context, state4, types14) {
+  return types14.map((type) => InstantiateType(context, state4, type));
+}
+function WithModifiers(type, instantiatedType) {
+  const withOptional = IsOptional(type) ? AddOptionalAction(instantiatedType, {}) : instantiatedType;
+  const withReadonly = IsReadonly(type) ? AddReadonlyAction(withOptional, {}) : withOptional;
+  const withImmutable = IsImmutable(type) ? AddImmutableAction(withReadonly, {}) : withReadonly;
+  return withImmutable;
+}
+function InstantiateDeferred(context, state4, action, parameters, options) {
+  return exports_guard.IsEqual(action, "AddImmutable") ? AddImmutableInstantiate(context, state4, parameters[0], options) : exports_guard.IsEqual(action, "RemoveImmutable") ? RemoveImmutableInstantiate(context, state4, parameters[0], options) : exports_guard.IsEqual(action, "AddReadonly") ? AddReadonlyInstantiate(context, state4, parameters[0], options) : exports_guard.IsEqual(action, "RemoveReadonly") ? RemoveReadonlyInstantiate(context, state4, parameters[0], options) : exports_guard.IsEqual(action, "AddOptional") ? AddOptionalInstantiate(context, state4, parameters[0], options) : exports_guard.IsEqual(action, "RemoveOptional") ? RemoveOptionalInstantiate(context, state4, parameters[0], options) : exports_guard.IsEqual(action, "Capitalize") ? CapitalizeInstantiate(context, state4, parameters[0], options) : exports_guard.IsEqual(action, "Conditional") ? ConditionalInstantiate(context, state4, parameters[0], parameters[1], parameters[2], parameters[3], options) : exports_guard.IsEqual(action, "ConstructorParameters") ? ConstructorParametersInstantiate(context, state4, parameters[0], options) : exports_guard.IsEqual(action, "Evaluate") ? EvaluateInstantiate(context, state4, parameters[0], options) : exports_guard.IsEqual(action, "Exclude") ? ExcludeInstantiate(context, state4, parameters[0], parameters[1], options) : exports_guard.IsEqual(action, "Extract") ? ExtractInstantiate(context, state4, parameters[0], parameters[1], options) : exports_guard.IsEqual(action, "Index") ? IndexInstantiate(context, state4, parameters[0], parameters[1], options) : exports_guard.IsEqual(action, "InstanceType") ? InstanceTypeInstantiate(context, state4, parameters[0], options) : exports_guard.IsEqual(action, "Interface") ? InterfaceInstantiate(context, state4, parameters[0], parameters[1], options) : exports_guard.IsEqual(action, "KeyOf") ? KeyOfInstantiate(context, state4, parameters[0], options) : exports_guard.IsEqual(action, "Lowercase") ? LowercaseInstantiate(context, state4, parameters[0], options) : exports_guard.IsEqual(action, "Mapped") ? MappedInstantiate(context, state4, parameters[0], parameters[1], parameters[2], parameters[3], options) : exports_guard.IsEqual(action, "Module") ? ModuleInstantiate(context, state4, parameters[0], options) : exports_guard.IsEqual(action, "NonNullable") ? NonNullableInstantiate(context, state4, parameters[0], options) : exports_guard.IsEqual(action, "Pick") ? PickInstantiate(context, state4, parameters[0], parameters[1], options) : exports_guard.IsEqual(action, "Parameters") ? ParametersInstantiate(context, state4, parameters[0], options) : exports_guard.IsEqual(action, "Partial") ? PartialInstantiate(context, state4, parameters[0], options) : exports_guard.IsEqual(action, "Omit") ? OmitInstantiate(context, state4, parameters[0], parameters[1], options) : exports_guard.IsEqual(action, "ReadonlyObject") ? ReadonlyObjectInstantiate(context, state4, parameters[0], options) : exports_guard.IsEqual(action, "Record") ? RecordInstantiate(context, state4, parameters[0], parameters[1], options) : exports_guard.IsEqual(action, "Required") ? RequiredInstantiate(context, state4, parameters[0], options) : exports_guard.IsEqual(action, "ReturnType") ? ReturnTypeInstantiate(context, state4, parameters[0], options) : exports_guard.IsEqual(action, "TemplateLiteral") ? TemplateLiteralInstantiate(context, state4, parameters[0], options) : exports_guard.IsEqual(action, "Uncapitalize") ? UncapitalizeInstantiate(context, state4, parameters[0], options) : exports_guard.IsEqual(action, "Uppercase") ? UppercaseInstantiate(context, state4, parameters[0], options) : exports_guard.IsEqual(action, "With") ? WithInstantiate(context, state4, parameters[0], parameters[1]) : Deferred(action, parameters, options);
+}
+function InstantiateImmediate(context, state4, type) {
+  const instantiatedType = IsRef(type) ? RefInstantiate(context, state4, type, type.$ref) : IsArray2(type) ? _Array_(InstantiateType(context, state4, type.items), ArrayOptions(type)) : IsCall(type) ? CallInstantiate(context, state4, type.target, type.arguments) : IsConstructor2(type) ? Constructor(InstantiateTypes(context, state4, type.parameters), InstantiateType(context, state4, type.instanceType), ConstructorOptions(type)) : IsFunction2(type) ? _Function_(InstantiateTypes(context, state4, type.parameters), InstantiateType(context, state4, type.returnType), FunctionOptions(type)) : IsDependent(type) ? Dependent(InstantiateType(context, state4, type.if), InstantiateType(context, state4, type.then), InstantiateType(context, state4, type.else), DependentOptions(type)) : IsIntersect(type) ? Intersect(InstantiateTypes(context, state4, type.allOf), IntersectOptions(type)) : IsObject2(type) ? _Object_(InstantiateProperties(context, state4, type.properties), ObjectOptions(type)) : IsRecord(type) ? RecordFromPattern(RecordPattern(type), InstantiateType(context, state4, RecordValue(type))) : IsRest(type) ? Rest(InstantiateType(context, state4, type.items)) : IsTuple(type) ? Tuple(InstantiateElements(context, state4, type.items), TupleOptions(type)) : IsUnion(type) ? Union(InstantiateTypes(context, state4, type.anyOf), UnionOptions(type)) : type;
+  const withModifiers = WithModifiers(type, instantiatedType);
+  return withModifiers;
+}
+function InstantiateType(context, state4, type) {
+  const result = IsDeferred(type) ? InstantiateDeferred(context, state4, type.action, type.parameters, type.options) : InstantiateImmediate(context, state4, type);
+  return result;
+}
+function Instantiate(context, type) {
+  return InstantiateType(context, State([], []), type);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/immutable/instantiate_add.mjs
+function AddImmutableOperation(type) {
+  return exports_memory.Update(type, { "~immutable": true }, {});
+}
+function AddImmutableAction(type, options) {
+  const result = exports_memory.Update(AddImmutableOperation(type), {}, options);
+  return result;
+}
+function AddImmutableInstantiate(context, state4, type, options) {
+  const instantiatedType = InstantiateType(context, state4, type);
+  return AddImmutableAction(instantiatedType, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/action/_add_immutable.mjs
+function AddImmutableDeferred(type, options = {}) {
+  return Deferred("AddImmutable", [type], options);
+}
+function AddImmutable(type, options = {}) {
+  return AddImmutableAction(type, options);
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/action/evaluate.mjs
+function EvaluateDeferred(type, options = {}) {
+  return Deferred("Evaluate", [type], options);
+}
+function Evaluate(type, options = {}) {
+  return EvaluateAction(type, options);
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/action/module.mjs
+function ModuleDeferred(declarations, options = {}) {
+  return Deferred("Module", [declarations], options);
+}
+function Module2(declarations, options = {}) {
+  return ModuleInstantiate({}, State([], []), declarations, options);
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/script/script.mjs
+function Script2(...args) {
+  const [context, input2, options] = exports_arguments.Match(args, {
+    2: (script, options2) => exports_guard.IsString(script) ? [{}, script, options2] : [script, options2, {}],
+    3: (context2, script, options2) => [context2, script, options2],
+    1: (script) => [{}, script, {}]
+  });
+  const result = Script(input2);
+  const parsed2 = exports_guard.IsArray(result) && exports_guard.IsEqual(result.length, 2) ? InstantiateType(context, State([], []), result[0]) : Never();
+  return exports_memory.Update(parsed2, {}, options);
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/typebox.mjs
+var exports_typebox = {};
+__export(exports_typebox, {
+  With: () => With2,
+  Void: () => Void,
+  Uppercase: () => Uppercase,
+  Unsafe: () => Unsafe,
+  Unknown: () => Unknown,
+  Union: () => Union,
+  Undefined: () => Undefined,
+  Uncapitalize: () => Uncapitalize,
+  Tuple: () => Tuple,
+  This: () => This,
+  TemplateLiteral: () => TemplateLiteral2,
+  Symbol: () => Symbol2,
+  String: () => String2,
+  Script: () => Script2,
+  ReturnType: () => ReturnType,
+  Rest: () => Rest,
+  Required: () => Required,
+  Refine: () => Refine,
+  Ref: () => Ref,
+  RecordValue: () => RecordValue,
+  RecordPattern: () => RecordPattern,
+  RecordKey: () => RecordKey,
+  Record: () => Record,
+  ReadonlyType: () => ReadonlyType,
+  ReadonlyObject: () => ReadonlyObject,
+  Readonly: () => Readonly,
+  Pick: () => Pick,
+  Partial: () => Partial,
+  Parameters: () => Parameters,
+  Parameter: () => Parameter,
+  Optional: () => Optional,
+  Omit: () => Omit,
+  Object: () => _Object_,
+  Number: () => Number2,
+  Null: () => Null,
+  NonNullable: () => NonNullable,
+  Never: () => Never,
+  Module: () => Module2,
+  Mapped: () => Mapped,
+  Lowercase: () => Lowercase,
+  Literal: () => Literal,
+  KeyOf: () => KeyOf2,
+  IsVoid: () => IsVoid,
+  IsUnsafe: () => IsUnsafe,
+  IsUnknown: () => IsUnknown,
+  IsUnion: () => IsUnion,
+  IsUndefined: () => IsUndefined2,
+  IsTuple: () => IsTuple,
+  IsThis: () => IsThis,
+  IsTemplateLiteral: () => IsTemplateLiteral,
+  IsSymbol: () => IsSymbol2,
+  IsString: () => IsString3,
+  IsSchema: () => IsSchema,
+  IsRest: () => IsRest,
+  IsRefine: () => IsRefine,
+  IsRef: () => IsRef,
+  IsRecord: () => IsRecord,
+  IsReadonly: () => IsReadonly,
+  IsParameter: () => IsParameter,
+  IsOptional: () => IsOptional,
+  IsObject: () => IsObject2,
+  IsNumber: () => IsNumber3,
+  IsNull: () => IsNull2,
+  IsNever: () => IsNever,
+  IsLiteral: () => IsLiteral,
+  IsKind: () => IsKind,
+  IsIntersect: () => IsIntersect,
+  IsInteger: () => IsInteger2,
+  IsInfer: () => IsInfer,
+  IsImmutable: () => IsImmutable,
+  IsIdentifier: () => IsIdentifier,
+  IsGeneric: () => IsGeneric,
+  IsFunction: () => IsFunction2,
+  IsEnumValue: () => IsEnumValue,
+  IsEnum: () => IsEnum,
+  IsDependent: () => IsDependent,
+  IsCyclic: () => IsCyclic,
+  IsConstructor: () => IsConstructor2,
+  IsCodec: () => IsCodec,
+  IsCall: () => IsCall,
+  IsBoolean: () => IsBoolean3,
+  IsBigInt: () => IsBigInt2,
+  IsArray: () => IsArray2,
+  IsAny: () => IsAny,
+  Intersect: () => Intersect,
+  Interface: () => Interface,
+  Integer: () => Integer,
+  Instantiate: () => Instantiate,
+  InstanceType: () => InstanceType,
+  Infer: () => Infer,
+  Index: () => Index,
+  Immutable: () => Immutable,
+  Identifier: () => Identifier,
+  Generic: () => Generic,
+  Function: () => _Function_,
+  Extract: () => Extract,
+  ExtendsResult: () => exports_result,
+  Extends: () => Extends,
+  Exclude: () => Exclude,
+  Evaluate: () => Evaluate,
+  Enum: () => Enum,
+  EncodeBuilder: () => EncodeBuilder,
+  Encode: () => Encode,
+  Dependent: () => Dependent,
+  DecodeBuilder: () => DecodeBuilder,
+  Decode: () => Decode,
+  Cyclic: () => Cyclic,
+  ConstructorParameters: () => ConstructorParameters,
+  Constructor: () => Constructor,
+  Conditional: () => Conditional,
+  Codec: () => Codec,
+  Capitalize: () => Capitalize,
+  Call: () => Call,
+  Boolean: () => Boolean2,
+  BigInt: () => BigInt2,
+  Array: () => _Array_,
+  Any: () => Any
+});
+// packages/omo-senpi/src/components/thread/gateway/bindings.ts
+var BINDING_MAX_TTL_SECONDS = 366 * 24 * 60 * 60;
+var OUTBOX_RETENTION_MS = 30 * 24 * 60 * 60 * 1000;
+var RELAY_TEXT_MAX_BYTES = 32768;
+
+// packages/omo-senpi/src/components/thread/contracts/fields.ts
+var THREAD_MESSAGE_MAX_BYTES = 32768;
+var THREAD_SUMMARY_MAX_LENGTH = 200;
+var ThreadAddress = exports_typebox.String({
+  description: "Recipient thread id or unique name as returned by thread_list; a name shared by several threads returns ambiguous_target with candidates."
+});
+var AllScope = exports_typebox.Optional(exports_typebox.Boolean({
+  description: "Address threads in every workspace on this machine instead of only the caller's workspace; left unset, an exact id from another workspace returns scope_denied."
+}));
+var IdempotencyKey = exports_typebox.Optional(exports_typebox.String({
+  description: "Caller-chosen key that makes a retried call return the earlier result instead of repeating the side effect; reusing the key with different arguments returns idempotency_conflict."
+}));
+var ExpectedTurnId = exports_typebox.Optional(exports_typebox.String({
+  description: "Turn id the steer applies to; required with delivery steer, and a changed active turn returns turn_conflict with the message held undelivered."
+}));
+var Summary = exports_typebox.Optional(exports_typebox.String({
+  maxLength: THREAD_SUMMARY_MAX_LENGTH,
+  description: "One-line preview shown to the caller when the completion notice arrives."
+}));
+var Message2 = exports_typebox.String({
+  maxLength: THREAD_MESSAGE_MAX_BYTES,
+  description: `Instruction to deliver to the target thread; longer than ${THREAD_MESSAGE_MAX_BYTES} UTF-8 bytes returns message_too_large.`
+});
+var BindingId = exports_typebox.String({
+  minLength: 1,
+  description: "Binding id as returned by thread_bind or thread_bindings."
+});
+var ExpectedRevision = exports_typebox.Integer({
+  minimum: 1,
+  description: "Revision the caller last saw for this binding; a binding that moved since returns stale_revision."
+});
+var RelayText = exports_typebox.String({
+  description: `Text relayed to or from the external thread; longer than ${RELAY_TEXT_MAX_BYTES} UTF-8 bytes returns message_too_large.`
+});
+var ThreadDeliveryMode = exports_typebox.Union([exports_typebox.Literal("auto"), exports_typebox.Literal("steer"), exports_typebox.Literal("follow_up")], {
+  description: "auto steers the running turn when one is active and starts a new turn otherwise; steer requires expected_turn_id and becomes turn_conflict when the active turn changed; follow_up queues the message behind the running turn."
+});
+
+// packages/omo-native/remote-session-args.ts
+var SESSION_VERBS = ["open", "send", "model", "interrupt", "close"];
+
+// packages/omo-senpi/src/components/thread/control/port.ts
+var REFUSAL = Symbol.for("omo.thread.control.refusal");
+
+// packages/omo-senpi/src/components/thread/control/close-ladder.ts
+var SESSION_GONE = new Set([
+  "unknown_session",
+  "session_identity_mismatch",
+  "session_not_attached",
+  "not_attached"
+]);
+
+// packages/omo-senpi/src/components/thread/thread-link.ts
+var THREAD_LINK_SCHEME = "omo-thread";
+var PREFIX = `${THREAD_LINK_SCHEME}://v1/`;
+
+// packages/omo-senpi/src/components/thread/remote/address-book.ts
+var REMOTE_NOT_SET_UP = new Set(["not_configured", "disabled", "signed_out", "sign_in_required"]);
+
+// packages/omo-senpi/src/components/thread/session-facts.ts
+var SESSION_FACTS_WINDOW_BYTES = 64 * 1024;
+var SESSION_FACTS_LAST_LINE_MAX_BYTES = SESSION_FACTS_WINDOW_BYTES * 4;
+
+// packages/omo-senpi/src/components/thread/metadata.ts
+var THREAD_TOOL_EXPOSURE = "eval";
+var ROUTE_TO_TASK = "; to spawn a child task instead, use task.";
+var THREAD_TOOL_METADATA = [
+  {
+    name: "thread_create",
+    label: "Create session",
+    description: "Starts a fresh agent session that runs alongside this one, for when the user wants a second session working in parallel" + ROUTE_TO_TASK,
+    exposure: THREAD_TOOL_EXPOSURE
+  },
+  {
+    name: "thread_list",
+    label: "List sessions",
+    description: "Shows every addressable session on this device and the account's other devices with its id, name, status and device, plus the account's devices, for when the user needs a valid target address before acting on a session" + ROUTE_TO_TASK,
+    exposure: THREAD_TOOL_EXPOSURE
+  },
+  {
+    name: "thread_read",
+    label: "Read session",
+    description: "Returns the transcript and latest output of another session, for when the user asks what another session said or produced" + ROUTE_TO_TASK,
+    exposure: THREAD_TOOL_EXPOSURE
+  },
+  {
+    name: "thread_send",
+    label: "Send message to session",
+    description: "Delivers a message into another session that is already running, for when the user wants to talk to that session mid-task; its reply comes back through thread_read, and a bound chat thread's replies through thread_report and thread_answer" + ROUTE_TO_TASK,
+    exposure: THREAD_TOOL_EXPOSURE
+  },
+  {
+    name: "thread_interrupt",
+    label: "Interrupt session turn",
+    description: "Stops the turn running in another session, for when the user wants to halt a session that is going down the wrong path" + ROUTE_TO_TASK,
+    exposure: THREAD_TOOL_EXPOSURE
+  },
+  {
+    name: "thread_close",
+    label: "Close session",
+    description: "Closes another session on this device or on another of the account's devices, for when the user is done with that session and wants it shut down" + ROUTE_TO_TASK,
+    exposure: THREAD_TOOL_EXPOSURE
+  },
+  {
+    name: "thread_handoff",
+    label: "Hand off session",
+    description: "Moves the current request to an old session that has the context, for when the user says to hand this off or reopen that earlier conversation" + ROUTE_TO_TASK,
+    exposure: THREAD_TOOL_EXPOSURE
+  },
+  {
+    name: "thread_rename",
+    label: "Rename session",
+    description: "Changes the label a session is listed under, for when the user asks to call a session something clearer",
+    exposure: THREAD_TOOL_EXPOSURE
+  },
+  {
+    name: "thread_set_model",
+    label: "Switch session model",
+    description: "Moves a session onto a different model, for when the user asks to switch that session to another model or a cheaper one",
+    exposure: THREAD_TOOL_EXPOSURE
+  },
+  {
+    name: "thread_set_reasoning",
+    label: "Set session reasoning level",
+    description: "Sets how much reasoning a session applies, for when the user asks to raise or lower the thinking effort of a session",
+    exposure: THREAD_TOOL_EXPOSURE
+  },
+  {
+    name: "thread_bind",
+    label: "Bind session to chat thread",
+    description: "Attaches a session to an external chat thread on Discord, Telegram, Slack, Notion, Feishu, herdr or a custom connector, for when the user wants a chat conversation connected to a session",
+    exposure: THREAD_TOOL_EXPOSURE
+  },
+  {
+    name: "thread_unbind",
+    label: "Unbind chat thread",
+    description: "Detaches a session from its bound chat thread, for when the user wants that chat connection closed",
+    exposure: THREAD_TOOL_EXPOSURE
+  },
+  {
+    name: "thread_rebind",
+    label: "Rebind chat thread",
+    description: "Moves a bound chat thread over to another session, for when the user wants that chat served by a different session",
+    exposure: THREAD_TOOL_EXPOSURE
+  },
+  {
+    name: "thread_bindings",
+    label: "List chat bindings",
+    description: "Shows which chat threads are bound to which sessions with their revisions, for when the user needs a binding id or its revision",
+    exposure: THREAD_TOOL_EXPOSURE
+  },
+  {
+    name: "thread_report",
+    label: "Report to chat thread",
+    description: "Posts a milestone, result, question or completion from this session to its bound chat thread, for when the user wants progress relayed to that chat; replies flow back through thread_read, thread_report and thread_answer",
+    exposure: THREAD_TOOL_EXPOSURE
+  },
+  {
+    name: "thread_outbox",
+    label: "Read chat outbox",
+    description: "Returns the reports waiting for a bound chat thread with a cursor, for when a connector collects what sessions posted",
+    exposure: THREAD_TOOL_EXPOSURE
+  },
+  {
+    name: "thread_outbox_ack",
+    label: "Acknowledge chat outbox",
+    description: "Marks outbox rows up to a cursor as posted to the chat, for when a connector confirms delivery",
+    exposure: THREAD_TOOL_EXPOSURE
+  },
+  {
+    name: "thread_answer",
+    label: "Answer relayed question",
+    description: "Resolves a question a session relayed to a chat thread with the answer that arrived there, for when a connector hands back a chat user's reply",
+    exposure: THREAD_TOOL_EXPOSURE
+  }
+];
+
+// packages/omo-senpi/src/components/thread/control/relay-control.ts
+var IN_PROGRESS = new Set(["running", "compacting", "opening"]);
+var RUN_RECORDS = new Set([
+  "agent_start",
+  "turn_start",
+  "message_start",
+  "message_update",
+  "message_end",
+  "tool_execution_start",
+  "tool_execution_update",
+  "tool_execution_end",
+  "turn_end",
+  "agent_end"
+]);
+
+// packages/omo-senpi/src/components/thread/remote/session-state.ts
+var ACCESS_ENDED = new Set([
+  "authorization_expired",
+  "peer_revoked",
+  "owner_transfer",
+  "service_disabled"
+]);
+var ACCESS_REFUSED = new Set([
+  "unauthenticated",
+  "forbidden",
+  "owner_transfer",
+  "signed_out",
+  "service_disabled",
+  "sign_in_required",
+  "plan_required",
+  "peer_not_found",
+  "peer_not_session_client",
+  "account_changed",
+  "device_changed",
+  "capability_missing",
+  "engine_too_old"
+]);
+var SESSION_LEFT = new Set(["session_closed", "session_replaced"]);
+var SESSION_GONE2 = new Set([
+  "session_not_found",
+  "unknown_session",
+  "session_identity_mismatch"
+]);
+var nonEmpty = (value) => typeof value === "string" && value.length > 0 ? value : undefined;
+var isJsonObject = (value) => typeof value === "object" && value !== null && !Array.isArray(value);
+function sessionStateOf(sessionId2, data) {
+  const questions = data["pendingQuestions"];
+  const status2 = data["isCompacting"] === true ? "compacting" : Array.isArray(questions) && questions.length > 0 ? "waiting_input" : data["isStreaming"] === true ? "running" : "idle";
+  const durableSessionId = nonEmpty(data["durableSessionId"]);
+  const currentTurnId = nonEmpty(data["currentTurnId"]);
+  return {
+    status: status2,
+    sessionId: sessionId2,
+    ...durableSessionId === undefined ? {} : { durableSessionId },
+    ...currentTurnId === undefined ? {} : { currentTurnId }
+  };
+}
+function statusOf2(record5, sawStatusRecord) {
+  const type = record5["type"];
+  if (type === "session_status")
+    return nonEmpty(record5["status"]);
+  if (sawStatusRecord)
+    return;
+  return type === "agent_start" ? "running" : type === "agent_settled" ? "idle" : undefined;
+}
+function causeOf(record5) {
+  const change = record5["lastChange"];
+  return isJsonObject(change) ? nonEmpty(change["cause"]) : undefined;
+}
+
+// packages/omo-senpi/src/components/thread/remote/watch-queue.ts
+var WATCH_QUEUE_MAX = 256;
+
+class WatchQueue {
+  process;
+  #items = [];
+  #records = 0;
+  #scheduled = false;
+  #draining = false;
+  #closed = false;
+  constructor(process3) {
+    this.process = process3;
+  }
+  push(item) {
+    if (this.#closed)
+      return;
+    this.#items.push(item);
+    if (item.kind === "records")
+      this.#records += item.records.length;
+    if (this.#records > WATCH_QUEUE_MAX)
+      this.#compact();
+    if (this.#scheduled)
+      return;
+    this.#scheduled = true;
+    Promise.resolve().then(() => {
+      this.#scheduled = false;
+      return this.#drain();
+    });
+  }
+  close() {
+    this.#closed = true;
+    this.#items = [];
+    this.#records = 0;
+  }
+  #compact() {
+    let newestStatus;
+    for (const item of this.#items) {
+      if (item.kind !== "records")
+        continue;
+      item.records.forEach((record5, index) => {
+        const seq = item.seqs?.[index];
+        if (record5["type"] === "session_status")
+          newestStatus = {
+            kind: "records",
+            attachId: item.attachId,
+            records: [record5],
+            ...seq === undefined ? {} : { seqs: [seq] }
+          };
+      });
+    }
+    const others = this.#items.filter((item) => item.kind !== "records");
+    const readsAnyway = others.some((item) => item.kind !== "resync");
+    const resync = readsAnyway ? [] : [{ kind: "resync" }];
+    this.#items = [...newestStatus === undefined ? [] : [newestStatus], ...others, ...resync];
+    this.#records = newestStatus === undefined ? 0 : 1;
+  }
+  async#drain() {
+    if (this.#draining)
+      return;
+    this.#draining = true;
+    try {
+      for (let item = this.#items.shift();item !== undefined && !this.#closed; item = this.#items.shift()) {
+        if (item.kind === "records")
+          this.#records -= item.records.length;
+        await this.process(item);
+      }
+    } finally {
+      this.#draining = false;
+    }
+  }
+}
+
+// packages/omo-senpi/src/components/thread/remote/remote-watch.ts
+var RETRY_FIRST_MS = 1000;
+var RETRY_MAX_MS = 30000;
+var SETTLED_KEPT = 256;
+var codeOf = (error62) => error62 instanceof LocalApiError ? error62.code : undefined;
+
+class SessionWatch {
+  link;
+  device;
+  handlers;
+  #key;
+  #held;
+  #unsubscribe;
+  #attachId;
+  #lastSeq = 0;
+  #status;
+  #durable;
+  #runningTurn;
+  #sawStatusRecord = false;
+  #settled = [];
+  #queue = new WatchQueue((item) => this.#process(item));
+  #lostReported = false;
+  #leftReason;
+  #done = false;
+  #resolveEnded;
+  ended = new Promise((resolve32) => {
+    this.#resolveEnded = resolve32;
+  });
+  constructor(link2, device, sessionId2, handlers) {
+    this.link = link2;
+    this.device = device;
+    this.handlers = handlers;
+    this.#key = sessionId2;
+  }
+  async start(baseline) {
+    try {
+      await this.#attach();
+    } catch (error62) {
+      this.#finish("stopped");
+      return { kind: "refused", reason: codeOf(error62) ?? "attach_failed" };
+    }
+    let initial;
+    if (baseline) {
+      const read = await this.#readState();
+      if (read.kind !== "ok") {
+        this.#finish("stopped");
+        return { kind: "refused", reason: read.reason };
+      }
+      initial = read.state;
+      this.#adopt(initial);
+    }
+    const watch = {
+      ended: this.ended,
+      stop: () => this.#finish("stopped"),
+      ...initial === undefined ? {} : { initial }
+    };
+    return { kind: "ok", watch };
+  }
+  async#attach() {
+    const held2 = await this.link.hold(this.device, this.#key);
+    if (this.#done)
+      return held2.release();
+    this.#held = held2;
+    this.#attachId = undefined;
+    let replaying = true;
+    this.#unsubscribe = held2.session.attached.onEvent((event) => this.#accept(event, replaying));
+    replaying = false;
+    held2.session.attached.detached.then((reason2) => {
+      if (this.#held === held2)
+        this.#queue.push({ kind: "ended", reason: reason2 });
+    });
+  }
+  #accept(event, replaying) {
+    if (event.kind === "snapshot") {
+      this.#durable = nonEmpty(event.snapshot.state["durableSessionId"]) ?? this.#durable;
+      if (!replaying && this.#attachId !== undefined)
+        return this.#queue.push({ kind: "snapshot", attachId: event.snapshot.attach_id });
+      this.#attachId = event.snapshot.attach_id;
+      this.#lastSeq = 0;
+    } else if (event.kind === "records") {
+      if (replaying)
+        this.#lastSeq = Math.max(this.#lastSeq, ...event.seqs ?? []);
+      else
+        this.#queue.push({
+          kind: "records",
+          attachId: event.attach_id,
+          records: event.records,
+          ...event.seqs === undefined ? {} : { seqs: event.seqs }
+        });
+    }
+  }
+  async#process(item) {
+    switch (item.kind) {
+      case "records":
+        if (item.attachId !== this.#attachId) {
+          this.#attachId = item.attachId;
+          this.#lastSeq = 0;
+        }
+        for (const [index, record5] of item.records.entries()) {
+          const seq = item.seqs?.[index];
+          if (seq !== undefined && seq <= this.#lastSeq)
+            continue;
+          if (seq !== undefined)
+            this.#lastSeq = seq;
+          if (!this.#apply(record5))
+            return;
+        }
+        return;
+      case "snapshot":
+        this.#attachId = item.attachId;
+        this.#lastSeq = 0;
+        return await this.#resync(false);
+      case "resync":
+        return await this.#resync(false);
+      case "ended":
+        return await this.#onAttachEnded(item.reason);
+    }
+  }
+  #apply(record5) {
+    const type = record5["type"];
+    if (type === "agent_settled") {
+      const turn = nonEmpty(record5["turnId"]) ?? this.#runningTurn;
+      if (turn !== undefined && this.#settled.includes(turn))
+        return true;
+      if (turn !== undefined)
+        this.#markSettled(turn);
+      this.#runningTurn = undefined;
+    }
+    if (type === "agent_start" || type === "turn_start")
+      this.#runningTurn = nonEmpty(record5["turnId"]) ?? this.#runningTurn;
+    if (type === "session_status")
+      this.#durable = nonEmpty(record5["durableSessionId"]) ?? this.#durable;
+    if (!this.#deliver(() => this.handlers.record(record5)))
+      return false;
+    const next = statusOf2(record5, this.#sawStatusRecord);
+    if (type === "session_status")
+      this.#sawStatusRecord = true;
+    if (next === undefined || next === this.#status)
+      return true;
+    const from2 = this.#status;
+    this.#status = next;
+    const cause = type === "session_status" ? causeOf(record5) : nonEmpty(type);
+    return this.#deliver(() => this.handlers.status?.({
+      from: from2,
+      to: next,
+      derived: type !== "session_status",
+      ...cause === undefined ? {} : { cause }
+    }));
+  }
+  async#resync(restarted) {
+    const outcome = await this.#resyncOnce(restarted);
+    if (outcome !== "done")
+      await this.#reattach(outcome.reason, restarted, true);
+  }
+  async#resyncOnce(restarted) {
+    const read = await this.#readState();
+    if (this.#done)
+      return "done";
+    if (read.kind !== "ok") {
+      if (!SESSION_GONE2.has(read.reason))
+        return { reason: read.reason };
+      if (restarted)
+        this.#finish(this.#leftReason ?? "session_closed");
+      else
+        await this.#relocate("session_closed");
+      return "done";
+    }
+    this.#lostReported = false;
+    const { state: state4 } = read;
+    const from2 = this.#status;
+    const turn = this.#runningTurn;
+    const settledTurns = turn !== undefined && !(state4.status === "running" && state4.currentTurnId === turn) && !this.#settled.includes(turn) ? [turn] : [];
+    for (const settled of settledTurns)
+      this.#markSettled(settled);
+    this.#adopt(state4);
+    this.#deliver(() => this.handlers.resynced?.({ from: from2, state: state4, settledTurns, restarted }));
+    return "done";
+  }
+  async#onAttachEnded(reason2) {
+    this.#release();
+    if (ACCESS_ENDED.has(reason2))
+      return this.#finish(`access:${reason2}`);
+    if (SESSION_LEFT.has(reason2))
+      return await this.#relocate(reason2 === "session_replaced" ? "session_replaced" : "session_closed");
+    await this.#reattach(reason2);
+  }
+  async#relocate(reason2) {
+    this.#release();
+    this.#leftReason = reason2;
+    const durable = this.#durable;
+    if (durable === undefined)
+      return this.#finish(reason2);
+    try {
+      this.#key = await this.link.locate(this.device, durable);
+    } catch {
+      return this.#finish(reason2);
+    }
+    await this.#reattach(undefined, true);
+  }
+  async#reattach(lost, restarted = false, waitFirst = false) {
+    this.#release();
+    if (lost !== undefined)
+      this.#reportLost(lost);
+    let wait = RETRY_FIRST_MS;
+    const backOff = async () => {
+      await this.link.delay(wait);
+      wait = Math.min(wait * 2, RETRY_MAX_MS);
+    };
+    if (waitFirst)
+      await backOff();
+    while (!this.#done) {
+      try {
+        await this.#attach();
+      } catch (error62) {
+        const code = codeOf(error62);
+        if (code !== undefined && ACCESS_REFUSED.has(code))
+          return this.#finish(`access:${code}`);
+        if (code !== undefined && SESSION_GONE2.has(code))
+          return this.#finish(this.#leftReason ?? "session_closed");
+        this.#reportLost(code ?? "attach_failed");
+        await backOff();
+        continue;
+      }
+      const outcome = await this.#resyncOnce(restarted);
+      if (outcome === "done")
+        return;
+      this.#release();
+      this.#reportLost(outcome.reason);
+      await backOff();
+    }
+  }
+  async#readState() {
+    const outcome = await this.link.getState(this.device, this.#key);
+    if (outcome.kind !== "ok")
+      return { kind: "failed", reason: outcome.reason };
+    const data = outcome.response["data"];
+    return { kind: "ok", state: sessionStateOf(this.#key, isJsonObject(data) ? data : {}) };
+  }
+  #adopt(state4) {
+    this.#status = state4.status;
+    this.#durable = state4.durableSessionId ?? this.#durable;
+    this.#runningTurn = state4.status === "running" ? state4.currentTurnId : undefined;
+  }
+  #markSettled(turn) {
+    this.#settled.push(turn);
+    if (this.#settled.length > SETTLED_KEPT)
+      this.#settled.shift();
+  }
+  #reportLost(reason2) {
+    if (this.#lostReported)
+      return;
+    this.#lostReported = true;
+    this.#deliver(() => this.handlers.lost?.(reason2));
+  }
+  #deliver(call2) {
+    try {
+      call2();
+      return true;
+    } catch {
+      this.#finish("listener_failed");
+      return false;
+    }
+  }
+  #release() {
+    this.#unsubscribe?.();
+    this.#unsubscribe = undefined;
+    this.#held?.release();
+    this.#held = undefined;
+  }
+  #finish(end) {
+    if (this.#done)
+      return;
+    this.#done = true;
+    this.#queue.close();
+    this.#release();
+    this.#resolveEnded(end);
+  }
+}
+
+// packages/omo-senpi/src/components/thread/remote/device-service.ts
+var REFUSED_BEFORE_SENDING = new Set([
+  "unauthenticated",
+  "client_proof_invalid",
+  "invalid_request",
+  "unknown_type",
+  "forbidden",
+  "owner_transfer",
+  "signed_out",
+  "device_mismatch",
+  "device_changed",
+  "account_changed",
+  "device_key_invalid",
+  "service_disabled",
+  "sign_in_required",
+  "plan_required",
+  "activation_pending",
+  "authorization_stale",
+  "peer_not_found",
+  "peer_not_session_client",
+  "session_not_found",
+  "engine_too_old",
+  "not_attached",
+  "command_id_conflict",
+  "message_too_long",
+  "upload_incomplete",
+  "malformed",
+  "method_unclassified",
+  "method_local_only",
+  "host_not_answering",
+  "unsupported"
+]);
+var READ_ONLY_RECORDS = new Set(["get_state", "get_messages"]);
+var MARKED_RECORDS = new Set(["admit_external_message"]);
+var LOOKUP_NONE = new Set(["session_not_found", "peer_not_found", "peer_not_session_client"]);
+
+// packages/omo-senpi/src/components/thread/gateway/constants.ts
+var QUEUED_TTL_MS = 24 * 60 * 60 * 1000;
+var ROOT_LIFETIME_MS = 7 * 24 * 60 * 60 * 1000;
+var TARGET_MAX_BYTES = 1024 * 1024;
+var GATEWAY_RECEIPT_RETENTION_MS = 30 * 24 * 60 * 60 * 1000;
+var DELIVERY_RETENTION_MS = 30 * 24 * 60 * 60 * 1000;
+var RETENTION_SWEEP_INTERVAL_MS = 60 * 60 * 1000;
+
+// packages/omo-senpi/src/components/thread/gateway/session-args-schema.ts
+var TYPES = new Set(["object", "string", "number", "integer", "boolean", "array", "null"]);
+var ANNOTATIONS = new Set(["title", "description", "default", "examples"]);
+var COUNTS = ["minLength", "maxLength", "minItems", "maxItems"];
+var BOUNDS = ["minimum", "maximum", "exclusiveMinimum", "exclusiveMaximum"];
+var KEYWORDS = new Set([
+  "type",
+  "properties",
+  "required",
+  "additionalProperties",
+  "enum",
+  "const",
+  "pattern",
+  "items",
+  "anyOf",
+  ...COUNTS,
+  ...BOUNDS,
+  ...ANNOTATIONS
+]);
+
+// packages/omo-senpi/src/components/thread/remote/relay-transport.ts
+var ADMIT_UNSUPPORTED = new Set([
+  "method_unclassified",
+  "delegation_unclassified",
+  "unknown_command",
+  "engine_capability_missing",
+  "unsupported_command",
+  "method_unknown"
+]);
+var WAITS = new Set(["wake", "hold", "approval"]);
+
+// packages/omo-senpi/src/components/thread/remote/this-device.ts
+var known2 = new WeakMap;
+
+// packages/omo-native/bin/lib/package-paths.js
+import { fileURLToPath as fileURLToPath10 } from "node:url";
+var packageRoot = fileURLToPath10(new URL("../..", import.meta.url));
+
+// packages/omo-native/remote-session-verbs.ts
+var NO_SUCH_SESSION = new Set(["session_not_found", "unknown_session"]);
+
+// packages/omo-native/remote-usage.ts
+var USAGE_HEAD = "usage: omo remote <command> [--json]";
+var USAGE_ENTRIES = [
+  {
+    verbs: ["status"],
+    text: "  status                                   the device service's connection state"
+  },
+  {
+    verbs: ["devices"],
+    text: "  devices                                  the devices on this account"
+  },
+  {
+    verbs: ["sessions"],
+    text: `  sessions [--device D] [--project P] [--state running|idle|ended]
+                                           sessions across the account's devices`
+  },
+  {
+    verbs: ["enable", "disable"],
+    text: "  enable | disable                         turn remote sessions on or off for this device"
+  },
+  {
+    verbs: ["control"],
+    text: `  control [on|off]                         whether your other signed-in devices can view and command this
+                                           device's sessions (on unless you turn it off)`
+  },
+  {
+    verbs: ["wake"],
+    text: `  wake [on|off|default]                    whether sessions on this device that are not running may be started
+                                           by a message from your other signed-in devices; on unless turned off`
+  },
+  {
+    verbs: ["bootstrap"],
+    text: "  bootstrap                                set up this device's service for your sign-in (every omo start runs it)"
+  },
+  {
+    verbs: ["attach"],
+    text: "  attach <session>                         open a session in the terminal UI; also takes <device>/<session>"
+  },
+  {
+    verbs: ["open"],
+    text: `  open <device> [--project P] [--model provider/id] [--thinking LEVEL] [--permission-preset MODE]
+       [--worktree [--branch B] [--base REF]] [--prompt TEXT [--steer|--follow-up]]
+                                           start a session on another device; prints <device>/<session>; it runs
+                                           in MODE (default: this device's own setting, else full-access), on the
+                                           model and thinking level given (a model it cannot run opens nothing),
+                                           in a new git worktree of P with --worktree, and is handed TEXT first`
+  },
+  {
+    verbs: ["send"],
+    text: `  send <session> <text> [--steer|--follow-up] [--no-wait]
+                                           send a message and print the answer as it arrives (--steer: into the
+                                           running turn; --no-wait: return once the session took it).
+                                           Use the durable thread_id from open --json, or <device>/<session>.`
+  },
+  {
+    verbs: ["model"],
+    text: "  model <session> <provider/id>            switch the model; also takes <device>/<session>"
+  },
+  {
+    verbs: ["interrupt"],
+    text: "  interrupt <session>                      stop the running turn; also takes <device>/<session>"
+  },
+  {
+    verbs: ["close"],
+    text: "  close <session>                          end the session; also takes <device>/<session>"
+  }
+];
+var REMOTE_USAGE = [USAGE_HEAD, ...USAGE_ENTRIES.map((entry) => entry.text)].join(`
+`);
+
+// packages/omo-native/remote-verbs.ts
+var VERBS = [
+  "status",
+  "devices",
+  "sessions",
+  "enable",
+  "disable",
+  "control",
+  "wake",
+  "bootstrap",
+  ...SESSION_VERBS
+];
+// packages/omo-native/remote-entry.ts
+var testSkipKey = Symbol.for("omo.test.skipRemoteLoginSetup");
 
 // packages/omo-native/service-auth-command.ts
 var cliServiceAuthHooks = {
@@ -134298,14 +141067,14 @@ function buildCliWork(directory, work) {
 async function boulder(options) {
   const directory = options.directory ?? process.cwd();
   const boulderFilePath = getBoulderFilePath(directory);
-  const state3 = readBoulderState(directory);
-  if (!state3) {
+  const state4 = readBoulderState(directory);
+  if (!state4) {
     const message = existsSync71(boulderFilePath) ? formatReadErrorMessage(options.json) : formatNoBoulderMessage(options.json);
     process.stderr.write(`${message}
 `);
     return existsSync71(boulderFilePath) ? 2 : 1;
   }
-  const works = getBoulderWorks(state3);
+  const works = getBoulderWorks(state4);
   const filteredWorks = options.workId ? works.filter((work) => work.work_id === options.workId) : works;
   if (filteredWorks.length === 0) {
     process.stderr.write(`${formatNoBoulderMessage(options.json)}
@@ -134320,8 +141089,8 @@ async function boulder(options) {
   return 0;
 }
 // packages/omo-opencode/src/cli/codex-ulw-loop.ts
-import { spawn as spawn7 } from "node:child_process";
-import { existsSync as existsSync72, readFileSync as readFileSync49, realpathSync as realpathSync13 } from "node:fs";
+import { spawn as spawn8 } from "node:child_process";
+import { existsSync as existsSync72, readFileSync as readFileSync50, realpathSync as realpathSync13 } from "node:fs";
 import { homedir as homedir37 } from "node:os";
 var ULW_LOOP_DELEGATION_SENTINEL = "OMO_ULW_LOOP_DELEGATED";
 function resolveCodexUlwLoopCommand(input2 = {}) {
@@ -134350,7 +141119,7 @@ async function codexUlwLoop(args) {
     return 1;
   }
   const { promise: promise2, resolve: resolve32 } = Promise.withResolvers();
-  const child = spawn7(command.executable, [...command.argsPrefix, ...args], {
+  const child = spawn8(command.executable, [...command.argsPrefix, ...args], {
     stdio: "inherit",
     env: { ...process.env, [ULW_LOOP_DELEGATION_SENTINEL]: "1" }
   });
@@ -134362,16 +141131,16 @@ async function codexUlwLoop(args) {
   return promise2;
 }
 function resolveLocalUlwLoopBin(env2, homeDir) {
-  const candidates = resolveCodexComponentBinCandidates({ executableName: "omo-ulw-loop", env: env2, homeDir });
-  return candidates.find((candidate2) => existsSync72(candidate2)) ?? null;
+  const candidates3 = resolveCodexComponentBinCandidates({ executableName: "omo-ulw-loop", env: env2, homeDir });
+  return candidates3.find((candidate2) => existsSync72(candidate2)) ?? null;
 }
 function resolveLegacyLocalOmoBin(env2, homeDir, currentExecutablePaths) {
-  const candidates = resolveCodexComponentBinCandidates({ executableName: "omo", env: env2, homeDir });
-  return candidates.find((candidate2) => existsSync72(candidate2) && !isCurrentExecutable(candidate2, currentExecutablePaths) && !isGeneratedRuntimeWrapper(candidate2)) ?? null;
+  const candidates3 = resolveCodexComponentBinCandidates({ executableName: "omo", env: env2, homeDir });
+  return candidates3.find((candidate2) => existsSync72(candidate2) && !isCurrentExecutable(candidate2, currentExecutablePaths) && !isGeneratedRuntimeWrapper(candidate2)) ?? null;
 }
 function isGeneratedRuntimeWrapper(candidate2) {
   try {
-    return readFileSync49(candidate2, "utf8").includes(RUNTIME_WRAPPER_MARKER);
+    return readFileSync50(candidate2, "utf8").includes(RUNTIME_WRAPPER_MARKER);
   } catch (error62) {
     if (error62 instanceof Error)
       return false;
@@ -134404,16 +141173,16 @@ async function refreshModelCapabilities(options, deps = {}) {
     const config4 = loadConfig(directory, null);
     const sourceUrl = options.sourceUrl ?? config4.model_capabilities?.source_url;
     const snapshot = await refreshCache({ sourceUrl });
-    const summary = {
+    const summary2 = {
       sourceUrl: snapshot.sourceUrl,
       generatedAt: snapshot.generatedAt,
       modelCount: Object.keys(snapshot.models).length
     };
     if (options.json) {
-      stdout2.write(`${JSON.stringify(summary, null, 2)}
+      stdout2.write(`${JSON.stringify(summary2, null, 2)}
 `);
     } else {
-      stdout2.write(`Refreshed model capabilities cache (${summary.modelCount} models) from ${summary.sourceUrl}
+      stdout2.write(`Refreshed model capabilities cache (${summary2.modelCount} models) from ${summary2.sourceUrl}
 `);
     }
     return 0;
@@ -134435,32 +141204,32 @@ function expandHome(value, home) {
   return value;
 }
 function isExcludedPath(worktreePath, prefixes, home) {
-  const target = path15.resolve(expandHome(worktreePath, home));
+  const target2 = path15.resolve(expandHome(worktreePath, home));
   return prefixes.some((prefix) => {
     const resolved = path15.resolve(expandHome(prefix, home));
-    return target === resolved || target.startsWith(`${resolved}${path15.sep}`);
+    return target2 === resolved || target2.startsWith(`${resolved}${path15.sep}`);
   });
 }
-function worktreeRef(record3) {
-  return record3.branch ?? record3.head ?? "";
+function worktreeRef(record5) {
+  return record5.branch ?? record5.head ?? "";
 }
 function classifyWorktree(input2) {
-  const { record: record3 } = input2;
-  const ref = worktreeRef(record3);
-  if (record3.locked)
-    return { path: record3.path, ref, decision: "KEEP", reason: "locked" };
+  const { record: record5 } = input2;
+  const ref3 = worktreeRef(record5);
+  if (record5.locked)
+    return { path: record5.path, ref: ref3, decision: "KEEP", reason: "locked" };
   if (!input2.pathExists)
-    return { path: record3.path, ref, decision: "PRUNE" };
+    return { path: record5.path, ref: ref3, decision: "PRUNE" };
   if (input2.current)
-    return { path: record3.path, ref, decision: "KEEP", reason: "current" };
+    return { path: record5.path, ref: ref3, decision: "KEEP", reason: "current" };
   if (input2.external)
-    return { path: record3.path, ref, decision: "KEEP", reason: "external" };
+    return { path: record5.path, ref: ref3, decision: "KEEP", reason: "external" };
   if (!input2.merged && !input2.agedOut) {
-    return { path: record3.path, ref, decision: "KEEP", reason: "unmerged" };
+    return { path: record5.path, ref: ref3, decision: "KEEP", reason: "unmerged" };
   }
   if (input2.dirty)
-    return { path: record3.path, ref, decision: "KEEP", reason: "dirty" };
-  return { path: record3.path, ref, decision: "SWEEP" };
+    return { path: record5.path, ref: ref3, decision: "KEEP", reason: "dirty" };
+  return { path: record5.path, ref: ref3, decision: "SWEEP" };
 }
 // packages/omo-opencode/src/cli/worktree-sweep/format.ts
 function formatClassification(classification) {
@@ -134470,8 +141239,8 @@ function formatClassification(classification) {
 function formatSummary(result) {
   const mode2 = result.apply ? "apply" : "dry-run";
   const removed2 = result.repos.reduce((total, repo) => total + repo.removed.length, 0);
-  const failed2 = result.repos.reduce((total, repo) => total + repo.failed.length, 0);
-  return `SUMMARY mode=${mode2} repos=${result.repos.length} sweep=${result.sweepCount} keep=${result.keepCount} prune=${result.pruneCount} removed=${removed2} failed=${failed2}`;
+  const failed3 = result.repos.reduce((total, repo) => total + repo.failed.length, 0);
+  return `SUMMARY mode=${mode2} repos=${result.repos.length} sweep=${result.sweepCount} keep=${result.keepCount} prune=${result.pruneCount} removed=${removed2} failed=${failed3}`;
 }
 function formatResult(result) {
   const lines = [];
@@ -134480,8 +141249,8 @@ function formatResult(result) {
     for (const classification of repo.classifications) {
       lines.push(formatClassification(classification));
     }
-    for (const failure3 of repo.failed) {
-      lines.push(`FAILED ${failure3.path} ${failure3.error}`);
+    for (const failure4 of repo.failed) {
+      lines.push(`FAILED ${failure4.path} ${failure4.error}`);
     }
   }
   lines.push(formatSummary(result));
@@ -134500,45 +141269,45 @@ import { normalize } from "node:path";
 function emptyRecord() {
   return { detached: false, locked: false, prunable: false };
 }
-function finalize2(record3) {
-  if (record3.path === undefined || record3.path.length === 0)
+function finalize2(record5) {
+  if (record5.path === undefined || record5.path.length === 0)
     return;
   return {
-    path: normalize(record3.path),
-    ...record3.head === undefined ? {} : { head: record3.head },
-    ...record3.branch === undefined ? {} : { branch: record3.branch },
-    detached: record3.detached,
-    locked: record3.locked,
-    ...record3.lockReason === undefined ? {} : { lockReason: record3.lockReason },
-    prunable: record3.prunable
+    path: normalize(record5.path),
+    ...record5.head === undefined ? {} : { head: record5.head },
+    ...record5.branch === undefined ? {} : { branch: record5.branch },
+    detached: record5.detached,
+    locked: record5.locked,
+    ...record5.lockReason === undefined ? {} : { lockReason: record5.lockReason },
+    prunable: record5.prunable
   };
 }
-function applyLine(record3, line) {
+function applyLine(record5, line) {
   if (line.startsWith("worktree ")) {
-    record3.path = line.slice("worktree ".length);
+    record5.path = line.slice("worktree ".length);
     return;
   }
   if (line.startsWith("HEAD ")) {
-    record3.head = line.slice("HEAD ".length);
+    record5.head = line.slice("HEAD ".length);
     return;
   }
   if (line.startsWith("branch ")) {
-    record3.branch = line.slice("branch ".length).replace(/^refs\/heads\//, "");
+    record5.branch = line.slice("branch ".length).replace(/^refs\/heads\//, "");
     return;
   }
   if (line === "detached") {
-    record3.detached = true;
+    record5.detached = true;
     return;
   }
   if (line === "locked" || line.startsWith("locked ")) {
-    record3.locked = true;
+    record5.locked = true;
     const reason2 = line.slice("locked".length).trim();
     if (reason2.length > 0)
-      record3.lockReason = reason2;
+      record5.lockReason = reason2;
     return;
   }
   if (line === "prunable" || line.startsWith("prunable ")) {
-    record3.prunable = true;
+    record5.prunable = true;
   }
 }
 function parseWorktreeList(porcelain) {
@@ -134606,10 +141375,10 @@ async function detectDefaultBranch(repo) {
   }
   return;
 }
-async function isMerged(repo, ref, defaultBranch) {
-  if (ref.length === 0)
+async function isMerged(repo, ref3, defaultBranch) {
+  if (ref3.length === 0)
     return false;
-  const result = await runGit(repo, ["merge-base", "--is-ancestor", ref, defaultBranch]);
+  const result = await runGit(repo, ["merge-base", "--is-ancestor", ref3, defaultBranch]);
   return result.code === 0;
 }
 async function isDirty(worktreePath) {
@@ -134644,13 +141413,13 @@ async function isOlderThan(worktreePath, days, now) {
     return false;
   }
 }
-async function classifyRecord(repo, record3, defaultBranch, options) {
-  const pathExists4 = existsSync73(record3.path);
-  const external2 = isExcludedPath(record3.path, options.excludePrefixes, options.home);
-  const current = options.currentWorktree !== undefined && record3.path === options.currentWorktree;
-  if (record3.locked || !pathExists4 || external2 || current) {
+async function classifyRecord(repo, record5, defaultBranch, options) {
+  const pathExists4 = existsSync73(record5.path);
+  const external2 = isExcludedPath(record5.path, options.excludePrefixes, options.home);
+  const current = options.currentWorktree !== undefined && record5.path === options.currentWorktree;
+  if (record5.locked || !pathExists4 || external2 || current) {
     return classifyWorktree({
-      record: record3,
+      record: record5,
       pathExists: pathExists4,
       merged: false,
       agedOut: false,
@@ -134659,10 +141428,10 @@ async function classifyRecord(repo, record3, defaultBranch, options) {
       current
     });
   }
-  const merged = await isMerged(repo, worktreeRef(record3), defaultBranch);
-  const agedOut = merged ? false : await isOlderThan(record3.path, options.olderThanDays, options.now);
-  const dirty = merged || agedOut ? await isDirty(record3.path) : false;
-  return classifyWorktree({ record: record3, pathExists: pathExists4, merged, agedOut, dirty, external: external2 });
+  const merged = await isMerged(repo, worktreeRef(record5), defaultBranch);
+  const agedOut = merged ? false : await isOlderThan(record5.path, options.olderThanDays, options.now);
+  const dirty = merged || agedOut ? await isDirty(record5.path) : false;
+  return classifyWorktree({ record: record5, pathExists: pathExists4, merged, agedOut, dirty, external: external2 });
 }
 async function sweepRepo(repo, options) {
   const toplevel = normalize2(await resolveRepoRoot(repo) ?? repo);
@@ -134672,16 +141441,16 @@ async function sweepRepo(repo, options) {
   }
   const allRecords = parseWorktreeList(await listWorktreesPorcelain(toplevel));
   const records = linkedWorktrees(allRecords);
-  const startedInLinked = records.some((record3) => record3.path === toplevel);
+  const startedInLinked = records.some((record5) => record5.path === toplevel);
   const mainWorktree = allRecords[0]?.path;
   const root = startedInLinked && mainWorktree !== undefined && existsSync73(mainWorktree) ? mainWorktree : toplevel;
   const currentWorktree = startedInLinked ? toplevel : undefined;
   const classifications = [];
-  for (const record3 of records) {
-    classifications.push(await classifyRecord(root, record3, defaultBranch, { ...options, currentWorktree }));
+  for (const record5 of records) {
+    classifications.push(await classifyRecord(root, record5, defaultBranch, { ...options, currentWorktree }));
   }
   const removed2 = [];
-  const failed2 = [];
+  const failed3 = [];
   if (options.apply) {
     for (const classification of classifications) {
       if (classification.decision !== "SWEEP")
@@ -134690,7 +141459,7 @@ async function sweepRepo(repo, options) {
       if (result.code === 0)
         removed2.push(classification.path);
       else {
-        failed2.push({
+        failed3.push({
           path: classification.path,
           error: result.stderr.trim() || `git worktree remove exited with ${result.code}`
         });
@@ -134698,7 +141467,7 @@ async function sweepRepo(repo, options) {
     }
     await pruneWorktrees(root);
   }
-  return { repo: root, defaultBranch, classifications, removed: removed2, failed: failed2 };
+  return { repo: root, defaultBranch, classifications, removed: removed2, failed: failed3 };
 }
 async function sweepWorktrees(options = {}) {
   const apply = options.apply === true;
@@ -134806,7 +141575,7 @@ prunes.
 
 // packages/omo-opencode/src/cli/config-migrate.ts
 init_startup_migration();
-import { posix as posix17 } from "node:path";
+import { posix as posix18 } from "node:path";
 function reports(result) {
   return result.results.map((entry) => ({
     diagnostics: entry.diagnostics,
@@ -134832,15 +141601,15 @@ function printText(report2, output2) {
   }
 }
 function runConfigMigrate(options = {}) {
-  const environment2 = options.environment ?? process.env;
-  const homeDir = environment2["HOME"] ?? environment2["USERPROFILE"];
+  const environment3 = options.environment ?? process.env;
+  const homeDir = environment3["HOME"] ?? environment3["USERPROFILE"];
   const output2 = options.output ?? console.log;
   const result = runOpenCodeStartupMigration({
     cwd: options.cwd ?? process.cwd(),
     dryRun: options.dryRun ?? false,
-    environment: environment2,
+    environment: environment3,
     ...homeDir === undefined ? {} : { env: { HOME: homeDir }, homeDir },
-    pathOperations: posix17
+    pathOperations: posix18
   });
   const report2 = reports(result);
   const response = {

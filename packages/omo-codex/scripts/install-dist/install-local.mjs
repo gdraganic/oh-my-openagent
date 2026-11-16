@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// omo-codex-install:8db4dee4208616fed20b9707c59b150cd299433a9d39c4b66404186517c60156:91f351915fcc3f9f2f58d1c0a2a9ced56de2886671750d52750040a552e7ff4b
+// omo-codex-install:b240ade8d8c65213a10fd8603cf99487358c9f36c51456c4a9ff0a54879ca611:3a3dfeba44bd68481b682177dd9afb278176399df1c1f30fe2e9999690e77c16
 var __defProp = Object.defineProperty;
 var __returnValue = (v) => v;
 function __exportSetter(name, newValue) {
@@ -10481,7 +10481,7 @@ var package_default;
 var init_package = __esm(() => {
   package_default = {
     name: "@oh-my-opencode/omo-codex",
-    version: "5.1.69",
+    version: "5.1.72",
     type: "module",
     private: true,
     description: "Codex harness adapter for oh-my-openagent. Vendored Codex plugin namespace (omo) + TypeScript installer + telemetry.",
@@ -20966,12 +20966,19 @@ var OmoProvenanceSettingsSchema = object({
   }).strict()).optional()
 }).strict();
 
+// packages/omo-config-core/src/schema/session-wake.ts
+var OmoSessionWakeSettingsSchema = object({
+  same_device: boolean2().optional(),
+  wake_limit: number2().int().min(0).optional()
+}).strict();
+
 // packages/omo-config-core/src/schema/config.ts
 var OmoOpenCodeHarnessConfigSchema = record(string2(), unknown());
 var OmoDisabledSkillsSchema = array(string2());
 var OmoExcludedModelsSchema = array(string2());
 var OmoTypedHarnessConfigSchema = object({
   provenance: OmoProvenanceSettingsSchema.optional(),
+  session_wake: OmoSessionWakeSettingsSchema.optional(),
   formatOnMutation: OmoFormatOnMutationLayerSchema.optional(),
   categories: OmoCategoriesConfigSchema.optional(),
   agents: OmoAgentsConfigSchema.optional(),
@@ -20992,6 +20999,7 @@ var OmoTypedHarnessConfigSchema = object({
 }).strict();
 var OmoConfigProfileSchema = object({
   provenance: OmoProvenanceSettingsSchema.optional(),
+  session_wake: OmoSessionWakeSettingsSchema.optional(),
   formatOnMutation: OmoFormatOnMutationLayerSchema.optional(),
   categories: OmoCategoriesConfigSchema.optional(),
   agents: OmoAgentsConfigSchema.optional(),
@@ -21016,6 +21024,7 @@ var OmoConfigProfileSchema = object({
 }).strict();
 var OmoConfigSchema = object({
   provenance: OmoProvenanceSettingsSchema.optional(),
+  session_wake: OmoSessionWakeSettingsSchema.optional(),
   formatOnMutation: OmoFormatOnMutationSchema.optional(),
   $schema: string2().optional(),
   categories: OmoCategoriesConfigSchema.optional(),
@@ -21044,6 +21053,7 @@ var OmoConfigSchema = object({
 }).strict();
 var OmoConfigLayerSchema = object({
   provenance: OmoProvenanceSettingsSchema.optional(),
+  session_wake: OmoSessionWakeSettingsSchema.optional(),
   formatOnMutation: OmoFormatOnMutationLayerSchema.optional(),
   $schema: string2().optional(),
   categories: OmoCategoriesConfigSchema.optional(),

@@ -84749,6 +84749,16 @@ var init_provenance = __esm(() => {
   }).strict();
 });
 
+// packages/omo-config-core/src/schema/session-wake.ts
+var OmoSessionWakeSettingsSchema;
+var init_session_wake = __esm(() => {
+  init_zod();
+  OmoSessionWakeSettingsSchema = object({
+    same_device: boolean2().optional(),
+    wake_limit: number2().int().min(0).optional()
+  }).strict();
+});
+
 // packages/omo-config-core/src/schema/config.ts
 var OmoOpenCodeHarnessConfigSchema, OmoDisabledSkillsSchema, OmoExcludedModelsSchema, OmoTypedHarnessConfigSchema, OmoConfigProfileSchema, OmoConfigSchema, OmoConfigLayerSchema;
 var init_config = __esm(() => {
@@ -84768,11 +84778,13 @@ var init_config = __esm(() => {
   init_device_service();
   init_format_on_mutation();
   init_provenance();
+  init_session_wake();
   OmoOpenCodeHarnessConfigSchema = record(string2(), unknown());
   OmoDisabledSkillsSchema = array(string2());
   OmoExcludedModelsSchema = array(string2());
   OmoTypedHarnessConfigSchema = object({
     provenance: OmoProvenanceSettingsSchema.optional(),
+    session_wake: OmoSessionWakeSettingsSchema.optional(),
     formatOnMutation: OmoFormatOnMutationLayerSchema.optional(),
     categories: OmoCategoriesConfigSchema.optional(),
     agents: OmoAgentsConfigSchema.optional(),
@@ -84793,6 +84805,7 @@ var init_config = __esm(() => {
   }).strict();
   OmoConfigProfileSchema = object({
     provenance: OmoProvenanceSettingsSchema.optional(),
+    session_wake: OmoSessionWakeSettingsSchema.optional(),
     formatOnMutation: OmoFormatOnMutationLayerSchema.optional(),
     categories: OmoCategoriesConfigSchema.optional(),
     agents: OmoAgentsConfigSchema.optional(),
@@ -84817,6 +84830,7 @@ var init_config = __esm(() => {
   }).strict();
   OmoConfigSchema = object({
     provenance: OmoProvenanceSettingsSchema.optional(),
+    session_wake: OmoSessionWakeSettingsSchema.optional(),
     formatOnMutation: OmoFormatOnMutationSchema.optional(),
     $schema: string2().optional(),
     categories: OmoCategoriesConfigSchema.optional(),
@@ -84845,6 +84859,7 @@ var init_config = __esm(() => {
   }).strict();
   OmoConfigLayerSchema = object({
     provenance: OmoProvenanceSettingsSchema.optional(),
+    session_wake: OmoSessionWakeSettingsSchema.optional(),
     formatOnMutation: OmoFormatOnMutationLayerSchema.optional(),
     $schema: string2().optional(),
     categories: OmoCategoriesConfigSchema.optional(),
@@ -85000,6 +85015,7 @@ var init_schema = __esm(() => {
   init_model_profile();
   init_model_ref();
   init_provenance();
+  init_session_wake();
   init_side_panel();
   init_task();
   init_team();
@@ -89615,7 +89631,7 @@ init_shared();
 // package.json
 var package_default = {
   name: "oh-my-opencode",
-  version: "5.1.69-fork.1",
+  version: "5.1.72-fork.1",
   description: "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
   main: "./dist/index.js",
   types: "dist/index.d.ts",
@@ -89816,7 +89832,7 @@ var package_default = {
   },
   devDependencies: {
     "@clack/prompts": "^1.8.1",
-    "@code-yeongyu/senpi": "2026.11.12",
+    "@code-yeongyu/senpi": "2026.11.15-2",
     "@modelcontextprotocol/sdk": "^1.30.0",
     "@oh-my-opencode/agents-md-core": "workspace:*",
     "@oh-my-opencode/ast-grep-mcp": "workspace:*",
@@ -89878,7 +89894,7 @@ var package_default = {
     "jsonc-parser": "^3.3.1",
     knip: "6.43.0",
     "node-pty": "^1.1.0",
-    omowright: "^0.3.0",
+    omowright: "^0.3.1",
     "oxc-parser": "0.148.0",
     oxlint: "1.89.0",
     picocolors: "^1.1.1",
@@ -89888,18 +89904,18 @@ var package_default = {
     typescript: "^7.0.2"
   },
   optionalDependencies: {
-    "oh-my-opencode-darwin-arm64": "5.1.69",
-    "oh-my-opencode-darwin-x64": "5.1.69",
-    "oh-my-opencode-darwin-x64-baseline": "5.1.69",
-    "oh-my-opencode-linux-arm64": "5.1.69",
-    "oh-my-opencode-linux-arm64-musl": "5.1.69",
-    "oh-my-opencode-linux-x64": "5.1.69",
-    "oh-my-opencode-linux-x64-baseline": "5.1.69",
-    "oh-my-opencode-linux-x64-musl": "5.1.69",
-    "oh-my-opencode-linux-x64-musl-baseline": "5.1.69",
-    "oh-my-opencode-windows-arm64": "5.1.69",
-    "oh-my-opencode-windows-x64": "5.1.69",
-    "oh-my-opencode-windows-x64-baseline": "5.1.69"
+    "oh-my-opencode-darwin-arm64": "5.1.72",
+    "oh-my-opencode-darwin-x64": "5.1.72",
+    "oh-my-opencode-darwin-x64-baseline": "5.1.72",
+    "oh-my-opencode-linux-arm64": "5.1.72",
+    "oh-my-opencode-linux-arm64-musl": "5.1.72",
+    "oh-my-opencode-linux-x64": "5.1.72",
+    "oh-my-opencode-linux-x64-baseline": "5.1.72",
+    "oh-my-opencode-linux-x64-musl": "5.1.72",
+    "oh-my-opencode-linux-x64-musl-baseline": "5.1.72",
+    "oh-my-opencode-windows-arm64": "5.1.72",
+    "oh-my-opencode-windows-x64": "5.1.72",
+    "oh-my-opencode-windows-x64-baseline": "5.1.72"
   },
   overrides: {
     hono: "^4.13.8",

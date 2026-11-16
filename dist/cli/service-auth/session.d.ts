@@ -41,6 +41,7 @@ export type MachineDeviceState = {
 } | {
     readonly kind: "unknown";
     readonly reason: string;
+    readonly endpoint?: string;
 };
 export type DeviceServiceHandoff = {
     readonly adopt: (credentials: Credentials) => Promise<void>;
@@ -84,9 +85,10 @@ export declare function createSession(options: {
      */
     forget(): Promise<void>;
     accessSnapshot: () => Promise<Credentials | null>;
+    accountEmail: () => Promise<string | undefined>;
     logout(): Promise<boolean>;
     /** `expect` rejects a stored credential that is no longer the caller's captured identity before any refresh. */
-    accessToken(expect?: (current: Credentials) => boolean): Promise<string>;
+    accessToken: (expect?: (current: Credentials) => boolean) => Promise<string>;
     removeForLimit(error: unknown, choose: ChooseDevice): Promise<boolean>;
 };
 export type Session = ReturnType<typeof createSession>;
