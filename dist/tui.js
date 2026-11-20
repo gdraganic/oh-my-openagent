@@ -83,6 +83,9 @@ var init_deep_merge = __esm(() => {
   DANGEROUS_KEYS = new Set(["__proto__", "constructor", "prototype"]);
 });
 
+// packages/utils/src/escape-for-display.ts
+var init_escape_for_display = () => {};
+
 // packages/utils/src/config-merge.ts
 function mergeUniqueStrings(base, override) {
   return [...new Set([...base ?? [], ...override ?? []])];
@@ -2526,9 +2529,9 @@ var init_latest_models = __esm(() => {
     claudeSonnet: "claude-sonnet-5-5",
     claudeHaiku: "claude-haiku-5-5",
     claudeFable: "claude-fable-5-2",
-    gptAstra: "gpt-6-astra",
-    gptSol: "gpt-6.1-sol",
-    gptSolFast: "gpt-6.1-sol-fast",
+    gptAstra: "gpt-6.2-astra",
+    gptSol: "gpt-6.2-sol",
+    gptSolFast: "gpt-6.2-sol-fast",
     gptLunaFast: "gpt-6-luna-fast",
     glm: "glm-5.3",
     glmFlash: "glm-5.3-flash",
@@ -3311,6 +3314,7 @@ var init_zip_entry_listing = () => {};
 // packages/utils/src/index.ts
 var init_src = __esm(() => {
   init_deep_merge();
+  init_escape_for_display();
   init_config_section_parser();
   init_env_expansion();
   init_snake_case();
@@ -3520,12 +3524,14 @@ var init_agent_model_requirements = __esm(() => {
     momus: {
       fallbackChain: [
         { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptAstra, variant: "xhigh" },
-        { providers: ["github-copilot"], model: LATEST_MODEL_BY_FAMILY.gptAstra, variant: "high" },
+        { providers: ["openai", "chatgpt-subscription"], model: "gpt-6-astra", variant: "xhigh" },
+        { providers: ["github-copilot"], model: "gpt-6-astra", variant: "high" },
         {
           providers: ["openai", "chatgpt-subscription", "opencode"],
           model: LATEST_MODEL_BY_FAMILY.gptAstra,
           variant: "high"
         },
+        { providers: ["openai", "chatgpt-subscription", "opencode"], model: "gpt-6-astra", variant: "high" },
         {
           providers: ["anthropic", "github-copilot", "opencode"],
           model: LATEST_MODEL_BY_FAMILY.claudeOpus,
@@ -3610,12 +3616,14 @@ var init_category_model_requirements = __esm(() => {
     ultrabrain: {
       fallbackChain: [
         { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptAstra, variant: "max" },
-        { providers: ["github-copilot"], model: LATEST_MODEL_BY_FAMILY.gptAstra, variant: "max" },
+        { providers: ["openai", "chatgpt-subscription"], model: "gpt-6-astra", variant: "max" },
+        { providers: ["github-copilot"], model: "gpt-6-astra", variant: "max" },
         {
           providers: ["openai", "chatgpt-subscription", "opencode"],
           model: LATEST_MODEL_BY_FAMILY.gptAstra,
           variant: "max"
         },
+        { providers: ["openai", "chatgpt-subscription", "opencode"], model: "gpt-6-astra", variant: "max" },
         { providers: ["openai", "chatgpt-subscription"], model: "gpt-5.6-sol", variant: "max" },
         { providers: ["github-copilot"], model: "gpt-5.6-sol", variant: "max" },
         { providers: ["openai", "chatgpt-subscription", "opencode"], model: "gpt-5.6-sol", variant: "max" }
@@ -3625,6 +3633,8 @@ var init_category_model_requirements = __esm(() => {
       fallbackChain: [
         { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptSol, variant: "medium" },
         { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptSolFast, variant: "medium" },
+        { providers: ["openai", "chatgpt-subscription"], model: "gpt-6.1-sol", variant: "medium" },
+        { providers: ["openai", "chatgpt-subscription"], model: "gpt-6.1-sol-fast", variant: "medium" },
         {
           providers: ["openai", "chatgpt-subscription", "github-copilot", "opencode"],
           model: "gpt-5.6-sol",
@@ -3636,8 +3646,13 @@ var init_category_model_requirements = __esm(() => {
     "deep-high": {
       fallbackChain: [
         {
-          providers: ["openai", "chatgpt-subscription", "github-copilot", "opencode"],
+          providers: ["openai", "chatgpt-subscription", "opencode"],
           model: LATEST_MODEL_BY_FAMILY.gptAstra,
+          variant: "high"
+        },
+        {
+          providers: ["openai", "chatgpt-subscription", "github-copilot", "opencode"],
+          model: "gpt-6-astra",
           variant: "high"
         }
       ]
@@ -3699,6 +3714,7 @@ var init_category_model_requirements = __esm(() => {
         { providers: ["xai", "github-copilot", "opencode-go"], model: "grok-4.7", variant: "xhigh" },
         { providers: ["zai-coding-plan", "opencode-go"], model: LATEST_MODEL_BY_FAMILY.glm, variant: "high" },
         { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptSol, variant: "medium" },
+        { providers: ["openai", "chatgpt-subscription"], model: "gpt-6.1-sol", variant: "medium" },
         {
           providers: ["openai", "chatgpt-subscription", "github-copilot", "opencode"],
           model: "gpt-5.6-sol",
@@ -3896,7 +3912,7 @@ var init_model_capability_aliases = __esm(() => {
       description: "Normalizes OpenCode's OpenAI GPT fast service-tier IDs to canonical snapshot IDs.",
       providerIDs: ["openai"],
       allowedSubproviderHosts: ["vercel"],
-      match: (normalizedModelID) => /^(?:gpt-5\.6-(?:sol|terra|luna)|gpt-6-(?:astra|sol|luna)|gpt-6\.1-sol)-fast$/.test(normalizedModelID),
+      match: (normalizedModelID) => /^(?:gpt-5\.6-(?:sol|terra|luna)|gpt-6-(?:astra|sol|luna)|gpt-6\.1-sol|gpt-6\.2-(?:astra|sol))-fast$/.test(normalizedModelID),
       canonicalize: (normalizedModelID) => normalizedModelID.slice(0, -"-fast".length)
     },
     {
@@ -3974,6 +3990,14 @@ var init_model_capability_heuristics = __esm(() => {
     {
       family: "gpt-6.1-sol",
       pattern: /gpt-6-1-sol/,
+      variants: ["low", "medium", "high", "xhigh", "max"],
+      reasoningEfforts: ["low", "medium", "high", "xhigh", "max"],
+      reasoningEffortAliases: { none: "low", minimal: "low" },
+      supportsTemperature: false
+    },
+    {
+      family: "gpt-6.2",
+      pattern: /gpt-6-2-(?:astra|sol)/,
       variants: ["low", "medium", "high", "xhigh", "max"],
       reasoningEfforts: ["low", "medium", "high", "xhigh", "max"],
       reasoningEffortAliases: { none: "low", minimal: "low" },
@@ -4122,10 +4146,36 @@ var init_provider_exhaustion_fallback_policy = () => {};
 // packages/model-core/src/runtime-fallback-model.ts
 var init_runtime_fallback_model = () => {};
 
+// packages/model-core/src/model-capabilities/gpt-6-2-entries.ts
+function gpt62Entry(id) {
+  return {
+    id,
+    family: "gpt",
+    reasoning: true,
+    temperature: false,
+    toolCall: true,
+    modalities: {
+      input: ["text", "image"],
+      output: ["text"]
+    },
+    limit: {
+      context: 1050000,
+      input: 922000,
+      output: 128000
+    }
+  };
+}
+var GPT_6_2_MODEL_CAPABILITIES;
+var init_gpt_6_2_entries = __esm(() => {
+  GPT_6_2_MODEL_CAPABILITIES = Object.fromEntries(["gpt-6.2-astra", "gpt-6.2-astra-fast", "gpt-6.2-sol", "gpt-6.2-sol-fast"].map((id) => [id, gpt62Entry(id)]));
+});
+
 // packages/model-core/src/model-capabilities/supplemental-entries.ts
 var SUPPLEMENTAL_MODEL_CAPABILITIES;
 var init_supplemental_entries = __esm(() => {
+  init_gpt_6_2_entries();
   SUPPLEMENTAL_MODEL_CAPABILITIES = {
+    ...GPT_6_2_MODEL_CAPABILITIES,
     "kimi-k3": {
       id: "kimi-k3",
       family: "kimi",
@@ -5475,17 +5525,19 @@ You are working on tasks that don't fit specific categories but require moderate
 </Category_Context>`, UNSPECIFIED_LOW_CATEGORY_CALLER_GUIDANCE = `<Selection_Gate>Use only when no specialist category fits, effort is moderate, and scope stays within a few files/modules. Prefer any matching specialist category.</Selection_Gate>
 <Caller_Warning>Provide explicit must-do steps, forbidden scope, and concrete success criteria.</Caller_Warning>`, UNSPECIFIED_HIGH_CATEGORY_PROMPT_APPEND = `<Category_Context>
 You are working on tasks that don't fit specific categories but require substantial effort.
-</Category_Context>`, UNSPECIFIED_HIGH_CATEGORY_CALLER_GUIDANCE = `<Selection_Gate>Use only when no specialist category fits and substantial effort spans systems/modules with broad impact. Use unspecified-low for contained moderate work.</Selection_Gate>`, DEEP_LOW_CATEGORY_CALLER_GUIDANCE = `<Selection_Gate>Of the two deep lanes this is the default: the child settles its decisions from what it reads. When unsure, choose deep-low; a misrouted child returns \`ESCALATE: deep-high\` after one cheap attempt, and you re-spawn the same brief as deep-high with its findings.</Selection_Gate>`, DEEP_HIGH_CATEGORY_CALLER_GUIDANCE = `<Selection_Gate>Route here only when you can name the decision evidence cannot settle: a trade-off with no single right answer, a contract change crossing a package or process boundary, a mechanism with no in-repo pattern to copy, or correctness argued from invariants rather than observed in a test. Wide scope with easy decisions is deep-low or unspecified-high; reasoning as the deliverable is ultrabrain.</Selection_Gate>`, DEEP_LOW_GATE_MODELS, DEEP_HIGH_GATE_MODEL, OPENAI_CATEGORIES;
+</Category_Context>`, UNSPECIFIED_HIGH_CATEGORY_CALLER_GUIDANCE = `<Selection_Gate>Use only when no specialist category fits and substantial effort spans systems/modules with broad impact. Use unspecified-low for contained moderate work.</Selection_Gate>`, DEEP_LOW_CATEGORY_CALLER_GUIDANCE = `<Selection_Gate>Of the two deep lanes this is the default: the child settles its decisions from what it reads. When unsure, choose deep-low; a misrouted child returns \`ESCALATE: deep-high\` after one cheap attempt, and you re-spawn the same brief as deep-high with its findings.</Selection_Gate>`, DEEP_HIGH_CATEGORY_CALLER_GUIDANCE = `<Selection_Gate>Route here only when you can name the decision evidence cannot settle: a trade-off with no single right answer, a contract change crossing a package or process boundary, a mechanism with no in-repo pattern to copy, or correctness argued from invariants rather than observed in a test. Wide scope with easy decisions is deep-low or unspecified-high; reasoning as the deliverable is ultrabrain.</Selection_Gate>`, DEEP_LOW_GATE_MODELS, DEEP_HIGH_GATE_MODELS, OPENAI_CATEGORIES;
 var init_openai_categories = __esm(() => {
   init_types();
   init_latest_models();
   DEEP_LOW_GATE_MODELS = [
     LATEST_MODEL_BY_FAMILY.gptSol,
     LATEST_MODEL_BY_FAMILY.gptSolFast,
+    "gpt-6.1-sol",
+    "gpt-6.1-sol-fast",
     "gpt-5.6-sol-fast",
     "gpt-5.6-sol"
   ];
-  DEEP_HIGH_GATE_MODEL = LATEST_MODEL_BY_FAMILY.gptAstra;
+  DEEP_HIGH_GATE_MODELS = [LATEST_MODEL_BY_FAMILY.gptAstra, "gpt-6-astra"];
   OPENAI_CATEGORIES = [
     {
       name: "ultrabrain",
@@ -5510,7 +5562,7 @@ var init_openai_categories = __esm(() => {
       callerGuidance: DEEP_HIGH_CATEGORY_CALLER_GUIDANCE,
       promptAppend: DEEP_HIGH_CATEGORY_PROMPT_APPEND,
       resolvePromptAppend: resolveDeepHighCategoryPromptAppend,
-      requiresModel: DEEP_HIGH_GATE_MODEL
+      requiresModel: DEEP_HIGH_GATE_MODELS
     },
     {
       name: "quick",
@@ -89631,7 +89683,7 @@ init_shared();
 // package.json
 var package_default = {
   name: "oh-my-opencode",
-  version: "5.1.72-fork.1",
+  version: "5.1.79-fork.1",
   description: "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
   main: "./dist/index.js",
   types: "dist/index.d.ts",
@@ -89639,6 +89691,7 @@ var package_default = {
   workspaces: [
     "packages/rules-engine",
     "packages/delegate-core",
+    "packages/thread-address-core",
     "packages/ast-grep-mcp",
     "packages/git-bash-mcp",
     "packages/mcp-stdio-core",
@@ -89785,8 +89838,8 @@ var package_default = {
     "test:model-capabilities": "bun test --timeout 20000 packages/model-core/src/model-capability-aliases.test.ts packages/model-core/src/model-capability-guardrails.test.ts packages/model-core/src/model-capabilities.test.ts packages/omo-opencode/src/cli/doctor/checks/model-resolution.test.ts --bail",
     "check:copy": "bun script/check-copy.ts",
     typecheck: "bun run check:copy && bun check --no-script --all -p tsconfig.json && bun run typecheck:script && bun run typecheck:packages && bun run typecheck:skill-scripts",
-    "typecheck:skill-scripts": "bun check --no-script --all -p packages/shared-skills/skills/frontend/scripts/detect/tsconfig.json",
-    "typecheck:packages": "bun check --no-script --all -p packages/rules-engine/tsconfig.json && bun check --no-script --all -p packages/delegate-core/tsconfig.json && bun check --no-script --all -p packages/mcp-stdio-core/tsconfig.json && bun check --no-script --all -p packages/mcp-client-core/tsconfig.json && bun check --no-script --all -p packages/git-bash-mcp/tsconfig.json && bun check --no-script --all -p packages/ast-grep-mcp/tsconfig.json && bun check --no-script --all -p packages/lsp-core/tsconfig.json && bun check --no-script --all -p packages/utils/tsconfig.json && bun check --no-script --all -p packages/device-service-core/tsconfig.json && bun check --no-script --all -p packages/model-core/tsconfig.json && bun check --no-script --all -p packages/omo-config-core/tsconfig.json && bun check --no-script --all -p packages/prompts-core/tsconfig.json && bun check --no-script --all -p packages/comment-checker-core/tsconfig.json && bun check --no-script --all -p packages/hashline-core/tsconfig.json && bun check --no-script --all -p packages/tmux-core/tsconfig.json && bun check --no-script --all -p packages/team-core/tsconfig.json && bun check --no-script --all -p packages/openclaw-core/tsconfig.json && bun check --no-script --all -p packages/boulder-state/tsconfig.json && bun check --no-script --all -p packages/isolation-core/tsconfig.json && bun check --no-script --all -p packages/memory-core/tsconfig.json && bun check --no-script --all -p packages/telemetry-core/tsconfig.json && bun check --no-script --all -p packages/claude-code-compat-core/tsconfig.json && bun check --no-script --all -p packages/skills-loader-core/tsconfig.json && bun check --no-script --all -p packages/agents-md-core/tsconfig.json && bun check --no-script --all -p packages/omo-codex/plugin/shared/tsconfig.json && bun check --no-script --all -p packages/omo-codex/tsconfig.json && bun check --no-script --all -p packages/omo-senpi/tsconfig.json && bun check --no-script --all -p packages/senpi-task/tsconfig.json && bun check --no-script --all -p packages/omo-opencode/tsconfig.json && bun check --no-script --all -p packages/omo-native/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-protocol/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-engine/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-prelude/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-sdk/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-service/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-tool/tsconfig.json && bun check --no-script --all -p packages/omo-computer-protocol/tsconfig.json && bun check --no-script --all -p packages/omo-computer-sdk/tsconfig.json && bun check --no-script --all -p packages/omo-computer-engine/tsconfig.json && bun check --no-script --all -p packages/omo-computer-hand/tsconfig.json && bun check --no-script --all -p packages/omo-computer-carriers/tsconfig.json && bun check --no-script --all -p packages/omo-computer-tool/tsconfig.json && bun check --no-script --all -p packages/omo-computer-prelude/tsconfig.json",
+    "typecheck:skill-scripts": "bun check --no-script --all -p packages/shared-skills/skills/frontend/scripts/detect/tsconfig.json && bun check --no-script --all -p packages/omo-senpi/skills/omo-relay/scripts/sdk/tsconfig.json",
+    "typecheck:packages": "bun check --no-script --all -p packages/rules-engine/tsconfig.json && bun check --no-script --all -p packages/delegate-core/tsconfig.json && bun check --no-script --all -p packages/thread-address-core/tsconfig.json && bun check --no-script --all -p packages/thread-address-core/tsconfig.test.json && bun check --no-script --all -p packages/mcp-stdio-core/tsconfig.json && bun check --no-script --all -p packages/mcp-client-core/tsconfig.json && bun check --no-script --all -p packages/git-bash-mcp/tsconfig.json && bun check --no-script --all -p packages/ast-grep-mcp/tsconfig.json && bun check --no-script --all -p packages/lsp-core/tsconfig.json && bun check --no-script --all -p packages/utils/tsconfig.json && bun check --no-script --all -p packages/device-service-core/tsconfig.json && bun check --no-script --all -p packages/model-core/tsconfig.json && bun check --no-script --all -p packages/omo-config-core/tsconfig.json && bun check --no-script --all -p packages/prompts-core/tsconfig.json && bun check --no-script --all -p packages/comment-checker-core/tsconfig.json && bun check --no-script --all -p packages/hashline-core/tsconfig.json && bun check --no-script --all -p packages/tmux-core/tsconfig.json && bun check --no-script --all -p packages/team-core/tsconfig.json && bun check --no-script --all -p packages/openclaw-core/tsconfig.json && bun check --no-script --all -p packages/boulder-state/tsconfig.json && bun check --no-script --all -p packages/isolation-core/tsconfig.json && bun check --no-script --all -p packages/memory-core/tsconfig.json && bun check --no-script --all -p packages/telemetry-core/tsconfig.json && bun check --no-script --all -p packages/claude-code-compat-core/tsconfig.json && bun check --no-script --all -p packages/skills-loader-core/tsconfig.json && bun check --no-script --all -p packages/agents-md-core/tsconfig.json && bun check --no-script --all -p packages/omo-codex/plugin/shared/tsconfig.json && bun check --no-script --all -p packages/omo-codex/tsconfig.json && bun check --no-script --all -p packages/omo-senpi/tsconfig.json && bun check --no-script --all -p packages/senpi-task/tsconfig.json && bun check --no-script --all -p packages/omo-opencode/tsconfig.json && bun check --no-script --all -p packages/omo-native/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-protocol/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-engine/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-prelude/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-sdk/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-service/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-tool/tsconfig.json && bun check --no-script --all -p packages/omo-computer-protocol/tsconfig.json && bun check --no-script --all -p packages/omo-computer-sdk/tsconfig.json && bun check --no-script --all -p packages/omo-computer-engine/tsconfig.json && bun check --no-script --all -p packages/omo-computer-hand/tsconfig.json && bun check --no-script --all -p packages/omo-computer-carriers/tsconfig.json && bun check --no-script --all -p packages/omo-computer-tool/tsconfig.json && bun check --no-script --all -p packages/omo-computer-prelude/tsconfig.json",
     "typecheck:script": "bun check --no-script --all -p script/tsconfig.json",
     test: "bun test --timeout 20000",
     "changelog:section": "bun script/changelog-section.ts",
@@ -89797,11 +89850,12 @@ var package_default = {
     "build:git-bash-mcp": "bun run --cwd packages/git-bash-mcp build",
     "build:ast-grep-mcp": "bun run --cwd packages/ast-grep-mcp build",
     "test:desktop": "bun script/check-cargo-pinned-deps.mjs && node --test scripts/desktop-package-boundaries.test.mjs && bun run --cwd packages/senpi-desktop-protocol test && bun run --cwd packages/senpi-desktop-engine test && bun run --cwd packages/senpi-desktop-prelude test && bun run --cwd packages/senpi-desktop-sdk test && bun run --cwd packages/senpi-desktop-service test && bun run --cwd packages/senpi-desktop-tool test",
-    "test:computer": "bun script/check-cargo-pinned-deps.mjs && bun run --cwd packages/omo-computer-protocol test && bun run --cwd packages/omo-computer-sdk test && bun run --cwd packages/omo-computer-engine test && bun run --cwd packages/omo-computer-hand test && bun run --cwd packages/omo-computer-carriers test && bun run --cwd packages/omo-computer-tool test && bun run --cwd packages/omo-computer-prelude test",
+    "test:computer": "bun script/check-cargo-pinned-deps.mjs && bun crates/omo-computer-backend-wayland/probes/probe-sp-w.ts --self-test && bun run --cwd packages/omo-computer-protocol test && bun run --cwd packages/omo-computer-sdk test && bun run --cwd packages/omo-computer-engine test && bun run --cwd packages/omo-computer-hand test && bun run --cwd packages/omo-computer-carriers test && bun run --cwd packages/omo-computer-tool test && bun run --cwd packages/omo-computer-prelude test",
     fmt: "bun fmt --no-script",
     "fmt:check": "bun fmt --no-script --check",
     "lint:ratchet": "bun script/lint-ratchet.ts",
     "knip:check": "knip --no-progress --no-config-hints",
+    "qa:rpc-relay-parity": "bun script/qa/rpc-relay-parity-live.ts",
     "lint:ratchet:update": "bun script/lint-ratchet.ts --update",
     lint: "bun run check:copy && bun run fmt:check && oxlint packages/lsp-tools-mcp packages/lsp-daemon packages/web packages/omo-codex/plugin/components/comment-checker packages/omo-codex/plugin/components/lazycodex-executor-verify packages/omo-codex/plugin/components/lsp packages/omo-codex/plugin/components/rules packages/omo-codex/plugin/components/telemetry packages/omo-codex/plugin/components/ultrawork packages/omo-codex/plugin/components/ulw-execute-continuation packages/omo-codex/plugin/components/ulw-loop"
   },
@@ -89832,7 +89886,7 @@ var package_default = {
   },
   devDependencies: {
     "@clack/prompts": "^1.8.1",
-    "@code-yeongyu/senpi": "2026.11.15-2",
+    "@code-yeongyu/senpi": "2026.11.19-5",
     "@modelcontextprotocol/sdk": "^1.30.0",
     "@oh-my-opencode/agents-md-core": "workspace:*",
     "@oh-my-opencode/ast-grep-mcp": "workspace:*",
@@ -89874,6 +89928,7 @@ var package_default = {
     "@oh-my-opencode/skills-loader-core": "workspace:*",
     "@oh-my-opencode/team-core": "workspace:*",
     "@oh-my-opencode/telemetry-core": "workspace:*",
+    "@oh-my-opencode/thread-address-core": "workspace:*",
     "@oh-my-opencode/tmux-core": "workspace:*",
     "@oh-my-opencode/utils": "workspace:*",
     "@opencode-ai/plugin": "1.18.31",
@@ -89904,18 +89959,18 @@ var package_default = {
     typescript: "^7.0.2"
   },
   optionalDependencies: {
-    "oh-my-opencode-darwin-arm64": "5.1.72",
-    "oh-my-opencode-darwin-x64": "5.1.72",
-    "oh-my-opencode-darwin-x64-baseline": "5.1.72",
-    "oh-my-opencode-linux-arm64": "5.1.72",
-    "oh-my-opencode-linux-arm64-musl": "5.1.72",
-    "oh-my-opencode-linux-x64": "5.1.72",
-    "oh-my-opencode-linux-x64-baseline": "5.1.72",
-    "oh-my-opencode-linux-x64-musl": "5.1.72",
-    "oh-my-opencode-linux-x64-musl-baseline": "5.1.72",
-    "oh-my-opencode-windows-arm64": "5.1.72",
-    "oh-my-opencode-windows-x64": "5.1.72",
-    "oh-my-opencode-windows-x64-baseline": "5.1.72"
+    "oh-my-opencode-darwin-arm64": "5.1.79",
+    "oh-my-opencode-darwin-x64": "5.1.79",
+    "oh-my-opencode-darwin-x64-baseline": "5.1.79",
+    "oh-my-opencode-linux-arm64": "5.1.79",
+    "oh-my-opencode-linux-arm64-musl": "5.1.79",
+    "oh-my-opencode-linux-x64": "5.1.79",
+    "oh-my-opencode-linux-x64-baseline": "5.1.79",
+    "oh-my-opencode-linux-x64-musl": "5.1.79",
+    "oh-my-opencode-linux-x64-musl-baseline": "5.1.79",
+    "oh-my-opencode-windows-arm64": "5.1.79",
+    "oh-my-opencode-windows-x64": "5.1.79",
+    "oh-my-opencode-windows-x64-baseline": "5.1.79"
   },
   overrides: {
     hono: "^4.13.8",

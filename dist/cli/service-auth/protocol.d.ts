@@ -40,6 +40,27 @@ export declare const grantSchema: z.ZodObject<{
     writerFloor: z.ZodOptional<z.ZodUnion<readonly [z.ZodLiteral<1>, z.ZodLiteral<2>]>>;
     freshAuthorizationProof: z.ZodOptional<z.ZodString>;
 }, z.core.$strip>;
+/** #14032: the device-token reply, which also names the earlier device a replace sign-in signed out. Never stored. */
+export declare const deviceTokenGrantSchema: z.ZodObject<{
+    accessToken: z.ZodString;
+    accessTokenExpiresAt: z.ZodString;
+    refreshToken: z.ZodString;
+    device: z.ZodObject<{
+        id: z.ZodString;
+        name: z.ZodString;
+    }, z.core.$strip>;
+    offlineGrant: z.ZodOptional<z.ZodString>;
+    owner: z.ZodOptional<z.ZodObject<{
+        accountId: z.ZodString;
+        deviceId: z.ZodString;
+        familyId: z.ZodString;
+        generation: z.ZodNumber;
+        ownerHandle: z.ZodString;
+    }, z.core.$strip>>;
+    writerFloor: z.ZodOptional<z.ZodUnion<readonly [z.ZodLiteral<1>, z.ZodLiteral<2>]>>;
+    freshAuthorizationProof: z.ZodOptional<z.ZodString>;
+    replacedDeviceId: z.ZodOptional<z.ZodString>;
+}, z.core.$strip>;
 export declare const credentialSchema: z.ZodObject<{
     accessToken: z.ZodString;
     accessTokenExpiresAt: z.ZodString;
@@ -80,6 +101,20 @@ export declare const limitSchema: z.ZodObject<{
     used: z.ZodNumber;
     limit: z.ZodNumber;
 }, z.core.$strip>;
+/** #14032: the earlier device a `machine_exists` refusal names, when the service names it. */
+export declare const machineDeviceSchema: z.ZodObject<{
+    deviceId: z.ZodOptional<z.ZodString>;
+    deviceName: z.ZodOptional<z.ZodString>;
+}, z.core.$strip>;
+export type MachineDevice = z.infer<typeof machineDeviceSchema>;
+/** #14032: a replace sign-in whose approved device is not this computer's (terminal: start a new sign-in). */
+export declare const replaceMismatchSchema: z.ZodObject<{
+    reason: z.ZodLiteral<"replace_mismatch">;
+}, z.core.$strip>;
+export type RefusalContext = {
+    readonly machineDevice?: MachineDevice;
+    readonly replaceMismatch?: boolean;
+};
 export declare const deviceListSchema: z.ZodObject<{
     devices: z.ZodArray<z.ZodObject<{
         id: z.ZodString;
@@ -101,13 +136,16 @@ export declare class ApiRefusal extends SignInError {
     #private;
     readonly status: number;
     readonly code: RefusalCode;
-    constructor(code: string, status: number, detail?: z.infer<typeof limitSchema>, retryAfter?: string | null);
+    constructor(code: string, status: number, detail?: z.infer<typeof limitSchema>, retryAfter?: string | null, context?: RefusalContext);
     get detail(): {
         reason: "device_limit";
         managementToken: string;
         used: number;
         limit: number;
     } | undefined;
+    /** The earlier device a `machine_exists` refusal names; empty when the service names none. */
+    get machineDevice(): MachineDevice;
+    get replaceMismatch(): boolean;
     retryDelay(now: number, fallback: number): number;
 }
 export declare function parseReply<T>(schema: z.ZodType<T>, value: unknown): T;

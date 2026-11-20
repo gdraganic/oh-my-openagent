@@ -1,9 +1,15 @@
 import { z } from "zod";
-export type HelperVerb = "read" | "approve" | "write" | "stage" | "retire" | "promote" | "remove";
+export type HelperVerb = "read" | "approve" | "write" | "stage" | "retire" | "promote" | "remove" | "store-create" | "store-activate" | "store-deactivate" | "store-erase";
+/**
+ * Which keychain a call reaches (#13116 design r2): absent is the login keychain (refused while OmO's own keychain is
+ * active), "omo" is OmO's own keychain while active, "omo-migrate" and "login" are the enable/disable copy steps only.
+ */
+export type HelperStore = "omo" | "omo-migrate" | "login";
 export type HelperCall = {
     readonly verb: HelperVerb;
     readonly account: string;
     readonly value?: string;
+    readonly store?: HelperStore;
 };
 declare const helperReplySchema: z.ZodObject<{
     owned: z.ZodOptional<z.ZodBoolean>;
@@ -29,6 +35,7 @@ declare const helperReplySchema: z.ZodObject<{
     skipped: z.ZodOptional<z.ZodBoolean>;
     slot: z.ZodOptional<z.ZodNumber>;
     error: z.ZodOptional<z.ZodEnum<{
+        acl: "acl";
         denied: "denied";
         exists: "exists";
         locked: "locked";
@@ -36,6 +43,7 @@ declare const helperReplySchema: z.ZodObject<{
         "not-owned": "not-owned";
         refused: "refused";
         store: "store";
+        "store-refused": "store-refused";
     }>>;
     reason: z.ZodOptional<z.ZodString>;
     status: z.ZodOptional<z.ZodNumber>;

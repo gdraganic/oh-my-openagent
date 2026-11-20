@@ -3,5 +3,6 @@ export interface ParsedUserRequest {
     explicitWorktreePath: string | null;
     makePr: boolean;
     ship: boolean;
+    light: boolean;
 }
 export declare function parseUserRequest(promptText: string): ParsedUserRequest;

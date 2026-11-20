@@ -3,4 +3,5 @@ export declare class UnsupportedHephaestusModelError extends Error {
     constructor(model: string | undefined);
 }
 export declare function isHephaestusSupportedModel(model: string | undefined): boolean;
+export declare function isStandaloneHephaestusPreset(preset: string | undefined): boolean;
 export declare function assertHephaestusSupportedModel(model: string | undefined): void;

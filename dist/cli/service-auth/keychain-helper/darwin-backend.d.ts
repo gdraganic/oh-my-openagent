@@ -1,3 +1,4 @@
+import { DedicatedStoreError } from "../keystore";
 import { type HelperAccess } from "./access";
 import { type ApprovalCache } from "./approval-cache";
 import { type Row8bChoice } from "./darwin-read";
@@ -43,6 +44,8 @@ export type KeychainHelperOptions = {
     readonly cache?: ApprovalCache;
     readonly handOff?: () => Promise<boolean>;
     readonly noDialog?: boolean;
+    /** Whether OmO's own keychain is active (#13116); defaults to the marker under this user's home. */
+    readonly dedicatedStore?: () => boolean;
 };
 export type DarwinBackend = {
     /** The read every caller outside the session lock shares (it may show the one plain approval dialog). */
@@ -66,7 +69,11 @@ export declare function createDarwinBackend(options: {
     readonly cache?: ApprovalCache;
     readonly handOff?: () => Promise<boolean>;
     readonly noDialog?: boolean;
+    /** OmO's own keychain (#13116 r2 finding 1): every call names it, and nothing here reaches the login keychain. */
+    readonly dedicated?: boolean;
 }): DarwinBackend;
+/** r2 finding 1: with OmO's own keychain active there is no helper-less path, so a missing helper is a hard error. */
+export declare const dedicatedHelperMissing: () => DedicatedStoreError;
 /**
  * Without a verified helper, the read is today's, except for an item the helper owns (row 9b): today's read could
  * only reach it through a dialog, so by default this answers with the reinstall notice instead.

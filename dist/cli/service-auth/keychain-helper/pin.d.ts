@@ -11,10 +11,10 @@ export type PinResult = {
     readonly reason: string;
 };
 /**
- * Copies a located helper into a directory only this process uses, makes the copy read-only, and verifies the COPY.
+ * Copies a located helper to a path determined by its bytes, makes the copy read-only, and verifies the COPY.
  * The process then spawns only that copy, so a file written to the original path later (a dev build, a broken
- * install) is never executed. The signature is inside the Mach-O, so the copy has the same designated requirement and
- * the same keychain access as the original (#11262 design 1: every copy at any path matches one ACL entry).
+ * install) is never executed. The same bytes keep the same path, including across processes, because a macOS
+ * trusted-application entry can name that path: a fresh random name on every launch never matches it.
  * One copy is kept per source file identity; a source that changes gets a fresh copy.
  */
 export declare function pinVerifiedCopy(source: string, verify: (path: string) => Promise<SignatureVerdict>, dir?: string): Promise<PinResult>;

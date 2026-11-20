@@ -1,6 +1,7 @@
 import type { CredentialOwner } from "./credential-owner";
 import { type CredentialStore, type LockedStore } from "./keystore";
 import { type ChooseDevice, type Credentials, SignInError } from "./protocol";
+import { type MachineIdentity } from "./machine-reconcile";
 export declare class SessionEnded extends SignInError {
     readonly deviceRevoked: boolean;
     readonly code: string;
@@ -63,6 +64,10 @@ export declare function createSession(options: {
     readonly beforeKeysDiscarded: BeforeKeysDiscarded;
     /** This machine's device service; absent, no device service is told anything. */
     readonly deviceService?: DeviceServiceHandoff;
+    /** The machine a refreshed device binds to and is named after (#13651); this computer unless a test says otherwise. */
+    readonly machine?: MachineIdentity;
+    /** Where a post-refresh device fix-up reports a refusal; silent when absent (a TUI host must not write over its screen). */
+    readonly log?: (line: string) => void;
 }): {
     request: (path: string, init: RequestInit) => Promise<unknown>;
     signal: AbortSignal | undefined;

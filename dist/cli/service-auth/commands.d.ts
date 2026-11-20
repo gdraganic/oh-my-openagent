@@ -11,6 +11,7 @@ type Options = {
     readonly accounts?: string;
     readonly device?: boolean;
     readonly browser?: boolean;
+    readonly replace?: boolean;
     readonly help?: boolean;
 };
 /** What the host adds to the account commands: its device service for an API origin (design D r9 sections 4-5). */

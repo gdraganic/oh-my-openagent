@@ -39,7 +39,13 @@ export declare class CredentialStoreError extends SignInError {
 }
 export declare class KeychainLockedError extends CredentialStoreError {
 }
+/** The keychain item's access list belongs to another program: unlocking does not help (#13757). */
+export declare class KeychainItemNotOwnedError extends CredentialStoreError {
+}
 export declare class SecretServiceUnavailableError extends CredentialStoreError {
+}
+/** OmO's own keychain (#13116) refused or cannot be reached; its message names the fix and is never generalized. */
+export declare class DedicatedStoreError extends CredentialStoreError {
 }
 export declare class InvalidCredentialState extends SignInError {
 }

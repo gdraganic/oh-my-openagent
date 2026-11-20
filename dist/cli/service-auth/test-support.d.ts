@@ -14,6 +14,8 @@ export declare const privateKeys: {
     sealingPrivateKey: string;
 };
 export declare const refusal: (code: string, detail?: unknown, status?: number) => Response;
+/** A device list naming no device of this sign-in, so the post-refresh device fix-up (#13651) sends nothing more. */
+export declare const noOwnDevice: (request: Request) => Response | undefined;
 export declare const limitDetail: {
     reason: string;
     managementToken: string;

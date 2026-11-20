@@ -20,6 +20,9 @@ export type LockedDarwinStore = {
 /** RULING-73: every retired slot holds a copy nothing here can remove; the user must delete them once. */
 export declare class HelperOldSlotsFull extends Error {
 }
+/** Neither the helper nor this process may delete `<A>`: another program owns the item's access list (#13757). */
+export declare class HelperItemNotOwned extends Error {
+}
 /**
  * The session-lock view (design 3.3, 3.4, 3.6): every helper mutation is handed the lease; reads never prompt (an
  * approval comes from `prepare()` before the lock); recovery runs at the start of every section, migration only from
