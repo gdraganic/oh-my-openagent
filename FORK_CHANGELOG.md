@@ -10,6 +10,14 @@ Releases of [gdraganic/oh-my-openagent](https://github.com/gdraganic/oh-my-opena
 
 To release: add a `## [<version>] - YYYY-MM-DD` section here on `main` (with the `Fork-Patch: v2-support` trailer), then run the **Fork release** workflow with that version.
 
+## [5.1.79-fork.1] - 2026-11-20
+
+Rebased on upstream `dev` of 2026-11-20 (2,597 commits since fork.1): upstream releases 5.1.73 to 5.1.79, mostly OmO Native (remote sessions, Windows sign-in, memory sync). Relevant to the OpenCode edition:
+
+- **GPT-6.2 leads the GPT lanes.** Momus, `ultrabrain` and `deep-high` run `gpt-6.2-astra`; `deep-low` and the GPT step of `unspecified-low` run `gpt-6.2-sol`. The previous generation (`gpt-6-astra`, `gpt-6.1-sol`) stays as the next rung at the same effort. Hephaestus, oracle, explore and the Claude agents are unchanged.
+
+Upstream workflow files added since fork.1 are dropped, as usual. Verified on OpenCode 2.3.0, including a first start with an empty model cache.
+
 ## [5.1.72-fork.1] - 2026-11-16
 
 Rebased on upstream `dev` of 2026-11-16 (1,430 commits since fork.1): upstream releases 5.1.70 to 5.1.72, mostly OmO Native (sign-in, cross-device threads, memory sync). Relevant to the OpenCode edition:
