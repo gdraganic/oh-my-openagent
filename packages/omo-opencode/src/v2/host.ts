@@ -13,7 +13,7 @@ import { registerGoalSync } from "../hooks/goal/sync-bridge"
 import { categoryModels, createNotifier } from "./client-control"
 import { getBackgroundTaskControl } from "../features/background-agent/task-registry"
 import { serveOrigin } from "./catalog"
-import { getSessionRecord, listenPortOf, patchSessionMetadata } from "./serve-http"
+import { getSessionRecord, listenPortOf, listModels, patchSessionMetadata } from "./serve-http"
 import { projectV1Surface } from "./project-config"
 
 type V1Server = (input: never, options: unknown) => Promise<V1HookMap>
@@ -48,6 +48,46 @@ export async function primeConnectedProvidersCache(
   } finally {
     if (timer) clearTimeout(timer)
   }
+}
+
+// The server answers 503 while plugins load, so the cache built above holds only
+// the plugin model registry, which omits newer and service-tier models
+// (gpt-6.2-sol, claude-opus-5-5-fast). Categories that require an exact model
+// would refuse them until a session's own refresh ran. Rebuild the cache in the
+// background as soon as the server's model list answers.
+const SERVER_READY_ATTEMPTS = 30
+const SERVER_READY_DELAY_MS = 2_000
+
+export async function refreshProviderCacheWhenServerReady(
+  client: Parameters<typeof updateConnectedProvidersCache>[0],
+  deps: {
+    probe: () => Promise<boolean>
+    update?: typeof updateConnectedProvidersCache
+    attempts?: number
+    delayMs?: number
+    sleep?: (ms: number) => Promise<void>
+  },
+): Promise<boolean> {
+  const sleep = deps.sleep ?? ((ms: number) => new Promise<void>((resolve) => {
+    const timer = setTimeout(resolve, ms)
+    if (typeof timer === "object" && "unref" in timer) timer.unref()
+  }))
+  const attempts = deps.attempts ?? SERVER_READY_ATTEMPTS
+  for (let attempt = 0; attempt < attempts; attempt += 1) {
+    if (attempt > 0) await sleep(deps.delayMs ?? SERVER_READY_DELAY_MS)
+    if (!(await deps.probe().catch(() => false))) continue
+    try {
+      await (deps.update ?? updateConnectedProvidersCache)(client)
+      return true
+    } catch (error) {
+      log("[oh-my-openagent] provider cache refresh failed", {
+        error: error instanceof Error ? error.message : String(error),
+      })
+      return false
+    }
+  }
+  log("[oh-my-openagent] provider cache refresh skipped: server model list never answered")
+  return false
 }
 
 export async function setupOpenCodeV2(
@@ -106,6 +146,18 @@ export async function setupOpenCodeV2(
       error: error instanceof Error ? error.message : String(error),
     })
   }
+
+  void refreshProviderCacheWhenServerReady(
+    v1Input.client as unknown as Parameters<typeof updateConnectedProvidersCache>[0],
+    {
+      probe: async () => {
+        const origin = await serveOrigin(process.argv, listenPortOf)
+        if (!origin) return false
+        await listModels(origin, v1Input.directory, fetch)
+        return true
+      },
+    },
+  )
 
   const notifier = createNotifier()
   let cachedOrigin: string | undefined

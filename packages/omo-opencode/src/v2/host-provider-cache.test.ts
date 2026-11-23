@@ -2,7 +2,7 @@
 
 import { describe, expect, test } from "bun:test"
 
-import { primeConnectedProvidersCache } from "./host"
+import { primeConnectedProvidersCache, refreshProviderCacheWhenServerReady } from "./host"
 
 describe("V2 connected providers cache priming", () => {
   test("#given no cache #when the adapter starts #then it builds the cache before agents resolve", async () => {
@@ -38,5 +38,43 @@ describe("V2 connected providers cache priming", () => {
 
     // then
     expect(Date.now() - started).toBeLessThan(2000)
+  })
+})
+
+describe("V2 provider cache refresh once the server answers", () => {
+  test("#given the server answers 503 while plugins load #when it becomes ready #then the cache is rebuilt once", async () => {
+    // given
+    let calls = 0
+    const updates: unknown[] = []
+    const probe = async () => {
+      calls += 1
+      if (calls < 3) throw new Error("OpenCode session request failed (503)")
+      return true
+    }
+
+    // when
+    const refreshed = await refreshProviderCacheWhenServerReady({}, { probe, update: async (client) => { updates.push(client) }, sleep: async () => {} })
+
+    // then
+    expect(refreshed).toBe(true)
+    expect(calls).toBe(3)
+    expect(updates).toHaveLength(1)
+  })
+
+  test("#given a server that never answers #when the attempts run out #then nothing is rebuilt", async () => {
+    // given
+    let updated = false
+
+    // when
+    const refreshed = await refreshProviderCacheWhenServerReady({}, {
+      probe: async () => false,
+      update: async () => { updated = true },
+      attempts: 4,
+      sleep: async () => {},
+    })
+
+    // then
+    expect(refreshed).toBe(false)
+    expect(updated).toBe(false)
   })
 })
