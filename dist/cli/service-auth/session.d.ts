@@ -22,7 +22,7 @@ export type DiscardedCredential = {
     readonly kind: "unreadable";
 };
 export type BeforeKeysDiscarded = ((discarded: DiscardedCredential) => Promise<void>) & {
-    /** Whether a sign-in that names no account should have it read before logout revokes the device. */
+    /** Whether a sign-in that names no account should have it read from the service before its keys are discarded. */
     readonly wantsAccount?: () => Promise<boolean>;
 };
 /**
@@ -53,7 +53,6 @@ export type DeviceServiceHandoff = {
      */
     readonly machineDevice?: () => Promise<MachineDeviceState>;
 };
-export declare const discardedOf: (credentials: Credentials, cause: "refused" | "forget" | "logout" | "replaced") => DiscardedCredential;
 export declare function createSession(options: {
     readonly api: string;
     readonly store: CredentialStore;
@@ -83,10 +82,12 @@ export declare function createSession(options: {
     update<T>(action: (current: Credentials | null) => Promise<T>, options?: {
         readonly replaceInvalid?: boolean;
     }): Promise<T>;
+    /** The hook for a principal a caller discards inside `update` (`omo account forget --device`, `adopt --replace`). */
+    discard: (current: Credentials, cause: "refused" | "forget" | "replaced") => Promise<void>;
     /**
-     * Deletes the item without reading it (a corrupt or locked item must still be removable, with one
-     * native call), so it cannot name the account whose pin to retire: `omo account forget --device`
-     * and `logout` read first and retire; this one leaves the pin (a stale pin is harmless for keys).
+     * Every sign-out retires the pin of the account it signs out of (#12308): the item is read first to name it. An item
+     * that cannot be read (corrupt, or a store that fails the read) is still deleted, and once it is gone its pin is
+     * reported left with one line; a delete that fails too (a locked store) discarded nothing and reports only its error.
      */
     forget(): Promise<void>;
     accessSnapshot: () => Promise<Credentials | null>;

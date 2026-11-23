@@ -1,0 +1,1 @@
+export declare function resolveCategoryPromptAppendForModel(categoryName: string, actualModel: string | undefined, staticPromptAppend: string, userPromptAppend: string | undefined): string | undefined;

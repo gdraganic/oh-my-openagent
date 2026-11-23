@@ -1,5 +1,5 @@
 import type { AvailableCategory, AvailableSkill } from "../../agents/dynamic-agent-prompt-builder";
-export { BUILTIN_CATEGORY_REQUIRES_MODEL, builtinCategoryGateModels, CATEGORY_DESCRIPTIONS, CATEGORY_PROMPT_APPENDS, CATEGORY_PROMPT_APPEND_RESOLVERS, DEFAULT_CATEGORIES, } from "./builtin-categories";
+export { BUILTIN_CATEGORY_REQUIRES_MODEL, builtinCategoryGateModels, categoryGateServedModels, CATEGORY_DESCRIPTIONS, CATEGORY_PROMPT_APPENDS, CATEGORY_PROMPT_APPEND_RESOLVERS, DEFAULT_CATEGORIES, } from "./builtin-categories";
 /**
  * System prompt prepended to plan agent invocations.
  * Instructs the plan agent to first gather context via explore/librarian agents,

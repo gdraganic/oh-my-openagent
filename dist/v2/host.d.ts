@@ -7,6 +7,13 @@ export declare function primeConnectedProvidersCache(client: Parameters<typeof u
     update?: typeof updateConnectedProvidersCache;
     timeoutMs?: number;
 }): Promise<void>;
+export declare function refreshProviderCacheWhenServerReady(client: Parameters<typeof updateConnectedProvidersCache>[0], deps: {
+    probe: () => Promise<boolean>;
+    update?: typeof updateConnectedProvidersCache;
+    attempts?: number;
+    delayMs?: number;
+    sleep?: (ms: number) => Promise<void>;
+}): Promise<boolean>;
 export declare function setupOpenCodeV2(ctx: Plugin.Context, deps: {
     server: V1Server;
     agentDirectory?: string;

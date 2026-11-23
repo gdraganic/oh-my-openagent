@@ -3614,45 +3614,27 @@ var init_category_model_requirements = __esm(() => {
       ]
     },
     ultrabrain: {
+      requiresAnyModel: true,
       fallbackChain: [
-        { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptAstra, variant: "max" },
-        { providers: ["openai", "chatgpt-subscription"], model: "gpt-6-astra", variant: "max" },
-        { providers: ["github-copilot"], model: "gpt-6-astra", variant: "max" },
         {
           providers: ["openai", "chatgpt-subscription", "opencode"],
           model: LATEST_MODEL_BY_FAMILY.gptAstra,
           variant: "max"
-        },
-        { providers: ["openai", "chatgpt-subscription", "opencode"], model: "gpt-6-astra", variant: "max" },
-        { providers: ["openai", "chatgpt-subscription"], model: "gpt-5.6-sol", variant: "max" },
-        { providers: ["github-copilot"], model: "gpt-5.6-sol", variant: "max" },
-        { providers: ["openai", "chatgpt-subscription", "opencode"], model: "gpt-5.6-sol", variant: "max" }
+        }
       ]
     },
     "deep-low": {
+      requiresAnyModel: true,
       fallbackChain: [
-        { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptSol, variant: "medium" },
-        { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptSolFast, variant: "medium" },
-        { providers: ["openai", "chatgpt-subscription"], model: "gpt-6.1-sol", variant: "medium" },
-        { providers: ["openai", "chatgpt-subscription"], model: "gpt-6.1-sol-fast", variant: "medium" },
-        {
-          providers: ["openai", "chatgpt-subscription", "github-copilot", "opencode"],
-          model: "gpt-5.6-sol",
-          variant: "medium"
-        },
-        { providers: ["openai", "chatgpt-subscription"], model: "gpt-5.6-sol-fast", variant: "medium" }
+        { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptSol, variant: "medium" }
       ]
     },
     "deep-high": {
+      requiresAnyModel: true,
       fallbackChain: [
         {
           providers: ["openai", "chatgpt-subscription", "opencode"],
           model: LATEST_MODEL_BY_FAMILY.gptAstra,
-          variant: "high"
-        },
-        {
-          providers: ["openai", "chatgpt-subscription", "github-copilot", "opencode"],
-          model: "gpt-6-astra",
           variant: "high"
         }
       ]
@@ -5233,6 +5215,14 @@ var init_agent_display_names = __esm(() => {
   };
   REVERSE_DISPLAY_NAMES = Object.fromEntries(Object.entries(AGENT_DISPLAY_NAMES).map(([key, displayName]) => [displayName.toLowerCase(), key]));
 });
+// packages/omo-opencode/src/shared/model-requirements.ts
+var init_model_requirements2 = __esm(() => {
+  init_src2();
+});
+
+// packages/omo-opencode/src/shared/provider-model-id-transform.ts
+var init_provider_model_id_transform = () => {};
+
 // packages/omo-opencode/src/tools/delegate-task/google-categories.ts
 var VISUAL_CATEGORY_PROMPT_APPEND = `<Category_Context>
 You are working on VISUAL/UI tasks.
@@ -5525,26 +5515,20 @@ You are working on tasks that don't fit specific categories but require moderate
 </Category_Context>`, UNSPECIFIED_LOW_CATEGORY_CALLER_GUIDANCE = `<Selection_Gate>Use only when no specialist category fits, effort is moderate, and scope stays within a few files/modules. Prefer any matching specialist category.</Selection_Gate>
 <Caller_Warning>Provide explicit must-do steps, forbidden scope, and concrete success criteria.</Caller_Warning>`, UNSPECIFIED_HIGH_CATEGORY_PROMPT_APPEND = `<Category_Context>
 You are working on tasks that don't fit specific categories but require substantial effort.
-</Category_Context>`, UNSPECIFIED_HIGH_CATEGORY_CALLER_GUIDANCE = `<Selection_Gate>Use only when no specialist category fits and substantial effort spans systems/modules with broad impact. Use unspecified-low for contained moderate work.</Selection_Gate>`, DEEP_LOW_CATEGORY_CALLER_GUIDANCE = `<Selection_Gate>Of the two deep lanes this is the default: the child settles its decisions from what it reads. When unsure, choose deep-low; a misrouted child returns \`ESCALATE: deep-high\` after one cheap attempt, and you re-spawn the same brief as deep-high with its findings.</Selection_Gate>`, DEEP_HIGH_CATEGORY_CALLER_GUIDANCE = `<Selection_Gate>Route here only when you can name the decision evidence cannot settle: a trade-off with no single right answer, a contract change crossing a package or process boundary, a mechanism with no in-repo pattern to copy, or correctness argued from invariants rather than observed in a test. Wide scope with easy decisions is deep-low or unspecified-high; reasoning as the deliverable is ultrabrain.</Selection_Gate>`, DEEP_LOW_GATE_MODELS, DEEP_HIGH_GATE_MODELS, OPENAI_CATEGORIES;
+</Category_Context>`, UNSPECIFIED_HIGH_CATEGORY_CALLER_GUIDANCE = `<Selection_Gate>Use only when no specialist category fits and substantial effort spans systems/modules with broad impact. Use unspecified-low for contained moderate work.</Selection_Gate>`, DEEP_LOW_CATEGORY_CALLER_GUIDANCE = `<Selection_Gate>Of the two deep lanes this is the default: the child settles its decisions from what it reads. When unsure, choose deep-low; a misrouted child returns \`ESCALATE: deep-high\` after one cheap attempt, and you re-spawn the same brief as deep-high with its findings.</Selection_Gate>`, DEEP_HIGH_CATEGORY_CALLER_GUIDANCE = `<Selection_Gate>Route here only when you can name the decision evidence cannot settle: a trade-off with no single right answer, a contract change crossing a package or process boundary, a mechanism with no in-repo pattern to copy, or correctness argued from invariants rather than observed in a test. Wide scope with easy decisions is deep-low or unspecified-high; reasoning as the deliverable is ultrabrain.</Selection_Gate>`, GPT_ASTRA_GATE_MODELS, DEEP_LOW_GATE_MODELS, OPENAI_CATEGORIES;
 var init_openai_categories = __esm(() => {
   init_types();
   init_latest_models();
-  DEEP_LOW_GATE_MODELS = [
-    LATEST_MODEL_BY_FAMILY.gptSol,
-    LATEST_MODEL_BY_FAMILY.gptSolFast,
-    "gpt-6.1-sol",
-    "gpt-6.1-sol-fast",
-    "gpt-5.6-sol-fast",
-    "gpt-5.6-sol"
-  ];
-  DEEP_HIGH_GATE_MODELS = [LATEST_MODEL_BY_FAMILY.gptAstra, "gpt-6-astra"];
+  GPT_ASTRA_GATE_MODELS = [LATEST_MODEL_BY_FAMILY.gptAstra];
+  DEEP_LOW_GATE_MODELS = [LATEST_MODEL_BY_FAMILY.gptSol];
   OPENAI_CATEGORIES = [
     {
       name: "ultrabrain",
       config: { model: `openai/${LATEST_MODEL_BY_FAMILY.gptAstra}`, variant: "max" },
       description: "Use ONLY for genuinely hard, logic-heavy tasks. Give clear goals only, not step-by-step instructions.",
       promptAppend: ULTRABRAIN_CATEGORY_PROMPT_APPEND,
-      resolvePromptAppend: resolveUltrabrainCategoryPromptAppend
+      resolvePromptAppend: resolveUltrabrainCategoryPromptAppend,
+      requiresModel: GPT_ASTRA_GATE_MODELS
     },
     {
       name: "deep-low",
@@ -5562,7 +5546,7 @@ var init_openai_categories = __esm(() => {
       callerGuidance: DEEP_HIGH_CATEGORY_CALLER_GUIDANCE,
       promptAppend: DEEP_HIGH_CATEGORY_PROMPT_APPEND,
       resolvePromptAppend: resolveDeepHighCategoryPromptAppend,
-      requiresModel: DEEP_HIGH_GATE_MODELS
+      requiresModel: GPT_ASTRA_GATE_MODELS
     },
     {
       name: "quick",
@@ -5595,6 +5579,8 @@ function buildCategoryRecord(selector) {
 }
 var BUILTIN_CATEGORIES, DEFAULT_CATEGORIES, CATEGORY_PROMPT_APPENDS, CATEGORY_DESCRIPTIONS, CATEGORY_CALLER_GUIDANCE, CATEGORY_PROMPT_APPEND_RESOLVERS, BUILTIN_CATEGORY_REQUIRES_MODEL;
 var init_builtin_categories = __esm(() => {
+  init_model_requirements2();
+  init_provider_model_id_transform();
   init_google_categories();
   init_kimi_categories();
   init_openai_categories();
@@ -61003,11 +60989,6 @@ var init_model_capabilities2 = __esm(() => {
   init_model_capabilities_generated();
 });
 
-// packages/omo-opencode/src/shared/model-requirements.ts
-var init_model_requirements2 = __esm(() => {
-  init_src2();
-});
-
 // packages/omo-opencode/src/shared/agent-variant.ts
 var init_agent_variant = __esm(() => {
   init_agent_display_names();
@@ -84148,6 +84129,17 @@ var init_git_master = __esm(() => {
   }).strict();
 });
 
+// packages/omo-config-core/src/schema/keyword-detector.ts
+var KeywordTypeSchema, OmoKeywordDetectorSettingsSchema;
+var init_keyword_detector = __esm(() => {
+  init_zod();
+  KeywordTypeSchema = _enum2(["ultrawork", "team", "hyperplan", "hyperplan-ultrawork"]);
+  OmoKeywordDetectorSettingsSchema = object({
+    enabled_expansions: array(KeywordTypeSchema).optional(),
+    disabled_keywords: array(KeywordTypeSchema).optional()
+  });
+});
+
 // packages/omo-config-core/src/schema/harness.ts
 var HARNESS_IDS, OMO_CONFIG_HARNESS_IDS, OmoHarnessIdSchema, OMO_CONFIG_LEGACY_HARNESS_ALIASES, OMO_CONFIG_LEGACY_HARNESS_IDS;
 var init_harness = __esm(() => {
@@ -84811,6 +84803,20 @@ var init_session_wake = __esm(() => {
   }).strict();
 });
 
+// packages/omo-config-core/src/schema/operator-alerts.ts
+var OmoOperatorAlertsSettingsSchema;
+var init_operator_alerts = __esm(() => {
+  init_zod();
+  OmoOperatorAlertsSettingsSchema = object({
+    error_streak: object({
+      threshold: number2().int().min(1).optional(),
+      realert_minutes: number2().min(0).optional(),
+      threads: array(string2().trim().min(1)).optional(),
+      webhook_url_env: string2().regex(/^[A-Za-z_][A-Za-z0-9_]*$/).optional()
+    }).strict().optional()
+  }).strict();
+});
+
 // packages/omo-config-core/src/schema/config.ts
 var OmoOpenCodeHarnessConfigSchema, OmoDisabledSkillsSchema, OmoExcludedModelsSchema, OmoTypedHarnessConfigSchema, OmoConfigProfileSchema, OmoConfigSchema, OmoConfigLayerSchema;
 var init_config = __esm(() => {
@@ -84819,6 +84825,7 @@ var init_config = __esm(() => {
   init_category();
   init_computer();
   init_git_master();
+  init_keyword_detector();
   init_memory();
   init_model_catalog();
   init_model_pad();
@@ -84831,12 +84838,14 @@ var init_config = __esm(() => {
   init_format_on_mutation();
   init_provenance();
   init_session_wake();
+  init_operator_alerts();
   OmoOpenCodeHarnessConfigSchema = record(string2(), unknown());
   OmoDisabledSkillsSchema = array(string2());
   OmoExcludedModelsSchema = array(string2());
   OmoTypedHarnessConfigSchema = object({
     provenance: OmoProvenanceSettingsSchema.optional(),
     session_wake: OmoSessionWakeSettingsSchema.optional(),
+    operator_alerts: OmoOperatorAlertsSettingsSchema.optional(),
     formatOnMutation: OmoFormatOnMutationLayerSchema.optional(),
     categories: OmoCategoriesConfigSchema.optional(),
     agents: OmoAgentsConfigSchema.optional(),
@@ -84853,11 +84862,13 @@ var init_config = __esm(() => {
     side_panel: OmoSidePanelSettingsLayerSchema.optional(),
     computer: OmoComputerSettingsLayerSchema.optional(),
     disabled_skills: OmoDisabledSkillsSchema.optional(),
+    keyword_detector: OmoKeywordDetectorSettingsSchema.optional(),
     exclude_models: OmoExcludedModelsSchema.optional()
   }).strict();
   OmoConfigProfileSchema = object({
     provenance: OmoProvenanceSettingsSchema.optional(),
     session_wake: OmoSessionWakeSettingsSchema.optional(),
+    operator_alerts: OmoOperatorAlertsSettingsSchema.optional(),
     formatOnMutation: OmoFormatOnMutationLayerSchema.optional(),
     categories: OmoCategoriesConfigSchema.optional(),
     agents: OmoAgentsConfigSchema.optional(),
@@ -84874,6 +84885,7 @@ var init_config = __esm(() => {
     side_panel: OmoSidePanelSettingsLayerSchema.optional(),
     computer: OmoComputerSettingsLayerSchema.optional(),
     disabled_skills: OmoDisabledSkillsSchema.optional(),
+    keyword_detector: OmoKeywordDetectorSettingsSchema.optional(),
     exclude_models: OmoExcludedModelsSchema.optional(),
     "[opencode]": OmoOpenCodeHarnessConfigSchema.optional(),
     "[native]": OmoTypedHarnessConfigSchema.optional(),
@@ -84883,6 +84895,7 @@ var init_config = __esm(() => {
   OmoConfigSchema = object({
     provenance: OmoProvenanceSettingsSchema.optional(),
     session_wake: OmoSessionWakeSettingsSchema.optional(),
+    operator_alerts: OmoOperatorAlertsSettingsSchema.optional(),
     formatOnMutation: OmoFormatOnMutationSchema.optional(),
     $schema: string2().optional(),
     categories: OmoCategoriesConfigSchema.optional(),
@@ -84900,6 +84913,7 @@ var init_config = __esm(() => {
     side_panel: OmoSidePanelSettingsSchema.optional(),
     computer: OmoComputerSettingsSchema.optional(),
     disabled_skills: OmoDisabledSkillsSchema.optional(),
+    keyword_detector: OmoKeywordDetectorSettingsSchema.optional(),
     exclude_models: OmoExcludedModelsSchema.optional(),
     "[opencode]": OmoOpenCodeHarnessConfigSchema.optional(),
     "[native]": OmoTypedHarnessConfigSchema.optional(),
@@ -84912,6 +84926,7 @@ var init_config = __esm(() => {
   OmoConfigLayerSchema = object({
     provenance: OmoProvenanceSettingsSchema.optional(),
     session_wake: OmoSessionWakeSettingsSchema.optional(),
+    operator_alerts: OmoOperatorAlertsSettingsSchema.optional(),
     formatOnMutation: OmoFormatOnMutationLayerSchema.optional(),
     $schema: string2().optional(),
     categories: OmoCategoriesConfigSchema.optional(),
@@ -84929,6 +84944,7 @@ var init_config = __esm(() => {
     side_panel: OmoSidePanelSettingsLayerSchema.optional(),
     computer: OmoComputerSettingsLayerSchema.optional(),
     disabled_skills: OmoDisabledSkillsSchema.optional(),
+    keyword_detector: OmoKeywordDetectorSettingsSchema.optional(),
     exclude_models: OmoExcludedModelsSchema.optional(),
     "[opencode]": OmoOpenCodeHarnessConfigSchema.optional(),
     "[native]": OmoTypedHarnessConfigSchema.optional(),
@@ -85059,6 +85075,7 @@ var init_schema = __esm(() => {
   init_format_on_mutation();
   init_git_master();
   init_harness();
+  init_keyword_detector();
   init_legacy_category_names();
   init_legacy_harness_names();
   init_memory();
@@ -85068,6 +85085,7 @@ var init_schema = __esm(() => {
   init_model_ref();
   init_provenance();
   init_session_wake();
+  init_operator_alerts();
   init_side_panel();
   init_task();
   init_team();
@@ -87358,14 +87376,8 @@ var init_i18n = __esm(() => {
 });
 
 // packages/omo-opencode/src/config/schema/keyword-detector.ts
-var KeywordTypeSchema, KeywordDetectorConfigSchema;
-var init_keyword_detector = __esm(() => {
-  init_zod();
-  KeywordTypeSchema = exports_external.enum(["ultrawork", "team", "hyperplan", "hyperplan-ultrawork"]);
-  KeywordDetectorConfigSchema = exports_external.object({
-    enabled_expansions: exports_external.array(KeywordTypeSchema).optional(),
-    disabled_keywords: exports_external.array(KeywordTypeSchema).optional()
-  });
+var init_keyword_detector2 = __esm(() => {
+  init_src4();
 });
 
 // packages/omo-opencode/src/config/schema/model-capabilities.ts
@@ -87631,7 +87643,7 @@ var init_oh_my_opencode_config = __esm(() => {
   init_experimental();
   init_git_master2();
   init_i18n();
-  init_keyword_detector();
+  init_keyword_detector2();
   init_notification();
   init_openclaw();
   init_model_capabilities3();
@@ -87681,7 +87693,7 @@ var init_oh_my_opencode_config = __esm(() => {
     i18n: I18nConfigSchema.optional(),
     monitor: MonitorConfigSchema.optional(),
     team_mode: TeamModeConfigSchema.optional(),
-    keyword_detector: KeywordDetectorConfigSchema.optional(),
+    keyword_detector: OmoKeywordDetectorSettingsSchema.optional(),
     babysitting: BabysittingConfigSchema.optional(),
     git_master: GitMasterConfigSchema.default({
       commit_footer: false,
@@ -87721,7 +87733,7 @@ var init_schema2 = __esm(() => {
   init_git_master2();
   init_hooks();
   init_i18n();
-  init_keyword_detector();
+  init_keyword_detector2();
   init_model_capabilities3();
   init_notification();
   init_oh_my_opencode_config();
@@ -89683,7 +89695,7 @@ init_shared();
 // package.json
 var package_default = {
   name: "oh-my-opencode",
-  version: "5.1.79-fork.1",
+  version: "5.1.81-fork.1",
   description: "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
   main: "./dist/index.js",
   types: "dist/index.d.ts",
@@ -89886,7 +89898,7 @@ var package_default = {
   },
   devDependencies: {
     "@clack/prompts": "^1.8.1",
-    "@code-yeongyu/senpi": "2026.11.19-5",
+    "@code-yeongyu/senpi": "2026.11.23",
     "@modelcontextprotocol/sdk": "^1.30.0",
     "@oh-my-opencode/agents-md-core": "workspace:*",
     "@oh-my-opencode/ast-grep-mcp": "workspace:*",
@@ -89949,7 +89961,7 @@ var package_default = {
     "jsonc-parser": "^3.3.1",
     knip: "6.43.0",
     "node-pty": "^1.1.0",
-    omowright: "^0.3.1",
+    omowright: "^0.3.2",
     "oxc-parser": "0.148.0",
     oxlint: "1.89.0",
     picocolors: "^1.1.1",
@@ -89959,18 +89971,18 @@ var package_default = {
     typescript: "^7.0.2"
   },
   optionalDependencies: {
-    "oh-my-opencode-darwin-arm64": "5.1.79",
-    "oh-my-opencode-darwin-x64": "5.1.79",
-    "oh-my-opencode-darwin-x64-baseline": "5.1.79",
-    "oh-my-opencode-linux-arm64": "5.1.79",
-    "oh-my-opencode-linux-arm64-musl": "5.1.79",
-    "oh-my-opencode-linux-x64": "5.1.79",
-    "oh-my-opencode-linux-x64-baseline": "5.1.79",
-    "oh-my-opencode-linux-x64-musl": "5.1.79",
-    "oh-my-opencode-linux-x64-musl-baseline": "5.1.79",
-    "oh-my-opencode-windows-arm64": "5.1.79",
-    "oh-my-opencode-windows-x64": "5.1.79",
-    "oh-my-opencode-windows-x64-baseline": "5.1.79"
+    "oh-my-opencode-darwin-arm64": "5.1.81",
+    "oh-my-opencode-darwin-x64": "5.1.81",
+    "oh-my-opencode-darwin-x64-baseline": "5.1.81",
+    "oh-my-opencode-linux-arm64": "5.1.81",
+    "oh-my-opencode-linux-arm64-musl": "5.1.81",
+    "oh-my-opencode-linux-x64": "5.1.81",
+    "oh-my-opencode-linux-x64-baseline": "5.1.81",
+    "oh-my-opencode-linux-x64-musl": "5.1.81",
+    "oh-my-opencode-linux-x64-musl-baseline": "5.1.81",
+    "oh-my-opencode-windows-arm64": "5.1.81",
+    "oh-my-opencode-windows-x64": "5.1.81",
+    "oh-my-opencode-windows-x64-baseline": "5.1.81"
   },
   overrides: {
     hono: "^4.13.8",

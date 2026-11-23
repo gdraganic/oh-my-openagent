@@ -4,6 +4,8 @@ export interface ResolveCategoryConfigOptions {
     inheritedModel?: string;
     systemDefaultModel?: string;
     availableModels?: Set<string>;
+    /** The user's sisyphus-junior model, which every category runs on when set. */
+    modelOverride?: string;
 }
 export interface ResolveCategoryConfigResult {
     config: CategoryConfig;

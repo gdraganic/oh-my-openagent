@@ -5,6 +5,7 @@ import { type KeychainHelperOptions } from "./keychain-helper/darwin-backend";
 import { type WriteIntent } from "./keychain-helper/darwin-store";
 import { type LockedStore } from "./keychain-helper/store-binding";
 import { type SecretServiceLockProbe } from "./secret-service-lock";
+import { type KeyringRelation } from "./linux-store-route";
 type SecretKey = {
     readonly service: string;
     readonly name: string;
@@ -17,6 +18,8 @@ export type SecretApi = {
     readonly delete: (key: SecretKey) => Promise<boolean>;
 };
 export type { LockedStore };
+/** Where the stored sign-in lives: the OS store, or the private state file on a Linux machine with no Secret Service. */
+export type CredentialStorage = "keyring" | "file";
 export type SealedStore<T> = {
     readonly read: () => Promise<T | null>;
     /** A read started now that never joins a coalesced read begun earlier; credential transactions use it under the lock. */
@@ -33,6 +36,8 @@ export type SealedStore<T> = {
     readonly underLock?: (lease: HelperLease) => Promise<LockedStore<T> | null>;
     /** True while the last read came from an item the helper does not own yet: the token path then takes the lock once. */
     readonly migrationPending?: () => Promise<boolean>;
+    /** Where the last operation found or put the sign-in. */
+    readonly storage?: () => CredentialStorage;
 };
 export type CredentialStore = SealedStore<Credentials>;
 export declare class CredentialStoreError extends SignInError {
@@ -82,4 +87,8 @@ export declare function createCredentialStore(api: string, options?: {
     readonly home?: string;
     readonly keychainHelper?: KeychainHelperOptions;
 }): CredentialStore;
-export declare function createSealedStore<T>(api: string, namespace: "omo-cli" | "omo-cli-v2" | "omo-cli-revocations-v2", schema: z.ZodType<T>, secrets?: SecretApi | null, platform?: NodeJS.Platform, lockProbe?: SecretServiceLockProbe, notice?: (message: string) => void, wait?: CredentialReadWait, amendWrite?: (previous: T | null, next: T) => T, keychainHelper?: KeychainHelperOptions): SealedStore<T>;
+export declare function createSealedStore<T>(api: string, namespace: "omo-cli" | "omo-cli-v2" | "omo-cli-revocations-v2", schema: z.ZodType<T>, secrets?: SecretApi | null, platform?: NodeJS.Platform, lockProbe?: SecretServiceLockProbe, notice?: (message: string) => void, wait?: CredentialReadWait, amendWrite?: (previous: T | null, next: T) => T, keychainHelper?: KeychainHelperOptions, linux?: {
+    readonly home?: string;
+    /** Absent, only a byte-identical keyring item counts as the file's own sign-in. */
+    readonly relate?: (keyring: T, file: T) => KeyringRelation;
+}): SealedStore<T>;

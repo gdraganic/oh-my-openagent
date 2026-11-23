@@ -1,10 +1,18 @@
-import { type ChooseDevice, type MachineDevice, type Platform } from "./protocol";
+import { type ChooseDevice, type MachineDevice, type Platform, SignInError } from "./protocol";
 import type { Session } from "./session";
 export type DisplayCode = {
     readonly verificationUri: string;
     readonly userCode: string;
     readonly matchingCode: string;
+    /** When the code stops working (ISO 8601), as the service minted it. */
+    readonly expiresAt: string;
 };
+/** Why a device sign-in stopped: callers branch on the code, never on the message. */
+export type DeviceSignInRefusalCode = "approval_denied" | "approval_expired" | "device_limit" | "replace_unsupported" | "replace_mismatch";
+export declare class DeviceSignInRefused extends SignInError {
+    readonly code: DeviceSignInRefusalCode;
+    constructor(code: DeviceSignInRefusalCode, message: string);
+}
 export type DeviceLoginOptions = {
     readonly name: string;
     readonly platform: Platform;

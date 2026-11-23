@@ -1,11 +1,7 @@
 import { Command } from "commander";
+import { beginLogin } from "./login-prelude";
 import { type ListedDevice } from "./protocol";
-import { type DeviceServiceHandoff, type Session } from "./session";
-/**
- * Login order (#6503): refuse a second device from the stored sign-in and the machine's device service before
- * `/v1/health`. A logged-out computer is the one that waits on accounts being reachable.
- */
-export declare function beginLogin(session: Pick<Session, "accessSnapshot" | "request">, deviceService: DeviceServiceHandoff | undefined, api: string): Promise<unknown>;
+import { type DeviceServiceHandoff } from "./session";
 type Options = {
     readonly api?: string;
     readonly accounts?: string;
@@ -18,6 +14,7 @@ type Options = {
 export type ServiceAuthHooks = {
     readonly deviceService?: (api: string) => DeviceServiceHandoff;
 };
+export { beginLogin };
 export declare function deviceChoices(devices: readonly ListedDevice[]): {
     value: string;
     label: string;

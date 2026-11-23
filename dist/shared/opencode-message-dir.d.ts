@@ -1,1 +1,1 @@
-export declare function getMessageDir(sessionID: string): string | null;
+export declare function getMessageDir(sessionID: string, messageStorage?: string): string | null;

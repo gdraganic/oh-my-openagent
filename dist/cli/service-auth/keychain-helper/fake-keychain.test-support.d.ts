@@ -74,6 +74,7 @@ export declare function helperSession(keychain: ReturnType<typeof fakeKeychain>,
         update<T>(action: (current: Credentials | null) => Promise<T>, options?: {
             readonly replaceInvalid?: boolean;
         }): Promise<T>;
+        discard: (current: Credentials, cause: "refused" | "forget" | "replaced") => Promise<void>;
         forget(): Promise<void>;
         accessSnapshot: () => Promise<Credentials | null>;
         accountEmail: () => Promise<string | undefined>;
