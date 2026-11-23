@@ -10,6 +10,19 @@ Releases of [gdraganic/oh-my-openagent](https://github.com/gdraganic/oh-my-opena
 
 To release: add a `## [<version>] - YYYY-MM-DD` section here on `main` (with the `Fork-Patch: v2-support` trailer), then run the **Fork release** workflow with that version.
 
+## [5.1.81-fork.1] - 2026-11-23
+
+Rebased on upstream `dev` of 2026-11-23 (814 commits since fork.1), which contains upstream release 5.1.81 (5.1.80 was not published separately). Relevant to the OpenCode edition:
+
+- **The GPT deep categories run one exact model, with no fallback** (upstream #14155): `ultrabrain` on `gpt-6.2-astra` (max), `deep-high` on `gpt-6.2-astra` (high), `deep-low` on `gpt-6.2-sol` (medium). Where that model is unavailable, the category refuses instead of running an older GPT.
+- Other agents and categories are unchanged.
+
+### Fixes
+
+- On a fresh host (empty `~/.cache/oh-my-opencode/`), the first session's `deep-low`, `deep-high` and `ultrabrain` tasks failed with "requires model ... which is not available": the server answers 503 while plugins load, so oMo's model cache held only the plugin registry, which lacks GPT-6.2. The adapter now rebuilds the cache in the background as soon as the server's model list answers (within a second or two of startup). Agents resolve at startup, so on a fresh host Momus moves from `gpt-6-astra` to `gpt-6.2-astra` after one restart.
+
+Verified on OpenCode 2.3.0.
+
 ## [5.1.79-fork.1] - 2026-11-20
 
 Rebased on upstream `dev` of 2026-11-20 (2,597 commits since fork.1): upstream releases 5.1.73 to 5.1.79, mostly OmO Native (remote sessions, Windows sign-in, memory sync). Relevant to the OpenCode edition:
